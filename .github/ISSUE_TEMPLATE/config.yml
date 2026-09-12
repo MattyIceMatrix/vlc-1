@@ -4,8 +4,8 @@ contact_links:
     url: mailto:moorematthew131@gmail.com
     about: Anything under NDA, anything with real log data in it, or anything you would rather not have in a public issue.
   - name: What's public vs on request
-    url: https://github.com/MattyIceMatrix/vlc-1/blob/main/ACCESS.md
+    url: https://github.com/REPLACE-ME/vlc-1/blob/main/ACCESS.md
     about: The access matrix for all three products. Level 0 needs no request at all.
   - name: A clause looks wrong
-    url: https://github.com/MattyIceMatrix/vlc-1/blob/main/CONTRIBUTING.md
+    url: https://github.com/REPLACE-ME/vlc-1/blob/main/CONTRIBUTING.md
     about: The most valuable contribution there is. Annex C commits to rewording or dropping any clause shaped around the reference implementation.
