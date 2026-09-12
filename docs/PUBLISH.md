@@ -41,7 +41,7 @@ with nothing committed.
 Doing it by hand instead:
 
 ```sh
-git init && git add -- . && git commit -m "VLC-1 1.0-draft"
+git init && git add -- . && git commit -m "VLC-1 1.1.1-draft"
 git branch -M main
 git remote add origin git@github.com:<you>/vlc-1.git
 git push -u origin main
@@ -65,16 +65,45 @@ gh repo edit <you>/vlc-1 --description "A vendor-neutral specification and confo
 
 ## 3. Mint a DOI — do this, it is the step that matters
 
+`mint-doi.ps1` does all of this from PowerShell, including the new-version flow.
+For a **first** publication use `-Go`; for a **subsequent version** use
+`-NewVersionOf <record id of the latest published version>`, which keeps the
+concept DOI and therefore leaves the README badge alone.
+
+The manual route, if you would rather click:
+
 1. Sign in to https://zenodo.org with GitHub.
 2. In Zenodo's GitHub settings, flip this repository **on**.
-3. Cut a release on GitHub: tag `v1.0-draft`, title "VLC-1 1.0-draft".
+3. Cut a release on GitHub: tag `v<version>-draft`, title "VLC-1 <version>-draft".
+   The tag must match the `version` in `CITATION.cff`, which is also what
+   `selftest.sh` §7 checks against `SPEC.md` and the string the checker prints.
 4. Zenodo archives the tarball and assigns a DOI. `CITATION.cff` is already
    present, so the metadata comes across.
-5. Put the DOI badge at the top of `README.md` and into
-   `COMMENT-prEN-18229.md` before filing anything.
+5. Put the **concept** DOI badge at the top of `README.md`. Do not put a
+   version DOI in `COMMENT-prEN-18229.md` — it cites the concept DOI on
+   purpose, so the comment does not go stale on the next mint. Record the new
+   version DOI in `SPEC.md` Annex F instead.
 
 A DOI is what turns "a GitHub repo" into something a standards committee document
 can cite, and it costs nothing.
+
+### Before you mint anything, in this order
+
+A Zenodo record cannot be edited afterwards, so the five minutes here are the
+cheapest in the process. Version **1.1.1-draft** exists because step 1 was
+skipped once.
+
+1. **Bump the version in all three places** — `SPEC.md`'s header table,
+   `CITATION.cff`, and `VERSION` in `conformance.py`. Then run
+   `bash selftest.sh`; §7 fails the whole suite if they disagree.
+2. **Add the row to `SPEC.md` Annex F** for the version you are about to mint,
+   with the version DOI left as *this text* until Zenodo gives you one.
+3. **Read `CITATION.cff`'s abstract out loud.** It is the text that enters the
+   permanent record, and it is the field that goes stale quietest.
+4. **Rehearse:** `.\mint-doi.ps1 -Sandbox -Tag v<version>-draft -Go`. Free,
+   against sandbox.zenodo.org, and it never touches the README.
+5. Then the real one, passing `-NewVersionOf <the previous record id>` so the
+   concept DOI is kept and the badge does not move.
 
 ## 4. Turn on CI
 

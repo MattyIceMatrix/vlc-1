@@ -193,6 +193,32 @@ SIG=$($R --claims examples/reference-impl/agent-transcript-spoofed.jsonl \
 [ "$SIG" = "True" ] && ok "spoofed run: substitution signature raised" \
                     || bad "spoofed run: the spoof was not detected"
 
+hr; echo "7. PROVENANCE -- the version a report cites must be the version it was checked against"
+# Every report carries "spec": <version>, and Annex E manifests are archived
+# under it. If the checker stamps a version whose normative text differs from
+# the one shipped beside it, a reader reproducing an L4 claim reads the wrong
+# clauses -- 1.0-draft had no structural/attested split at all. Three places
+# state the version; they must agree, or the citation is wrong somewhere.
+PV=$(python3 - <<'PYX'
+import json, re, subprocess, sys
+rep = json.loads(subprocess.run(
+    ["python3", "./conformance.py", "--log", "examples/L1-hashchain.jsonl",
+     "--adapter", "adapters/generic-appjsonl.json", "--json"],
+    capture_output=True, text=True).stdout)
+stamped = rep["spec"].replace("VLC-1 ", "").strip()
+spec = re.search(r"^\|\s*Version\s*\|\s*([^|]+?)\s*\|", open("SPEC.md", encoding="utf-8").read(), re.M)
+cff  = re.search(r'^version:\s*"?([^"\n]+?)"?\s*$', open("CITATION.cff", encoding="utf-8").read(), re.M)
+print(stamped, spec.group(1) if spec else "MISSING", cff.group(1) if cff else "MISSING")
+PYX
+)
+set -- $PV
+if [ "$1" = "$2" ] && [ "$2" = "$3" ]; then
+	ok "checker stamps $1, SPEC.md says $2, CITATION.cff says $3"
+else
+	bad "version disagreement: checker=$1 SPEC.md=$2 CITATION.cff=$3"
+	bad "a report citing the wrong version points a reproducer at the wrong clauses"
+fi
+
 hr
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL

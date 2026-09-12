@@ -19,7 +19,7 @@ no --expect, the check ran).  1 = expectation not met.  2 = usage/adapter error.
 """
 import argparse, hashlib, json, os, re, sys
 
-VERSION = "VLC-1 1.0-draft"
+VERSION = "VLC-1 1.1.1-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 

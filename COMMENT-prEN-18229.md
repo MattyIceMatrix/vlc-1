@@ -13,15 +13,19 @@ body for the CEN-CENELEC parts; INCITS/AI for the SC 42 part.
 
 **Citable reference for everything below**
 
-> Moore, Matthew (2026). *VLC-1: Verifiable Completeness for AI System Logs*
-> (version 1.1-draft). Zenodo. **https://doi.org/10.5281/zenodo.22728393**
+> Moore, Matthew (2026). *VLC-1: Verifiable Completeness for AI System Logs*.
+> Zenodo. **https://doi.org/10.5281/zenodo.22728393**
 
-That is the concept DOI and always resolves to the current version; the version
-of record at the time of this comment is
-[10.5281/zenodo.22728394](https://doi.org/10.5281/zenodo.22728394). The
-repository is at <https://github.com/MattyIceMatrix/vlc-1> and the specification
-text is dedicated to the public domain under CC0, so a committee may lift clauses
-from it verbatim, with attribution appreciated and not required.
+That is the **concept DOI**: it always resolves to the current version, so this
+comment does not go stale when the specification is revised. Clause numbers cited
+below are stable across revisions. Where a reader needs to pin the exact text a
+clause number referred to, **Annex F of `SPEC.md` is the revision history**, with
+a version DOI for every published version.
+
+The repository is at <https://github.com/MattyIceMatrix/vlc-1> and the
+specification text is dedicated to the public domain under CC0, so a committee
+may lift clauses from it verbatim, with attribution appreciated and not
+required.
 
 **Backing implementation.** Every claim below is exhibited by running code in a
 public, archived tree: a specification (`SPEC.md`), an adapter-driven conformance

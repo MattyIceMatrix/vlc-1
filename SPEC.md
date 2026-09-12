@@ -5,8 +5,9 @@
 | | |
 |---|---|
 | Document | VLC-1 |
-| Version | 1.1-draft |
-| Date | 2026-09-12 (1.1-draft, same day) |
+| Version | 1.1.1-draft |
+| Date | 2026-09-12 |
+| Revision history | Annex F |
 | Status | Draft for public comment. Free to implement, free to cite, no licence required. |
 | Reference implementation | a kernel sensor, not distributed here (see Annex C — declared conflict of interest, and `ACCESS.md`) |
 | Conformance checker | `conformance.py`, adapter-driven, reporting a structural and an attested level (§8.4) |
@@ -703,6 +704,25 @@ citable.
 The pattern across all of it: **the field solved integrity thoroughly and never
 asked the next question.** Not because it is hard — L2 is a counter — but because
 nobody has been required to answer it, and an unasked question has no budget.
+
+---
+
+## Annex F (informative) — Revision history
+
+Every version is archived. The **concept DOI**
+[10.5281/zenodo.22728393](https://doi.org/10.5281/zenodo.22728393) always
+resolves to the newest; the version DOI below pins a particular text.
+
+| Version | Date | Version DOI | What changed, and why |
+|---|---|---|---|
+| 1.0-draft | 2026-09-12 | [10.5281/zenodo.22728394](https://doi.org/10.5281/zenodo.22728394) | First publication. |
+| 1.1-draft | 2026-09-12 | [10.5281/zenodo.22728851](https://doi.org/10.5281/zenodo.22728851) | External review found the checker presenting adapter-supplied assertions as independently demonstrated. Added §8.4 (structural versus attested), `VLC-V-1`..`VLC-V-5`, Annex E (the evidence manifest), and a control that runs the reviewer's attack. Narrowed the standards claim in §0 and Annex B after verifying that prEN 18229-1 does define integrity as the "property of accuracy and completeness". |
+| **1.1.1-draft** | 2026-09-12 | *this text* | Corrective. The 1.1-draft bump reached this document and `CITATION.cff` but not `conformance.py`, whose `VERSION` constant still read `1.0-draft`; every report the archived 1.1-draft checker emitted therefore cited a version in which §8.4 does not appear. No requirement, no check and no computed level changed. `selftest.sh` §7 now requires the version the checker stamps into its report to match this table and `CITATION.cff`. |
+
+The 1.1.1 entry is kept in the normative document rather than in a release note
+on purpose. `VLC-E-2` says an incomplete citation is worse than none; a
+specification that says so and then quietly corrects its own citation metadata
+would be asking of others what it does not do itself.
 
 ---
 

@@ -2,6 +2,10 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
 
+*Current version **1.1.1-draft**. The badge is the concept DOI and always resolves to
+the newest; [`SPEC.md` Annex F](SPEC.md) is the revision history, with a version DOI
+for each published version.*
+
 **Every AI logging standard now in preparation specifies what to log. None of
 the drafts reviewed provides a machine-checkable way for a reader to establish
 that the log is all of it.**
