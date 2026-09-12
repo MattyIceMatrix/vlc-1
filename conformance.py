@@ -214,13 +214,28 @@ def check_l1(recs, ad, res):
         res.fail("VLC-L1-3", "adapter declares no end marker: truncation undetectable")
 
     res.ok("VLC-L1-1")
-    res.ok("VLC-L1-2") if ad["integrity"].get("documented", True) else \
+
+    # These two used to default to TRUE, which meant an adapter that said
+    # nothing at all passed them. That is not trusting an assertion, it is
+    # manufacturing one out of silence. Both must now be stated explicitly.
+    doc = ad["integrity"].get("documented")
+    if doc is True:
+        res.ok("VLC-L1-2", ad["integrity"].get("documentation", "declared documented"))
+    elif doc is False:
         res.fail("VLC-L1-2", "adapter marks the mechanism as undocumented")
-    prim = ad["integrity"].get("primitive", "SHA-256")
-    if ad["integrity"].get("primitive_documented", True):
-        res.ok("VLC-L1-4", f"primitive {prim}")
     else:
+        res.fail("VLC-L1-2", "adapter does not state whether the mechanism is "
+                             "documented; silence is not a declaration")
+
+    prim = ad["integrity"].get("primitive")
+    pdoc = ad["integrity"].get("primitive_documented")
+    if pdoc is True and prim:
+        res.ok("VLC-L1-4", f"primitive {prim}")
+    elif pdoc is False:
         res.fail("VLC-L1-4", "primitive strength/lifetime not documented")
+    else:
+        res.fail("VLC-L1-4", "adapter does not name the primitive and state that "
+                             "its strength and lifetime are documented")
     return prev.hex()
 
 
@@ -527,6 +542,43 @@ def check_l5(recs, ad, res, own_level_reqs):
 # ===========================================================================
 # result accumulator
 # ===========================================================================
+# ===========================================================================
+# Structural vs attested — the distinction this checker used to blur.
+#
+# A STRUCTURAL requirement is decided by recomputing something from the
+# delivered evidence: the chain, the completeness identity, the presence and
+# binding of a coverage declaration. The checker establishes it.
+#
+# An ATTESTED requirement is decided by a statement the producer makes through
+# the adapter: that the mechanism is documented, that a bidirectional coverage
+# test exists, that the producer sits outside the audited process's control.
+# The checker RELAYS it. It cannot establish it from bytes, and saying it can
+# was the single weakest claim this project made.
+#
+# Two consequences worth stating plainly:
+#   * every report now carries BOTH levels, and the structural one is the one
+#     an adversary cannot inflate by writing a generous adapter;
+#   * L5 is attested by construction, so the structural ceiling is L4. That is
+#     not a gap in the checker. Independence is a fact about who holds the pen,
+#     and no amount of reading the bytes will settle it.
+# ===========================================================================
+EVIDENCE_CLASS = {
+    "VLC-L1-1": "structural", "VLC-L1-2": "attested",
+    "VLC-L1-3": "structural", "VLC-L1-4": "attested",
+    "VLC-L2-1": "structural", "VLC-L2-2": "structural",
+    "VLC-L2-3": "structural", "VLC-L2-4": "attested",
+    "VLC-L2-5": "structural", "VLC-L2-6": "structural",
+    "VLC-L3-1": "structural", "VLC-L3-1d": "structural",
+    "VLC-L3-2": "structural", "VLC-L3-3": "structural",
+    "VLC-L3-4": "attested",   "VLC-L3-5": "structural",
+    "VLC-L3-6": "structural",
+    "VLC-L4-1": "structural", "VLC-L4-2": "structural",
+    "VLC-L4-3": "attested",   "VLC-L4-4": "attested",
+    "VLC-L5-1": "attested",   "VLC-L5-2": "attested",
+    "VLC-L5-3": "attested",   "VLC-L5-4": "structural",
+    "VLC-L5-5": "attested",
+}
+
 LEVEL_REQS = {
     1: ["VLC-L1-1", "VLC-L1-2", "VLC-L1-3", "VLC-L1-4"],
     2: ["VLC-L2-1", "VLC-L2-2", "VLC-L2-3", "VLC-L2-4", "VLC-L2-5", "VLC-L2-6"],
@@ -536,9 +588,39 @@ LEVEL_REQS = {
 }
 
 
+# Which levels can be reached from the bytes at all. L5 cannot: independence is
+# a fact about WHO HOLDS THE PEN, and no amount of reading a log settles it. A
+# structural report that claimed L5 would be making exactly the error this
+# taxonomy exists to stop.
+STRUCTURALLY_ATTAINABLE = {1: True, 2: True, 3: True, 4: True, 5: False}
+
+EV_REQUIRED = ("test", "runner", "runner_digest", "output_digest", "result")
+
+
+def evidence_for(ad, rid):
+    """An attested requirement may carry a reproducible evidence artefact.
+
+    A bare `"negative_control": true` in an adapter is a promise. An entry
+    naming the runner, its digest, the digest of its output and the result is
+    something a reader can go and re-run. The checker cannot re-run it from
+    here -- it has only the log -- but it CAN tell the difference between a
+    claim and a citation, and report which one it was given.
+    """
+    ev = (ad.get("evidence") or {}).get(rid)
+    if not isinstance(ev, dict):
+        return None, ""
+    missing = [k for k in EV_REQUIRED if not ev.get(k)]
+    if missing:
+        return False, f"evidence entry incomplete (missing {', '.join(missing)})"
+    if str(ev.get("result")).upper() != "PASS":
+        return False, f"evidence entry records result={ev.get('result')!r}"
+    return True, f"{ev['test']} via {ev['runner']} (digests recorded)"
+
+
 class Results:
     def __init__(self):
         self.r = {}
+        self.ev = {}
 
     def ok(self, rid, note=""):
         self.r.setdefault(rid, (PASS, note))
@@ -546,19 +628,49 @@ class Results:
     def fail(self, rid, note=""):
         self.r[rid] = (FAIL, note)          # failure always wins
 
-    def level(self):
+    def attach_evidence(self, ad):
+        """Record, per attested requirement, whether a reproducible artefact
+        was supplied. Never upgrades a FAIL; evidence for a claim the log
+        contradicts is not evidence."""
+        for rid, cls in EVIDENCE_CLASS.items():
+            if cls != "attested":
+                continue
+            ok, note = evidence_for(ad, rid)
+            if ok is None:
+                continue
+            self.ev[rid] = (ok, note)
+            if ok is False and self.r.get(rid, (FAIL, ""))[0] == PASS:
+                self.fail(rid, note)
+
+    def _level_over(self, classes, ceiling=None):
         lv = 0
         for n in (1, 2, 3, 4, 5):
-            reqs = LEVEL_REQS[n]
-            if all(self.r.get(x, (FAIL, "not evaluated"))[0] == PASS for x in reqs):
+            if ceiling is not None and not ceiling.get(n, True):
+                break
+            reqs = [x for x in LEVEL_REQS[n] if EVIDENCE_CLASS.get(x) in classes]
+            if reqs and all(self.r.get(x, (FAIL, "not evaluated"))[0] == PASS
+                            for x in reqs):
                 lv = n
             else:
                 break
         return lv
 
-    def terminal_note(self):
-        s, _ = self.r.get("VLC-L4-1", (FAIL, ""))
-        return s
+    def structural_level(self):
+        """What the delivered evidence demonstrates on its own. An adversary
+        cannot raise this by writing a more generous adapter."""
+        return self._level_over(("structural",), STRUCTURALLY_ATTAINABLE)
+
+    def attested_level(self):
+        """Structural, plus what the producer asserts through the adapter."""
+        return self._level_over(("structural", "attested"))
+
+    def level(self):                      # backwards compatible
+        return self.attested_level()
+
+    def evidence_tally(self):
+        attested = [r for r, c in EVIDENCE_CLASS.items() if c == "attested"]
+        cited = sum(1 for r in attested if self.ev.get(r, (False,))[0] is True)
+        return cited, len(attested)
 
 
 # ===========================================================================
@@ -606,7 +718,9 @@ def main():
     ap.add_argument("--log", required=True)
     ap.add_argument("--adapter", required=True)
     ap.add_argument("--expect", type=int, choices=[0, 1, 2, 3, 4, 5],
-                    help="require exactly this level; exit 1 otherwise")
+                    help="require exactly this ATTESTED level; exit 1 otherwise")
+    ap.add_argument("--expect-structural", type=int, choices=[0, 1, 2, 3, 4, 5],
+                    help="require exactly this STRUCTURAL level; exit 1 otherwise")
     ap.add_argument("--mutate", help="apply an Annex A mutation before checking")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
@@ -636,7 +750,10 @@ def main():
         check_l5(recs, ad, res, LEVEL_REQS)
     except LogError as e:
         res.fail("VLC-L1-1", f"delivered set unreadable: {e}")
-    lv = res.level()
+    res.attach_evidence(ad)
+    lv = res.attested_level()
+    slv = res.structural_level()
+    cited, n_attested = res.evidence_tally()
 
     if tmp:
         os.unlink(tmp)
@@ -644,8 +761,18 @@ def main():
     if a.json:
         print(json.dumps({
             "spec": VERSION, "adapter": ad["name"], "log": a.log,
-            "mutation": a.mutate, "level_demonstrated": lv, "head": head,
-            "requirements": {k: {"status": v[0], "note": v[1]} for k, v in sorted(res.r.items())},
+            "mutation": a.mutate,
+            "level_demonstrated": lv,            # attested; kept for compatibility
+            "structural_level": slv,
+            "attested_level": lv,
+            "attested_requirements_with_evidence": cited,
+            "attested_requirements_total": n_attested,
+            "head": head,
+            "requirements": {
+                k: {"status": v[0], "note": v[1],
+                    "class": EVIDENCE_CLASS.get(k, "?"),
+                    "evidence": (res.ev.get(k, (None, ""))[1] or None)}
+                for k, v in sorted(res.r.items())},
         }, indent=2))
     else:
         print(f"{VERSION} — conformance report")
@@ -653,22 +780,52 @@ def main():
         print(f"  adapter  : {ad['name']} — {ad.get('description','')}")
         print(f"  producer : {ad.get('producer','(unstated)')}")
         print()
+        print("  [S] structural — recomputed from the delivered evidence")
+        print("  [A] attested   — asserted by the producer through the adapter")
+        print("  [A+]           — attested AND carrying a reproducible evidence artefact")
+        print()
         for n in (1, 2, 3, 4, 5):
             for rid in LEVEL_REQS[n]:
                 st, note = res.r.get(rid, (FAIL, "not evaluated"))
+                cls = EVIDENCE_CLASS.get(rid, "?")
+                if cls == "structural":
+                    tag = "[S] "
+                else:
+                    tag = "[A+]" if res.ev.get(rid, (False,))[0] is True else "[A] "
                 mark = "  ok  " if st == PASS else "  FAIL"
-                print(f"{mark}  {rid:<12} {note}")
+                ev = res.ev.get(rid, (None, ""))[1]
+                if ev and res.ev.get(rid, (False,))[0] is True:
+                    note = (note + "  |  " + ev) if note else ev
+                print(f"{mark} {tag} {rid:<12} {note}")
             print()
-        print(f"  LEVEL DEMONSTRATED: L{lv}")
+        print(f"  LEVEL DEMONSTRATED")
+        print(f"    structural : L{slv}   recomputed from the log alone; a more generous")
+        print(f"                        adapter cannot raise this number")
+        print(f"    attested   : L{lv}   the above, plus what the producer asserts")
+        print(f"                        {cited} of {n_attested} attested requirements carry a "
+              f"reproducible evidence artefact")
+        if slv < 5:
+            nxt = [r for r in LEVEL_REQS[slv + 1] if EVIDENCE_CLASS.get(r) == "structural"]
+            bad = [r for r in nxt if res.r.get(r, (FAIL, ""))[0] != PASS]
+            if bad:
+                print(f"    structural blocked from L{slv+1} by: {', '.join(bad)}")
+            elif slv == 4:
+                print(f"    structural cannot exceed L4: independence is a fact about who")
+                print(f"    holds the pen, not a property of the bytes")
         if lv < 5:
             nxt = LEVEL_REQS[lv + 1]
             bad = [r for r in nxt if res.r.get(r, (FAIL, ""))[0] != PASS]
-            print(f"  blocked from L{lv+1} by: {', '.join(bad)}")
+            print(f"    attested blocked from L{lv+1} by: {', '.join(bad)}")
 
+    rc = 0
     if a.expect is not None and lv != a.expect:
-        print(f"\nEXPECTED L{a.expect}, DEMONSTRATED L{lv}", file=sys.stderr)
-        return 1
-    return 0
+        print(f"\nEXPECTED attested L{a.expect}, DEMONSTRATED L{lv}", file=sys.stderr)
+        rc = 1
+    if a.expect_structural is not None and slv != a.expect_structural:
+        print(f"\nEXPECTED structural L{a.expect_structural}, DEMONSTRATED L{slv}",
+              file=sys.stderr)
+        rc = 1
+    return rc
 
 
 if __name__ == "__main__":

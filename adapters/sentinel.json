@@ -75,5 +75,42 @@
       "scope_declared": true,
       "ref": "witness/reconcile.py; demo/08-the-witness.sh asserts zero findings on an honest run and the substitution signature on a spoofed one"
     }
-  }
+  },
+  "evidence": {
+    "VLC-L3-4": {
+      "test": "coverage-bidirectional-001",
+      "what": "Every member of the open family is exercised, and the COVERAGE declaration is asserted against observed behaviour in BOTH directions: declared-but-not-delivered and delivered-but-not-declared. Negative control: a mutant daemon that declares openat2 and never attaches it must be caught.",
+      "runner": "sensor/openat2-coverage.sh  (verify.sh step 16)",
+      "runner_digest": "sha256:2dcb78fd385283ff2cbe7b82a96018f805eced0d0382a0984cb2e50896d6ed58",
+      "output_digest": "sha256:dae412c8253e370b1ad6ded9f65a0e06af3e613ea4a25c70bd5ae6dd71179cf3",
+      "output": "verify-2026-09-12-coverage.log",
+      "negative_control": "mutant declaring openat2 without attaching -> 'openat2 40 0 yes FAIL: declared but not delivered', exit 1",
+      "result": "PASS",
+      "availability": "evaluation access, mutual NDA (see ACCESS.md level 2)"
+    },
+    "VLC-L4-3": {
+      "test": "decision-function-differential",
+      "what": "The proved decision function, extracted from Coq to OCaml, is run against the C header that ships in the sensor over its ENTIRE input domain and compared byte for byte, with mutation controls that must be caught.",
+      "runner": "verify.sh  (steps 4, 8, 10, 13)",
+      "runner_digest": "sha256:06d4832d0a5153e7b854ea3d450389b11e6e6dcbb7b61b80c853ba26ed2b57b5",
+      "output_digest": "sha256:06e591a281dc4ac0c411c0018efe0e1ae39001eb4cbf2a63a22a09cfb107a994",
+      "output": "verify-2026-09-12-object.log",
+      "result": "PASS",
+      "availability": "evaluation access, mutual NDA"
+    },
+    "VLC-L5-3": {
+      "test": "witness-reconciliation-bidirectional",
+      "what": "The same stand-in agent is run honestly and dishonestly under the sensor. The honest run must produce ZERO findings over the declared scope; the spoofed run must produce the substitution signature -- a claimed-and-not-witnessed finding paired with a witnessed-and-not-claimed one.",
+      "runner": "demo/08-the-witness.sh",
+      "runner_digest": "sha256:9eeb1f08df573f181290c2c5b00af085619a636a86defe2ba4d40aa66094c660",
+      "reconciler": "witness/reconcile.py",
+      "reconciler_digest": "sha256:e323f82864a998cc7bd2f236aff0ea58e6af965ec97da5b6b1a74bc5496f7d89",
+      "output_digest": "sha256:f1a1a32f90eada092ec403005c6f32d5c9dce6e1a40911351b41ca81a86300a2",
+      "output": "verify-2026-09-12-witness.log",
+      "negative_control": "the honest run is the negative control: a reconciler that reports findings on it fails the demo",
+      "result": "PASS",
+      "availability": "the reconciler is PUBLIC in witness/; the runner and the sensor are evaluation access"
+    }
+  },
+  "_evidence_note": "An evidence artefact may be private. Its DIGEST is published here, which is what stops it being swapped for a different artefact after the fact. Ask for the artefact; check it against the digest you already have."
 }

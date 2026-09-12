@@ -24,9 +24,17 @@ ok()   { printf '  ok    %s\n' "$*"; }
 bad()  { printf '  FAIL  %s\n' "$*"; FAIL=1; }
 hr()   { printf '%s\n' "---------------------------------------------------------------"; }
 
-level() {   # level <log> <adapter>
+level() {   # level <log> <adapter>   -> ATTESTED level
 	$C --log "$1" --adapter "$2" --json 2>/dev/null | python3 -c \
-	  'import json,sys; print(json.load(sys.stdin)["level_demonstrated"])'
+	  'import json,sys; print(json.load(sys.stdin)["attested_level"])'
+}
+slevel() {  # slevel <log> <adapter>  -> STRUCTURAL level
+	$C --log "$1" --adapter "$2" --json 2>/dev/null | python3 -c \
+	  'import json,sys; print(json.load(sys.stdin)["structural_level"])'
+}
+req() {     # req <log> <adapter> <requirement-id>  -> PASS or FAIL
+	$C --log "$1" --adapter "$2" --json 2>/dev/null | python3 -c \
+	  "import json,sys; print(json.load(sys.stdin)['requirements'].get('$3',{}).get('status','ABSENT'))"
 }
 level_m() { # level_m <log> <adapter> <mutation>
 	$C --log "$1" --adapter "$2" --mutate "$3" --json 2>/dev/null | python3 -c \
@@ -73,6 +81,60 @@ app=$(level examples/L4-policybound.jsonl adapters/generic-appjsonl-policy.json)
 [ "$app" = "4" ] && ok "app-layer self-report tops out at L$app" \
                  || bad "app-layer self-report reached L$app"
 
+hr; echo "3c. TRUST BOUNDARY -- a generous adapter must not move the structural level"
+# The checker reports two numbers. The attested one includes what the producer
+# asserts; the structural one is recomputed from the log. If a fabricated
+# adapter could raise the structural number, the distinction would be theatre.
+TB="$(mktemp -d)"
+trap 'rm -rf "$TB"' EXIT
+python3 - "$TB" <<'PYE'
+import json, sys
+out = sys.argv[1]
+a = json.load(open('adapters/generic-appjsonl-policy.json'))
+# every attested property claimed as strongly as the schema allows
+a['name'] = 'fabricated-optimistic'
+a['integrity']['documented'] = True
+a['integrity']['primitive_documented'] = True
+a['loss']['overflow_behaviour'] = 'block'
+a['coverage']['bidirectional_test'] = {'exists': True, 'negative_control': True,
+                                       'ref': 'trust me'}
+a['policy'] = {'mode': 'chain_root', 'digest_field': 'policy_digest',
+               'change_class': 'POLICY',
+               'replay': {'deterministic': True, 'reference': 'trust me'}}
+a['independence'] = {'mode': 'kernel', 'audited_process_can_write_records': False,
+                     'boundary_statement': 'trust me',
+                     'reconciliation': {'bidirectional': True, 'scope_declared': True}}
+json.dump(a, open(out + '/optimistic.json', 'w'), indent=2)
+# and the same adapter with the two documentation declarations REMOVED
+b = json.load(open('adapters/generic-appjsonl.json'))
+b['name'] = 'silent-on-documentation'
+b['integrity'].pop('documented', None)
+b['integrity'].pop('primitive_documented', None)
+json.dump(b, open(out + '/silent.json', 'w'), indent=2)
+PYE
+L4=examples/L4-policybound.jsonl
+base_s=$(slevel $L4 adapters/generic-appjsonl-policy.json)
+base_a=$(level  $L4 adapters/generic-appjsonl-policy.json)
+opt_s=$(slevel  $L4 "$TB/optimistic.json")
+opt_a=$(level   $L4 "$TB/optimistic.json")
+if [ "$opt_s" = "$base_s" ] && [ "$opt_a" -gt "$base_a" ]; then
+	ok "fabricated independence: attested L$base_a -> L$opt_a, structural unmoved at L$opt_s"
+	ok "the number an adapter can inflate is labelled as the one an adapter can inflate"
+else
+	bad "expected structural to stay at L$base_s and attested to rise above L$base_a;"
+	bad "got structural L$opt_s, attested L$opt_a"
+fi
+
+# and silence is not a declaration: the two documentation requirements used to
+# pass when the adapter said nothing at all. That was a defect, not a policy.
+d1=$(req examples/L1-hashchain.jsonl "$TB/silent.json" VLC-L1-2)
+d2=$(req examples/L1-hashchain.jsonl "$TB/silent.json" VLC-L1-4)
+if [ "$d1" = "FAIL" ] && [ "$d2" = "FAIL" ]; then
+	ok "an adapter silent on documentation fails VLC-L1-2 and VLC-L1-4"
+else
+	bad "silence still passes: VLC-L1-2=$d1 VLC-L1-4=$d2"
+fi
+
 hr; echo "4. LATTICE -- the same session, separated only by a coverage record"
 a=$(level examples/L2-looks-complete.jsonl adapters/generic-appjsonl.json)
 b=$(level examples/L3-coverage.jsonl       adapters/generic-appjsonl.json)
@@ -104,10 +166,15 @@ else
 fi
 for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl/kernel-witness-with-loss-L5.jsonl; do
 	[ -f "$j" ] || continue
-	got=$(level "$j" adapters/sentinel.json)
-	[ "$got" = "5" ] && ok "$(basename $j) -> L$got  (live capture, post-fix, kernel witness)" \
-	                 || bad "$(basename $j) -> L$got, expected L5"
+	got=$(level  "$j" adapters/sentinel.json)
+	sgot=$(slevel "$j" adapters/sentinel.json)
+	if [ "$got" = "5" ] && [ "$sgot" = "4" ]; then
+		ok "$(basename $j) -> structural L$sgot, attested L$got"
+	else
+		bad "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5"
+	fi
 done
+ok "the reference implementation's own L5 is ATTESTED, not structural, and says so"
 
 
 hr; echo "6. THE WITNESS -- reconciling a self-report against an independent record"

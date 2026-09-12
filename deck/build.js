@@ -133,7 +133,7 @@ function stat(s, x, y, w, num, label, col, dk){
 
 /* ------------------------------------------------------------- 5 the ladder */
 { const s = dark();
-  title(s, 'Five levels, strictly ordered, each one necessary', 'Each rung refuses an attack the rung below admits — proved, not asserted.', true);
+  title(s, 'Six levels, strictly ordered, each one necessary', 'L0 to L5. Each rung refuses an attack the rung below admits — proved, not asserted.', true);
   const rows = [
     ['L1','Tamper-evident','alteration, reordering, truncation','editing the record', MINT],
     ['L2','Loss-accounted','the completeness identity closes in-chain','the silent drop', MINT],
@@ -156,7 +156,7 @@ function stat(s, x, y, w, num, label, col, dk){
       color:r[4], fontFace:BODY, isTextBox:true, margin:0, valign:'middle' });
     y += 0.93;
   });
-  foot(s, 'VLC-1 §4–§7A · 26 machine-checked results, 0 admitted, 0 axioms, all closed under the global context.');
+  foot(s, 'VLC-1 §4–§7A · 26 machine-checked results, 0 admitted, 0 axioms. Every report gives TWO numbers — what the checker recomputed, and what the producer asserted (§8.4).');
   s.addNotes('The claim to make here is the strictness: for every adjacent pair there is a log that '
     + 'satisfies the lower and not the higher, and an attack the higher refuses.');
 }

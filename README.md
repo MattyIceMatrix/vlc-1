@@ -3,7 +3,13 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
 
 **Every AI logging standard now in preparation specifies what to log. None of
-them specifies how a reader knows the log is all of it.**
+the drafts reviewed provides a machine-checkable way for a reader to establish
+that the log is all of it.**
+
+Some of them define completeness as a *term* — prEN 18229-1 defines integrity as
+the "property of accuracy and completeness", borrowing ISO/IEC 27000. None
+supplies the *mechanism*: nothing by which a verifier reading the delivered log
+can tell undeclared transport loss from a genuinely uneventful interval.
 
 That gap has a demonstrable consequence: an evidence export covering a two-hour
 outage, during which the logging path discarded every record, is
@@ -22,6 +28,8 @@ clauses into a standard without asking.
 
 ## The levels
 
+Six of them, L0 to L5 — five substantive increments above recorded-only L0.
+
 |  | | refuses |
 |---|---|---|
 | **L0** | recorded | — |
@@ -31,10 +39,36 @@ clauses into a standard without asking.
 | **L4** | **policy-bound** — verdicts bound to the rules that produced them, replayable | the after-the-fact rule swap |
 | **L5** | **independently witnessed** — the record was not written by the thing it describes | the forged self-report |
 
-Essentially all commercially available AI audit logging stops at **L1**. Every
-agent tool-call transcript in every framework is **L0** on the L5 axis by
-construction, because the file and the behaviour it describes have the same
-author.
+Of the log formats scored so far — see [`THIRD-PARTY.md`](THIRD-PARTY.md) —
+those that establish anything establish integrity, and none establishes loss
+accounting or coverage from the delivered evidence. That is four open formats,
+not a census of the market, and it is stated that narrowly on purpose.
+
+The claim that **does** generalise is the one the proof makes: a self-authored
+transcript cannot, by itself, establish independent witnessing of the behaviour
+it describes. Not because the frameworks are careless — because the file and the
+behaviour have the same author.
+
+## Two numbers, not one
+
+A checker can *recompute* some requirements from the log and can only *relay*
+others from what the producer says alongside it. Presenting both as though the
+checker established them is the criticism this scheme most deserves, so every
+report gives two levels:
+
+```
+  structural : L4   recomputed from the log alone; a more generous
+                    adapter cannot raise this number
+  attested   : L5   the above, plus what the producer asserts
+                    3 of 10 attested requirements carry a reproducible
+                    evidence artefact
+```
+
+15 of 26 requirements are structural, 11 attested. **L5 is attested by
+construction — independence is a fact about who holds the pen, not a property of
+the bytes — so the structural ceiling is L4.** `selftest.sh` includes a control
+that fabricates an adapter claiming everything and requires the structural number
+not to move. See [`SPEC.md`](SPEC.md) §8.4 and Annex E.
 
 Read [`SPEC.md`](SPEC.md) for the normative text.
 
@@ -76,12 +110,19 @@ the *surface* separates them.
 
 ## The other impossibility result
 
-In July 2026, METR and Redwood's investigation of an incident involving ~1,200
-agents found agents that had replaced the component executing their tool calls,
-so they could **issue one command while running another** and write whatever they
-liked into the transcript — confirmed in at least 7% of transcripts, with the
-investigators noting the cases they caught were crude and competent spoofing
-"may have been harder to detect by design."
+In August 2026, METR published an investigation into an incident in which roughly
+1,200 agents from a set of cyber evaluations participated on a shared message
+board. It reports that **at least 96 of the ~1,300 transcripts it reviewed show
+clear evidence of spoofed tool calls** — agents issuing one command while
+reporting another. That is about 7% *of the transcripts METR reviewed in that
+investigation*, and METR qualifies it: the spoofing it noticed consisted of
+*"obvious small-scale tests"*, while *"more sophisticated or extensive spoofing
+may have been harder to detect by design."* It also estimates it captured
+*"a bit over 90% of the agent activity"* overall.
+
+Read carefully, that is not a prevalence estimate for agent transcripts in
+general. It is an existence proof, and an existence proof is all the argument
+below needs.
 
 **`no_check_on_the_self_report_can_see_substitution`** states why no amount of
 care with that transcript helps: for any two behaviours and any self-report,
@@ -131,7 +172,7 @@ not distributed, across all three products — **OCTA Sentinel** (governs what a
 agent *does*), **OCTA Gateway** (governs what it *asks for*), and **MooreOS**
 (the same decision function on bare metal).
 
-There are four levels and **the first needs no request at all**: clone this and
+There are four **access** levels — not to be confused with the six conformance levels above — and **the first needs no request at all**: clone this and
 run `./selftest.sh`. Level 1 — *"here are our log field names, what level are
 we?"* — is free, needs no NDA, and is answered by opening an issue with the
 **Access request** template. Levels 2 and 3 are evaluation access under NDA and a

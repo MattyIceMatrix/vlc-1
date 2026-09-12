@@ -6,7 +6,7 @@ authors:
   - family-names: Moore
     given-names: Matthew
     email: moorematthew131@gmail.com
-version: "1.0-draft"
+version: "1.1-draft"
 doi: 10.5281/zenodo.22728393
 repository-code: "https://github.com/MattyIceMatrix/vlc-1"
 url: "https://doi.org/10.5281/zenodo.22728393"
@@ -28,4 +28,10 @@ keywords:
   - prEN 18229
   - ISO/IEC 24970
   - formal verification
-license: MIT
+# Dual-licensed, and a standards reviewer should not have to infer it:
+#   specification text (SPEC.md, THIRD-PARTY.md, COMMENT-*.md) : CC0-1.0
+#   reference implementation and all code                      : MIT
+license:
+  - CC0-1.0
+  - MIT
+license-url: "https://github.com/MattyIceMatrix/vlc-1#licence"

@@ -19,11 +19,14 @@ discard — preferentially during incidents, which are exactly the intervals the
 log exists to cover. And an event at a source nobody instrumented produces no
 record, loses nothing, and leaves no gap to find.
 
-The specification in this repository (`SPEC.md`) defines five levels of
-answer, with a checker you can run yourself, today, on your own logs, without
-talking to anyone.
+The specification in this repository (`SPEC.md`) defines six levels of answer,
+L0 to L5, with a checker you can run yourself, today, on your own logs, without
+talking to anyone. It reports two numbers: what it recomputed from your log, and
+what it only relayed from a declaration you supplied. The first is the one that
+matters in an assessment, and no declaration can raise it.
 
-**Start there.** If your logs come out at L3 or above, you do not need us.
+**Start there.** If your logs come out at **structural** L3 or above, you do not
+need us.
 
 ---
 

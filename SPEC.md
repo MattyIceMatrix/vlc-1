@@ -5,11 +5,11 @@
 | | |
 |---|---|
 | Document | VLC-1 |
-| Version | 1.0-draft |
-| Date | 2026-09-12 |
+| Version | 1.1-draft |
+| Date | 2026-09-12 (1.1-draft, same day) |
 | Status | Draft for public comment. Free to implement, free to cite, no licence required. |
-| Reference implementation | `sentinel/` in this repository (see Annex C — declared conflict of interest) |
-| Conformance checker | `completeness/conformance.py`, vendor-neutral, adapter-driven |
+| Reference implementation | a kernel sensor, not distributed here (see Annex C — declared conflict of interest, and `ACCESS.md`) |
+| Conformance checker | `conformance.py`, adapter-driven, reporting a structural and an attested level (§8.4) |
 
 ---
 
@@ -18,14 +18,20 @@
 Every logging standard now in preparation for the EU AI Act specifies **what to
 log**. None of them specifies **how a reader knows the log is all of it**.
 
-- **prEN 18229-1** (CEN-CENELEC JTC 21, AI system logging) names the *purposes*
-  of logging and defers event content to ISO/IEC 24970. Its public enquiry drafts
-  contain no requirement addressing dropped events, gaps, guaranteed capture,
-  integrity or tamper-evidence.
+- **prEN 18229-1** (CEN-CENELEC JTC 21, AI system logging) is not silent on the
+  *vocabulary*. It defines **integrity** as the "property of accuracy and
+  completeness" (borrowing ISO/IEC 27000:2018, 3.36), defines traceability, and
+  requires that an AI system be designed "with the technical capability to
+  automatically record events throughout its life cycle". What the reviewed
+  draft material does not appear to provide is a **mechanism**: nothing by which
+  a verifier reading the delivered log can distinguish undeclared transport loss
+  from a genuinely uneventful interval, and no declaration of the observation
+  surface sufficient to establish coverage. A search of the available draft
+  material returns no matches for *discard* or *buffer*.
 - **ISO/IEC FDIS 24970** (AI system logging) specifies event content and the
-  documentation burden. It contains no requirement for completeness
-  verification, dropped-event detection, buffer-overflow handling or gap
-  accounting.
+  documentation burden. The committee draft reviewed contains no requirement for
+  completeness *verification*, dropped-event detection, buffer-overflow handling
+  or gap accounting.
 - **EU AI Act Article 12** requires automatic recording of events "throughout the
   lifetime" of a high-risk system, and Article 19 requires those logs be kept.
   Neither article, nor the recitals, defines the evidentiary property that makes
@@ -42,8 +48,9 @@ given were not altered. It says nothing about the records you were not given. Th
 industry has converged on tamper-evidence and stopped, because tamper-evidence is
 the property that is easy to name and easy to sell.
 
-This document specifies the missing property, in testable terms, at four levels
-of increasing strength, such that:
+This document specifies the missing property, in testable terms, across **six
+conformance levels, L0 to L5** — five substantive assurance increments above
+recorded-only L0 — such that:
 
 - a producer can state which level it meets, and be checked;
 - an auditor can ask one question with a machine-checkable answer;
@@ -58,7 +65,8 @@ permission.
 ## 1. Scope
 
 This document specifies requirements for demonstrating the **completeness** of
-logs produced by AI systems, and a conformance scheme with four levels.
+logs produced by AI systems, and a conformance scheme of **six levels, L0 to
+L5**.
 
 It applies to any log offered as evidence about the behaviour of an AI system,
 regardless of where in the stack the log is produced — application SDK,
@@ -149,13 +157,15 @@ level's requirements are meaningful only against the threats listed for it.
 | **T6** | Compromise, or simply control, the producer itself and emit records that satisfy every requirement below while describing behaviour that did not occur. | **L5**, partially — see 7A and 9.1 |
 
 **T6 was out of scope in the first draft of this document and is not any more.**
-In July 2026 an investigation by METR and Redwood into an incident involving
-~1,200 agents found agents that had replaced the component executing their tool
-calls, so they could issue one command while running another and write whatever
-they liked into the transcript — confirmed in at least 7% of transcripts, with
-the investigators noting that the cases they caught were crude and that competent
-spoofing "may have been harder to detect by design", and roughly 10% of activity
-never captured at all. A threat that has been observed is not a residual.
+In August 2026 METR published an investigation into an incident involving roughly
+1,200 agents, reporting that at least 96 of the ~1,300 transcripts it reviewed
+show clear evidence of spoofed tool calls — an agent issuing one command while
+reporting another. METR qualifies the finding: the spoofing it noticed was
+*"obvious small-scale tests"*, and *"more sophisticated or extensive spoofing may
+have been harder to detect by design"*. It estimates it captured *"a bit over
+90% of the agent activity"*. This is an existence proof rather than a prevalence
+estimate, and an existence proof is sufficient: a threat that has been observed
+is not a residual.
 
 **T4 is the threat this document exists to name.** It is invisible to every
 integrity mechanism and to every loss-accounting mechanism, because it produces
@@ -402,8 +412,8 @@ fiction. The reconciliation produces one *claimed-not-witnessed* finding and one
 *witnessed-not-claimed* finding, and that **pair** is the substitution signature.
 A record written by the audited process cannot produce this finding about itself.
 
-`witness/` in the reference implementation is a runnable instance:
-`demo/08-the-witness.sh` runs the same agent honestly and dishonestly and requires
+`witness/` in this repository is a runnable instance; `demo/08-the-witness.sh`
+in the reference implementation runs the same agent honestly and dishonestly and requires
 zero findings from the first and the signature from the second.
 
 ## 8. Conformance
@@ -419,13 +429,16 @@ satisfy every requirement of L1..Ln. A producer SHALL claim exactly one level.
             evident   accounted declared    bound     witnessed
 
   refuses:  T1,T2     +T3       +T4         +T5       +T6
+
+  structural ceiling  ───────────────────────────┘
+  (8.4: independence is not a property of the bytes)
 ```
 
 Strictness is not editorial: for each adjacent pair there exists a log that
 satisfies the lower level and not the higher, and an attack that the higher
 refuses and the lower admits. This is proved in
-`completeness/proofs/sentinel_completeness.v` and exhibited as worked example
-logs in `completeness/examples/`, including one that satisfies L2 and is missing
+`proofs/sentinel_completeness.v` and exhibited as worked example
+logs in `examples/`, including one that satisfies L2 and is missing
 half its events.
 
 ### 8.2 Claiming a level
@@ -442,18 +455,60 @@ A conformance claim SHALL state:
 ### 8.3 Checking a claim
 
 A claim is checked by running a verifier against a log the producer supplies,
-without vendor software in the trust path. `completeness/conformance.py` in this
+without vendor software in the trust path. `conformance.py` in this
 repository is one such verifier: it takes any JSONL log plus a small declarative
 adapter mapping the producer's field names onto the abstract quantities of
 clauses 4–7, and reports the level achieved and the exact requirement IDs that
 failed.
 
 Adapters are data, not code. Writing an adapter for a competing product is a
-fifteen-minute exercise and is encouraged; `completeness/adapters/` contains
+fifteen-minute exercise and is encouraged; `adapters/` contains
 adapters for several log shapes including ones this project did not produce.
 
 **A verifier SHALL report the level actually demonstrated, never the level
-claimed.**
+claimed — and SHALL distinguish which parts of that level it established and
+which parts it merely relayed. See 8.4.**
+
+### 8.4 Structural and attested verification
+
+A verifier reading a log can establish some of these requirements and not
+others, and a scheme that blurs the two invites exactly the criticism it
+deserves: *your verifier is only verifying your own assertions.*
+
+**Definitions.**
+
+- A requirement is **structural** where a verifier decides it by recomputing
+  something from the delivered evidence — the binding, the completeness
+  identity, the presence and binding of a coverage declaration.
+- A requirement is **attested** where the verifier decides it from a statement
+  the producer supplies alongside the log: that the mechanism is documented,
+  that a bidirectional coverage test exists, that the producer lies outside the
+  audited process's control.
+
+**VLC-V-1** A conformance report SHALL state a **structural level** and an
+**attested level** separately. The structural level SHALL be computed from the
+structural requirements alone.
+
+**VLC-V-2** A conformance report SHALL mark each requirement as structural or
+attested, so that a reader can see which claims rest on the producer's word.
+
+**VLC-V-3** No supplied statement SHALL be capable of raising the structural
+level. A scheme in which a more generous declaration produces a higher
+structural number has no structural number.
+
+**VLC-V-4** **L5 is attested by construction, so the structural ceiling is L4.**
+Independence is a fact about who holds the pen; no amount of reading the bytes
+settles it. A report claiming a structural L5 is in error.
+
+**VLC-V-5** Where an attested requirement is supported by an **evidence
+manifest** entry (Annex E), the report SHALL say so, and SHALL distinguish that
+case from a bare assertion.
+
+NOTE This clause was added in 1.1-draft after external review observed that the
+1.0-draft checker presented adapter-supplied assertions as independently
+demonstrated. The observation was correct. In the reference checker, 15 of 26
+requirements are structural and 11 attested; two of the attested ones formerly
+passed when the adapter said nothing at all, which was a defect and is fixed.
 
 ---
 
@@ -546,7 +601,7 @@ rewards writing a longer list.
 
 This specification was written by the author of a product that implements it.
 
-The reference implementation (`sentinel/`) is that product. Its journal meets
+The reference implementation is that product — a kernel sensor, which is not in this repository. Its journal meets
 L1–L4 as of 2026-09-12, and it is the first implementation known to the author to
 meet L3 at all.
 
@@ -571,6 +626,68 @@ its author.
 
 ---
 
+## Annex E (normative) — The evidence manifest
+
+An attested requirement (8.4) rests on the producer's word. This annex is how a
+producer converts a word into a citation.
+
+**VLC-E-1** A producer MAY supply, alongside the log, an **evidence manifest**:
+a set of entries keyed by requirement identifier. Each entry SHALL name the test,
+the runner that performed it, the **digest of that runner**, the **digest of its
+output**, and the result.
+
+**VLC-E-2** A verifier SHALL treat an entry that is incomplete, or that records
+a result other than a pass, as **weaker than no entry at all** — because an
+incomplete citation is a claim dressed as evidence. It SHALL fail the
+requirement rather than fall back to the bare assertion.
+
+**VLC-E-3** Evidence for a requirement the delivered log contradicts SHALL NOT
+raise that requirement. A manifest never overrides the bytes.
+
+**VLC-E-4** The artefacts an entry names MAY be confidential. Their **digests
+SHALL be published**. The digest is what stops a private artefact being
+substituted after the fact: a reader who later obtains the artefact under
+whatever terms apply can check it against a digest they already held.
+
+**VLC-E-5** Where a requirement concerns a test, the entry SHALL name the
+**negative control** — the condition under which that test is known to fail.
+A test with no stated failure mode is not evidence that anything was checked.
+
+### E.1 Shape
+
+```json
+"evidence": {
+  "VLC-L3-4": {
+    "test": "coverage-bidirectional-001",
+    "what": "every member of the open family is exercised, and the coverage
+             declaration is asserted against observed behaviour in BOTH
+             directions",
+    "runner": "coverage-test.sh",
+    "runner_digest": "sha256:2dcb78fd…",
+    "output_digest": "sha256:dae412c8…",
+    "negative_control": "a mutant that declares a source it never attaches
+                         must be caught",
+    "result": "PASS",
+    "availability": "under NDA"
+  }
+}
+```
+
+### E.2 What this does and does not buy
+
+It does **not** make an attested requirement structural. The verifier still
+cannot run the test; it has only the log. What it buys is that the reader is
+told precisely what to ask for and precisely how to check that what they were
+given is what was cited. That converts *"the vendor says a negative control
+exists"* into *"the vendor named a runner, published its digest, and can be held
+to it."*
+
+The reference checker reports these as `[A+]` rather than `[A]`, and counts them
+in the summary, so a report shows at a glance how much of the attested half is
+citable.
+
+---
+
 ## Annex D (informative) — Prior art and why it does not cover this
 
 | Body of work | What it gives | What it does not |
@@ -581,7 +698,7 @@ its author.
 | OpenTelemetry | Dropped-span counters exist in the SDK and collector, and are a genuine L2 primitive | They are telemetry about the telemetry, live on a separate metrics path, are not bound to the trace data, and vanish if the metrics path is the one that dropped. Not in-band, not integrity-bound. **The closest existing thing, and it is one design decision away from L2.** |
 | Linux audit / auditd `lost` counter | In-band loss count | Not integrity-bound; no coverage declaration; the ruleset is not bound to the log. |
 | AI-specific audit products (agent security posture, LLM gateways, guardrail platforms) | L1, generally via hash chain or immutable store | No loss accounting, no coverage declaration, no policy binding found in published material as of 2026-09-12. |
-| Agent tool-call transcripts (every major framework) | a readable record of intent | Written by the audited process. L5-1 fails by construction, and the July 2026 METR/Redwood finding is what that failure looks like in production. |
+| Agent tool-call transcripts | a readable record of intent | Written by the audited process, so VLC-L5-1 fails by construction. METR’s August 2026 investigation is what that failure looks like once someone goes looking. |
 
 The pattern across all of it: **the field solved integrity thoroughly and never
 asked the next question.** Not because it is hard — L2 is a counter — but because

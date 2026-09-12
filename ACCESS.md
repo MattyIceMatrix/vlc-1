@@ -47,6 +47,14 @@ reach at all.
 | **ASK FOR** | the integer inference core — `no_std`, no floating point, because **no floating point is what makes an inference result attestable** — and the proof it is bound to · the bare-metal versus hosted equivalence review of the two `govern()` implementations |
 | **PRIVATE** | kernel source |
 
+**How to check an item before you are given it.** Each "ask for" item that
+backs a VLC-1 attested requirement has an entry in `adapters/sentinel.json`
+under `evidence`, naming the runner, **the SHA-256 of the runner**, and **the
+SHA-256 of its output**. Those digests are public. The artefacts are not. That is
+deliberate: the digest is what stops a private artefact being swapped for a
+different one after the fact, so when you receive it under NDA you can check it
+against a value you already held before any conversation started.
+
 **Why the numbers are not on this page.** Every "ask for" item has measurements
 behind it — case counts, pinned digests, measured overheads, reproduction rates.
 Those come **with** the material, at the access level that fits, rather than as

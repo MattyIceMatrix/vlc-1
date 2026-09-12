@@ -14,7 +14,7 @@ body for the CEN-CENELEC parts; INCITS/AI for the SC 42 part.
 **Citable reference for everything below**
 
 > Moore, Matthew (2026). *VLC-1: Verifiable Completeness for AI System Logs*
-> (version 1.0-draft). Zenodo. **https://doi.org/10.5281/zenodo.22728393**
+> (version 1.1-draft). Zenodo. **https://doi.org/10.5281/zenodo.22728393**
 
 That is the concept DOI and always resolves to the current version; the version
 of record at the time of this comment is
@@ -24,8 +24,8 @@ text is dedicated to the public domain under CC0, so a committee may lift clause
 from it verbatim, with attribution appreciated and not required.
 
 **Backing implementation.** Every claim below is exhibited by running code in a
-public, archived tree: a specification (`SPEC.md`), a vendor-neutral conformance
-checker with adapters for producers the submitter did not write, worked example
+public, archived tree: a specification (`SPEC.md`), an adapter-driven conformance
+checker that reports separately what it recomputed and what it relayed with adapters for producers the submitter did not write, worked example
 logs at every conformance level, a machine-checked Coq development
 (`proofs/sentinel_completeness.v`, 0 admitted, 0 axioms), and a self-test that
 fails in both directions. **Conflict of interest is declared in Annex C of the
@@ -38,8 +38,15 @@ own implementation two levels below its claim.
 
 ## 1. The comment, in one paragraph
 
-Both logging documents specify **what to record**. Neither specifies **how a
-reader establishes that the record is all of it.** The consequence is
+Both logging documents specify **what to record**, and prEN 18229-1 is not
+silent on the vocabulary: it defines **integrity** as the "property of accuracy
+and completeness" (ISO/IEC 27000:2018, 3.36), defines traceability, and requires
+the technical capability to record events automatically throughout the life
+cycle. **The gap is not the term; it is the mechanism.** Neither document
+appears to provide anything by which a reader of the delivered log can
+distinguish undeclared transport loss from a genuinely uneventful interval, or
+establish which sources were capable of producing a record at all. The
+consequence is
 demonstrable and not hypothetical: an evidence export covering a two-hour outage
 during which the logging path discarded every event is indistinguishable, by
 every check the drafts require, from an export covering a quiet afternoon. Under
@@ -56,10 +63,10 @@ testable.
 
 | MB | Clause | Type | Comment | Proposed change |
 |---|---|---|---|---|
-| — | General | **ge** | The draft states the purposes of logging and defers event content to ISO/IEC 24970. Completeness is a property of the *log*, not of an *event*, and therefore falls into the gap between the two documents: neither addresses it. A conformant implementation may discard an arbitrary fraction of events and produce a log indistinguishable from one that discarded none. | Add a normative clause on demonstrable completeness. Proposed text at §3 below. |
-| — | General | **te** | No requirement addresses dropped events, buffer-exhaustion behaviour, or gap accounting. Bounded buffers are universal in production logging; silent discard under load is the normal failure, and it occurs preferentially during incidents — exactly the intervals the log exists to cover. | Require in-band, integrity-bound declaration of discarded records, and a stated overflow behaviour. See §3, requirement (b). |
-| — | General | **te** | No requirement addresses the *observation surface*. Where a producer is not attached to a source, activity at that source generates no event, therefore no loss, therefore no gap: the log is complete with respect to what was watched and silent about what was not, with nothing marking the difference. This failure is invisible to every integrity and accounting mechanism and, to the submitter's knowledge, is not named in any published AI logging standard or draft. | Require the log to enumerate the observation surface. See §3, requirement (c). This is the load-bearing comment. |
-| — | General | **te** | No requirement binds recorded verdicts to the decision rules in force when they were made. A recorded "permitted" is re-readable under any later policy. | See §3, requirement (d). |
+| — | General | **ge** | The draft **defines** integrity as the property of accuracy and completeness (3.x, from ISO/IEC 27000:2018, 3.36) but does not make that property **demonstrable from the delivered log**. Completeness is a property of the *log*, not of an *event*, so it falls between this document and ISO/IEC 24970, to which event content is deferred. A conformant implementation may therefore discard an arbitrary fraction of events and produce a log indistinguishable from one that discarded none, while satisfying the definition. | Add a normative clause making the defined property demonstrable. Proposed text at §3 below. The submitter's position is that the definition is right and the mechanism is missing, not that the definition is absent. |
+| — | General | **te** | The reviewed draft material contains no requirement addressing dropped events, buffer-exhaustion behaviour, or gap accounting; a search of it returns no matches for *discard* or *buffer*. Bounded buffers are universal in production logging; silent discard under load is the normal failure, and it occurs preferentially during incidents — exactly the intervals the log exists to cover. | Require in-band, integrity-bound declaration of discarded records, and a stated overflow behaviour. See §3, requirement (b). |
+| — | General | **te** | No requirement in the reviewed material addresses the *observation surface*. Where a producer is not attached to a source, activity at that source generates no event, therefore no loss, therefore no gap: the log is complete with respect to what was watched and silent about what was not, with nothing marking the difference. This failure is invisible to every integrity and accounting mechanism and, to the submitter's knowledge, is not named in any published AI logging standard or draft. | Require the log to enumerate the observation surface. See §3, requirement (c). This is the load-bearing comment. |
+| — | General | **te** | No requirement in the reviewed material binds recorded verdicts to the decision rules in force when they were made. A recorded "permitted" is re-readable under any later policy. | See §3, requirement (d). |
 | — | General | **ed** | The draft uses "logging" for both the act of recording and the resulting artefact. The requirements proposed here are about the artefact and the distinction should be made explicit. | Define "log record", "delivered log" and "observation surface". |
 
 ### prEN 18229-3 (enquiry open to 22 September 2026)
@@ -110,6 +117,19 @@ the submitter's and are not proposed for adoption.
 > logging function satisfies. Conformance to X.1.2 alone shall not be described
 > as, or presented as evidence of, completeness.
 >
+> **X.1.7 (what the reader established, and what was asserted)** Where
+> conformance to any of X.1.2 to X.1.5 is established by a statement from the
+> provider rather than by inspection of the log, that shall be distinguishable in
+> the conformance record. A conformity assessment that does not separate what was
+> recomputed from what was asserted does not establish what it appears to.
+
+NOTE on X.1.7 — this clause was added after external review of the submitter's
+own conformance checker found that it presented provider-supplied assertions as
+independently demonstrated. The criticism was correct and the checker was
+changed. The submitter raises it here because the same failure is available to
+any conformity assessment scheme built on this part, and it is cheaper to
+require the distinction than to discover it later.
+>
 > NOTE 1 X.1.3 does not require guaranteed delivery. Loss under load is
 > permitted; undeclared loss is not.
 >
@@ -148,7 +168,7 @@ sophisticated, can separate them.** A requirement on the records cannot fix it;
 only a statement about the surface can, and
 `the_coverage_declaration_separates_them` exhibits the function that does.
 
-The corresponding runnable demonstration is `completeness/examples/`
+The corresponding runnable demonstration is `examples/`
 `L2-looks-complete.jsonl` and `L3-coverage.jsonl`: the same session, both with
 valid chains and closing identities, differing in one record, where one of them is
 missing 58 inferences.
@@ -158,7 +178,7 @@ missing 58 inferences.
 ## 5. Testability
 
 Every proposed requirement has a test that fails in both directions, set out in
-Annex A of `completeness/SPEC.md`. The one that matters for X.1.4:
+Annex A of `SPEC.md`. The one that matters for X.1.4:
 
 > Mutate the producer to declare a source it does not attach; the coverage test
 > must detect it.
