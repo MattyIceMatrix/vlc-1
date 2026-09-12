@@ -1,37 +1,82 @@
 name: vlc-1
+
 on: [push, pull_request]
+
 jobs:
   selftest:
+    name: conformance self-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
+        with:
+          python-version: '3.11'
+
+      # Invoked as `bash <script>` rather than `./<script>` on purpose: a repo
+      # committed from Windows carries no Unix executable bit, and a CI job that
+      # fails on a file mode rather than on a test is a false alarm.
       - name: regenerate the worked examples from their generator
         run: python3 examples/make_examples.py
+
+      - name: the examples must match what is committed
+        run: |
+          if ! git diff --quiet -- examples; then
+            echo "The generator produced different files from the ones committed:"
+            git --no-pager diff --stat -- examples
+            exit 1
+          fi
+          echo "generator output matches the committed examples"
+
       - name: conformance self-test (fails in both directions)
-        run: ./selftest.sh
+        run: bash selftest.sh
+
       - name: score the third-party formats
         run: |
           set -e
           for a in otel-otlp-logs:otlp-logs k8s-audit:k8s-audit \
                    linux-auditd:linux-auditd aws-cloudtrail-digest:cloudtrail-digests; do
             n=${a%%:*}; f=${a##*:}
-            python3 conformance.py --log examples/third-party/$f.jsonl \
-                                   --adapter adapters/$n.json | tail -3
+            python3 conformance.py --log "examples/third-party/$f.jsonl" \
+                                   --adapter "adapters/$n.json" | tail -3
           done
+
   proof:
+    name: Coq development
     runs-on: ubuntu-latest
-    container: coqorg/coq:8.18
     steps:
       - uses: actions/checkout@v4
-      - name: compile the development and audit its trust base
+
+      # Ubuntu's packaged coq rather than a container image: the coqorg images
+      # put coqc behind an opam environment owned by a non-root user, which
+      # fights with the checkout step for no benefit here.
+      - name: install Coq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends coq
+          coqc --version
+
+      - name: compile the development
         run: |
           cd proofs
           coqc -q sentinel_completeness.v
-          printf 'Require Import sentinel_completeness.\n' > _a.v
+
+      - name: every theorem must be closed under the global context
+        run: |
+          cd proofs
+          printf 'Require Import sentinel_completeness.\n' > _audit.v
           grep -oE '^[[:space:]]*Theorem [a-zA-Z_0-9]+' sentinel_completeness.v \
-            | awk '{print "Print Assumptions " $2 "."}' >> _a.v
-          coqc -q -R . "" _a.v > _a.out 2>&1
-          cat _a.out
-          test "$(grep -vc 'Closed under the global context' _a.out)" = "0"
+            | awk '{print "Print Assumptions " $2 "."}' >> _audit.v
+          coqc -q -R . "" _audit.v > _audit.out 2>&1 || { cat _audit.out; exit 1; }
+          cat _audit.out
+          closed=$(grep -c 'Closed under the global context' _audit.out || true)
+          other=$(grep -vc 'Closed under the global context' _audit.out || true)
+          echo "closed: $closed   anything else: $other"
+          test "$other" = "0"
+          test "$closed" -gt 0
+
+      - name: no admitted proofs, no axioms
+        run: |
+          cd proofs
+          ! grep -nE '^[[:space:]]*(Admitted|Axiom|Parameter|Conjecture)\b' sentinel_completeness.v
+          echo "0 admitted, 0 axioms"
