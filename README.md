@@ -1,5 +1,7 @@
 # VLC-1 — Verifiable Completeness for AI System Logs
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
+
 **Every AI logging standard now in preparation specifies what to log. None of
 them specifies how a reader knows the log is all of it.**
 
