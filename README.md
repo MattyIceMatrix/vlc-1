@@ -1,7 +1,5 @@
 # VLC-1 — Verifiable Completeness for AI System Logs
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
-
 **Every AI logging standard now in preparation specifies what to log. None of
 them specifies how a reader knows the log is all of it.**
 
@@ -151,11 +149,10 @@ THIRD-PARTY.md           scores for four public log formats
 COMMENT-prEN-18229.md    a ready-to-file standards comment
 ACCESS.md                what is public, what to ask for, what is not distributed
 deck/                    a 15-slide presentation, and the script that builds it
-docs/                    why this exists, how to file it, and how to talk to us
+docs/                    why this exists, and how to talk to us
 ```
 
 - [`docs/OUTREACH.md`](docs/OUTREACH.md) — for teams evaluating this
-- [`docs/FILING.md`](docs/FILING.md) — how to actually get a comment in front of CEN and SC 42, with the friction written down
 - [`docs/PUBLISH.md`](docs/PUBLISH.md) — publishing and minting a DOI
 
 ## Verifying the proof
