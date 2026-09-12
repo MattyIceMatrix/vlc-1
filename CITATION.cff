@@ -13,7 +13,7 @@ url: "https://doi.org/10.5281/zenodo.22728393"
 date-released: 2026-09-12
 abstract: >-
   A vendor-neutral specification and conformance scheme for demonstrating the
-  completeness of logs produced by AI systems. Defines five cumulative levels —
+  completeness of logs produced by AI systems. Defines six cumulative levels, L0 to L5 —
   tamper-evident, loss-accounted, coverage-declared, policy-bound and
   independently witnessed — with a machine-checked proof that the levels are
   strictly ordered and that each admits an attack the next refuses. Includes an
