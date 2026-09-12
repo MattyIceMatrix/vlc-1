@@ -1,0 +1,37 @@
+{
+  "name": "aws-cloudtrail-digest",
+  "producer": "AWS CloudTrail log file integrity validation (digest files)",
+  "description": "The strongest thing in the comparison set. Each hourly digest carries previousDigestHashValue over the previous digest FILE, so deleting a digest is detectable, and an hour with no activity still produces a digest with logFiles: [] \u2014 a rare explicit 'nothing this interval' assertion. But the chain is over FILES, not events: no per-event ordinal, no dropped-event count anywhere in the product, and scope (management vs data vs network-activity events) is declared in the trail's EventSelector configuration rather than in the evidence.",
+  "record_class_field": "digestPublicKeyFingerprint",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "sha256-prev-raw",
+    "hash_field": "previousDigestHashValue",
+    "primitive": "SHA-256 + SHA256withRSA over the digest object (signature in S3 object metadata)",
+    "documented": true,
+    "primitive_documented": true,
+    "root": {
+      "kind": "zero"
+    }
+  },
+  "loss": {
+    "mode": "none"
+  },
+  "coverage": {
+    "mode": "non_enumerable",
+    "note": "EventSelector/AdvancedEventSelector define coverage out of band, in trail config."
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "external_host",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "Produced by the AWS control plane, outside every audited principal. It witnesses API calls to AWS and nothing that happens inside an instance or container."
+  },
+  "sources": [
+    "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-digest-file-structure.html",
+    "https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_EventSelector.html"
+  ]
+}

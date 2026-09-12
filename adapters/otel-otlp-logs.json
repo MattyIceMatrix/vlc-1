@@ -1,0 +1,31 @@
+{
+  "name": "otel-otlp-logs",
+  "producer": "OpenTelemetry SDK/Collector, OTLP log records (open specification)",
+  "description": "Mapped from opentelemetry-proto logs.proto. OTLP carries dropped_attributes_count and friends, which count ATTRIBUTES dropped from a surviving record; there is no in-band counter for dropped records themselves, no sequence number and no integrity field. Loss is reported on the Collector's separate internal-telemetry metrics path (otelcol_exporter_send_failed_log_records, otelcol_exporter_enqueue_failed_log_records) and in the OTLP response's partial_success.rejected_log_records \u2014 neither of which travels with the data.",
+  "record_class_field": "severityText",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none"
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "drop_counted",
+    "note": "BatchLogRecordProcessor drops on a full queue; the count lives on the metrics path, not here."
+  },
+  "coverage": {
+    "mode": "none"
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The SDK runs inside the audited process; the Collector runs beside it and records only what the SDK chose to emit."
+  },
+  "sources": [
+    "https://opentelemetry.io/docs/specs/otlp/",
+    "https://opentelemetry.io/docs/collector/internal-telemetry/"
+  ]
+}

@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "VLC-1: Verifiable Completeness for AI System Logs"
+message: "If you reference this specification, please cite it as below."
+type: software
+authors:
+  - family-names: Moore
+    given-names: Matthew
+    email: moorematthew131@gmail.com
+version: "1.0-draft"
+date-released: 2026-09-12
+abstract: >-
+  A vendor-neutral specification and conformance scheme for demonstrating the
+  completeness of logs produced by AI systems. Defines five cumulative levels —
+  tamper-evident, loss-accounted, coverage-declared, policy-bound and
+  independently witnessed — with a machine-checked proof that the levels are
+  strictly ordered and that each admits an attack the next refuses. Includes an
+  adapter-driven conformance checker, worked example logs at every level, and a
+  reconciler for checking an agent's self-reported transcript against an
+  independent record.
+keywords:
+  - AI governance
+  - audit logging
+  - log completeness
+  - EU AI Act
+  - prEN 18229
+  - ISO/IEC 24970
+  - formal verification
+license: MIT

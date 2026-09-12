@@ -1,0 +1,34 @@
+{
+  "name": "linux-auditd",
+  "producer": "Linux audit subsystem (auditd / ausearch)",
+  "description": "The kernel counts discarded records in audit_lost, readable via 'auditctl -s' and emitted to dmesg by audit_log_lost() \u2014 NOT into /var/log/audit/audit.log. The msg=audit(ts:serial) serial is not a gap-detecting sequence over the delivered file. No integrity binding by default. The loaded ruleset is real coverage information and is not in the log. Closest of the four to L2: the counter exists and is simply on the wrong side of the boundary.",
+  "record_class_field": "type",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none"
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "drop_counted"
+  },
+  "coverage": {
+    "mode": "none"
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "kernel",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "The kernel writes it and an unprivileged process cannot. A process with CAP_AUDIT_CONTROL can change the ruleset or reset the lost counter, and neither is marked in the log.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://man7.org/linux/man-pages/man8/auditctl.8.html",
+    "https://man7.org/linux/man-pages/man5/auditd.conf.5.html"
+  ]
+}

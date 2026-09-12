@@ -1,0 +1,68 @@
+name: Access request
+description: Ask for an adapter, evaluation access, a pilot, or escrow. See ACCESS.md for what each level includes.
+title: "[Access] "
+labels: ["access-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before opening this:** Level 0 needs no request at all — clone the repo and run
+        `./selftest.sh`. If your logs already come out at L3 or above, you do not need us.
+
+        This issue is **public**. Do not paste log contents, hostnames, credentials or
+        anything under NDA. Field *names* are fine and are usually all we need.
+        For anything confidential, email moorematthew131@gmail.com instead.
+  - type: dropdown
+    id: level
+    attributes:
+      label: What are you asking for?
+      options:
+        - Level 1 — score my log format (free, no NDA)
+        - Level 2 — evaluation access (free, mutual NDA)
+        - Level 3 — pilot (paid, scoped)
+        - Level 4 — source escrow
+        - A clause looks wrong / shaped around your implementation
+        - Something else
+    validations: { required: true }
+  - type: dropdown
+    id: product
+    attributes:
+      label: Which product is this about?
+      multiple: true
+      options:
+        - OCTA Sentinel (syscall-boundary sensor)
+        - OCTA Gateway (tool authorisation)
+        - MooreOS (bare metal)
+        - Just the VLC-1 specification
+    validations: { required: true }
+  - type: textarea
+    id: context
+    attributes:
+      label: What are you trying to find out?
+      description: One paragraph. An assessment you have to pass, a build-versus-buy, a standards question, a clause you disagree with — whatever it actually is.
+    validations: { required: true }
+  - type: textarea
+    id: format
+    attributes:
+      label: For Level 1 — your log's field names
+      description: The names only, never the values. Whatever carries the timestamp, sequence or ordinal, any integrity or hash field, any dropped/lost counter, and how you record scope or coverage if you do.
+      placeholder: |
+        timestamp: ts_ms
+        ordinal: seq
+        integrity: none
+        dropped: (reported on a metrics endpoint, not in the log)
+        coverage: (defined in a separate config file)
+  - type: input
+    id: timeline
+    attributes:
+      label: Is there a date driving this?
+      placeholder: "e.g. internal review in November, or no"
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Please confirm
+      options:
+        - label: I have read ACCESS.md and I understand what is public, what needs an NDA, and what is not distributed.
+          required: true
+        - label: I have not pasted anything confidential into this public issue.
+          required: true

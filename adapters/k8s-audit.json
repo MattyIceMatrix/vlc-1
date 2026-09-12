@@ -1,0 +1,30 @@
+{
+  "name": "k8s-audit",
+  "producer": "Kubernetes kube-apiserver audit backend (audit.k8s.io/v1)",
+  "description": "auditID is a random UID, not an ordinal, so holes are undetectable. The buffered backend discards events on a full channel with the error 'audit buffer queue blocked'; the count surfaces as the apiserver_audit_error_total metric, never in the log. No hash chain, no signature. The audit POLICY (which resources at which level) is genuine coverage information but lives in a separate config file, not in the log.",
+  "record_class_field": "stage",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none"
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "drop_counted"
+  },
+  "coverage": {
+    "mode": "none"
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "external_host",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "The apiserver records API calls made TO it, which is genuine independence for that scope. It witnesses nothing a workload does inside a pod, and the log does not say so."
+  },
+  "sources": [
+    "https://kubernetes.io/docs/reference/config-api/apiserver-audit.v1/",
+    "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+  ]
+}

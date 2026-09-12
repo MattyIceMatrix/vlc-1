@@ -1,0 +1,17 @@
+# Coq build artefacts
+proofs/*.vo
+proofs/*.vok
+proofs/*.vos
+proofs/*.glob
+proofs/.*.aux
+proofs/_a.v
+proofs/_a.out
+
+# deck render intermediates (VLC-1.pptx itself IS committed)
+deck/slide-*.jpg
+deck/*.pdf
+deck/node_modules/
+
+# checker scratch
+*.mutated.*
+__pycache__/

@@ -1,0 +1,67 @@
+{
+  "name": "generic-appjsonl",
+  "producer": "acme-llm-proxy 2.4 (synthetic; stands in for an application-layer LLM proxy)",
+  "description": "Canonical-JSON hash chain, END marker, queue-drop declarations, optional route coverage. Deliberately NOT this project's format: clause 9.3 claims every level is reachable at the application layer, and this adapter is how that claim is exhibited.",
+  "record_class_field": "class",
+  "marker_classes": [
+    "EPOCH_START",
+    "END"
+  ],
+  "non_event_classes": [
+    "EPOCH_START",
+    "END",
+    "DROP",
+    "COVERAGE",
+    "POLICY"
+  ],
+  "integrity": {
+    "mechanism": "sha256-chain-canonical",
+    "hash_field": "hash",
+    "primitive": "SHA-256",
+    "documented": true,
+    "primitive_documented": true,
+    "root": {
+      "kind": "constant",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "end_marker": {
+      "class": "END",
+      "head_field": "head",
+      "self_bound": true
+    }
+  },
+  "loss": {
+    "mode": "declaration",
+    "declaration_class": "DROP",
+    "count_field": "lost",
+    "overflow_behaviour": "drop_counted",
+    "produced": {
+      "kind": "sum_of_end_marker_fields",
+      "fields": [
+        "records",
+        "lost_total"
+      ]
+    }
+  },
+  "coverage": {
+    "mode": "enumerated",
+    "declaration_class": "COVERAGE",
+    "attached_field": "attached",
+    "unattached_field": "unattached_here",
+    "by_design_field": "excluded_by_design",
+    "basis_field": "basis",
+    "bidirectional_test": {
+      "exists": true,
+      "negative_control": true,
+      "ref": "coverage_test.sh"
+    }
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The proxy writes its own log in its own address space. A workload that compromises the proxy, or an agent that bypasses it by making the call another way, controls or evades the record entirely."
+  }
+}

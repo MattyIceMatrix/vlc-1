@@ -1,0 +1,79 @@
+{
+  "name": "sentinel-jsonl",
+  "producer": "OCTA Sentinel kernel sensor (the reference implementation)",
+  "description": "SHA-256 prefix-chained JSONL journal rooted in the policy digest, with in-chain GAP and COVERAGE records.",
+  "record_class_field": "class",
+  "marker_classes": [
+    "H0",
+    "HEAD"
+  ],
+  "non_event_classes": [
+    "H0",
+    "HEAD",
+    "GAP",
+    "COVERAGE",
+    "EPOCH"
+  ],
+  "integrity": {
+    "mechanism": "sha256-chain-prefix",
+    "hash_field": "h",
+    "primitive": "SHA-256",
+    "documented": true,
+    "primitive_documented": true,
+    "root": {
+      "kind": "field_of_first_record",
+      "field": "policy_digest",
+      "transform": "sha256"
+    },
+    "end_marker": {
+      "class": "HEAD",
+      "head_field": "h",
+      "self_bound": false
+    }
+  },
+  "loss": {
+    "mode": "declaration",
+    "declaration_class": "GAP",
+    "count_field": "lost",
+    "overflow_behaviour": "drop_counted",
+    "produced": {
+      "kind": "sum_of_end_marker_fields",
+      "fields": [
+        "records",
+        "gaps"
+      ]
+    }
+  },
+  "coverage": {
+    "mode": "enumerated",
+    "declaration_class": "COVERAGE",
+    "attached_field": "hooked",
+    "unattached_field": "unhooked_here",
+    "by_design_field": "unhooked_by_design",
+    "basis_field": "basis",
+    "bidirectional_test": {
+      "exists": true,
+      "negative_control": true,
+      "ref": "sensor/openat2-coverage.sh (verify.sh step 16); mutant that declares openat2 without attaching is caught"
+    }
+  },
+  "policy": {
+    "mode": "chain_root",
+    "digest_field": "policy_digest",
+    "change_class": "POLICY",
+    "replay": {
+      "deterministic": true,
+      "reference": "proofs/govern_concrete.v extracted to OCaml; conformance/ tables agree with include/classify.h over the entire domain"
+    }
+  },
+  "independence": {
+    "mode": "kernel",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "The journal is written by a userspace daemon fed from a kernel tracepoint ring buffer; the governed session runs as a tagged child with no handle to the journal fd, the ring buffer or the map. A governed process with full control of its own execution context can still: exhaust the ring buffer (declared as GAP), act through a syscall outside the declared surface (declared as COVERAGE), and \u2014 if it obtains root and CAP_BPF on the host \u2014 detach the probes, which ends the session rather than silently degrading it. It cannot edit a delivered record: the chain is computed outside its address space.",
+    "reconciliation": {
+      "bidirectional": true,
+      "scope_declared": true,
+      "ref": "witness/reconcile.py; demo/08-the-witness.sh asserts zero findings on an honest run and the substitution signature on a spoofed one"
+    }
+  }
+}

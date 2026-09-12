@@ -1,0 +1,39 @@
+{
+  "name": "demo agent, /etc reads and non-runtime execs",
+  "claim_tool_field": "tool",
+  "claim_map": {
+    "bash": {
+      "effect": "exec",
+      "field": "command"
+    },
+    "read_file": {
+      "effect": "open",
+      "field": "path"
+    },
+    "http": {
+      "effect": "connect",
+      "field": "host"
+    },
+    "think": {
+      "effect": "none"
+    }
+  },
+  "exec_exclude": [
+    "/python3(\\.[0-9]+)?$",
+    "^/proc/",
+    "/env$"
+  ],
+  "open_include": [
+    "^/etc/"
+  ],
+  "connect_in_scope": false,
+  "open_exclude": [
+    "/ld\\.so\\.cache$",
+    "/localtime$",
+    "/nsswitch\\.conf$",
+    "/ld\\.so\\.preload$",
+    "/etc/passwd$",
+    "/etc/group$"
+  ],
+  "note": "exec_exclude drops the agent's own runtime and /usr/bin/env, which subprocess uses as a launcher; open_exclude drops loader and libc housekeeping under /etc that no transcript will ever mention.  Every exclusion is named here rather than applied silently, because an exclusion nobody can see is how a reconciler is quietly rigged."
+}

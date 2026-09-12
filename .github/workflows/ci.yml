@@ -1,0 +1,37 @@
+name: vlc-1
+on: [push, pull_request]
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: regenerate the worked examples from their generator
+        run: python3 examples/make_examples.py
+      - name: conformance self-test (fails in both directions)
+        run: ./selftest.sh
+      - name: score the third-party formats
+        run: |
+          set -e
+          for a in otel-otlp-logs:otlp-logs k8s-audit:k8s-audit \
+                   linux-auditd:linux-auditd aws-cloudtrail-digest:cloudtrail-digests; do
+            n=${a%%:*}; f=${a##*:}
+            python3 conformance.py --log examples/third-party/$f.jsonl \
+                                   --adapter adapters/$n.json | tail -3
+          done
+  proof:
+    runs-on: ubuntu-latest
+    container: coqorg/coq:8.18
+    steps:
+      - uses: actions/checkout@v4
+      - name: compile the development and audit its trust base
+        run: |
+          cd proofs
+          coqc -q sentinel_completeness.v
+          printf 'Require Import sentinel_completeness.\n' > _a.v
+          grep -oE '^[[:space:]]*Theorem [a-zA-Z_0-9]+' sentinel_completeness.v \
+            | awk '{print "Print Assumptions " $2 "."}' >> _a.v
+          coqc -q -R . "" _a.v > _a.out 2>&1
+          cat _a.out
+          test "$(grep -vc 'Closed under the global context' _a.out)" = "0"
