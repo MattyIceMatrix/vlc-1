@@ -1,5 +1,7 @@
 # VLC-1 — Verifiable Completeness for AI System Logs
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
+
 **Every AI logging standard now in preparation specifies what to log. None of
 them specifies how a reader knows the log is all of it.**
 
@@ -148,7 +150,7 @@ selftest.sh              positive, negative, lattice, independence and not-rigge
 THIRD-PARTY.md           scores for four public log formats
 COMMENT-prEN-18229.md    a ready-to-file standards comment
 ACCESS.md                what is public, what to ask for, what is not distributed
-deck/                    a 15-slide presentation, and the script that builds it
+deck/                    a 16-slide presentation, and the script that builds it
 docs/                    why this exists, and how to talk to us
 ```
 
