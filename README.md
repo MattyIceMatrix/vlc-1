@@ -1,6 +1,5 @@
 # VLC-1 — Verifiable Completeness for AI System Logs
 
-
 **Every AI logging standard now in preparation specifies what to log. None of
 them specifies how a reader knows the log is all of it.**
 
