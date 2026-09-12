@@ -8,13 +8,25 @@
 | **prEN 18229-1** *AI system logging* | enquiry closed; **comment disposition in progress** — a technical comment with a working implementation still carries weight at disposition |
 | **ISO/IEC FDIS 24970** *AI system logging* | FDIS; too late for the base text. Route is an amendment or NWIP via ISO/IEC JTC 1/SC 42, US TAG = INCITS/AI |
 
-**Submitter.** Independent contributor. Route: national standards body for the
-CEN-CENELEC parts; INCITS/AI for the SC 42 part.
+**Submitter.** Matthew Moore, independent contributor. Route: national standards
+body for the CEN-CENELEC parts; INCITS/AI for the SC 42 part.
+
+**Citable reference for everything below**
+
+> Moore, Matthew (2026). *VLC-1: Verifiable Completeness for AI System Logs*
+> (version 1.0-draft). Zenodo. **https://doi.org/10.5281/zenodo.22728393**
+
+That is the concept DOI and always resolves to the current version; the version
+of record at the time of this comment is
+[10.5281/zenodo.22728394](https://doi.org/10.5281/zenodo.22728394). The
+repository is at <https://github.com/MattyIceMatrix/vlc-1> and the specification
+text is dedicated to the public domain under CC0, so a committee may lift clauses
+from it verbatim, with attribution appreciated and not required.
 
 **Backing implementation.** Every claim below is exhibited by running code in a
-public tree: a specification (`completeness/SPEC.md`), a vendor-neutral
-conformance checker with adapters for producers the submitter did not write, six
-worked example logs, a machine-checked Coq development
+public, archived tree: a specification (`SPEC.md`), a vendor-neutral conformance
+checker with adapters for producers the submitter did not write, worked example
+logs at every conformance level, a machine-checked Coq development
 (`proofs/sentinel_completeness.v`, 0 admitted, 0 axioms), and a self-test that
 fails in both directions. **Conflict of interest is declared in Annex C of the
 specification and repeated here: the submitter builds a product that implements
@@ -185,7 +197,7 @@ worse than no comment**, and the submitter would rather find that out privately.
 
 ---
 
-*Specification, checker, examples, proof and self-test:
-`completeness/` and `proofs/sentinel_completeness.v`. Published without
-restriction — clauses may be lifted into a standard with attribution and without
-permission.*
+*Specification, checker, examples, proof, witness reconciler and self-test are
+archived at **https://doi.org/10.5281/zenodo.22728393** and developed at
+<https://github.com/MattyIceMatrix/vlc-1>. Published without restriction —
+clauses may be lifted into a standard with attribution and without permission.*
