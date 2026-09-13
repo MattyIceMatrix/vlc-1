@@ -1,84 +1,86 @@
 # Prior art and related work
 
-*For the public specification. Vendor-neutral. Added 2026-09-13.*
+*For the public specification. Vendor-neutral.*
+*Added 2026-09-13. Revised the same day after full-text reading.*
 
-> **Basis.** Compiled 2026-09-13 from arXiv abstract pages, product
-> documentation and press materials. Citations below were checked to resolve
-> and their titles and authors verified. **The full texts have not been read**,
-> and no cited system has been evaluated by running it. Corrections are welcome
-> and will be applied without argument.
+> **Basis.** arXiv:2606.04193 has been read in full. All other entries are read
+> from abstracts, documentation or press materials and are marked as such. No
+> cited system has been evaluated by running it. Corrections are welcome and
+> will be applied without argument.
 
-This specification did not state its motivating problem first. Readers should be
-aware of the following, and the maintainers welcome additions.
+This specification did not state its motivating problem first. The following
+records what precedes it, and what it adds.
 
-## Self-authorship and omission
+## Self-authorship and the completeness gap
 
 **Juan Figuera, "Notarized Agents: Receiver-Attested Confidential Receipts for
-AI Agent Actions", arXiv:2606.04193 [cs.CR], 2 June 2026.**
-doi:10.48550/arXiv.2606.04193
+AI Agent Actions", arXiv:2606.04193 [cs.CR], 2 June 2026, CC BY 4.0.**
+doi:10.48550/arXiv.2606.04193 · read in full.
 
-The abstract states the problem this specification's L5 addresses, in the same
-terms: *the entity producing the activity log is the same entity whose activity
-is being logged*, and a compromised or buggy agent *can omit, alter, or
-fabricate its own traces*. The remedy proposed is to invert the trust boundary —
-the receiving service signs a receipt for what it observed, encrypts it to the
-agent owner, and publishes to a public transparency log (the Sello protocol:
-receiver-side signing, HPKE to an owner key bound via JWS, a witness-cosigned
-Merkle log, owner-side discovery by token reference).
+Figuera states the problem this specification's L5 addresses, in the same terms
+and three months earlier: *the entity producing the activity log is the same
+entity whose activity is being logged*, and a compromised or buggy agent *can
+omit, alter, or fabricate its own traces*. **The maintainers claim no priority
+over this argument.** The remedy proposed — Sello — inverts the trust boundary
+so that the receiving service signs a receipt for what it observed, encrypts it
+to the agent owner, and publishes to a witness-cosigned Merkle log.
 
-**This precedes the present specification by roughly three months and states
-both the self-authorship argument and the omission problem.** The maintainers
-claim no priority over either. What is offered here and not found there is a
-*graded lattice* of completeness levels with a machine-checked ordering, and a
-loss-accounted identity a reader recomputes from a delivered log rather than a
-receipt set. The paper's own section on completeness and retrieval distinguishes
-per-receipt verifiability from set-completeness and treats the gap as an open
-concern.
+His §6 separates *per-receipt verifiability* from *set-completeness* and states
+the retrieval gap directly: an inclusion proof answers whether a receipt is in
+the log, not whether the log returned every matching receipt. **This
+specification claims no priority over that statement either.**
 
-The paper situates itself among **Signet, AgentROA, Agent Passport System,
-draft-farley-acta, and SCITT**. The maintainers have not examined these and make
-no claim relative to them.
+What is offered here and not found there: §6 proposes three mechanisms for
+set-completeness — authenticated query results, full log audit, and multi-log
+redundancy — each of which places the burden on the log. **This specification's
+L2 closes the identity from the producer side instead**, using a monotonic
+issuance counter and in-chain loss declarations, so that a withheld record is
+detectable from the returned set alone. That is a fourth mechanism, and the
+contribution claimed here.
 
-## Runtime governance with an evidence substrate
+A note on a related result: §4.4 independently proposes binding revocation
+decisions to a transparency log's integrated time rather than signer-asserted
+time, to defeat backdating. Annex H reaches the same conclusion from a different
+direction, and the maintainers claim no priority on the observation — only on
+its machine-checked form.
+
+## Kernel-level observation
+
+**Jing Zhang, "Right to History: A Sovereignty Kernel for Verifiable AI Agent
+Execution", arXiv:2602.20214 (2026).** Not yet read; described in Figuera §2.3
+as a sovereignty kernel producing an RFC 6962 Merkle audit log local to the
+owner's machine, observing agent actions at the kernel level. Where this
+specification is implemented by kernel-boundary observation, that work is the
+nearest architectural neighbour and precedes this specification. **No claim is
+made relative to it pending a full reading.**
+
+## Runtime governance architectures
 
 **Krti Tallam, "A Five-Plane Reference Architecture for Runtime Governance of
-Production AI Agents", arXiv:2606.12320 [cs.AI], 10 June 2026.**
-doi:10.48550/arXiv.2606.12320
+Production AI Agents", arXiv:2606.12320 [cs.AI], 10 June 2026.** Abstract only.
+Stop-anywhere mediation, capability attenuation through delegation chains, and
+audit as a structured evidence substrate. Overlaps the enforcement and evidence
+concerns of this specification substantially. **No claim of priority is made.**
 
-A reference architecture with stop-anywhere mediation, composite principals with
-capability attenuation through delegation chains, and *audit as a structured
-evidence substrate*, reporting that *evidence reconstructability* holds on every
-trial and that the audit substrate's tamper-evidence behaves as designed.
+## Transparency receipt standardisation
 
-This overlaps the enforcement and evidence concerns of this specification
-substantially. The maintainers have read the abstract only and **claim no
-priority over it**. Whether its evidence substrate lets a *reader of a delivered
-record* establish completeness — as distinct from the producer constructing it
-correctly — is the question this specification exists to make answerable, and
-that determination has not been made here.
+The **IETF SCITT working group** (draft-ietf-scitt-architecture,
+draft-ietf-scitt-scrapi) standardises COSE_Sign1 transparency receipts, and its
+SCRAPI work is already directed at authenticated query results. Adjacent
+receipt-protocol work includes Signet, Agent Receipts, Pipelock, Agent Passport
+System, draft-farley-acta-signed-receipts and draft-nivalto-agentroa. None have
+been examined here. This specification is written to be complementary to a
+transparency-receipt framework rather than an alternative to one.
 
-## Long-term validity without re-anchoring
+## Long-term validity and hardware roots
 
-**Guardtime KSI**, operating since approximately 2007. Non-expiring signatures
-using only hash functions, with periodic public publication, so algorithm
-migration is unnecessary for those signatures. Annex H re-anchoring is the
-general construction for suites that depend on migratable assumptions;
-hash-only schemes satisfy Annex H trivially and were there first.
+**Guardtime KSI** (~2007 onward) achieves non-expiring signatures using hash
+functions and periodic public publication, so algorithm migration is unnecessary
+for those signatures; Annex H's re-anchoring is the general construction for
+suites that do depend on migratable assumptions, and hash-only schemes satisfy
+it trivially.
 
-## Backdating as a known threat
-
-That an adversary able to tamper with a timestamp repository can back-date
-stamps, and thereby reuse released key material, is stated in the KSI
-literature (Tallinn University of Technology doctoral work on hash-based
-server-assisted signatures, ~2016). **The maintainers have not verified the
-author or exact title of that work** and invite a correction. The contribution
-offered here is narrower: a machine-checked statement that the re-anchor verdict
-is a function of the claimed time alone, and therefore that attested time is a
-dependency of the rule rather than a hardening of it.
-
-## Hardware-rooted AI audit records
-
-**EQTY Lab Verifiable Compute**, announced December 2024 with Intel and NVIDIA.
-TEE-attested certificates for AI operations, timestamped and anchored on a
-public consensus service. Annex I is written so that such certificates are a
-conformant root of trust for the coverage claim, not a competitor to it.
+**EQTY Lab Verifiable Compute** (December 2024, with Intel and NVIDIA) produces
+TEE-attested, publicly time-anchored certificates for AI operations. Annex I is
+written so that such certificates are a conformant root of trust for the
+coverage claim.
