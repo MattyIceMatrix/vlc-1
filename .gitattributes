@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Line-ending policy
+# Text is stored and checked out as LF everywhere. Evidence files in claims/
+# must be readable by a reviewer on any platform and diffable by git; a log
+# stored as UTF-16 or CRLF is not evidence. One-time normalization after
+# adding this file:
+#     git add --renormalize .
+#     git commit -m "repo: normalize line endings to LF"
+# ---------------------------------------------------------------------------
+
+* text=auto eol=lf
+
+# --- Text that must stay LF ---
+*.rs      text eol=lf
+*.v       text eol=lf
+*.py      text eol=lf
+*.sh      text eol=lf
+*.toml    text eol=lf
+*.lock    text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.txt     text eol=lf
+*.cfg     text eol=lf
+Makefile  text eol=lf
+
+# --- Evidence logs: text, so a reviewer can diff them and CI can read them ---
+claims/*.log text eol=lf
+*.log        text eol=lf
+
+# --- Binary: never convert ---
+*.der   binary
+*.pem   binary
+*.sig   binary
+*.pdf   binary
+*.iso   binary
+*.img   binary
+*.bin   binary
+*.o     binary
+*.a     binary
+*.vo    binary
+*.vok   binary
+*.vos   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
