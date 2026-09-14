@@ -1,0 +1,116 @@
+# ===========================================================================
+# Independent verification.
+#
+# This workflow exists because of VLC-1's own L5: a self-authored transcript
+# establishes nothing about its author. Every figure in this project was
+# produced by the maintainer, on the maintainer's machine, with the
+# maintainer's harness — which is, by this specification's own rules, a
+# producer's assertion.
+#
+# Anyone can run this. Fork the repository, open the Actions tab, press
+# "Run workflow". Nothing is installed on your machine and nothing is
+# configured. The run happens on GitHub-hosted infrastructure that neither
+# you nor the maintainer controls, which makes the resulting log better
+# evidence than either of our laptops could produce.
+#
+# The log is uploaded as a downloadable artefact. Send it back, pass or fail.
+# A failure is more useful than a pass: a project whose claim is that others
+# can check it, which does not reproduce elsewhere, has a real defect.
+# ===========================================================================
+name: Independent verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Record the environment
+        run: |
+          {
+            echo "=== independent verification ==="
+            echo "date            : $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "repository      : ${GITHUB_REPOSITORY}"
+            echo "commit          : ${GITHUB_SHA}"
+            echo "actor           : ${GITHUB_ACTOR}"
+            echo "runner os       : $(uname -a)"
+            echo "python          : $(python3 --version 2>&1)"
+            echo "rustc           : $(rustc --version 2>&1 || echo 'not present yet')"
+            echo
+          } | tee environment.log
+
+      - name: Install Coq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq coq
+          echo "coq             : $(coqc --version | head -1)" | tee -a environment.log
+
+      - name: Run the conformance self-test
+        id: selftest
+        continue-on-error: true
+        run: |
+          chmod +x selftest.sh
+          ./selftest.sh 2>&1 | tee selftest.log
+
+      - name: Check every Coq development
+        id: proofs
+        continue-on-error: true
+        run: |
+          set +e
+          : > proofs.log
+          shopt -s nullglob
+          found=0
+          for f in proofs/*.v; do
+            found=1
+            echo "--- coqc $f" | tee -a proofs.log
+            coqc -Q proofs Sentinel "$f" 2>&1 | tee -a proofs.log
+            echo "exit: $?" | tee -a proofs.log
+            n=$(grep -cE '^(Lemma|Theorem|Corollary|Example)' "$f")
+            a=$(grep -cE 'Admitted|admit\b' "$f")
+            x=$(grep -cE '^Axiom' "$f")
+            echo "results: $n  admitted: $a  axioms: $x" | tee -a proofs.log
+            echo | tee -a proofs.log
+          done
+          [ "$found" = "1" ] || echo "(no .v files in proofs/)" | tee -a proofs.log
+
+      - name: Build the combined report
+        if: always()
+        run: |
+          {
+            cat environment.log
+            echo "=== conformance self-test ==="
+            cat selftest.log 2>/dev/null || echo "(did not run)"
+            echo
+            echo "=== machine-checked proofs ==="
+            cat proofs.log 2>/dev/null || echo "(did not run)"
+            echo
+            echo "=== verdict ==="
+            echo "selftest step : ${{ steps.selftest.outcome }}"
+            echo "proofs step   : ${{ steps.proofs.outcome }}"
+            echo
+            echo "This log was produced by GitHub-hosted infrastructure, not by the"
+            echo "maintainer. It establishes reproducibility on a clean machine. It is"
+            echo "NOT an audit, a certification, or a security review."
+          } | tee independent-verification.log
+
+      - name: Upload the log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: independent-verification-log
+          path: independent-verification.log
+
+      - name: Fail the job if anything failed
+        if: steps.selftest.outcome == 'failure' || steps.proofs.outcome == 'failure'
+        run: |
+          echo "A step failed. The log is attached as an artefact; please send it as-is."
+          exit 1
