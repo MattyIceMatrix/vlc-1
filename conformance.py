@@ -360,18 +360,18 @@ def check_l2(recs, ad, res):
 def check_l3(recs, ad, res):
     cv = ad.get("coverage")
     if not cv or cv.get("mode") == "none":
-        res.fail("VLC-L3-1", "adapter declares no coverage declaration")
+        res.fail("VLC-L3-1a", "adapter declares no coverage declaration")
         res.fail("VLC-L3-6", "observation surface is not enumerable and is not declared as such")
         return None
     if cv.get("mode") == "non_enumerable":
-        res.fail("VLC-L3-1", "observation surface declared non-enumerable")
+        res.fail("VLC-L3-1a", "observation surface declared non-enumerable")
         res.ok("VLC-L3-6", "declared non-enumerable honestly; L3 correctly not claimable")
         return None
 
     dc = cv.get("declaration_class")
     decls = [r for r in recs if r.cls == dc]
     if not decls:
-        res.fail("VLC-L3-1", f"no {dc!r} record in the delivered set: silence about a "
+        res.fail("VLC-L3-1a", f"no {dc!r} record in the delivered set: silence about a "
                              f"source is indistinguishable from absence of the source")
         return None
 
@@ -382,9 +382,15 @@ def check_l3(recs, ad, res):
     basis = dig(d0.obj, cv.get("basis_field")) if cv.get("basis_field") else None
 
     if not att:
-        res.fail("VLC-L3-1", "coverage declaration names no attached sources")
+        res.fail("VLC-L3-1a", "coverage declaration names no attached sources")
     else:
-        res.ok("VLC-L3-1", f"{len(att)} attached, {len(una)} unattached-here, "
+        # L3-1a: the declaration is present and well-formed — recomputed.
+        # L3-1b: it describes the surface actually observed — relayed. A
+        # verifier reading the log cannot check the second, and saying it can
+        # is the defect EXT-001 reported.
+        res.ok("VLC-L3-1b", "declared surface accepted as stated by the "
+                            "producer; not recomputable from the log")
+        res.ok("VLC-L3-1a", f"{len(att)} attached, {len(una)} unattached-here, "
                            f"{len(des)} excluded by design")
     if basis:
         res.ok("VLC-L3-1d", f"exhaustiveness criterion: {basis}")
@@ -568,7 +574,13 @@ EVIDENCE_CLASS = {
     "VLC-L2-1": "structural", "VLC-L2-2": "structural",
     "VLC-L2-3": "structural", "VLC-L2-4": "attested",
     "VLC-L2-5": "structural", "VLC-L2-6": "structural",
-    "VLC-L3-1": "structural", "VLC-L3-1d": "structural",
+    # Corrigendum 1, EXT-001 (Shahab K., 2026-09-13): presence of a coverage
+    # declaration was raising the structural level, which VLC-V-3 forbids.
+    # L3-1a is well-formedness, which a verifier recomputes. L3-1b is
+    # correspondence to reality, which it cannot. There is no path to
+    # structural for L3-1b or L3-1d.
+    "VLC-L3-1a": "structural", "VLC-L3-1b": "attested",
+    "VLC-L3-1d": "attested",
     "VLC-L3-2": "structural", "VLC-L3-3": "structural",
     "VLC-L3-4": "attested",   "VLC-L3-5": "structural",
     "VLC-L3-6": "structural",
@@ -582,7 +594,8 @@ EVIDENCE_CLASS = {
 LEVEL_REQS = {
     1: ["VLC-L1-1", "VLC-L1-2", "VLC-L1-3", "VLC-L1-4"],
     2: ["VLC-L2-1", "VLC-L2-2", "VLC-L2-3", "VLC-L2-4", "VLC-L2-5", "VLC-L2-6"],
-    3: ["VLC-L3-1", "VLC-L3-1d", "VLC-L3-2", "VLC-L3-3", "VLC-L3-4", "VLC-L3-5", "VLC-L3-6"],
+    3: ["VLC-L3-1a", "VLC-L3-1b", "VLC-L3-1d", "VLC-L3-2", "VLC-L3-3",
+        "VLC-L3-4", "VLC-L3-5", "VLC-L3-6"],
     4: ["VLC-L4-1", "VLC-L4-2", "VLC-L4-3", "VLC-L4-4"],
     5: ["VLC-L5-1", "VLC-L5-2", "VLC-L5-3", "VLC-L5-4", "VLC-L5-5"],
 }

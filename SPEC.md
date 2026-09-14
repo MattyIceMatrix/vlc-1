@@ -44,6 +44,18 @@ is byte-for-byte indistinguishable from an export covering a quiet afternoon.**
 Both are complete-looking. Both verify. One is worthless and nothing in it says
 so.
 
+**Scope of that claim, corrected 2026-09-13.** The failure above is stated for
+**transport loss** — the logging path discarded records while the producer
+continued to run and could therefore account for the gap. Where the **producer
+itself** failed, no records are produced, no loss is declared, and there is
+nothing for loss accounting to be absent from: a log truncated to a suffix and
+renumbered closes the completeness identity and is, to a checker, the same
+object as an honest one. L2 has no power against this case. It is addressed at
+**L3i** (§3.3i), which requires coverage to be declared over an interval whose
+every tick is witnessed by an attestor the producer does not control. See
+`CORRIGENDUM-2026-09-13-01.md`, finding EXT-002, reported by Shahab K., and
+`proofs/sentinel_interval.v`, theorem `producer_death_is_invisible`.
+
 Tamper-evidence does not fix this. A hash chain proves that the records you were
 given were not altered. It says nothing about the records you were not given. The
 industry has converged on tamper-evidence and stopped, because tamper-evidence is
@@ -262,6 +274,15 @@ interval.*
 
 > *A verifier can distinguish "nothing happened at this source" from "this source
 > was not being observed."*
+
+> **Amended 2026-09-13 by Corrigendum 1, finding EXT-001 (Shahab K.).**
+> VLC-L3-1 is split. **L3-1a** — a coverage declaration is present and
+> well-formed — is **structural**: a verifier recomputes it from the delivered
+> log. **L3-1b** — the declared surface is the surface actually observed — is
+> **attested**, always, with no code path to structural. **VLC-L3-1(d)** is
+> reclassified **attested** on the same grounds. VLC-V-3 forbids a supplied
+> statement raising the structural level; the previous classification allowed
+> exactly that, and was inconsistent with VLC-L3-4, which was already attested.
 
 **VLC-L3-1** The producer SHALL enumerate its observation surface (2.2) in the
 log, as a coverage declaration (2.8), naming:
