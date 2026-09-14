@@ -105,3 +105,14 @@ coverage claim.
 Certificate Transparency (RFC 6962, RFC 9162), Crosby and Wallach's
 tamper-evident logging, CONIKS, seL4's verified capability isolation, and
 witness cosigning (Syta et al.) are the substrate all of the above build on.
+
+## Revisions
+
+- **2026-09-13** — created, from abstracts.
+- **2026-09-13** — revised after reading arXiv:2606.04193 (Figuera) in full.
+- **2026-09-13** — revised after reading arXiv:2602.20214 (Zhang) to its
+  contributions and invariants. Claim narrowed to reader-recomputable
+  completeness.
+
+Corrections to anything on this page are welcome and will be applied without
+argument. Open an issue or write to the maintainer.
