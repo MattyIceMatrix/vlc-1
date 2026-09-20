@@ -1,0 +1,72 @@
+=== independent verification ===
+date            : 2026-09-20T08:19:22Z
+repository      : MattyIceMatrix/vlc-1
+commit          : 5f087b3e612b79a052fe85452b2300325cb8ba01
+actor           : MattyIceMatrix
+runner os       : Linux runnervmlun5p 6.17.0-1022-azure #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+python          : Python 3.12.3
+rustc           : rustc 1.98.1 (48a229cea 2026-09-01)
+
+coq             : The Coq Proof Assistant, version 8.18.0
+=== conformance self-test ===
+---------------------------------------------------------------
+1. POSITIVE -- each worked example sits exactly on its rung
+  ok    L0-plain.jsonl -> L0
+  ok    L1-hashchain.jsonl -> L1
+  ok    L2-accounted.jsonl -> L2
+  ok    L2-looks-complete.jsonl -> L2
+  ok    L3-coverage.jsonl -> L3
+  ok    L4-policybound.jsonl -> L4
+---------------------------------------------------------------
+2. NEGATIVE -- every Annex A mutation must lower the level
+  ok    A.x flip-byte -> L0  (was L4)
+  ok    A.x drop-interior -> L0  (was L4)
+  ok    A.x truncate-tail -> L0  (was L4)
+  ok    A.x drop-loss-decl -> L0  (was L4)
+  ok    A.x drop-coverage -> L0  (was L4)
+  ok    A.x rebase-policy -> L0  (was L4)
+---------------------------------------------------------------
+3. NEGATIVE -- a checker that always fails is also broken
+  ok    untouched log still L4 after mutation runs
+---------------------------------------------------------------
+3b. INDEPENDENCE -- an in-process producer cannot witness itself
+  ok    app-layer self-report tops out at L4
+---------------------------------------------------------------
+3c. TRUST BOUNDARY -- a generous adapter must not move the structural level
+  ok    fabricated independence: attested L4 -> L5, structural unmoved at L4
+  ok    the number an adapter can inflate is labelled as the one an adapter can inflate
+  ok    an adapter silent on documentation fails VLC-L1-2 and VLC-L1-4
+---------------------------------------------------------------
+4. LATTICE -- the same session, separated only by a coverage record
+  ok    L2-looks-complete=L2  L3-coverage=L3
+  ok    both logs: chain valid, identity closes, zero declared loss
+  ok    one of them was missing 58 inferences and only the other can say so
+---------------------------------------------------------------
+5. NOT RIGGED -- the author's own journals, judged by the same rules
+  ok    pre-fix capture -> L2 (the gap the checker found was real)
+  ok    kernel-witness-L5.jsonl -> structural L4, attested L5
+  ok    kernel-witness-with-loss-L5.jsonl -> structural L4, attested L5
+  ok    the reference implementation's own L5 is ATTESTED, not structural, and says so
+---------------------------------------------------------------
+6. THE WITNESS -- reconciling a self-report against an independent record
+  ok    honest run: zero divergences over the declared scope
+  ok    spoofed run: substitution signature raised
+---------------------------------------------------------------
+7. PROVENANCE -- the version a report cites must be the version it was checked against
+  ok    checker stamps 1.1.1-draft, SPEC.md says 1.1.1-draft, CITATION.cff says 1.1.1-draft
+---------------------------------------------------------------
+SELFTEST PASS
+
+=== machine-checked proofs ===
+--- coqc proofs/sentinel_completeness.v
+exit: 0
+results: 11  admitted: 0  axioms: 0
+
+
+=== verdict ===
+selftest step : success
+proofs step   : success
+
+This log was produced by GitHub-hosted infrastructure, not by the
+maintainer. It establishes reproducibility on a clean machine. It is
+NOT an audit, a certification, or a security review.
