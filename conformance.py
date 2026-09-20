@@ -148,6 +148,17 @@ def rec_hash(prev, r, ad, prev_raw=b""):
     raise SystemExit(f"adapter: unknown integrity.mechanism {mech!r}")
 
 
+# Annex J -- interval coverage (Corrigendum 1, EXT-002). Kept in its own
+# module so the scoring logic is testable standalone; see test_check_l3i.py.
+# Reported as a QUALIFIER, not a rung: LEVEL_REQS is keyed by integers and the
+# level arithmetic indexes it numerically, so a "3i" key would break it.
+try:
+    from check_l3i import check_l3i
+except ImportError:                                    # pragma: no cover
+    def check_l3i(recs, ad, res):                      # noqa: D103
+        return None
+
+
 def check_l1(recs, ad, res):
     mech = ad["integrity"]["mechanism"]
     if mech == "none":
@@ -579,6 +590,11 @@ EVIDENCE_CLASS = {
     # L3-1a is well-formedness, which a verifier recomputes. L3-1b is
     # correspondence to reality, which it cannot. There is no path to
     # structural for L3-1b or L3-1d.
+    # Annex J. L3i-2 and L3i-4 are attested in every case: a verifier
+    # recomputes a declared range and a witness's binding to a position, never
+    # an attestor's honesty or its independence from the producer.
+    "VLC-L3i-1": "structural", "VLC-L3i-2": "attested",
+    "VLC-L3i-3": "structural", "VLC-L3i-4": "attested",
     "VLC-L3-1a": "structural", "VLC-L3-1b": "attested",
     "VLC-L3-1d": "attested",
     "VLC-L3-2": "structural", "VLC-L3-3": "structural",
@@ -759,6 +775,7 @@ def main():
         head = check_l1(recs, ad, res)
         check_l2(recs, ad, res)
         check_l3(recs, ad, res)
+        check_l3i(recs, ad, res)        # qualifier; not in LEVEL_REQS
         check_l4(recs, ad, res)
         check_l5(recs, ad, res, LEVEL_REQS)
     except LogError as e:
