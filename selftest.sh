@@ -219,6 +219,47 @@ else
 	bad "a report citing the wrong version points a reproducer at the wrong clauses"
 fi
 
+hr; echo "8. ADAPTER INVARIANCE -- an adapter-only change must not alter a structural result"
+# EXT-004. A requirement classed structural is recomputed from the log. Its
+# result must not depend on anything the adapter merely asserts. VLC-L5-4 was
+# classed structural but scored the witness on every requirement, attested
+# ones included, so pointing coverage.basis_field at any non-empty field
+# flipped it with the log unchanged. This control rewrites only attested
+# adapter fields and requires every structural requirement to come out
+# identical, on every worked example that has a coverage block.
+AI=$(python3 - <<'PYX'
+import json, subprocess, copy, tempfile, os
+cases = [("examples/L3-coverage.jsonl",   "adapters/generic-appjsonl.json"),
+         ("examples/L4-policybound.jsonl", "adapters/generic-appjsonl.json")]
+def structural(log, adapter_obj):
+    fd, path = tempfile.mkstemp(suffix=".json"); os.close(fd)
+    json.dump(adapter_obj, open(path, "w"))
+    rep = json.loads(subprocess.run(["python3", "./conformance.py", "--log", log,
+                                     "--adapter", path, "--json"],
+                                    capture_output=True, text=True).stdout)
+    os.unlink(path)
+    return {k: v["status"] for k, v in rep["requirements"].items()
+            if v.get("class") == "structural"}, rep["structural_level"]
+moved = []
+for log, ad in cases:
+    base = json.load(open(ad))
+    if "coverage" not in base: continue
+    ref, ref_lv = structural(log, base)
+    for field in ("attached_field", "class", "hash"):
+        a = copy.deepcopy(base); a["coverage"]["basis_field"] = field
+        got, lv = structural(log, a)
+        diff = [k for k in ref if got.get(k) != ref[k]]
+        if diff or lv != ref_lv:
+            moved.append(f"{log.split('/')[-1]} basis_field={field}: {diff or 'level'}")
+print("MOVED " + "; ".join(moved) if moved else "OK")
+PYX
+)
+case "$AI" in
+  OK) ok "rewriting the adapter's coverage basis moved no structural requirement, on any example" ;;
+  *)  bad "an adapter-only change altered a structural result: ${AI#MOVED }"
+      bad "a structural requirement must be recomputed from the log, not relayed from the adapter" ;;
+esac
+
 hr
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL

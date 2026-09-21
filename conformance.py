@@ -549,9 +549,17 @@ def check_l5(recs, ad, res, own_level_reqs):
             res.fail("VLC-L5-5", "reconciliation scope not recorded with the result")
 
     # VLC-L5-4: the witness is scored by the same rules as everyone else.
+    # Scored on STRUCTURAL requirements only. VLC-L5-4 is classed structural,
+    # so its result must not depend on anything the adapter merely asserts.
+    # Counting every requirement let an attested one (VLC-L3-1d, which reads
+    # the adapter's basis_field) decide a structural result: pointing
+    # basis_field at any non-empty field flipped this check from FAIL to ok
+    # with the log unchanged.  Reported by pipavlo82, 2026-09-21 (EXT-004).
     own = 0
     for n in (1, 2, 3, 4):
-        if all(res.r.get(x, (FAIL, ""))[0] == PASS for x in own_level_reqs[n]):
+        structural_reqs = [x for x in own_level_reqs[n]
+                           if EVIDENCE_CLASS.get(x) == "structural"]
+        if all(res.r.get(x, (FAIL, ""))[0] == PASS for x in structural_reqs):
             own = n
         else:
             break
