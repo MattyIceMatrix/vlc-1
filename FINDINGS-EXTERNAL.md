@@ -328,3 +328,38 @@ adapter (`produced.start`), and refuses to infer either. SPEC VLC-L2-5 now says
 the high-water mark is a producer-declared quantity. Section 11's ordinal-mode
 fixtures declare their bounds; section 2b's two expected failures now pass as
 ordinary cases, with a third case showing that undeclared bounds are refused.
+
+## EXT-015 — a witness below L3 could corroborate
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-22 (trustless-ai/recompute-kit#48) ·
+**Status:** fixed
+**Severity:** the reconciler's strong result could rest on a witness the
+specification says may not corroborate
+
+EXT-005 made the reconciler check the witness journal before accepting
+agreement, but it checked only the chain and end marker (VLC-L1-1, VLC-L1-3).
+VLC-L5-4 requires a witness to demonstrate L3 before it may be presented as
+corroboration, since a witness with an undeclared coverage gap agrees with a
+lie honestly. A structural-L1 witness therefore produced the strong result.
+The maintainer's own EXT-005 fix introduced the gap.
+
+Fixed in `witness/reconcile.py` 1.3: the witness must pass VLC-L1-1 and
+VLC-L1-3 and demonstrate at least structural L3. Consequence, disclosed: the
+demo witness journals predate EXT-003 and score structural L1, so the honest
+reconciliation is now refused, and is carried as an expected failure until the
+sensor re-capture replaces them. Section 6's controls now each assert the
+specific problem they exist to catch, since a control that only checks the
+exit code would pass for the wrong reason while every case built on the demo
+witness is refused for its standing.
+
+## EXT-016 — "excluded both ways" was not true of unmapped tools
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-22 (trustless-ai/recompute-kit#48) ·
+**Status:** fixed
+**Severity:** the report described a projection the code did not perform
+
+A claimed tool with no entry in the scope's mapping was dropped from the claim
+side, but its real effects stayed in the witness projection, where they could
+surface as unclaimed effects. The report nonetheless said such tools were
+"excluded both ways". Fixed: an unmapped claimed tool is an evidence problem
+that blocks the strong result, and the report says so.

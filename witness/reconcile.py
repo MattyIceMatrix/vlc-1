@@ -49,7 +49,7 @@ excludes everything reconciles trivially and says so.
 """
 import argparse, json, os, posixpath, re, sys
 
-VERSION = "witness/reconcile 1.2"
+VERSION = "witness/reconcile 1.3"
 
 
 # --------------------------------------------------------------------------
@@ -90,10 +90,15 @@ def load_jsonl(path, strip_chain=True):
 
 
 def journal_chain_status(journal_path, adapter_path):
-    """True when the witness journal's own hash chain and end marker verify.
+    """True when the witness journal is one VLC-L5-4 allows to corroborate.
 
-    Reuses conformance.py rather than re-implementing the chain rule, so there
-    is one definition of a valid chain.  Returns True or a reason string."""
+    That is: its chain and end marker verify (VLC-L1-1, VLC-L1-3), AND it
+    demonstrates at least structural L3 on its own. VLC-L5-4 says a witnessing
+    log below L3 must not be presented as corroboration -- a witness with an
+    undeclared coverage gap agrees with a lie honestly. Checking the chain alone
+    let a structural-L1 witness produce the strong result (EXT-015, reported by
+    pipavlo82). Reuses conformance.py so there is one definition of each.
+    Returns True or a reason string."""
     import subprocess
     here = os.path.dirname(os.path.abspath(__file__))
     checker = os.path.join(here, "..", "conformance.py")
@@ -101,11 +106,17 @@ def journal_chain_status(journal_path, adapter_path):
         out = subprocess.run([sys.executable, checker, "--log", journal_path,
                               "--adapter", adapter_path, "--json"],
                              capture_output=True, text=True, timeout=120).stdout
-        req = json.loads(out)["requirements"]
+        rep = json.loads(out)
+        req, lvl = rep["requirements"], rep["structural_level"]
     except Exception as e:
         return f"could not be checked ({type(e).__name__})"
     bad = [r for r in ("VLC-L1-1", "VLC-L1-3") if req.get(r, {}).get("status") != "PASS"]
-    return True if not bad else f"{', '.join(bad)} failed"
+    if bad:
+        return f"{', '.join(bad)} failed"
+    if lvl < 3:
+        return (f"witness demonstrates only structural L{lvl}; VLC-L5-4 requires L3 "
+                f"before a witness may corroborate")
+    return True
 
 
 # --------------------------------------------------------------------------
@@ -261,7 +272,16 @@ def main():
         problems.append(f"{bad_j} unparseable line(s) in the witness journal")
     chain = journal_chain_status(a.journal, a.journal_adapter)
     if chain is not True:
-        problems.append(f"witness journal does not verify: {chain}")
+        problems.append(f"witness journal does not qualify: {chain}")
+    # EXT-016. An unmapped tool's claims are dropped, but whatever it actually
+    # did is still in the witness, where it can surface as an unclaimed effect
+    # or quietly satisfy nothing. The records cannot be reconciled over what the
+    # mapping does not cover, so the strong result is refused rather than
+    # described as "excluded both ways", which the projection never did.
+    if unmapped:
+        problems.append(f"{len(set(map(str, unmapped)))} claimed tool(s) have no mapping "
+                        f"({', '.join(sorted(set(map(str, unmapped))))}); the records "
+                        f"cannot be reconciled over what the mapping does not cover")
     evidence_valid = not problems
     if findings:
         agreement = "diverge"
@@ -301,7 +321,8 @@ def main():
         for k in ("exec_exclude", "open_include", "open_exclude", "connect_in_scope"):
             print(f"      {k:<16} {scope.get(k)}")
         if report["unmapped_tools"]:
-            print(f"  UNMAPPED TOOLS (excluded both ways): {', '.join(report['unmapped_tools'])}")
+            print(f"  UNMAPPED TOOLS (not reconciled; the strong result is refused): "
+                  f"{', '.join(report['unmapped_tools'])}")
         print()
         print(f"  evidence      : {'valid' if evidence_valid else 'NOT VALID'}")
         for pr in problems:

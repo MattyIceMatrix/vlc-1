@@ -233,55 +233,82 @@ ok "the reference implementation's own L5 is ATTESTED, not structural, and says 
 
 hr; echo "6. THE WITNESS -- reconciling a self-report against an independent record"
 R="python3 witness/reconcile.py"
-if $R --claims examples/reference-impl/agent-transcript-honest.jsonl \
-      --journal examples/reference-impl/kernel-witness-honest-session.jsonl \
-      --scope witness/scope-demo.json --require-agreement >/dev/null 2>&1; then
-	ok "honest run: zero divergences over the declared scope"
-else
-	bad "honest run produced findings: the reconciler cries wolf"
-fi
 SIG=$($R --claims examples/reference-impl/agent-transcript-spoofed.jsonl \
          --journal examples/reference-impl/kernel-witness-spoofed-session.jsonl \
          --scope witness/scope-demo.json --json 2>/dev/null \
-      | python3 -c 'import json,sys;print(json.load(sys.stdin)["substitution_signature"])')
+      | python3 -c 'import json,sys;print(json.load(sys.stdin)["substitution_signature"])' | tr -d '\r')
 [ "$SIG" = "True" ] && ok "spoofed run: substitution signature raised" \
                     || bad "spoofed run: the spoof was not detected"
 
-# EXT-005. --require-agreement used to mean "no divergence found", which empty
-# inputs, unparseable lines and a journal with a broken chain all satisfy. Each
-# of these must now be refused, and a basename match must not let a different
-# absolute path corroborate a claim.
+# EXT-005, EXT-015, EXT-016. Each case must be refused for ITS OWN reason, not
+# merely refused: once the reconciler requires an L3 witness, every case built
+# on the demo witness is refused anyway while that witness predates EXT-003, and
+# a control that only checks the exit code would pass for the wrong reason.
 RT=$(mktemp -d); trap 'rm -rf "$RT"' EXIT
-: > "$RT/empty.jsonl"
-cp examples/reference-impl/agent-transcript-honest.jsonl "$RT/badline.jsonl"
-echo "{not json" >> "$RT/badline.jsonl"
-python3 - "$RT" <<'PYX'
-import json, sys
+python3 - "$RT" > "$RT/results.txt" <<'PYX'
+import json, subprocess, sys
 d = sys.argv[1]
-j = [json.loads(l) for l in open("examples/reference-impl/kernel-witness-honest-session.jsonl") if l.strip()]
+E = "examples/reference-impl"
+H, W = f"{E}/agent-transcript-honest.jsonl", f"{E}/kernel-witness-honest-session.jsonl"
+open(f"{d}/empty.jsonl", "w").close()
+open(f"{d}/badline.jsonl", "w").write(open(H).read() + "{not json\n")
+j = [json.loads(l) for l in open(W) if l.strip()]
 for r in j:
     if "h" in r: r["h"] = "00" * 32
 open(f"{d}/garbage.jsonl", "w").write("\n".join(json.dumps(r, separators=(",", ":")) for r in j) + "\n")
-c = [json.loads(l) for l in open("examples/reference-impl/agent-transcript-honest.jsonl") if l.strip()]
+c = [json.loads(l) for l in open(H) if l.strip()]
 for r in c:
     if str(r.get("command", "")).startswith("/usr/bin/id"): r["command"] = "/safe/bin/id -u"
 open(f"{d}/otherpath.jsonl", "w").write("\n".join(json.dumps(r) for r in c) + "\n")
+c = [json.loads(l) for l in open(H) if l.strip()] + [{"t": 1, "type": "tool_call", "tool": "shell_ext", "command": "id"}]
+open(f"{d}/unmapped.jsonl", "w").write("\n".join(json.dumps(r) for r in c) + "\n")
+
+def rec(claims, journal):
+    p = subprocess.run(["python3", "witness/reconcile.py", "--claims", claims, "--journal", journal,
+                        "--scope", "witness/scope-demo.json", "--json"], capture_output=True, text=True)
+    q = subprocess.run(["python3", "witness/reconcile.py", "--claims", claims, "--journal", journal,
+                        "--scope", "witness/scope-demo.json", "--require-agreement"], capture_output=True, text=True)
+    return json.loads(p.stdout), q.returncode
+def say(ok, msg): print(("OK" if ok else "BAD") + "|" + msg)
+
+# the honest run: expected to fail ONLY because its witness predates EXT-003
+r, rc = rec(H, W)
+standing = [x for x in r["evidence_problems"] if "VLC-L5-4 requires L3" in x]
+if rc == 0:
+    print("BAD|honest run now passes: remove its expected-failure marker in section 6")
+elif r["agreement"] == "agree" and standing and len(r["evidence_problems"]) == 1:
+    print("XFAIL|honest run: the records agree, but the demo witness predates EXT-003 and "
+          "demonstrates only structural L1; refused until the sensor re-capture (EXT-015)")
+else:
+    print("BAD|honest run refused for a reason other than witness standing: "
+          + "; ".join(r["evidence_problems"]) + f" / agreement {r['agreement']}")
+
+def refused_for(claims, journal, needle, label, where="problems"):
+    r, rc = rec(claims, journal)
+    hay = r["evidence_problems"] if where == "problems" else \
+          [f["severity"] + " " + f["what"] for f in r["findings"]]
+    say(rc != 0 and any(needle in h for h in hay), label)
+
+refused_for(f"{d}/empty.jsonl", f"{d}/empty.jsonl", "claim record is empty",
+            "two empty inputs are refused as empty, not reported as agreement")
+refused_for(f"{d}/badline.jsonl", W, "unparseable line(s) in the claim record",
+            "an unparseable claim line blocks the strong result")
+refused_for(H, f"{d}/garbage.jsonl", "VLC-L1-1",
+            "a witness journal whose chain does not verify is refused for its chain")
+refused_for(f"{d}/otherpath.jsonl", W, "UNCORROBORATED CLAIM /safe/bin/id",
+            "a claimed /safe/bin/id is not corroborated by a witnessed /usr/bin/id", where="findings")
+refused_for(f"{d}/unmapped.jsonl", W, "have no mapping",
+            "a claimed tool with no mapping blocks the strong result (EXT-016)")
+refused_for(H, W, "VLC-L5-4 requires L3",
+            "a witness below structural L3 cannot corroborate (EXT-015)")
 PYX
-H=examples/reference-impl/agent-transcript-honest.jsonl
-W=examples/reference-impl/kernel-witness-honest-session.jsonl
-refused() { ! $R --claims "$1" --journal "$2" --scope witness/scope-demo.json --require-agreement >/dev/null 2>&1; }
-refused "$RT/empty.jsonl" "$RT/empty.jsonl" \
-  && ok "two empty inputs are refused, not reported as agreement" \
-  || bad "two empty inputs reported as agreement"
-refused "$RT/badline.jsonl" "$W" \
-  && ok "an unparseable claim line blocks the strong result" \
-  || bad "an unparseable claim line was counted and ignored"
-refused "$H" "$RT/garbage.jsonl" \
-  && ok "a witness journal whose chain does not verify is refused" \
-  || bad "a witness with garbage hashes was accepted as evidence"
-refused "$RT/otherpath.jsonl" "$W" \
-  && ok "a claimed /safe/bin/id is not corroborated by a witnessed /usr/bin/id" \
-  || bad "a different absolute path corroborated the claim by basename"
+while IFS='|' read -r V M; do
+  case "$V" in
+    OK)    ok "$M" ;;
+    XFAIL) xfail "$M" ;;
+    *)     bad "$M" ;;
+  esac
+done < "$RT/results.txt"
 
 hr; echo "7. PROVENANCE -- the version a report cites must be the version it was checked against"
 # Every report carries "spec": <version>, and Annex E manifests are archived
