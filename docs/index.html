@@ -233,15 +233,21 @@ footer p { margin: 0 0 0.875rem; }
 </div>
 
 <div class="entry fixed">
+  <h3>Three more, found by testing what nothing tested</h3>
+  <p class="who">Found by the maintainer on 21 September 2026 as EXT-012 to EXT-014, following the same report. <span class="state">Fixed.</span></p>
+  <p>The verification workflow built for outsiders could not fail, and showed a green tick over a crashed self-test. One chain format did not link records to each other, so a deleted record verified. And one way of counting records could not see loss at the start or end of a sequence. Corrigendum 4.</p>
+</div>
+
+<div class="entry fixed">
   <h3>The first fix written by someone else</h3>
   <p class="who">Reported and fixed by babyblueviper1 (invinoveritas) on 21 September 2026 as EXT-009 to EXT-011. <span class="state">Merged.</span></p>
   <p>A reader outside the project filed a defect report with reproductions and a tested patch, then sent the fix as a pull request. Sequence-numbered logs could hide silent loss, a duplicated field name could change what a record said with every hash still valid, and one malformed line crashed the checker. It is the first change to VLC-1 its author did not write. Corrigendum 4.</p>
 </div>
 
 <div class="entry fixed">
-  <h3>Three more, found by testing what nothing tested</h3>
-  <p class="who">Found by the maintainer on 21 September 2026 as EXT-012 to EXT-014, following the same report. <span class="state">Fixed.</span></p>
-  <p>The verification workflow built for outsiders could not fail, and showed a green tick over a crashed self-test. One chain format did not link records to each other, so a deleted record verified. And one way of counting records could not see loss at the start or end of a sequence. Corrigendum 4.</p>
+  <h3>Four more, from the same review</h3>
+  <p class="who">Reported by pipavlo82 on 21 September 2026 as EXT-005 to EXT-008. <span class="state">Fixed.</span></p>
+  <p>Reconciliation reported agreement from empty or unverified inputs, and matched executables by name so a different binary could corroborate a claim. Seven obligations were checked for presence rather than type, and each could reach the top structural level while violated. An evidence citation could be malformed and still count. And the lowest level was described as resisting a complete rewrite, which on a log alone it cannot. Corrigendum 3. Every fix is held in place by a test that fails against the code it replaced.</p>
 </div>
 
 <div class="entry fixed">
@@ -268,12 +274,6 @@ footer p { margin: 0 0 0.875rem; }
   <p>The checker tested that a declaration was present, not that it was true. Corrigendum 1.</p>
 </div>
 
-<div class="entry fixed">
-  <h3>Five more, from the same review</h3>
-  <p class="who">Reported by pipavlo82 on 21 September 2026 as EXT-005 to EXT-008. <span class="state">Fixed.</span></p>
-  <p>Reconciliation reported agreement from empty or unverified inputs, and matched executables by name so a different binary could corroborate a claim. Seven obligations were checked for presence rather than type, and each could reach the top structural level while violated. An evidence citation could be malformed and still count. And the lowest level was described as resisting a complete rewrite, which on a log alone it cannot. Corrigendum 3. Every fix is held in place by a test that fails against the code it replaced.</p>
-</div>
-
 <h2>What it does not claim</h2>
 
 <ul class="plain">
@@ -297,7 +297,8 @@ python3 conformance.py --log your-log.jsonl \
 
 <ul class="plain">
   <li><a href="https://github.com/MattyIceMatrix/vlc-1">Source, specification and examples</a></li>
-  <li><a href="https://doi.org/10.5281/zenodo.22728393">Citable release, DOI 10.5281/zenodo.22728393</a></li>
+  <li><a href="https://doi.org/10.5281/zenodo.22728393">Citable release, DOI 10.5281/zenodo.22728393</a> &mdash; always the newest version</li>
+  <li><a href="https://doi.org/10.5281/zenodo.22883942">Version 1.2-draft, DOI 10.5281/zenodo.22883942</a> &mdash; to pin exactly what you read</li>
   <li><a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/FINDINGS-EXTERNAL.md">Every external finding, with its reporter</a></li>
 </ul>
 
