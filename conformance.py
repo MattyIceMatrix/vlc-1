@@ -180,6 +180,11 @@ except ImportError:                                    # pragma: no cover
         return None
 
 
+# Values the verifier obtained independently of the log (EXT-008: "a root or head the
+# verifier obtained independently"). Set from --expect-root / --expect-head.
+EXPECT = {"root": None, "head": None}
+
+
 def check_l1(recs, ad, res):
     mech = ad["integrity"]["mechanism"]
     if mech == "none":
@@ -191,6 +196,11 @@ def check_l1(recs, ad, res):
     prev = chain_root(recs, ad)
     if prev is None:
         res.fail("VLC-L1-1", "chain root not derivable from the delivered set")
+        return None
+
+    if EXPECT["root"] and prev.hex() != EXPECT["root"].lower():
+        res.fail("VLC-L1-1", f"chain root {prev.hex()[:16]}... does not equal the independently "
+                             f"supplied root {EXPECT['root'][:16]}...: the log was re-rooted or is a different log")
         return None
 
     skip_first = ad["integrity"].get("root", {}).get("kind") == "field_of_first_record"
@@ -253,8 +263,10 @@ def check_l1(recs, ad, res):
                 return None
             if h is not None:
                 prev = bytes.fromhex(h)
-    else:
+    elif not em:
         res.fail("VLC-L1-3", "adapter declares no end marker: truncation undetectable")
+    # else: the adapter declares one and the log lost it; that was already reported above
+    # with the record it found instead, and must not be overwritten by a claim about the adapter.
 
     # EXT-008. On the log alone this establishes that the chain is internally
     # consistent from the root the log states. It does not establish resistance
@@ -262,8 +274,18 @@ def check_l1(recs, ad, res):
     # record and re-derive every later link and the end marker. That needs a
     # root or head the verifier obtained independently of the log (VLC-L1-1's
     # "published root"), and the report says so rather than implying more.
-    res.ok("VLC-L1-1", "chain consistent from the root the log states; a complete "
-                       "rewrite is detectable only against an independently held root or head")
+    if EXPECT["head"] and prev.hex() != EXPECT["head"].lower():
+        res.fail("VLC-L1-1", f"final head {prev.hex()[:16]}... does not equal the independently "
+                             f"supplied head {EXPECT['head'][:16]}...")
+        return None
+    anchored = [k for k in ("root", "head") if EXPECT[k]]
+    if anchored:
+        res.ok("VLC-L1-1", "chain consistent AND its " + " and ".join(anchored) +
+                           " equal the value(s) supplied independently of the log")
+    else:
+        res.ok("VLC-L1-1", "chain consistent from the root the log states; a complete "
+                           "rewrite is detectable only against an independently held root or head "
+                           "(--expect-root / --expect-head)")
 
     # These two used to default to TRUE, which meant an adapter that said
     # nothing at all passed them. That is not trusting an assertion, it is
@@ -903,6 +925,10 @@ def main():
                     help="require exactly this ATTESTED level; exit 1 otherwise")
     ap.add_argument("--expect-structural", type=int, choices=[0, 1, 2, 3, 4, 5],
                     help="require exactly this STRUCTURAL level; exit 1 otherwise")
+    ap.add_argument("--expect-root", help="hex chain root obtained independently of the log; "
+                    "VLC-L1-1 fails if the log's derived root differs (detects a re-rooted, re-sealed log)")
+    ap.add_argument("--expect-head", help="hex final head obtained independently of the log; "
+                    "VLC-L1-1 fails if the recomputed head differs (detects a rewritten, re-sealed log)")
     ap.add_argument("--mutate", help="apply an Annex A mutation before checking")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
@@ -912,6 +938,7 @@ def main():
         if k not in ad:
             raise SystemExit(f"adapter missing required key {k!r}")
 
+    EXPECT["root"], EXPECT["head"] = a.expect_root, a.expect_head
     path = a.log
     tmp = None
     if a.mutate:

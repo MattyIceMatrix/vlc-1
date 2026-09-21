@@ -476,6 +476,55 @@ while IFS='|' read -r V M; do
 done < "$ORF"
 rm -f "$ORF"
 
+hr; echo "12. ANCHORED ROOT AND HEAD -- a re-rooted, re-sealed log is caught only by a value held outside the log (Annex A.13)"
+# The in-place rebase-policy mutation breaks the chain, so VLC-L1-1 kills it for the wrong reason. A log that is
+# re-rooted under another policy digest AND re-sealed is internally consistent; only a root/head the verifier holds
+# independently can refute it (EXT-008). --expect-root / --expect-head are that input.
+AR=$(python3 - <<'PYX'
+import importlib.util, json, os, subprocess, sys, tempfile
+sys.path.insert(0, "examples")
+import make_examples as mk
+AD = "adapters/generic-appjsonl-policy.json"
+def run(log, *extra):
+    p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", AD, "--json", *extra], capture_output=True, text=True)
+    return json.loads(p.stdout)
+orig_root = mk.sha(mk.POLICY)
+d = tempfile.mkdtemp()
+mk.HERE = d
+mk.POLICY = "dead" + mk.POLICY[4:]
+import contextlib, io
+with contextlib.redirect_stdout(io.StringIO()):
+    mk.l4()
+re = os.path.join(d, "L4-policybound.jsonl")
+def emit(name, cond): print(("OK" if cond else "BAD") + "|" + name)
+r = run(re)
+emit("a re-rooted, re-sealed log scores structural L4 on its own (the gap, stated)", r["structural_level"] == 4)
+r = run(re, "--expect-root", orig_root)
+emit("--expect-root: the same log fails VLC-L1-1 against the original root", r["requirements"]["VLC-L1-1"]["status"] == "FAIL" and r["structural_level"] == 0)
+r = run("examples/L4-policybound.jsonl", "--expect-root", orig_root)
+q = r["requirements"]["VLC-L1-1"]
+emit("--expect-root: the genuine log passes, and the note says the root was anchored", q["status"] == "PASS" and "supplied independently" in q["note"] and r["structural_level"] == 4)
+head = None
+r0 = run("examples/L4-policybound.jsonl")
+lines = [l for l in open("examples/L4-policybound.jsonl") if l.strip()]
+head = json.loads(lines[-1])["hash"]
+r = run("examples/L4-policybound.jsonl", "--expect-head", head)
+emit("--expect-head: the genuine head passes", r["requirements"]["VLC-L1-1"]["status"] == "PASS" and r["structural_level"] == 4)
+r = run("examples/L4-policybound.jsonl", "--expect-head", "ab" * 32)
+emit("--expect-head: a wrong head fails VLC-L1-1", r["requirements"]["VLC-L1-1"]["status"] == "FAIL")
+# truncate-tail: the adapter DOES declare an end marker; the note must not blame the adapter
+p = subprocess.run(["python3", "conformance.py", "--log", "examples/L4-policybound.jsonl", "--adapter", AD, "--mutate", "truncate-tail", "--json"], capture_output=True, text=True)
+n = json.loads(p.stdout)["requirements"]["VLC-L1-3"]["note"]
+emit("truncate-tail: VLC-L1-3 names the log's missing end marker, not the adapter", "adapter declares no end marker" not in n and "expected 'END'" in n)
+PYX
+)
+ARF=$(mktemp)
+printf '%s\n' "$AR" | tr -d '\r' > "$ARF"
+while IFS='|' read -r V M; do
+  [ "$V" = "OK" ] && ok "$M" || bad "$M"
+done < "$ARF"
+rm -f "$ARF"
+
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
