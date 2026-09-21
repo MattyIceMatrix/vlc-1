@@ -44,6 +44,13 @@ def one(recs, cls):
 
 
 def main(outdir):
+    # Plain LF regardless of platform. On Windows, text-mode stdout writes CRLF,
+    # the harness read "PASS\r", and every case failed while printing identical
+    # text on both sides of the comparison.
+    try:
+        sys.stdout.reconfigure(newline="\n")
+    except (AttributeError, ValueError):
+        pass
     os.makedirs(outdir, exist_ok=True)
     cases = []
 

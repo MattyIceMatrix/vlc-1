@@ -304,7 +304,8 @@ hr; echo "9. TYPED OBLIGATIONS -- each fails at the requirement it names, not at
 TM=$(mktemp -d)
 while read -r LOG AD REQ EXPECT; do
   GOT=$(python3 ./conformance.py --log "$LOG" --adapter "$AD" --json 2>/dev/null \
-        | python3 -c "import json,sys;r=json.load(sys.stdin)['requirements'];print(r['$REQ']['status'], r['VLC-L1-1']['status'])")
+        | python3 -c "import json,sys;r=json.load(sys.stdin)['requirements'];print(r['$REQ']['status'], r['VLC-L1-1']['status'])" \
+        | tr -d '\r')
   set -- $GOT
   N=$(basename "$LOG" .jsonl)
   if [ "$1" = "$EXPECT" ] && [ "$2" = "PASS" ]; then
@@ -312,7 +313,7 @@ while read -r LOG AD REQ EXPECT; do
   else
     bad "$N: expected $REQ $EXPECT with VLC-L1-1 PASS, got $REQ $1 with VLC-L1-1 $2"
   fi
-done < <(python3 examples/typed_mutants.py "$TM")
+done < <(python3 examples/typed_mutants.py "$TM" | tr -d '\r')
 rm -rf "$TM"
 
 hr; echo "10. EVIDENCE MANIFEST -- a citation that is not complete is weaker than none (Annex E)"
@@ -341,7 +342,7 @@ PYX
 )
 while IFS='|' read -r V M; do
   [ "$V" = "OK" ] && ok "$M" || bad "$M"
-done <<< "$EVR"
+done <<< "$(printf '%s\n' "$EVR" | tr -d '\r')"
 
 hr
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
