@@ -58,6 +58,9 @@ jobs:
         id: selftest
         continue-on-error: true
         run: |
+          # pipefail: without it the step's status is tee's, which is always
+          # success, and this workflow could not fail on the self-test.
+          set -o pipefail
           chmod +x selftest.sh
           ./selftest.sh 2>&1 | tee selftest.log
 
@@ -69,18 +72,24 @@ jobs:
           : > proofs.log
           shopt -s nullglob
           found=0
+          failed=0
           for f in proofs/*.v; do
             found=1
             echo "--- coqc $f" | tee -a proofs.log
             coqc -Q proofs Sentinel "$f" 2>&1 | tee -a proofs.log
-            echo "exit: $?" | tee -a proofs.log
+            # PIPESTATUS[0] is coqc's status. $? here was tee's, so this log
+            # recorded "exit: 0" whatever coqc did.
+            rc=${PIPESTATUS[0]}
+            echo "exit: $rc" | tee -a proofs.log
             n=$(grep -cE '^(Lemma|Theorem|Corollary|Example)' "$f")
             a=$(grep -cE 'Admitted|admit\b' "$f")
             x=$(grep -cE '^Axiom' "$f")
             echo "results: $n  admitted: $a  axioms: $x" | tee -a proofs.log
+            if [ "$rc" -ne 0 ] || [ "$a" -gt 0 ] || [ "$x" -gt 0 ]; then failed=1; fi
             echo | tee -a proofs.log
           done
           [ "$found" = "1" ] || echo "(no .v files in proofs/)" | tee -a proofs.log
+          exit $failed
 
       - name: Build the combined report
         if: always()

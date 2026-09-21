@@ -188,3 +188,40 @@ summary, the README table and the checker's output implied detection without
 one. All three now say that on the log alone L1 establishes chain consistency,
 and that a complete rewrite is detectable only against an independently held
 root or head. The requirement is unchanged.
+
+## EXT-012 — a permanently red suite, and a verification workflow that could not go red
+
+**Reporter:** babyblueviper1 · **Reported:** 2026-09-21 (vlc-1#1, finding 4) · **Status:** confirmed, fixed
+**Severity:** CI could neither show a new regression nor, in one workflow, any failure at all
+
+The report: since Corrigendum 2 the self-test failed three disclosed assertions
+on every run, so a new regression would hide behind them; and the CI step that
+scores the third-party formats piped its output through `tail -3` and asserted
+nothing.
+
+Confirming it found a third problem, worse than either. The "Independent
+verification" workflow — the one written for outsiders — ran
+`./selftest.sh | tee selftest.log` without `pipefail`, so the step took `tee`'s
+exit status and could not fail on the self-test whatever it found. Its proof
+step recorded `exit: $?` after `coqc | tee`, which is also `tee`'s status: the
+log it publishes would have said `exit: 0` beside a proof that did not compile.
+The separate `ci.yml` proof job checks the proofs correctly, so no failing proof
+was ever published as passing. The artefact meant for outsiders could not have
+reported one.
+
+Fixed:
+
+- The two captured witness journals are marked as expected failures, printed
+  with their reason on every run. Each is marked only for its known cause: if it
+  fails for any other reason, or starts passing, the suite goes red.
+- The pre-fix capture cannot be regenerated, so it is re-pinned to the corrected
+  result (L1) with both reasons asserted, including VLC-L3-1d, the gap it was
+  kept to demonstrate. If that ever passes, the checker has been loosened.
+- `independent-verification.yml` sets `pipefail` for the self-test and takes
+  `coqc`'s status from `PIPESTATUS`, failing on a non-zero exit, an admitted
+  proof or an axiom.
+- `ci.yml` asserts each third-party format's structural and attested level.
+
+Verified: an unrelated regression still fails the suite, a known capture
+failing for a different reason still fails it, and both workflow fixes
+propagate a failing exit.

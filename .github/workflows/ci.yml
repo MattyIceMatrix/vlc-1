@@ -33,13 +33,21 @@ jobs:
 
       - name: score the third-party formats
         run: |
+          # Asserts each format's levels. This step used to print them with
+          # tail -3 and assert nothing, so a change here could not fail CI.
+          # Each entry is adapter:log:structural:attested.
           set -e
-          for a in otel-otlp-logs:otlp-logs k8s-audit:k8s-audit \
-                   linux-auditd:linux-auditd aws-cloudtrail-digest:cloudtrail-digests; do
-            n=${a%%:*}; f=${a##*:}
-            python3 conformance.py --log "examples/third-party/$f.jsonl" \
-                                   --adapter "adapters/$n.json" | tail -3
+          bad=0
+          for a in otel-otlp-logs:otlp-logs:0:0 k8s-audit:k8s-audit:0:0 \
+                   linux-auditd:linux-auditd:0:0 aws-cloudtrail-digest:cloudtrail-digests:0:0; do
+            IFS=: read -r n f ws wa <<< "$a"
+            got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
+                    --adapter "adapters/$n.json" --json \
+                  | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
+            if [ "$got" = "$ws $wa" ]; then echo "ok    $n: structural/attested $got"
+            else echo "FAIL  $n: got $got, expected $ws $wa"; bad=1; fi
           done
+          exit $bad
 
   proof:
     name: Coq development

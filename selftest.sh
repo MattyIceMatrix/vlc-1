@@ -22,6 +22,15 @@ C="python3 ./conformance.py"
 FAIL=0
 ok()   { printf '  ok    %s\n' "$*"; }
 bad()  { printf '  FAIL  %s\n' "$*"; FAIL=1; }
+# A known failure, disclosed and explained. Printed every run so it is never
+# silent; does not turn the suite red. If a case marked this way starts
+# passing, that is reported as a FAIL so the marker is removed rather than
+# left to rot. Any failure not covered by a marker still turns the suite red.
+XFAIL=0
+xfail() { printf '  xfail %s\n' "$*"; XFAIL=$((XFAIL + 1)); }
+req()  { python3 ./conformance.py --log "$1" --adapter "$2" --json 2>/dev/null \
+           | python3 -c "import json,sys;print(json.load(sys.stdin)['requirements']['$3']['status'])" \
+           | tr -d '\r'; }
 hr()   { printf '%s\n' "---------------------------------------------------------------"; }
 
 level() {   # level <log> <adapter>   -> ATTESTED level
@@ -156,11 +165,22 @@ hr; echo "5. NOT RIGGED -- the author's own journals, judged by the same rules"
 #   pass, the checker has been loosened, not the product improved;
 #   the POST-FIX capture must come out at L4 on a live kernel -- claiming L4
 #   without a capture that demonstrates it is exactly what this spec forbids.
+#
+# Corrigendum 2 (EXT-003) moved the pre-fix capture from L2 to L1: its produced
+# count includes framing records, so the identity no longer closes. It is a
+# historical capture and cannot be regenerated, so it is re-pinned rather than
+# marked as an expected failure. What it was kept for is unchanged: VLC-L3-1d
+# must still FAIL on it. If that ever passes, the checker has been loosened.
 PRE=examples/reference-impl/pre-basis-L2.jsonl
 if [ -f "$PRE" ]; then
 	got=$(level "$PRE" adapters/sentinel.json)
-	[ "$got" = "2" ] && ok "pre-fix capture -> L$got (the gap the checker found was real)" \
-	                 || bad "pre-fix capture -> L$got, expected L2: the checker has been loosened"
+	l25=$(req "$PRE" adapters/sentinel.json VLC-L2-5)
+	l31d=$(req "$PRE" adapters/sentinel.json VLC-L3-1d)
+	if [ "$got" = "1" ] && [ "$l25" = "FAIL" ] && [ "$l31d" = "FAIL" ]; then
+		ok "pre-fix capture -> L1: identity fails (predates EXT-003), and VLC-L3-1d still fails (the gap it was kept to show)"
+	else
+		bad "pre-fix capture -> L$got, VLC-L2-5 $l25, VLC-L3-1d $l31d; expected L1, FAIL, FAIL"
+	fi
 else
 	bad "pre-fix capture missing: the not-rigged control cannot run"
 fi
@@ -168,10 +188,16 @@ for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl
 	[ -f "$j" ] || continue
 	got=$(level  "$j" adapters/sentinel.json)
 	sgot=$(slevel "$j" adapters/sentinel.json)
+	# Expected to fail until the Sentinel sensor writes an event-only produced
+	# count and is re-run (Corrigendum 2). Marked only for that exact reason:
+	# if it fails for any other reason, or starts passing, the suite goes red.
+	l25=$(req "$j" adapters/sentinel.json VLC-L2-5)
 	if [ "$got" = "5" ] && [ "$sgot" = "4" ]; then
-		ok "$(basename $j) -> structural L$sgot, attested L$got"
+		bad "$(basename $j) now passes: remove its expected-failure marker in section 5"
+	elif [ "$l25" = "FAIL" ] && [ "$sgot" = "1" ]; then
+		xfail "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5 once the sensor is fixed (captured before EXT-003)"
 	else
-		bad "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5"
+		bad "$(basename $j) -> structural L$sgot, attested L$got, VLC-L2-5 $l25: a failure other than the known one"
 	fi
 done
 ok "the reference implementation's own L5 is ATTESTED, not structural, and says so"
@@ -345,5 +371,6 @@ while IFS='|' read -r V M; do
 done <<< "$(printf '%s\n' "$EVR" | tr -d '\r')"
 
 hr
+[ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL
