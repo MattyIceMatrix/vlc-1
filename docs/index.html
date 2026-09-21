@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VLC-1 — Verifiable completeness for AI system logs</title>
+<meta name="description" content="An open specification and conformance checker for whether an AI system's log is all of it. Machine-checked, independently reviewed, corrected in public.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #eef2ec;
+  --rule: #d0dcd3;
+  --rule-strong: #8fa899;
+  --ink: #1c2a24;
+  --ink-soft: #4d5c55;
+  --balance: #2f6b4f;
+  --red: #b3261e;
+  --panel: #f6f8f4;
+  --gutter: #d9e3db;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121a16;
+    --rule: #26352d;
+    --rule-strong: #3e5448;
+    --ink: #dfe8e1;
+    --ink-soft: #9bab9f;
+    --balance: #6fbf94;
+    --red: #ef6b5e;
+    --panel: #18221d;
+    --gutter: #1e2b24;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121a16; --rule: #26352d; --rule-strong: #3e5448;
+  --ink: #dfe8e1; --ink-soft: #9bab9f; --balance: #6fbf94;
+  --red: #ef6b5e; --panel: #18221d; --gutter: #1e2b24;
+  color-scheme: dark;
+}
+
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  /* ledger ruling: faint horizontal lines on the baseline, one vertical margin rule */
+  background-image:
+    linear-gradient(to right, transparent 0, transparent calc(1.25rem - 1px), var(--gutter) calc(1.25rem - 1px), var(--gutter) 1.25rem, transparent 1.25rem),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.75rem - 1px), var(--rule) calc(1.75rem - 1px), var(--rule) 1.75rem);
+  background-attachment: local;
+  color: var(--ink);
+  font-family: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.75rem;
+  font-optical-sizing: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+.wrap { max-width: 42rem; margin: 0 auto; padding: 0 1.25rem 0 2.25rem; }
+
+a { color: var(--ink); text-decoration-color: var(--rule-strong); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--ink); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--balance); outline-offset: 3px; border-radius: 2px; }
+
+header.top { padding: 1.75rem 0 0; }
+.mark { font-weight: 700; font-size: 1.0625rem; letter-spacing: 0.01em; }
+.mark span { font-weight: 400; color: var(--ink-soft); }
+
+h1 {
+  font-size: clamp(2.1rem, 7.2vw, 3.3rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 3.5rem 0 1.75rem;
+  max-width: 14ch;
+  font-variation-settings: "opsz" 60;
+}
+.lede { font-size: 1.1875rem; line-height: 1.75rem; margin: 0 0 1.75rem; max-width: 36rem; }
+.lede em { font-style: italic; }
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin: 3.5rem 0 1.75rem;
+  font-variation-settings: "opsz" 36;
+}
+p { margin: 0 0 1.75rem; max-width: 38rem; }
+.soft { color: var(--ink-soft); }
+
+/* ---------------- the ledger ---------------- */
+.ledger { background: var(--panel); border: 1px solid var(--rule-strong); margin: 0 0 1.75rem; }
+.ledger p { margin: 0; max-width: none; }
+.ledger .legend { padding: 0.875rem 1rem; border-bottom: 1px solid var(--rule-strong); color: var(--ink-soft); font-size: 0.9375rem; }
+.ledger .legend span { padding: 0 0.2em; }
+.ledger .row { padding: 0.875rem 1rem; display: grid; grid-template-columns: 1fr; row-gap: 0.25rem; }
+.ledger .row + .row { border-top: 1px solid var(--rule); }
+.ledger .name { font-weight: 600; }
+.ledger .eq { font-size: 1.75rem; line-height: 2.625rem; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.ledger .eq .op { color: var(--ink-soft); padding: 0 0.15em; }
+.ledger .eq .total { font-weight: 700; display: inline-block; line-height: 1.1; }
+/* the accountant's double rule under a balanced total */
+.ledger .eq .closes { color: var(--balance); border-bottom: 3px double var(--balance); }
+.ledger .eq .open { color: var(--red); }
+.ledger .verdict { font-size: 0.9375rem; }
+.ledger .verdict.ok { color: var(--balance); }
+.ledger .verdict.bad { color: var(--red); font-weight: 600; }
+.ledger .foot { padding: 0.875rem 1rem; border-top: 1px solid var(--rule-strong); font-size: 0.9375rem; color: var(--ink-soft); }
+@media (min-width: 38rem) {
+  .ledger .row { grid-template-columns: 11rem auto 1fr; column-gap: 1.25rem; align-items: baseline; }
+}
+
+/* ---------------- the levels ---------------- */
+ol.levels { list-style: none; padding: 0; margin: 0 0 1.75rem; counter-reset: lv -1; }
+ol.levels li { display: grid; grid-template-columns: 2.75rem 1fr; column-gap: 0.75rem; padding: 0.875rem 0; border-top: 1px solid var(--rule-strong); }
+ol.levels li:last-child { border-bottom: 1px solid var(--rule-strong); }
+ol.levels li::before { counter-increment: lv; content: "L" counter(lv); font-weight: 700; font-variant-numeric: tabular-nums; }
+ol.levels b { display: block; }
+ol.levels .refuses { color: var(--ink-soft); font-size: 0.9375rem; }
+
+/* ---------------- corrections ---------------- */
+.entry { border-left: 3px solid var(--rule-strong); padding: 0 0 0 1rem; margin: 0 0 1.75rem; }
+.entry.fixed { border-left-color: var(--balance); }
+.entry.open  { border-left-color: var(--red); }
+.entry h3 { font-size: 1.0625rem; line-height: 1.75rem; margin: 0; font-weight: 700; }
+.entry .who { color: var(--ink-soft); font-size: 0.9375rem; margin: 0; }
+.entry p { margin: 0.4375rem 0 0; }
+.state { font-weight: 600; }
+.fixed .state { color: var(--balance); }
+.open .state { color: var(--red); }
+
+/* ---------------- run it ---------------- */
+pre {
+  background: var(--panel);
+  border: 1px solid var(--rule-strong);
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  margin: 0 0 1.75rem;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+}
+
+ul.plain { padding-left: 1.1rem; margin: 0 0 1.75rem; }
+ul.plain li { margin: 0; }
+
+footer { margin: 3.5rem 0 0; padding: 1.75rem 0 3.5rem; border-top: 1px solid var(--rule-strong); color: var(--ink-soft); font-size: 0.9375rem; }
+footer p { margin: 0 0 0.875rem; }
+
+@media (max-width: 30rem) {
+  .wrap { padding: 0 1rem 0 1.75rem; }
+  body { background-image:
+    linear-gradient(to right, transparent 0, transparent calc(0.875rem - 1px), var(--gutter) calc(0.875rem - 1px), var(--gutter) 0.875rem, transparent 0.875rem),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.75rem - 1px), var(--rule) calc(1.75rem - 1px), var(--rule) 1.75rem); }
+  h1 { margin-top: 2.625rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="mark">VLC-1 <span>Verifiable completeness for AI system logs</span></div>
+</header>
+
+<main>
+
+<h1>A log can verify and still be missing records.</h1>
+
+<p class="lede">An evidence export covering a two-hour outage, during which the logging path discarded every record, is byte-for-byte indistinguishable from one covering a quiet afternoon. Both verify. Both look complete. One is worthless, and <em>nothing in it says so.</em></p>
+
+<p>VLC-1 is an open specification and a conformance checker for the missing property: whether a reader holding the delivered log can establish that it is all of it. It runs on any audit log, offline, with no install step.</p>
+
+<h2>The arithmetic</h2>
+
+<p>The central check is a ledger identity. Every record the producer made is either in the file or declared lost, and the two have to add up to what the producer says it made.</p>
+
+<div class="ledger" role="group" aria-label="Three logs checked against the completeness identity">
+  <p class="legend">delivered <span>+</span> declared lost <span>=</span> produced</p>
+  <div class="row">
+    <p class="name">A quiet afternoon</p>
+    <p class="eq"><span class="n">60</span> <span class="op">+</span> <span class="n">0</span> <span class="op">=</span> <span class="n total closes">60</span></p>
+    <p class="verdict ok">Balances.</p>
+  </div>
+  <div class="row">
+    <p class="name">An outage, declared</p>
+    <p class="eq"><span class="n">40</span> <span class="op">+</span> <span class="n">20</span> <span class="op">=</span> <span class="n total closes">60</span></p>
+    <p class="verdict ok">Balances, and says why.</p>
+  </div>
+  <div class="row">
+    <p class="name">An outage, hidden</p>
+    <p class="eq"><span class="n">40</span> <span class="op">+</span> <span class="n">0</span> <span class="op">&ne;</span> <span class="n total open">60</span></p>
+    <p class="verdict bad">Twenty records unaccounted for.</p>
+  </div>
+  <p class="foot">Without the identity, the first and third logs are the same file. With it, the third cannot pass for the first.</p>
+</div>
+
+<p>That is one level of five. Each adds a property the one below cannot establish, and each is defined by the attack it refuses.</p>
+
+<h2>The levels</h2>
+
+<ol class="levels">
+  <li><div><b>Recorded</b><span class="refuses">Nothing is established. The baseline.</span></div></li>
+  <li><div><b>Tamper-evident</b><span class="refuses">Refuses editing, reordering and truncation of what was delivered.</span></div></li>
+  <li><div><b>Loss-accounted</b><span class="refuses">Refuses the silent drop. The ledger above.</span></div></li>
+  <li><div><b>Coverage-declared</b><span class="refuses">Refuses the unhooked source: the log states what it was watching.</span></div></li>
+  <li><div><b>Policy-bound</b><span class="refuses">Refuses the after-the-fact rule swap: verdicts are bound to the rules that produced them.</span></div></li>
+  <li><div><b>Independently witnessed</b><span class="refuses">Refuses the forged self-report: the record was not written by the thing it describes.</span></div></li>
+</ol>
+
+<p>A machine-checked proof establishes that the levels are strictly ordered and each one necessary. The checker is bound to that proof by an exhaustive differential test, and a self-test fails in both directions.</p>
+
+<h2>Two numbers, not one</h2>
+
+<p>Some requirements the checker recomputes from the file. Others it can only relay from what the producer says alongside it. Every report gives both, separately: a <b>structural</b> level from the log alone, and an <b>attested</b> level that adds the producer&rsquo;s claims. Independence is a fact about who holds the pen, not a property of the bytes, so the highest level is attested by construction.</p>
+
+<p>The structural number is meant to be one an adapter cannot inflate. A review on 21 September found a requirement classed as structural that could still be moved by the adapter alone. The structural level itself held, but only because the highest level is capped at attested. It is fixed, and a test now rewrites the adapter on every example and requires every structural result to come out the same.</p>
+
+<h2>Corrected in public</h2>
+
+<p>Everything this project scored before 13 September was produced by its author, which by its own rules establishes nothing. The only repair is other people reading it. These are the defects they found, newest first. Fixes to two of them have since been checked against the code by the person who reported them.</p>
+
+<div class="entry fixed">
+  <h3>A second contribution, and the witness held to its own standard</h3>
+  <p class="who">Reported on 21 and 22 September 2026 as EXT-015 to EXT-017, by pipavlo82 and babyblueviper1. <span class="state">Fixed.</span></p>
+  <p>The reconciler accepted a witness whose chain held but whose own level was too low to corroborate anything, and described some tools as excluded when they were not. And a rewritten log could only be caught against a value the checker was never given; babyblueviper1&rsquo;s second pull request added the means to supply one. The reference journals were then re-recorded by the corrected sensor on a machine the author does not control.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>The first fix written by someone else</h3>
+  <p class="who">Reported and fixed by babyblueviper1 (invinoveritas) on 21 September 2026 as EXT-009 to EXT-011. <span class="state">Merged.</span></p>
+  <p>A reader outside the project filed a defect report with reproductions and a tested patch, then sent the fix as a pull request. Sequence-numbered logs could hide silent loss, a duplicated field name could change what a record said with every hash still valid, and one malformed line crashed the checker. It is the first change to VLC-1 its author did not write. Corrigendum 4.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>Three more, found by testing what nothing tested</h3>
+  <p class="who">Found by the maintainer on 21 September 2026 as EXT-012 to EXT-014, following the same report. <span class="state">Fixed.</span></p>
+  <p>The verification workflow built for outsiders could not fail, and showed a green tick over a crashed self-test. One chain format did not link records to each other, so a deleted record verified. And one way of counting records could not see loss at the start or end of a sequence. Corrigendum 4.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>A structural requirement read the adapter</h3>
+  <p class="who">Reported by pipavlo82 on 21 September 2026 as EXT-004. <span class="state">Fixed.</span></p>
+  <p>The witnessing requirement scored the witness on every requirement, attested ones included, so pointing one adapter field at any non-empty value flipped a structural result with the log unchanged. The report described the structural level moving; reproduced, it held, and the number that moved was attested. The leak underneath was real.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>A deleted event could be masked by a framing record</h3>
+  <p class="who">Reported by pipavlo82 on 21 September 2026 as EXT-003. <span class="state">Fixed.</span></p>
+  <p>The identity counted coverage and loss declarations as delivered events. A producer could delete an event, add one framing record, and the totals still balanced. Corrigendum 2.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>Loss accounting assumed the producer survived its own outage</h3>
+  <p class="who">Reported by Shahab K. on 13 September 2026 as EXT-002. <span class="state">Fixed.</span></p>
+  <p>A log truncated and renumbered closed the identity. The headline example held for transport loss only. The repair is a witnessed-interval qualifier, L3i, scored separately. Corrigendum 1.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>A false coverage declaration raised the structural level</h3>
+  <p class="who">Reported by Shahab K. on 13 September 2026 as EXT-001. <span class="state">Fixed.</span></p>
+  <p>The checker tested that a declaration was present, not that it was true. Corrigendum 1.</p>
+</div>
+
+<div class="entry fixed">
+  <h3>Five more, from the same review</h3>
+  <p class="who">Reported by pipavlo82 on 21 September 2026 as EXT-005 to EXT-008. <span class="state">Fixed.</span></p>
+  <p>Reconciliation reported agreement from empty or unverified inputs, and matched executables by name so a different binary could corroborate a claim. Seven obligations were checked for presence rather than type, and each could reach the top structural level while violated. An evidence citation could be malformed and still count. And the lowest level was described as resisting a complete rewrite, which on a log alone it cannot. Corrigendum 3. Every fix is held in place by a test that fails against the code it replaced.</p>
+</div>
+
+<h2>What it does not claim</h2>
+
+<ul class="plain">
+  <li>It is not a certification, an audit, or a security review.</li>
+  <li>Four open log formats have been scored. That is not a survey of the market.</li>
+  <li>The reference implementation&rsquo;s journals were re-recorded after EXT-003 on a GitHub-hosted machine, not its author&rsquo;s. The originals fail the corrected check and are kept unedited, because the count sits inside a hash chain and correcting it would break the binding.</li>
+  <li>On a log alone, the lowest level establishes that the chain is consistent. Detecting a complete rewrite needs a root or head held independently of the log.</li>
+  <li>It has not yet been run against a log from a production system its author did not write.</li>
+</ul>
+
+<h2>Run it</h2>
+
+<p>Python 3, standard library only. Nothing leaves your machine.</p>
+
+<pre><code>git clone https://github.com/MattyIceMatrix/vlc-1
+cd vlc-1
+python3 conformance.py --log your-log.jsonl \
+    --adapter adapters/plain-jsonl.json</code></pre>
+
+<p>If it scores your log lower than you expected, that is the result most worth reporting.</p>
+
+<ul class="plain">
+  <li><a href="https://github.com/MattyIceMatrix/vlc-1">Source, specification and examples</a></li>
+  <li><a href="https://doi.org/10.5281/zenodo.22728393">Citable release, DOI 10.5281/zenodo.22728393</a></li>
+  <li><a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/FINDINGS-EXTERNAL.md">Every external finding, with its reporter</a></li>
+</ul>
+
+</main>
+
+<footer>
+  <p>Matthew Moore, independent. No institutional affiliation. The specification is dedicated to the public domain under CC0 and the code is MIT: cite it, implement it, fork it, or lift its clauses into a standard without asking.</p>
+  <p>Comments on the draft have been submitted to the BSI enquiry on prEN 18229-3.</p>
+</footer>
+
+</div>
+</body>
+</html>
