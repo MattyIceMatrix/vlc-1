@@ -42,7 +42,9 @@
         "records",
         "gaps"
       ]
-    }
+    },
+    "interval": "position",
+    "interval_note": "A GAP record carries no range fields; the interval is the span between the delivered records either side of it in the chain. Weaker than an explicit range, and stated here rather than assumed."
   },
   "coverage": {
     "mode": "enumerated",
@@ -96,7 +98,8 @@
       "output_digest": "sha256:06e591a281dc4ac0c411c0018efe0e1ae39001eb4cbf2a63a22a09cfb107a994",
       "output": "verify-2026-09-12-object.log",
       "result": "PASS",
-      "availability": "evaluation access, mutual NDA"
+      "availability": "evaluation access, mutual NDA",
+      "negative_control": "the mutation controls named in 'what': a mutated decision function must produce a differential mismatch against the C header, and is required to"
     },
     "VLC-L5-3": {
       "test": "witness-reconciliation-bidirectional",
@@ -109,7 +112,8 @@
       "output": "verify-2026-09-12-witness.log",
       "negative_control": "the honest run is the negative control: a reconciler that reports findings on it fails the demo",
       "result": "PASS",
-      "availability": "the reconciler is PUBLIC in witness/; the runner and the sensor are evaluation access"
+      "availability": "the reconciler is PUBLIC in witness/; the runner and the sensor are evaluation access",
+      "reconciler_note": "reconciler_digest pins witness/reconcile.py 1.1, the version that produced this output on 2026-09-12. The reconciler has since changed (1.2, EXT-005); this entry cites the earlier run and has not been re-run. The digest is over the file's LF-normalized bytes, per VLC-E-6."
     }
   },
   "_evidence_note": "An evidence artefact may be private. Its DIGEST is published here, which is what stops it being swapped for a different artefact after the fact. Ask for the artefact; check it against the digest you already have."

@@ -193,6 +193,42 @@ SIG=$($R --claims examples/reference-impl/agent-transcript-spoofed.jsonl \
 [ "$SIG" = "True" ] && ok "spoofed run: substitution signature raised" \
                     || bad "spoofed run: the spoof was not detected"
 
+# EXT-005. --require-agreement used to mean "no divergence found", which empty
+# inputs, unparseable lines and a journal with a broken chain all satisfy. Each
+# of these must now be refused, and a basename match must not let a different
+# absolute path corroborate a claim.
+RT=$(mktemp -d); trap 'rm -rf "$RT"' EXIT
+: > "$RT/empty.jsonl"
+cp examples/reference-impl/agent-transcript-honest.jsonl "$RT/badline.jsonl"
+echo "{not json" >> "$RT/badline.jsonl"
+python3 - "$RT" <<'PYX'
+import json, sys
+d = sys.argv[1]
+j = [json.loads(l) for l in open("examples/reference-impl/kernel-witness-honest-session.jsonl") if l.strip()]
+for r in j:
+    if "h" in r: r["h"] = "00" * 32
+open(f"{d}/garbage.jsonl", "w").write("\n".join(json.dumps(r, separators=(",", ":")) for r in j) + "\n")
+c = [json.loads(l) for l in open("examples/reference-impl/agent-transcript-honest.jsonl") if l.strip()]
+for r in c:
+    if str(r.get("command", "")).startswith("/usr/bin/id"): r["command"] = "/safe/bin/id -u"
+open(f"{d}/otherpath.jsonl", "w").write("\n".join(json.dumps(r) for r in c) + "\n")
+PYX
+H=examples/reference-impl/agent-transcript-honest.jsonl
+W=examples/reference-impl/kernel-witness-honest-session.jsonl
+refused() { ! $R --claims "$1" --journal "$2" --scope witness/scope-demo.json --require-agreement >/dev/null 2>&1; }
+refused "$RT/empty.jsonl" "$RT/empty.jsonl" \
+  && ok "two empty inputs are refused, not reported as agreement" \
+  || bad "two empty inputs reported as agreement"
+refused "$RT/badline.jsonl" "$W" \
+  && ok "an unparseable claim line blocks the strong result" \
+  || bad "an unparseable claim line was counted and ignored"
+refused "$H" "$RT/garbage.jsonl" \
+  && ok "a witness journal whose chain does not verify is refused" \
+  || bad "a witness with garbage hashes was accepted as evidence"
+refused "$RT/otherpath.jsonl" "$W" \
+  && ok "a claimed /safe/bin/id is not corroborated by a witnessed /usr/bin/id" \
+  || bad "a different absolute path corroborated the claim by basename"
+
 hr; echo "7. PROVENANCE -- the version a report cites must be the version it was checked against"
 # Every report carries "spec": <version>, and Annex E manifests are archived
 # under it. If the checker stamps a version whose normative text differs from
@@ -259,6 +295,53 @@ case "$AI" in
   *)  bad "an adapter-only change altered a structural result: ${AI#MOVED }"
       bad "a structural requirement must be recomputed from the log, not relayed from the adapter" ;;
 esac
+
+hr; echo "9. TYPED OBLIGATIONS -- each fails at the requirement it names, not at L1"
+# EXT-006. Seven normative obligations were checked for presence or summed
+# totals rather than type, and each could reach L4 while violated. Every mutant
+# below is RE-SEALED after editing, so VLC-L1-1 still passes and the mutant can
+# only fail where it is aimed. Honest controls must still pass.
+TM=$(mktemp -d)
+while read -r LOG AD REQ EXPECT; do
+  GOT=$(python3 ./conformance.py --log "$LOG" --adapter "$AD" --json 2>/dev/null \
+        | python3 -c "import json,sys;r=json.load(sys.stdin)['requirements'];print(r['$REQ']['status'], r['VLC-L1-1']['status'])")
+  set -- $GOT
+  N=$(basename "$LOG" .jsonl)
+  if [ "$1" = "$EXPECT" ] && [ "$2" = "PASS" ]; then
+    ok "$N: $REQ $EXPECT, chain intact"
+  else
+    bad "$N: expected $REQ $EXPECT with VLC-L1-1 PASS, got $REQ $1 with VLC-L1-1 $2"
+  fi
+done < <(python3 examples/typed_mutants.py "$TM")
+rm -rf "$TM"
+
+hr; echo "10. EVIDENCE MANIFEST -- a citation that is not complete is weaker than none (Annex E)"
+# EXT-007. A malformed entry was treated as absent, digests were any string,
+# and the negative control VLC-E-5 requires was not required.
+EVR=$(python3 - <<'PYX'
+import json, subprocess, copy, tempfile, os
+base = json.load(open("adapters/sentinel.json"))
+log = "examples/reference-impl/kernel-witness-honest-session.jsonl"
+def status(ad):
+    fd, p = tempfile.mkstemp(suffix=".json"); os.close(fd); json.dump(ad, open(p, "w"))
+    r = json.loads(subprocess.run(["python3", "./conformance.py", "--log", log, "--adapter", p,
+                                   "--json"], capture_output=True, text=True).stdout)
+    os.unlink(p); return r["requirements"]["VLC-L3-4"]["status"]
+cases = [("honest entry", base, "PASS")]
+a = copy.deepcopy(base); a["evidence"]["VLC-L3-4"] = "see the coverage log"
+cases.append(("malformed entry", a, "FAIL"))
+a = copy.deepcopy(base); a["evidence"]["VLC-L3-4"]["runner_digest"] = "trust me"
+cases.append(("malformed digest", a, "FAIL"))
+a = copy.deepcopy(base); a["evidence"]["VLC-L3-4"].pop("negative_control")
+cases.append(("no negative control", a, "FAIL"))
+for name, ad, want in cases:
+    got = status(ad)
+    print(f"{'OK' if got == want else 'BAD'}|{name}: VLC-L3-4 {got}, expected {want}")
+PYX
+)
+while IFS='|' read -r V M; do
+  [ "$V" = "OK" ] && ok "$M" || bad "$M"
+done <<< "$EVR"
 
 hr
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi

@@ -49,7 +49,7 @@ excludes everything reconciles trivially and says so.
 """
 import argparse, json, os, posixpath, re, sys
 
-VERSION = "witness/reconcile 1.1"
+VERSION = "witness/reconcile 1.2"
 
 
 # --------------------------------------------------------------------------
@@ -89,6 +89,25 @@ def load_jsonl(path, strip_chain=True):
     return out, bad
 
 
+def journal_chain_status(journal_path, adapter_path):
+    """True when the witness journal's own hash chain and end marker verify.
+
+    Reuses conformance.py rather than re-implementing the chain rule, so there
+    is one definition of a valid chain.  Returns True or a reason string."""
+    import subprocess
+    here = os.path.dirname(os.path.abspath(__file__))
+    checker = os.path.join(here, "..", "conformance.py")
+    try:
+        out = subprocess.run([sys.executable, checker, "--log", journal_path,
+                              "--adapter", adapter_path, "--json"],
+                             capture_output=True, text=True, timeout=120).stdout
+        req = json.loads(out)["requirements"]
+    except Exception as e:
+        return f"could not be checked ({type(e).__name__})"
+    bad = [r for r in ("VLC-L1-1", "VLC-L1-3") if req.get(r, {}).get("status") != "PASS"]
+    return True if not bad else f"{', '.join(bad)} failed"
+
+
 # --------------------------------------------------------------------------
 # what the agent SAYS it did
 # --------------------------------------------------------------------------
@@ -114,14 +133,22 @@ def claimed_effects(claims, scope):
             # the claimed binary is the first word, resolved to a basename:
             # the transcript says `cat /etc/hostname`, the kernel says
             # /usr/bin/cat, and comparing basenames is the honest join.
+            # An absolute claimed path is compared as a full path; only a bare
+            # command name falls back to basename.  Basename-only let
+            # /untrusted/id corroborate a claimed /safe/id (EXT-005).
             tok = cmd.strip().split()
             if tok:
-                execs.add(base(tok[0]))
+                execs.add(norm(tok[0]) if tok[0].startswith("/") else base(tok[0]))
         elif kind == "open":
             p = c.get(spec.get("field", "path"))
             if p:
                 opens.add(norm(p))
         elif kind == "connect":
+            # Scope applies to both sides.  Filtering connections only on the
+            # witness side turned an out-of-scope connection into an apparent
+            # uncorroborated claim (EXT-005).
+            if not bool(scope.get("connect_in_scope", True)):
+                continue
             h = c.get(spec.get("field", "host"))
             if h:
                 conns.add(str(h))
@@ -153,7 +180,7 @@ def witnessed_effects(journal, scope):
             p = str(r.get("path", ""))
             if any(x.search(p) for x in ex_excl):
                 continue
-            execs.add(base(p)); n_scoped += 1
+            execs.add(norm(p)); n_scoped += 1
         elif cls in ("file_read", "dir_open"):
             p = norm(r.get("path", ""))
             if op_incl and not any(x.search(p) for x in op_incl):
@@ -177,7 +204,12 @@ def main():
     ap.add_argument("--scope", required=True, help="declared reconciliation scope (JSON)")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--require-agreement", action="store_true",
-                    help="exit non-zero if the two records diverge at all")
+                    help="exit 0 only if both records are valid evidence AND they agree "
+                         "non-vacuously over the declared scope")
+    ap.add_argument("--journal-adapter",
+                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                         "..", "adapters", "sentinel.json"),
+                    help="adapter used to verify the witness journal's own chain")
     a = ap.parse_args()
 
     scope = json.load(open(a.scope))
@@ -187,15 +219,56 @@ def main():
     c_ex, c_op, c_cn, unmapped = claimed_effects(claims, scope)
     w_ex, w_op, w_cn, n_tot, n_scoped = witnessed_effects(journal, scope)
 
+    # A bare claimed command name ("id") matches a witnessed path with that
+    # basename; an absolute claim must match the witnessed path exactly.
+    def exec_match(cl, wt):
+        full_c = {x for x in cl if x.startswith("/")}
+        bare_c = {x for x in cl if not x.startswith("/")}
+        seen = set(full_c & wt) | {w for w in wt if base(w) in bare_c}
+        claimed_ok = set(full_c & wt) | {b for b in bare_c if any(base(w) == b for w in wt)}
+        return cl - claimed_ok, wt - seen, len(claimed_ok)
+
     findings = []
-    for kind, cl, wt in (("exec", c_ex, w_ex), ("open", c_op, w_op), ("connect", c_cn, w_cn)):
+    ex_unclaimed_c, ex_unwit_w, ex_corr = exec_match(c_ex, w_ex)
+    for x in sorted(ex_unclaimed_c):
+        findings.append({"severity": "UNCORROBORATED CLAIM", "kind": "exec", "what": x,
+                         "meaning": "the transcript asserts this and the kernel never saw it"})
+    for x in sorted(ex_unwit_w):
+        findings.append({"severity": "UNWITNESSED-BY-CLAIM", "kind": "exec", "what": x,
+                         "meaning": "the kernel saw this and the transcript does not mention it"})
+    for kind, cl, wt in (("open", c_op, w_op), ("connect", c_cn, w_cn)):
         for x in sorted(cl - wt):
             findings.append({"severity": "UNCORROBORATED CLAIM", "kind": kind, "what": x,
                              "meaning": "the transcript asserts this and the kernel never saw it"})
         for x in sorted(wt - cl):
             findings.append({"severity": "UNWITNESSED-BY-CLAIM", "kind": kind, "what": x,
                              "meaning": "the kernel saw this and the transcript does not mention it"})
-    corroborated = len(c_ex & w_ex) + len(c_op & w_op) + len(c_cn & w_cn)
+    corroborated = ex_corr + len(c_op & w_op) + len(c_cn & w_cn)
+
+    # ---- evidence validity, established separately from agreement -------
+    # "No divergence found" is not "valid evidence agreed".  Empty inputs,
+    # unparseable lines and a journal whose own chain does not verify all
+    # produce no divergence, and --require-agreement used to report that as
+    # success (EXT-005, reported by pipavlo82).
+    problems = []
+    if not claims:
+        problems.append("claim record is empty")
+    if not journal:
+        problems.append("witness journal is empty")
+    if bad_c:
+        problems.append(f"{bad_c} unparseable line(s) in the claim record")
+    if bad_j:
+        problems.append(f"{bad_j} unparseable line(s) in the witness journal")
+    chain = journal_chain_status(a.journal, a.journal_adapter)
+    if chain is not True:
+        problems.append(f"witness journal does not verify: {chain}")
+    evidence_valid = not problems
+    if findings:
+        agreement = "diverge"
+    elif corroborated == 0:
+        agreement = "vacuous"
+    else:
+        agreement = "agree"
 
     spoof = any(f["severity"] == "UNCORROBORATED CLAIM" for f in findings) and \
             any(f["severity"] == "UNWITNESSED-BY-CLAIM" for f in findings)
@@ -211,6 +284,9 @@ def main():
         "unparseable": {"claims": bad_c, "journal": bad_j},
         "unmapped_tools": sorted(set(map(str, unmapped))),
         "corroborated": corroborated,
+        "agreement": agreement,
+        "evidence_valid": evidence_valid,
+        "evidence_problems": problems,
         "findings": findings,
         "substitution_signature": spoof,
     }
@@ -227,8 +303,14 @@ def main():
         if report["unmapped_tools"]:
             print(f"  UNMAPPED TOOLS (excluded both ways): {', '.join(report['unmapped_tools'])}")
         print()
+        print(f"  evidence      : {'valid' if evidence_valid else 'NOT VALID'}")
+        for pr in problems:
+            print(f"      - {pr}")
         print(f"  corroborated  : {corroborated}")
-        if not findings:
+        if agreement == "vacuous":
+            print("  divergences   : none, but nothing was corroborated either —")
+            print("                  agreement is vacuous and establishes nothing")
+        elif not findings:
             print("  divergences   : none — the two records agree over the declared scope")
         else:
             print(f"  divergences   : {len(findings)}")
@@ -247,7 +329,7 @@ def main():
             print("  a scope that is too narrow or a tool mapping that is wrong both look")
             print("  like this, and both are worth fixing before drawing a conclusion.")
 
-    if a.require_agreement and findings:
+    if a.require_agreement and not (evidence_valid and agreement == "agree"):
         return 1
     return 0
 

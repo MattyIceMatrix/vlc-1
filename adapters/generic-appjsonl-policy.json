@@ -42,7 +42,12 @@
         "records",
         "lost_total"
       ]
-    }
+    },
+    "interval_fields": [
+      "from_seq",
+      "to_seq"
+    ],
+    "event_ordinal_field": "seq"
   },
   "coverage": {
     "mode": "enumerated",

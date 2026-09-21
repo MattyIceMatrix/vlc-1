@@ -101,3 +101,90 @@ passes where it used to fail, because the witness's recomputable coverage
 accounting is complete and only its exhaustiveness basis, an attested claim, is
 missing. If that basis should still count against a witness, it belongs in a
 separate attested requirement. Left open.
+
+## EXT-005 — reconciliation reported agreement without valid evidence
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-21 · **Status:** confirmed, fixed
+**Severity:** fail-open — `--require-agreement` succeeded on inputs that establish nothing
+
+`--require-agreement` returned success whenever no divergence was found. Two
+empty inputs, a claim record with unparseable lines, and a witness journal
+whose hashes were replaced with garbage all produced no divergence and exited
+0. Confirming it turned up a fourth case: exec paths were compared by basename,
+so a transcript claiming `/safe/bin/id` was corroborated by a kernel record of
+`/usr/bin/id` — the substitution the reconciler exists to catch. Connection
+scope was also applied to the witness side only.
+
+Fixed in `witness/reconcile.py` 1.2. Evidence validity is established
+separately from agreement: both records non-empty, no unparseable lines, and
+the witness journal's own chain verifying through `conformance.py`. Agreement
+over nothing corroborated is reported as vacuous. The strong result requires
+valid evidence and non-vacuous agreement. Absolute exec paths are compared in
+full. Four selftest controls, each failing against the previous reconciler.
+
+The reconciler remains set-level: it establishes that each claimed effect was
+witnessed and vice versa, not how many times. Stated rather than changed.
+
+## EXT-006 — seven obligations checked for presence rather than type
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-21 · **Status:** confirmed, fixed
+**Severity:** each could reach L4 while violated
+
+Every case below scored S4/A4 against the previous checker, after being
+re-sealed so the chain still verified: a loss declaration without its interval;
+a negative loss count with compensating totals; a declared loss range whose
+records were in fact delivered; a coverage category omitted and read as empty;
+a second coverage declaration without its basis; a policy change record
+without its before and after digests; per-record policy binding where one event
+lacked the digest; and determinism accepted from a reference alone. The last
+three were in VLC-L4, the rest in L2 and L3.
+
+The per-record check was also wrong in the other direction: it counted every
+record carrying a digest, including the root record, so an honest per-record
+log scored S3.
+
+The worked example itself declared records 12–14 lost while delivering them.
+The generator now omits them from the sequence.
+
+Fixed: each obligation is checked as SPEC states it. `adapters/sentinel.json`
+declares that a GAP record's interval is its chain position, which is weaker
+than an explicit range and is said so in the adapter. Selftest section 9
+re-seals ten mutants and asserts the specific requirement each must fail, with
+VLC-L1-1 still passing; nine of the ten fail against the previous checker, and
+the tenth is the honest control.
+
+## EXT-007 — evidence manifest entries could fail open
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-21 · **Status:** confirmed, fixed
+**Severity:** a citation that was not one could still support a requirement
+
+A present but malformed entry was treated as absent, so the requirement fell
+back to the bare assertion — contrary to VLC-E-2. Digests were accepted as any
+non-empty string. The negative control VLC-E-5 requires was not required, and
+the project's own VLC-L4-3 entry did not name one.
+
+Separately, the 1.1.1-draft release archive was built from a checkout with CRLF
+line endings. `witness/reconcile.py` in that archive does not match its
+published digest until line endings are normalized; in the repository it
+matches exactly. Neither the specification nor the manifest said which
+representation a digest is over.
+
+Fixed: malformed entries fail; digests must be `sha256:` and 64 lowercase hex;
+the negative control is required. VLC-E-6 states normatively that digests are
+over LF-normalized bytes and that release archives carry those bytes. The
+reconciler digest in `sentinel.json` is **not** updated: it pins the version
+that produced the cited 2026-09-12 output, and the entry now says the
+reconciler has since changed.
+
+## EXT-008 — L1 was described as rewrite resistance
+
+**Reporter:** pipavlo82 · **Reported:** 2026-09-21 · **Status:** confirmed, wording corrected
+**Severity:** a summary claimed more than the requirement establishes
+
+A verdict was altered, the chain and end marker recomputed, and the log still
+reached L4. That is correct behaviour for a keyless chain checked on the log
+alone. VLC-L1-1 already requires "a published root or public key"; the §4
+summary, the README table and the checker's output implied detection without
+one. All three now say that on the log alone L1 establishes chain consistency,
+and that a complete rewrite is detectable only against an independently held
+root or head. The requirement is unchanged.

@@ -37,7 +37,7 @@ Six of them, L0 to L5 — five substantive increments above recorded-only L0.
 |  | | refuses |
 |---|---|---|
 | **L0** | recorded | — |
-| **L1** | **tamper-evident** — alteration, reordering, removal, truncation are detectable | editing, truncation |
+| **L1** | **tamper-evident** — against an independently held root, alteration, reordering, removal and truncation are detectable; on the log alone, the chain is checked for consistency | editing, truncation |
 | **L2** | **loss-accounted** — the completeness identity closes over in-chain loss declarations | the silent drop |
 | **L3** | **coverage-declared** — the observation surface is enumerated in-log, with the basis for its exhaustiveness | the unhooked source |
 | **L4** | **policy-bound** — verdicts bound to the rules that produced them, replayable | the after-the-fact rule swap |

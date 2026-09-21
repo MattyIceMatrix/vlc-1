@@ -191,7 +191,9 @@ mode that no current standard asks about.
 
 ## 4. Level 1 — Tamper-evident
 
-> *A verifier can detect any modification of the delivered set.*
+> *A verifier holding a root or head published independently of the log can
+> detect any modification of the delivered set. A verifier holding only the log
+> can confirm that the chain is internally consistent, and nothing stronger.*
 
 **VLC-L1-1** The producer SHALL bind each record to its predecessors such that
 altering, reordering, inserting or removing any record is detectable by a
@@ -211,7 +213,16 @@ and accepts. The verifier then mutates one byte of one record and MUST reject;
 removes one interior record and MUST reject; truncates the final record and MUST
 reject. A producer whose log survives any of these three does not meet L1.
 
-**What L1 does not give you.** Nothing about records that were never delivered.
+**What L1 does not give you.** Resistance to a complete rewrite, on the log
+alone. Anyone who can recompute the binding -- for a keyless hash chain, anyone
+-- can alter a record, re-derive every later link and the end marker, and
+deliver a log that verifies. The three mutations in the test above are refused
+because they do *not* recompute the chain. A rewrite that does is detectable
+only against a root or head the verifier obtained independently of the log,
+which is what VLC-L1-1's "published root" is for. *(Clarified by Corrigendum 3;
+the requirement is unchanged, the summary overstated it.)*
+
+L1 also says nothing about records that were never delivered.
 A hash chain over 800 records is equally valid whether 800 or 8,000 were
 produced. This is the level at which essentially all commercially available AI
 audit logging currently stops.
@@ -674,6 +685,15 @@ whatever terms apply can check it against a digest they already held.
 **VLC-E-5** Where a requirement concerns a test, the entry SHALL name the
 **negative control** — the condition under which that test is known to fail.
 A test with no stated failure mode is not evidence that anything was checked.
+
+**VLC-E-6** A digest in the manifest SHALL be written `sha256:` followed by 64
+lowercase hexadecimal characters, computed over the artefact's bytes with every
+line ending normalized to LF. A release archive SHALL contain those same bytes,
+so that a reader holding only the archive can check a digest without knowing
+how it was produced. *(Added by Corrigendum 3. The 1.1.1-draft archive was
+built from a checkout with CRLF line endings, so its bytes do not match the
+published digests without normalization; this clause names the representation
+the digests were always over.)*
 
 ### E.1 Shape
 

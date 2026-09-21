@@ -104,10 +104,17 @@ def _accounted(n_events, lost, seed, coverage=None, policy=False, name=""):
                                  # in its first record; a zero-rooted one does not
     if coverage is not None:
         g.add(dict(coverage, **{"class": "COVERAGE"}))
-    for c in calls(n_events, seed=seed):
+    # EXT-006: the producer made n_events + lost records, numbered 0..N-1, and
+    # the ones in the declared range never arrived. Previously every sequence
+    # number was delivered AND a range was declared lost, so the example
+    # claimed records were missing that were sitting in the file.
+    lo_seq, hi_seq = 12, 12 + lost - 1
+    for c in calls(n_events + lost, seed=seed):
+        if lost and lo_seq <= c["seq"] <= hi_seq:
+            continue
         g.add(c)
     if lost:
-        g.add({"class": "DROP", "lost": lost, "from_seq": 12, "to_seq": 12 + lost - 1,
+        g.add({"class": "DROP", "lost": lost, "from_seq": lo_seq, "to_seq": hi_seq,
                "cause": "outbound queue full"})
     g.add({"class": "END", "records": n_events, "lost_total": lost},
           head_field="head")

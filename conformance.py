@@ -224,7 +224,14 @@ def check_l1(recs, ad, res):
     else:
         res.fail("VLC-L1-3", "adapter declares no end marker: truncation undetectable")
 
-    res.ok("VLC-L1-1")
+    # EXT-008. On the log alone this establishes that the chain is internally
+    # consistent from the root the log states. It does not establish resistance
+    # to a complete rewrite: anyone who can recompute the binding can alter a
+    # record and re-derive every later link and the end marker. That needs a
+    # root or head the verifier obtained independently of the log (VLC-L1-1's
+    # "published root"), and the report says so rather than implying more.
+    res.ok("VLC-L1-1", "chain consistent from the root the log states; a complete "
+                       "rewrite is detectable only against an independently held root or head")
 
     # These two used to default to TRUE, which meant an adapter that said
     # nothing at all passed them. That is not trusting an assertion, it is
@@ -316,13 +323,51 @@ def check_l2(recs, ad, res):
     declared = 0
     n_decls = 0
     if mode == "declaration":
+        # EXT-006. VLC-L2-2 requires every loss declaration to state the number
+        # lost AND the interval in which it occurred. The count was read with
+        # int(... or 0), so a missing count read as zero, a negative count was
+        # summed, and the interval was never looked at.
         dc = lo.get("declaration_class")
+        iv = lo.get("interval_fields")            # [from_field, to_field]
+        by_pos = lo.get("interval") == "position" # the record's place in the chain is the interval
+        ordf = lo.get("event_ordinal_field")      # lets ranges be checked against delivered events
+        problems = []
+        ranges = []
         for r in recs:
-            if r.cls == dc:
-                n_decls += 1
-                declared += int(dig(r.obj, lo.get("count_field", "lost")) or 0)
+            if r.cls != dc:
+                continue
+            n_decls += 1
+            v = dig(r.obj, lo.get("count_field", "lost"))
+            if type(v) is not int or v < 0:
+                problems.append(f"record {r.i}: lost count {v!r} is not a non-negative integer")
+                continue
+            declared += v
+            if iv:
+                a, b = dig(r.obj, iv[0]), dig(r.obj, iv[1])
+                if type(a) is not int or type(b) is not int or a < 0 or b < a:
+                    problems.append(f"record {r.i}: interval {a!r}..{b!r} is missing or malformed")
+                elif b - a + 1 != v:
+                    problems.append(f"record {r.i}: interval {a}..{b} covers {b - a + 1} "
+                                    f"record(s) but declares {v} lost")
+                else:
+                    ranges.append((a, b, r.i))
+            elif not by_pos:
+                problems.append(f"record {r.i}: no interval stated")
+        if ordf and ranges:
+            present = {dig(r.obj, ordf) for r in delivered}
+            for a, b, at in ranges:
+                hit = sorted(x for x in present if type(x) is int and a <= x <= b)
+                if hit:
+                    problems.append(f"record {at}: declares {a}..{b} lost, but {hit} "
+                                    f"were delivered")
         if dc is None:
             res.fail("VLC-L2-2", "adapter names no loss-declaration class")
+        elif n_decls and not iv and not by_pos:
+            res.fail("VLC-L2-2", "adapter says neither where a loss declaration states its "
+                                 "interval nor that its chain position is the interval")
+        elif problems:
+            res.fail("VLC-L2-2", "; ".join(problems[:3]) +
+                     (f" (+{len(problems) - 3} more)" if len(problems) > 3 else ""))
         else:
             res.ok("VLC-L2-2", f"{n_decls} declaration(s), {declared} record(s) declared lost")
     elif mode == "ordinal":
@@ -399,8 +444,27 @@ def check_l3(recs, ad, res):
     des = as_list(dig(d0.obj, cv.get("by_design_field")))
     basis = dig(d0.obj, cv.get("basis_field")) if cv.get("basis_field") else None
 
-    if not att:
-        res.fail("VLC-L3-1a", "coverage declaration names no attached sources")
+    # EXT-006. Only the first declaration was inspected, and an absent category
+    # read as an empty one. A later declaration could drop its basis, and a
+    # declaration that simply omitted "unattached" read as "nothing unattached".
+    # Every declaration is checked, and each category field must be PRESENT
+    # (it may be empty; it may not be missing).
+    malformed = []
+    for d in decls:
+        for key in ("attached_field", "unattached_field", "by_design_field"):
+            fld = cv.get(key)
+            if fld and dig(d.obj, fld) is None:
+                malformed.append(f"record {d.i} omits {fld!r}")
+        if not as_list(dig(d.obj, cv.get("attached_field"))):
+            malformed.append(f"record {d.i} names no attached sources")
+    no_basis = [d.i for d in decls
+                if cv.get("basis_field") and not dig(d.obj, cv.get("basis_field"))]
+    if cv.get("basis_field") is None:
+        basis = None
+
+    if malformed:
+        res.fail("VLC-L3-1a", "; ".join(malformed[:3]) +
+                 (f" (+{len(malformed) - 3} more)" if len(malformed) > 3 else ""))
     else:
         # L3-1a: the declaration is present and well-formed — recomputed.
         # L3-1b: it describes the surface actually observed — relayed. A
@@ -410,8 +474,11 @@ def check_l3(recs, ad, res):
                             "producer; not recomputable from the log")
         res.ok("VLC-L3-1a", f"{len(att)} attached, {len(una)} unattached-here, "
                            f"{len(des)} excluded by design")
-    if basis:
+    if basis and not no_basis:
         res.ok("VLC-L3-1d", f"exhaustiveness criterion: {basis}")
+    elif basis and no_basis:
+        res.fail("VLC-L3-1d", f"coverage declaration(s) at record(s) {no_basis} give no "
+                              f"criterion for why the enumeration is exhaustive")
     else:
         res.fail("VLC-L3-1d", "no criterion given for why the enumeration is exhaustive")
 
@@ -469,24 +536,47 @@ def check_l4(recs, ad, res):
         else:
             res.fail("VLC-L4-1", "policy digest does not root the binding")
     elif mode == "per_record":
-        n = sum(1 for r in recs if dig(r.obj, po.get("digest_field")) is not None)
-        if n == len([r for r in recs if r.cls not in set(ad.get("non_event_classes", []))]):
+        # EXT-006. Counted digests across ALL records and compared the total
+        # to the number of events, so a non-event carrying a digest could stand
+        # in for an event missing one. Each event is now checked on its own.
+        ne = set(ad.get("non_event_classes", []))
+        missing = [r.i for r in recs if r.cls not in ne
+                   and not isinstance(dig(r.obj, po.get("digest_field")), str)]
+        if not missing:
             res.ok("VLC-L4-1", "every event record carries the policy digest")
         else:
-            res.fail("VLC-L4-1", f"only {n} record(s) carry a policy digest")
+            res.fail("VLC-L4-1", f"{len(missing)} event record(s) carry no policy digest, "
+                                 f"first at record {missing[0]}")
     else:
         res.fail("VLC-L4-1", f"adapter: unknown policy.mode {mode!r}")
 
     cc = po.get("change_class")
     changes = [r for r in recs if cc and r.cls == cc]
+    # EXT-006. VLC-L4-2 requires each change record to carry the digests
+    # before and after. Only the record's existence was checked.
+    bf, af = po.get("change_before_field", "before"), po.get("change_after_field", "after")
+    incomplete = [r.i for r in changes
+                  if not isinstance(dig(r.obj, bf), str) or not dig(r.obj, bf)
+                  or not isinstance(dig(r.obj, af), str) or not dig(r.obj, af)]
     if cc is None:
         res.fail("VLC-L4-2", "adapter names no policy-change record class")
+    elif incomplete:
+        res.fail("VLC-L4-2", f"policy change record(s) {incomplete} do not carry both the "
+                             f"{bf!r} and {af!r} digests")
     else:
         res.ok("VLC-L4-2", f"{len(changes)} in-log policy change(s)")
 
     rp = po.get("replay", {})
-    if rp.get("deterministic") is False:
-        res.fail("VLC-L4-4", "decision function declared non-deterministic; L4 not claimable")
+    # EXT-006. Determinism was accepted whenever a reference existed, even with
+    # no "deterministic" flag at all. VLC-L4-4 requires it to be declared.
+    if rp.get("deterministic") is not True:
+        res.fail("VLC-L4-4", "decision function not declared deterministic; L4 not claimable"
+                 if rp.get("deterministic") is False else
+                 "determinism not declared; absence is not a declaration")
+        if rp.get("reference"):
+            res.ok("VLC-L4-3", rp["reference"])
+        else:
+            res.fail("VLC-L4-3", "no independently re-evaluable policy artefact referenced")
     elif rp.get("reference"):
         res.ok("VLC-L4-3", rp["reference"])
         res.ok("VLC-L4-4", "deterministic and replayable")
@@ -638,7 +728,12 @@ LEVEL_REQS = {
 # taxonomy exists to stop.
 STRUCTURALLY_ATTAINABLE = {1: True, 2: True, 3: True, 4: True, 5: False}
 
-EV_REQUIRED = ("test", "runner", "runner_digest", "output_digest", "result")
+# VLC-E-1 names the first five; VLC-E-5 adds the negative control, which the
+# checker did not require until EXT-007.
+EV_REQUIRED = ("test", "runner", "runner_digest", "output_digest", "result",
+               "negative_control")
+# VLC-E-6: a digest is written sha256: followed by 64 lowercase hex characters.
+DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def evidence_for(ad, rid):
@@ -650,12 +745,22 @@ def evidence_for(ad, rid):
     here -- it has only the log -- but it CAN tell the difference between a
     claim and a citation, and report which one it was given.
     """
-    ev = (ad.get("evidence") or {}).get(rid)
+    evidence = ad.get("evidence") or {}
+    if rid not in evidence:
+        return None, ""                    # genuinely no entry
+    ev = evidence[rid]
+    # EXT-007. A present but malformed entry used to be treated as absent,
+    # which let the requirement fall back to the bare assertion. VLC-E-2 says
+    # an entry that is not a complete citation is weaker than no entry at all.
     if not isinstance(ev, dict):
-        return None, ""
+        return False, f"evidence entry is malformed ({type(ev).__name__}, not an object)"
     missing = [k for k in EV_REQUIRED if not ev.get(k)]
     if missing:
         return False, f"evidence entry incomplete (missing {', '.join(missing)})"
+    bad = [k for k, v in ev.items() if k.endswith("_digest")
+           and not (isinstance(v, str) and DIGEST_RE.match(v))]
+    if bad:
+        return False, f"evidence entry has a malformed digest ({', '.join(bad)})"
     if str(ev.get("result")).upper() != "PASS":
         return False, f"evidence entry records result={ev.get('result')!r}"
     return True, f"{ev['test']} via {ev['runner']} (digests recorded)"
