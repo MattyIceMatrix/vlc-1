@@ -72,6 +72,9 @@ Fixed by Corrigendum 2. The reference implementation's own captured journals
 were written under the old count and now fail; they are hash-chained and are not
 being edited in place.
 
+**Fix verified independently.** The reporter checked the fix against the repository tree, not the maintainer's account of it, on 2026-09-21 (trustless-ai/recompute-kit#48).
+
+
 ## EXT-004 — a structural requirement read the adapter
 
 **Reporter:** pipavlo82 · **Reported:** 2026-09-21 · **Status:** confirmed, fixed
@@ -101,6 +104,9 @@ passes where it used to fail, because the witness's recomputable coverage
 accounting is complete and only its exhaustiveness basis, an attested claim, is
 missing. If that basis should still count against a witness, it belongs in a
 separate attested requirement. Left open.
+
+**Fix verified independently.** The reporter checked the fix against the repository tree, not the maintainer's account of it, on 2026-09-21 (trustless-ai/recompute-kit#48). They also confirmed that their original structural figure was wrong and that the attested level was the one that moved, as reproduced above.
+
 
 ## EXT-005 — reconciliation reported agreement without valid evidence
 
