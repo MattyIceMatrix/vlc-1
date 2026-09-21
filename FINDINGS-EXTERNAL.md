@@ -238,3 +238,44 @@ crashed halfway through. Both constructs are now POSIX, reading from temporary
 files rather than pipes so that a failure inside the loop is not lost in a
 subshell. The two workflows now run the suite under `bash` and `sh`
 respectively, so a future bash-only construct fails one of them.
+
+## EXT-013 — sha256-prev-field did not link records to each other
+
+**Found by:** the maintainer, writing tests for code paths babyblueviper1
+reported as unexercised (vlc-1#1, finding 4) · **Found:** 2026-09-21 ·
+**Status:** fixed
+**Severity:** a deleted or reordered record passed VLC-L1-1
+
+Under the `sha256-prev-field` mechanism each record's hash covers its own
+`prev` field, so every record is self-consistent whatever that field says.
+Nothing compared it with the hash of the record actually before it. Deleting an
+interior record, or swapping two, left every hash valid and the end marker's
+head unchanged, and VLC-L1-1 passed. No shipped adapter uses this mechanism,
+which is why it was never seen; it is exactly the property L1 exists for.
+
+Fixed: each record's declared predecessor must equal the recomputed hash of the
+record before it, including the end marker's. Selftest section 2b builds an
+honest, a deleted and a reordered log under this mechanism; the latter two fail
+against the previous checker.
+
+## EXT-014 — max_ordinal cannot see loss at either end of the sequence
+
+**Found by:** the maintainer, from the same tests · **Found:** 2026-09-21 ·
+**Status:** open, disclosed
+**Severity:** undeclared loss of the first or last records scores L2
+
+`loss.produced.kind: max_ordinal` computes the produced count from the lowest
+and highest ordinals among the records delivered. Losing records from the start
+or the end of the sequence lowers those bounds with them, so the identity still
+closes. Demonstrated with ten records, the first two or the last two removed
+and nothing declared: `max_ordinal` reports L2; `field_of_end_marker` and
+`field_of_any` both fail the identity.
+
+SPEC VLC-L2-5 names "sequence high-water mark" as a source for the produced
+count, which reads as a quantity the producer declares, not one inferred from
+what arrived. The fix is likely to take both bounds from producer-declared
+records. It is deferred deliberately: PR #2, in review, builds its ordinal-mode
+tests on `max_ordinal`, and changing its meaning now would break a contribution
+in flight. Selftest section 2b carries both cases as disclosed expected
+failures; if either starts failing the identity, the suite goes red until the
+marker is removed.

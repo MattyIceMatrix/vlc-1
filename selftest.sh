@@ -76,6 +76,34 @@ for m in flip-byte drop-interior truncate-tail drop-loss-decl drop-coverage reba
 	else bad "A.x $m -> L$got: the checker did not notice"; fi
 done
 
+hr; echo "2b. MECHANISMS -- every chain mechanism and produced-count kind, not only the one the examples use"
+# Section 2 runs its mutations against one adapter. These run the ones that
+# apply against the sentinel prefix chain, and exercise the chain mechanism and
+# produced-count kinds no worked example reaches. Writing them found EXT-013.
+KW=examples/reference-impl/kernel-witness-L5.jsonl
+if [ -f "$KW" ]; then
+  kb=$(level "$KW" adapters/sentinel.json)
+  for m in flip-byte drop-interior truncate-tail drop-coverage; do
+    got=$(level_m "$KW" adapters/sentinel.json $m)
+    if [ "$got" -lt "$kb" ] || [ "$got" = "0" ]; then ok "sentinel prefix chain: $m -> L$got (was L$kb)"
+    else bad "sentinel prefix chain: $m -> L$got, not lowered from L$kb"; fi
+  done
+fi
+MC=$(mktemp -d)
+python3 examples/mechanism_cases.py "$MC" | tr -d '\r' > "$MC/cases.txt"
+while read -r LOG AD REQ EXPECT MODE; do
+  GOT=$($C --log "$LOG" --adapter "$AD" --json 2>/dev/null \
+        | python3 -c "import json,sys;print(json.load(sys.stdin)['requirements']['$REQ']['status'])" \
+        | tr -d '\r')
+  N=$(basename "$LOG" .jsonl)
+  if [ "$MODE" = "xfail" ]; then
+    if [ "$GOT" = "$EXPECT" ]; then bad "$N: now detected ($REQ $GOT); remove its expected-failure marker (EXT-014)"
+    else xfail "$N: $REQ $GOT, should be $EXPECT -- max_ordinal cannot see loss at the ends of the sequence (EXT-014, open)"; fi
+  elif [ "$GOT" = "$EXPECT" ]; then ok "$N: $REQ $GOT"
+  else bad "$N: expected $REQ $EXPECT, got $GOT"; fi
+done < "$MC/cases.txt"
+rm -rf "$MC"
+
 hr; echo "3. NEGATIVE -- a checker that always fails is also broken"
 # Re-run the untouched log after the mutations: it must still reach L4.
 got=$(level $L4 $A)
