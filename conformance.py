@@ -73,6 +73,22 @@ class Rec:
         self.i, self.raw, self.obj, self.cls, self.hash = i, raw, obj, cls, h
 
 
+def _no_duplicate_names(pairs):
+    # RFC 7493 I-JSON 2.3: duplicate member names make a record mean different
+    # things to a last-wins and a first-wins parser, and the canonical-JSON
+    # mechanisms hash the PARSED record, so the edit changes no hash.
+    d = {}
+    for k, v in pairs:
+        if k in d:
+            raise LogError(f"duplicate member name {k!r}: two parsers can read different values")
+        d[k] = v
+    return d
+
+
+def _reject_nonfinite(tok):
+    raise LogError(f"non-finite number {tok}: not representable in canonical JSON")
+
+
 def load(path, ad):
     if not os.path.exists(path):
         raise LogError(f"log not found: {path}")
@@ -83,9 +99,14 @@ def load(path, ad):
     out = []
     for i, l in enumerate(lines):
         try:
-            o = json.loads(l)
+            o = json.loads(l, object_pairs_hook=_no_duplicate_names,
+                           parse_constant=_reject_nonfinite)
+        except LogError as e:
+            raise LogError(f"record {i}: {e}")
         except Exception:
             raise LogError(f"record {i} is not parseable as JSON")
+        if not isinstance(o, dict):
+            raise LogError(f"record {i} is not a JSON object")
         out.append(Rec(i, l, o, str(dig(o, cf)) if cf else "?", dig(o, hf)))
     return out
 
@@ -322,15 +343,21 @@ def check_l2(recs, ad, res):
     # --- declared loss ----------------------------------------------------
     declared = 0
     n_decls = 0
-    if mode == "declaration":
+    if mode in ("declaration", "ordinal"):
         # EXT-006. VLC-L2-2 requires every loss declaration to state the number
         # lost AND the interval in which it occurred. The count was read with
         # int(... or 0), so a missing count read as zero, a negative count was
         # summed, and the interval was never looked at.
+        # Ordinal mode reads declarations the same way (one definition of a
+        # well-formed declaration for both modes) and then requires every
+        # ordinal hole to be covered by one.
         dc = lo.get("declaration_class")
         iv = lo.get("interval_fields")            # [from_field, to_field]
         by_pos = lo.get("interval") == "position" # the record's place in the chain is the interval
         ordf = lo.get("event_ordinal_field")      # lets ranges be checked against delivered events
+        if mode == "ordinal":
+            of = lo.get("ordinal_field", p.get("field"))
+            ordf = ordf or of
         problems = []
         ranges = []
         for r in recs:
@@ -360,6 +387,14 @@ def check_l2(recs, ad, res):
                 if hit:
                     problems.append(f"record {at}: declares {a}..{b} lost, but {hit} "
                                     f"were delivered")
+        if mode == "ordinal":
+            vals = sorted(x for x in (dig(r.obj, of) for r in recs) if type(x) is int)
+            holes = [(a + 1, b - 1) for a, b in zip(vals, vals[1:]) if b > a + 1]
+            uncovered = [h for h in holes
+                         if not any(a <= h[0] and h[1] <= b for a, b, _ in ranges)]
+            if uncovered:
+                problems.append(f"{len(uncovered)} ordinal gap(s) with no producer loss declaration: "
+                                f"{uncovered[:5]}; a gap the producer did not declare is silent loss")
         if dc is None:
             res.fail("VLC-L2-2", "adapter names no loss-declaration class")
         elif n_decls and not iv and not by_pos:
@@ -370,17 +405,6 @@ def check_l2(recs, ad, res):
                      (f" (+{len(problems) - 3} more)" if len(problems) > 3 else ""))
         else:
             res.ok("VLC-L2-2", f"{n_decls} declaration(s), {declared} record(s) declared lost")
-    elif mode == "ordinal":
-        of = lo.get("ordinal_field", p.get("field"))
-        vals = sorted(int(dig(r.obj, of)) for r in recs
-                      if dig(r.obj, of) is not None)
-        holes = 0
-        for a, b in zip(vals, vals[1:]):
-            if b > a + 1:
-                holes += b - a - 1
-        declared = holes
-        n_decls = 1 if holes else 0
-        res.ok("VLC-L2-2", f"loss detected from ordinal holes: {holes}")
     else:
         res.fail("VLC-L2-2", f"adapter: unknown loss.mode {mode!r}")
         return None
@@ -388,12 +412,10 @@ def check_l2(recs, ad, res):
     # --- L2-3: is the declaration integrity-bound? ------------------------
     if ad["integrity"]["mechanism"] == "none":
         res.fail("VLC-L2-3", "no integrity binding, so declarations are removable")
-    elif mode == "declaration":
+    elif mode in ("declaration", "ordinal"):
         bound = all(r.hash for r in recs if r.cls == lo.get("declaration_class"))
         res.ok("VLC-L2-3") if bound or n_decls == 0 else \
             res.fail("VLC-L2-3", "a loss declaration carries no binding")
-    else:
-        res.ok("VLC-L2-3", "loss is implied by bound ordinals")
 
     # --- L2-4: declared overflow behaviour --------------------------------
     ob = lo.get("overflow_behaviour")
