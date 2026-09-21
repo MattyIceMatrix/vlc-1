@@ -213,7 +213,15 @@ def check_l1(recs, ad, res):
             body = body[:-1]
 
     prev_raw = b""
+    # EXT-013. Under sha256-prev-field each record's hash covers its OWN prev
+    # field, so a record is self-consistent whatever that field says. Nothing
+    # compared it with the hash of the record actually before it, so deleting
+    # or reordering records left every hash valid. The link is checked here.
+    link_field = ad["integrity"].get("prev_field") if mech == "sha256-prev-field" else None
     for r in body:
+        if link_field is not None and str(dig(r.obj, link_field) or "") != prev.hex():
+            res.fail("VLC-L1-1", f"record {r.i} does not link to its predecessor")
+            return None
         h = rec_hash(prev, r, ad, prev_raw)
         if h is None:
             res.fail("VLC-L1-1", f"record {r.i} carries no recomputable binding")
@@ -236,6 +244,9 @@ def check_l1(recs, ad, res):
         # Some designs chain the end marker; others make it commit to the head as
         # it stood before itself. The adapter says which.
         if end.hash and em.get("self_bound", True):
+            if link_field is not None and str(dig(end.obj, link_field) or "") != prev.hex():
+                res.fail("VLC-L1-1", "end marker does not link to its predecessor")
+                return None
             h = rec_hash(prev, end, ad)
             if h is not None and h != end.hash:
                 res.fail("VLC-L1-1", "end marker binding broken")
