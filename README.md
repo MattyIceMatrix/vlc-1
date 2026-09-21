@@ -53,6 +53,21 @@ transcript cannot, by itself, establish independent witnessing of the behaviour
 it describes. Not because the frameworks are careless — because the file and the
 behaviour have the same author.
 
+## Anchoring against a rewrite
+
+On the log alone, L1 establishes that the chain is internally consistent. Anyone
+who can recompute the binding can rewrite a record and re-derive every later
+link, and the result verifies. To detect that, give the checker a value you
+obtained independently of the log — a published root, or a head recorded at the
+time:
+
+```
+python3 conformance.py --log your-log.jsonl --adapter adapters/generic-appjsonl.json \
+    --expect-head <hex head you hold>
+```
+
+A rewritten log then fails VLC-L1-1, however consistent it is internally.
+
 ## Two numbers, not one
 
 A checker can *recompute* some requirements from the log and can only *relay*

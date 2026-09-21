@@ -380,3 +380,33 @@ with a note on why. One is still load-bearing: section 6 uses it as the witness
 below structural L3 that VLC-L5-4 says may not corroborate.
 
 `selftest.sh` carries no expected failures after this change.
+
+## EXT-017 — re-rooting was detectable only against a value the checker was never given
+
+**Reporter:** babyblueviper1 (invinoveritas) · **Reported:** 2026-09-21
+(trustless-ai/recompute-kit#48, Annex A.13) · **Status:** fixed by the reporter in
+#3, merged as `7a1d129`
+**Severity:** Annex A.13's claim that re-rooting is detectable held only for an
+in-place edit
+
+The Annex A re-root mutation edits the log in place, so it breaks the chain and
+is killed by VLC-L1-1 for the wrong reason. Regenerating the example under a
+different policy digest and re-sealing the whole chain produced a log that
+scored structural L4, with VLC-L4-1 reporting that the policy digest roots the
+binding. It does — but nothing compared it with the digest that should be
+there, because the checker took no such input. EXT-008 had already conceded
+this in words; this makes it a mechanism.
+
+Fixed: `--expect-root` and `--expect-head` supply a root or final head obtained
+independently of the log. Against either, a re-rooted or rewritten log fails
+VLC-L1-1 however consistent it is internally, and the report says the anchor
+was supplied from outside. Selftest section 12 builds the re-rooted, re-sealed
+log and checks both flags in both directions; it fails against the checker
+without them.
+
+The same PR corrected a misleading message: on a truncated log, VLC-L1-3 said
+the adapter declared no end marker, when the adapter did and the log had lost
+it. It now names the log.
+
+This is the second contribution to VLC-1 from outside the project.
+

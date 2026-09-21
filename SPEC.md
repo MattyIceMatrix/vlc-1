@@ -222,6 +222,12 @@ only against a root or head the verifier obtained independently of the log,
 which is what VLC-L1-1's "published root" is for. *(Clarified by Corrigendum 3;
 the requirement is unchanged, the summary overstated it.)*
 
+The reference checker accepts that independently held value directly:
+`--expect-root` for the chain root, `--expect-head` for the final head. Given
+either, a re-rooted or rewritten log that is internally consistent fails
+VLC-L1-1, and the report records that the anchor was supplied from outside the
+log. *(Added with EXT-017.)*
+
 L1 also says nothing about records that were never delivered.
 A hash chain over 800 records is equally valid whether 800 or 8,000 were
 produced. This is the level at which essentially all commercially available AI
