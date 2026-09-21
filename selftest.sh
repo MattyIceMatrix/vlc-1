@@ -97,8 +97,8 @@ while read -r LOG AD REQ EXPECT MODE; do
         | tr -d '\r')
   N=$(basename "$LOG" .jsonl)
   if [ "$MODE" = "xfail" ]; then
-    if [ "$GOT" = "$EXPECT" ]; then bad "$N: now detected ($REQ $GOT); remove its expected-failure marker (EXT-014)"
-    else xfail "$N: $REQ $GOT, should be $EXPECT -- max_ordinal cannot see loss at the ends of the sequence (EXT-014, open)"; fi
+    if [ "$GOT" = "$EXPECT" ]; then bad "$N: now detected ($REQ $GOT); remove its expected-failure marker"
+    else xfail "$N: $REQ $GOT, should be $EXPECT -- disclosed in FINDINGS-EXTERNAL.md"; fi
   elif [ "$GOT" = "$EXPECT" ]; then ok "$N: $REQ $GOT"
   else bad "$N: expected $REQ $EXPECT, got $GOT"; fi
 done < "$MC/cases.txt"
@@ -433,20 +433,21 @@ base = json.load(open("adapters/generic-appjsonl.json"))
 ordn = copy.deepcopy(base)
 ordn["loss"] = {"mode": "ordinal", "ordinal_field": "seq", "declaration_class": "DROP", "count_field": "lost",
                 "interval_fields": ["from", "to"], "overflow_behaviour": "drop_counted",
-                "produced": {"kind": "max_ordinal", "field": "seq"}}
+                "produced": {"kind": "max_ordinal", "field": "seq",
+                             "high_water_field": "last_seq", "start": 0}}
 ev = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4]
 def emit(tag, name, want):
     print(("OK" if want else "BAD") + "|" + name)
 # 1. silent ordinal gap: must fail L2-2 with the chain intact; the same gap DECLARED must pass (positive control)
-lines = [json.dumps(r) for r in build(ev, {"lost_total": 0, "records": 10})]
+lines = [json.dumps(r) for r in build(ev, {"lost_total": 0, "records": 10, "last_seq": 9})]
 rc, st = run(write("gap.jsonl", lines), ordn)
 emit("", "ordinal mode: an undeclared gap fails VLC-L2-2 with VLC-L1-1 intact", st and st["VLC-L2-2"] == "FAIL" and st["VLC-L1-1"] == "PASS")
 decl = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4] + [{"class": "DROP", "lost": 1, "from": 4, "to": 4}]
-lines = [json.dumps(r) for r in build(decl, {"lost_total": 1, "records": 10})]
+lines = [json.dumps(r) for r in build(decl, {"lost_total": 1, "records": 10, "last_seq": 9})]
 rc, st = run(write("gapdecl.jsonl", lines), ordn)
 emit("", "ordinal mode: the same gap declared by the producer passes VLC-L2-2 and VLC-L2-5", st and st["VLC-L2-2"] == "PASS" and st["VLC-L2-5"] == "PASS")
 bad = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4] + [{"class": "DROP", "lost": 2, "from": 4, "to": 4}]
-lines = [json.dumps(r) for r in build(bad, {"lost_total": 2, "records": 10})]
+lines = [json.dumps(r) for r in build(bad, {"lost_total": 2, "records": 10, "last_seq": 9})]
 rc, st = run(write("gapbad.jsonl", lines), ordn)
 emit("", "ordinal mode: a declaration whose interval size differs from its count fails VLC-L2-2", st and st["VLC-L2-2"] == "FAIL")
 # 2. duplicate member name inserted into one record, chain not recomputed: refused, not scored
@@ -457,7 +458,7 @@ rc, st = run(write("dup.jsonl", src), base)
 emit("", "a duplicate member name is unreadable at VLC-L1-1 and scores L0, not L2", st is not None and st["VLC-L1-1"] == "FAIL")
 # 3. NaN, with the chain RE-SEALED over it (json.dumps hashes NaN happily), so only the loader can refuse it
 nanev = copy.deepcopy(ev); nanev[1]["x"] = float("nan")
-lines = [json.dumps(r) for r in build(nanev, {"lost_total": 0, "records": 10})]
+lines = [json.dumps(r) for r in build(nanev, {"lost_total": 0, "records": 10, "last_seq": 9})]
 rc, st = run(write("nan.jsonl", lines), ordn)
 emit("", "a NaN literal in a re-sealed log is unreadable at VLC-L1-1, not scored", st is not None and st["VLC-L1-1"] == "FAIL")
 # 4. non-object line

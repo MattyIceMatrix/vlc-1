@@ -326,9 +326,23 @@ def check_l2(recs, ad, res):
             v = dig(last.obj, p["field"])
             produced = int(v) if v is not None else None
     elif kind == "max_ordinal":
-        vals = [dig(r.obj, p["field"]) for r in recs]
-        vals = [int(v) for v in vals if v is not None]
-        produced = (max(vals) - min(vals) + 1) if vals else None
+        # EXT-014. The high-water mark is a quantity the PRODUCER declares, as
+        # VLC-L2-5 says. It was computed as max - min + 1 over the ordinals that
+        # happened to arrive, so losing records at either end of the sequence
+        # moved both bounds with them and the identity still closed. Now the
+        # end marker must carry the producer's final ordinal, and the adapter
+        # must state where the sequence starts; neither is inferred.
+        em = ad["integrity"].get("end_marker", {})
+        hwf, start = p.get("high_water_field"), p.get("start")
+        last = recs[-1]
+        if hwf is None or type(start) is not int:
+            res.fail("VLC-L2-1", "max_ordinal needs produced.high_water_field (on the end "
+                                 "marker) and an integer produced.start; the bounds of the "
+                                 "sequence are not inferred from what arrived")
+            return None
+        if last.cls == em.get("class"):
+            hw = dig(last.obj, hwf)
+            produced = hw - start + 1 if type(hw) is int and hw >= start - 1 else None
     elif kind == "sum_of_end_marker_fields":
         em = ad["integrity"].get("end_marker", {})
         last = recs[-1]

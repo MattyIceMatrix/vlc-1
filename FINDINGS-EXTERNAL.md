@@ -195,6 +195,42 @@ one. All three now say that on the log alone L1 establishes chain consistency,
 and that a complete rewrite is detectable only against an independently held
 root or head. The requirement is unchanged.
 
+## EXT-009 — ordinal-mode L2 accepted silent loss
+
+**Reporter:** babyblueviper1 (invinoveritas) · **Reported:** 2026-09-21 (vlc-1#1) ·
+**Status:** fixed by the reporter in #2, merged as `c002804`
+**Severity:** a log with undeclared gaps scored L2
+
+In `loss.mode: ordinal`, every hole in the delivered ordinals was counted as a
+declared loss, so the identity closed by arithmetic for any log whose events
+carried distinct ordinals. SPEC VLC-L2-2 requires the *producer* to declare
+loss; here nobody had. Fixed: ordinal mode reads loss declarations exactly as
+declaration mode does (`interval_fields`, the same typed checks) and requires
+every hole to be covered by one.
+
+## EXT-010 — duplicate member names were invisible to L1
+
+**Reporter:** babyblueviper1 (invinoveritas) · **Reported:** 2026-09-21 (vlc-1#1) ·
+**Status:** fixed by the reporter in #2, merged as `c002804`
+**Severity:** a record's meaning could change with every hash still valid
+
+The canonical-JSON mechanisms hash the parsed record, and Python's parser keeps
+the last of two members with the same name. Adding an earlier duplicate changed
+no hash, so an edited record verified while a first-wins parser read the
+opposite value, with nothing recomputed. RFC 7493 §2.3 forbids duplicate names.
+Fixed: the loader refuses duplicate member names, and — at the maintainer's
+suggestion — `NaN` and `Infinity`, which are not canonical JSON.
+
+## EXT-011 — a non-object line crashed the checker
+
+**Reporter:** babyblueviper1 (invinoveritas) · **Reported:** 2026-09-21 (vlc-1#1) ·
+**Status:** fixed by the reporter in #2, merged as `c002804`
+**Severity:** hostile input indistinguishable from a low score
+
+A line containing a bare JSON value such as `1` raised `AttributeError` and
+exited 1 with nothing on stdout, where exit 1 otherwise means an expectation
+was not met. Fixed: reported at VLC-L1-1 as an unreadable record.
+
 ## EXT-012 — a permanently red suite, and a verification workflow that could not go red
 
 **Reporter:** babyblueviper1 · **Reported:** 2026-09-21 (vlc-1#1, finding 4) · **Status:** confirmed, fixed
@@ -267,7 +303,7 @@ against the previous checker.
 ## EXT-014 — max_ordinal cannot see loss at either end of the sequence
 
 **Found by:** the maintainer, from the same tests · **Found:** 2026-09-21 ·
-**Status:** open, disclosed
+**Status:** fixed after #2 merged
 **Severity:** undeclared loss of the first or last records scores L2
 
 `loss.produced.kind: max_ordinal` computes the produced count from the lowest
@@ -285,3 +321,10 @@ tests on `max_ordinal`, and changing its meaning now would break a contribution
 in flight. Selftest section 2b carries both cases as disclosed expected
 failures; if either starts failing the identity, the suite goes red until the
 marker is removed.
+
+**Fixed, same day, after #2 merged.** `max_ordinal` now takes the high-water
+mark from the end marker (`produced.high_water_field`) and the start from the
+adapter (`produced.start`), and refuses to infer either. SPEC VLC-L2-5 now says
+the high-water mark is a producer-declared quantity. Section 11's ordinal-mode
+fixtures declare their bounds; section 2b's two expected failures now pass as
+ordinary cases, with a third case showing that undeclared bounds are refused.

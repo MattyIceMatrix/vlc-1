@@ -4,8 +4,9 @@
 Every shipped adapter uses sha256-chain-canonical or sha256-chain-prefix, and
 every shipped example derives its produced count from sum_of_end_marker_fields.
 The rest of the checker was reachable and untested (reported by babyblueviper1
-in vlc-1#1, finding 4). Writing these cases found EXT-013: under
-sha256-prev-field, deleted and reordered records verified.
+in vlc-1#1, finding 4). Writing these cases found EXT-013 (under
+sha256-prev-field, deleted and reordered records verified) and EXT-014
+(max_ordinal could not see loss at either end of the sequence).
 
     python3 examples/mechanism_cases.py <outdir>
 
@@ -88,6 +89,9 @@ def main(out):
                         ("max_ordinal", "seq")):
         a = copy.deepcopy(base)
         a["loss"]["produced"] = {"kind": kind, "field": field}
+        if kind == "max_ordinal":
+            # EXT-014: the producer declares the sequence's bounds
+            a["loss"]["produced"].update(high_water_field="last_seq", start=0)
         ap = os.path.join(out, f"{kind}.adapter.json")
         json.dump(a, open(ap, "w"))
         for tag, keep in (("all-delivered", range(10)),
@@ -96,11 +100,21 @@ def main(out):
             ev = [{"class": "EPOCH_START", "producer": "x"}] + \
                  [{"class": "inference", "seq": i, "verdict": "allow"} for i in keep]
             expect = "PASS" if tag == "all-delivered" else "FAIL"
-            # EXT-014 (open): max_ordinal derives the total from the delivered
-            # ordinals, so loss at either end of the sequence is invisible.
-            mode = "xfail" if (kind == "max_ordinal" and expect == "FAIL") else "check"
-            case(f"{kind}-{tag}", chained(ev, {"records": 10, "lost_total": 0}),
-                 ap, "VLC-L2-5", expect, mode)
+            # the producer made seq 0..9 and says so in its end marker
+            case(f"{kind}-{tag}",
+                 chained(ev, {"records": 10, "lost_total": 0, "last_seq": 9}),
+                 ap, "VLC-L2-5", expect)
+
+    # EXT-014: max_ordinal with no declared high-water mark is refused rather
+    # than inferred from the ordinals that arrived
+    a = copy.deepcopy(base)
+    a["loss"]["produced"] = {"kind": "max_ordinal", "field": "seq"}
+    ap = os.path.join(out, "max_ordinal-undeclared.adapter.json")
+    json.dump(a, open(ap, "w"))
+    ev = [{"class": "EPOCH_START", "producer": "x"}] + \
+         [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10)]
+    case("max_ordinal-bounds-undeclared",
+         chained(ev, {"records": 10, "lost_total": 0}), ap, "VLC-L2-1", "FAIL")
 
     for c in cases:
         print(" ".join(c))

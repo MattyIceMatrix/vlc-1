@@ -259,6 +259,12 @@ where `|records produced|` is derived from quantities in the delivered set
 (final ordinal, sequence high-water mark, or an explicit produced count in the
 end marker) and not supplied out of band.
 
+A final ordinal or high-water mark SHALL be one the producer declares in the
+delivered set, together with the ordinal at which the sequence starts. It SHALL
+NOT be computed from the ordinals of the records that happened to arrive: that
+quantity moves with the loss it is meant to measure, and cannot show records
+lost from either end of the sequence. *(Clarified by Corrigendum 4, EXT-014.)*
+
 **VLC-L2-6** Where the completeness identity does not close, the verifier SHALL
 report the log as **not complete**, and SHALL NOT report it as merely
 "integrity verified".
