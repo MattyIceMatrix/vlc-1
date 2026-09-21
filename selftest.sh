@@ -216,16 +216,12 @@ for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl
 	[ -f "$j" ] || continue
 	got=$(level  "$j" adapters/sentinel.json)
 	sgot=$(slevel "$j" adapters/sentinel.json)
-	# Expected to fail until the Sentinel sensor writes an event-only produced
-	# count and is re-run (Corrigendum 2). Marked only for that exact reason:
-	# if it fails for any other reason, or starts passing, the suite goes red.
-	l25=$(req "$j" adapters/sentinel.json VLC-L2-5)
+	# Re-captured 2026-09-21 by the corrected sensor on a GitHub-hosted runner;
+	# the 2026-09-12 captures are kept in pre-EXT-003/ (Corrigendum 2).
 	if [ "$got" = "5" ] && [ "$sgot" = "4" ]; then
-		bad "$(basename $j) now passes: remove its expected-failure marker in section 5"
-	elif [ "$l25" = "FAIL" ] && [ "$sgot" = "1" ]; then
-		xfail "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5 once the sensor is fixed (captured before EXT-003)"
+		ok "$(basename $j) -> structural L$sgot, attested L$got"
 	else
-		bad "$(basename $j) -> structural L$sgot, attested L$got, VLC-L2-5 $l25: a failure other than the known one"
+		bad "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5"
 	fi
 done
 ok "the reference implementation's own L5 is ATTESTED, not structural, and says so"
@@ -271,17 +267,11 @@ def rec(claims, journal):
     return json.loads(p.stdout), q.returncode
 def say(ok, msg): print(("OK" if ok else "BAD") + "|" + msg)
 
-# the honest run: expected to fail ONLY because its witness predates EXT-003
+# the honest run: the records must agree AND the witness must qualify
 r, rc = rec(H, W)
-standing = [x for x in r["evidence_problems"] if "VLC-L5-4 requires L3" in x]
-if rc == 0:
-    print("BAD|honest run now passes: remove its expected-failure marker in section 6")
-elif r["agreement"] == "agree" and standing and len(r["evidence_problems"]) == 1:
-    print("XFAIL|honest run: the records agree, but the demo witness predates EXT-003 and "
-          "demonstrates only structural L1; refused until the sensor re-capture (EXT-015)")
-else:
-    print("BAD|honest run refused for a reason other than witness standing: "
-          + "; ".join(r["evidence_problems"]) + f" / agreement {r['agreement']}")
+say(rc == 0, "honest run: the records agree and the witness qualifies"
+    if rc == 0 else "honest run refused: " + "; ".join(r["evidence_problems"])
+    + f" / agreement {r['agreement']}")
 
 def refused_for(claims, journal, needle, label, where="problems"):
     r, rc = rec(claims, journal)
@@ -299,7 +289,11 @@ refused_for(f"{d}/otherpath.jsonl", W, "UNCORROBORATED CLAIM /safe/bin/id",
             "a claimed /safe/bin/id is not corroborated by a witnessed /usr/bin/id", where="findings")
 refused_for(f"{d}/unmapped.jsonl", W, "have no mapping",
             "a claimed tool with no mapping blocks the strong result (EXT-016)")
-refused_for(H, W, "VLC-L5-4 requires L3",
+# A genuinely weak witness: the pre-EXT-003 capture of the same session, which
+# scores structural L1 under the corrected identity. Kept for this purpose.
+P3 = f"{E}/pre-EXT-003"
+refused_for(f"{P3}/agent-transcript-honest.jsonl", f"{P3}/kernel-witness-honest-session.jsonl",
+            "VLC-L5-4 requires L3",
             "a witness below structural L3 cannot corroborate (EXT-015)")
 PYX
 while IFS='|' read -r V M; do

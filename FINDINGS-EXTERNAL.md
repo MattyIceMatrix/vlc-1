@@ -363,3 +363,20 @@ side, but its real effects stayed in the witness projection, where they could
 surface as unclaimed effects. The report nonetheless said such tools were
 "excluded both ways". Fixed: an unmapped claimed tool is an evidence problem
 that blocks the strong result, and the report says so.
+
+## Resolution of the captured-journal failures (EXT-003, EXT-015)
+
+**Resolved:** 2026-09-21. The Sentinel sensor now reports event records only in
+its end marker (octa-sentinel `5c7d8e0`). All four reference journals and both
+agent transcripts were re-recorded by that sensor on a GitHub-hosted Ubuntu
+runner, not the maintainer's machine (octa-sentinel workflow "Sensor
+re-capture", run 35657697524). All four score structural L4, attested L5; the
+loss capture declares over ten thousand kernel-dropped events in-chain and
+still closes the identity; the honest witness pair is accepted by the
+EXT-015 reconciler and the spoofed pair raises the substitution signature.
+
+The 2026-09-12 captures are kept unedited in `examples/reference-impl/pre-EXT-003/`,
+with a note on why. One is still load-bearing: section 6 uses it as the witness
+below structural L3 that VLC-L5-4 says may not corroborate.
+
+`selftest.sh` carries no expected failures after this change.
