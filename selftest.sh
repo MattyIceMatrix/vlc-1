@@ -405,6 +405,77 @@ while IFS='|' read -r V M; do
 done < "$EVF"
 rm -f "$EVF"
 
+hr; echo "11. LOADER AND ORDINAL MODE -- duplicate names, non-finite numbers, non-objects, undeclared ordinal gaps (vlc-1#1)"
+# A duplicate member name is invisible to the canonical-JSON chain (the PARSED record is hashed), NaN/Infinity
+# are not canonical JSON, a non-object line crashed the checker, and ordinal mode scored a silent gap as a
+# declared loss. Every log below is built with the chain intact, so the only thing that can catch it is the check named.
+OR=$(python3 - <<'PYX'
+import copy, hashlib, json, os, subprocess, tempfile
+d = tempfile.mkdtemp()
+canon = lambda o: json.dumps(o, sort_keys=True, separators=(",", ":"))
+def build(recs, end_extra):
+    prev, out = "00" * 32, []
+    for r in recs:
+        h = hashlib.sha256(prev.encode() + canon(r).encode()).hexdigest(); out.append(dict(r, hash=h)); prev = h
+    end = dict({"class": "END", "head": prev}, **end_extra)
+    h = hashlib.sha256(prev.encode() + canon(end).encode()).hexdigest(); out.append(dict(end, hash=h))
+    return out
+def write(name, lines):
+    p = os.path.join(d, name); open(p, "w").write("\n".join(lines) + "\n"); return p
+def run(log, ad):
+    ap = os.path.join(d, "ad.json"); json.dump(ad, open(ap, "w"))
+    p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", ap, "--json"], capture_output=True, text=True)
+    try:
+        r = json.loads(p.stdout)["requirements"]; return p.returncode, {k: v["status"] for k, v in r.items()}
+    except Exception:
+        return p.returncode, None
+base = json.load(open("adapters/generic-appjsonl.json"))
+ordn = copy.deepcopy(base)
+ordn["loss"] = {"mode": "ordinal", "ordinal_field": "seq", "declaration_class": "DROP", "count_field": "lost",
+                "interval_fields": ["from", "to"], "overflow_behaviour": "drop_counted",
+                "produced": {"kind": "max_ordinal", "field": "seq"}}
+ev = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4]
+def emit(tag, name, want):
+    print(("OK" if want else "BAD") + "|" + name)
+# 1. silent ordinal gap: must fail L2-2 with the chain intact; the same gap DECLARED must pass (positive control)
+lines = [json.dumps(r) for r in build(ev, {"lost_total": 0, "records": 10})]
+rc, st = run(write("gap.jsonl", lines), ordn)
+emit("", "ordinal mode: an undeclared gap fails VLC-L2-2 with VLC-L1-1 intact", st and st["VLC-L2-2"] == "FAIL" and st["VLC-L1-1"] == "PASS")
+decl = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4] + [{"class": "DROP", "lost": 1, "from": 4, "to": 4}]
+lines = [json.dumps(r) for r in build(decl, {"lost_total": 1, "records": 10})]
+rc, st = run(write("gapdecl.jsonl", lines), ordn)
+emit("", "ordinal mode: the same gap declared by the producer passes VLC-L2-2 and VLC-L2-5", st and st["VLC-L2-2"] == "PASS" and st["VLC-L2-5"] == "PASS")
+bad = [{"class": "EPOCH_START", "producer": "x"}] + [{"class": "inference", "seq": i, "verdict": "allow"} for i in range(10) if i != 4] + [{"class": "DROP", "lost": 2, "from": 4, "to": 4}]
+lines = [json.dumps(r) for r in build(bad, {"lost_total": 2, "records": 10})]
+rc, st = run(write("gapbad.jsonl", lines), ordn)
+emit("", "ordinal mode: a declaration whose interval size differs from its count fails VLC-L2-2", st and st["VLC-L2-2"] == "FAIL")
+# 2. duplicate member name inserted into one record, chain not recomputed: refused, not scored
+src = open("examples/L2-accounted.jsonl").read().splitlines()
+i = next(k for k, l in enumerate(src) if '"class":"inference"' in l and k > 3)
+src[i] = src[i].replace('"verdict":"allow"', '"verdict":"deny","verdict":"allow"', 1)
+rc, st = run(write("dup.jsonl", src), base)
+emit("", "a duplicate member name is unreadable at VLC-L1-1 and scores L0, not L2", st is not None and st["VLC-L1-1"] == "FAIL")
+# 3. NaN, with the chain RE-SEALED over it (json.dumps hashes NaN happily), so only the loader can refuse it
+nanev = copy.deepcopy(ev); nanev[1]["x"] = float("nan")
+lines = [json.dumps(r) for r in build(nanev, {"lost_total": 0, "records": 10})]
+rc, st = run(write("nan.jsonl", lines), ordn)
+emit("", "a NaN literal in a re-sealed log is unreadable at VLC-L1-1, not scored", st is not None and st["VLC-L1-1"] == "FAIL")
+# 4. non-object line
+src = open("examples/L2-accounted.jsonl").read().splitlines() + ["1"]
+rc, st = run(write("nonobj.jsonl", src), base)
+emit("", "a non-object line is reported at VLC-L1-1 instead of crashing the checker", st is not None and st["VLC-L1-1"] == "FAIL")
+# 5. the shipped L2 example is unaffected
+rc, st = run("examples/L2-accounted.jsonl", base)
+emit("", "the shipped L2 example still passes VLC-L2-5", st and st["VLC-L2-5"] == "PASS")
+PYX
+)
+ORF=$(mktemp)
+printf '%s\n' "$OR" | tr -d '\r' > "$ORF"
+while IFS='|' read -r V M; do
+  [ "$V" = "OK" ] && ok "$M" || bad "$M"
+done < "$ORF"
+rm -f "$ORF"
+
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
