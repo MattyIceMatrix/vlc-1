@@ -469,9 +469,12 @@ rc, st = run("examples/L2-accounted.jsonl", base)
 emit("", "the shipped L2 example still passes VLC-L2-5", st and st["VLC-L2-5"] == "PASS")
 PYX
 )
+ORF=$(mktemp)
+printf '%s\n' "$OR" | tr -d '\r' > "$ORF"
 while IFS='|' read -r V M; do
   [ "$V" = "OK" ] && ok "$M" || bad "$M"
-done <<< "$(printf '%s\n' "$OR" | tr -d '\r')"
+done < "$ORF"
+rm -f "$ORF"
 
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
