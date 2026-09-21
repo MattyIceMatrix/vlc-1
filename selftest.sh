@@ -328,6 +328,10 @@ hr; echo "9. TYPED OBLIGATIONS -- each fails at the requirement it names, not at
 # below is RE-SEALED after editing, so VLC-L1-1 still passes and the mutant can
 # only fail where it is aimed. Honest controls must still pass.
 TM=$(mktemp -d)
+# POSIX sh: the case list goes through a file, not process substitution, and
+# not a pipe -- a while-loop at the end of a pipe runs in a subshell and its
+# bad() calls would be lost.
+python3 examples/typed_mutants.py "$TM" | tr -d '\r' > "$TM/cases.txt"
 while read -r LOG AD REQ EXPECT; do
   GOT=$(python3 ./conformance.py --log "$LOG" --adapter "$AD" --json 2>/dev/null \
         | python3 -c "import json,sys;r=json.load(sys.stdin)['requirements'];print(r['$REQ']['status'], r['VLC-L1-1']['status'])" \
@@ -339,7 +343,7 @@ while read -r LOG AD REQ EXPECT; do
   else
     bad "$N: expected $REQ $EXPECT with VLC-L1-1 PASS, got $REQ $1 with VLC-L1-1 $2"
   fi
-done < <(python3 examples/typed_mutants.py "$TM" | tr -d '\r')
+done < "$TM/cases.txt"
 rm -rf "$TM"
 
 hr; echo "10. EVIDENCE MANIFEST -- a citation that is not complete is weaker than none (Annex E)"
@@ -366,9 +370,12 @@ for name, ad, want in cases:
     print(f"{'OK' if got == want else 'BAD'}|{name}: VLC-L3-4 {got}, expected {want}")
 PYX
 )
+EVF=$(mktemp)
+printf '%s\n' "$EVR" | tr -d '\r' > "$EVF"
 while IFS='|' read -r V M; do
   [ "$V" = "OK" ] && ok "$M" || bad "$M"
-done <<< "$(printf '%s\n' "$EVR" | tr -d '\r')"
+done < "$EVF"
+rm -f "$EVF"
 
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"

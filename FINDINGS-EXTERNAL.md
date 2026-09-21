@@ -225,3 +225,16 @@ Fixed:
 Verified: an unrelated regression still fails the suite, a known capture
 failing for a different reason still fails it, and both workflow fixes
 propagate a failing exit.
+
+**Addendum, same day.** The first run after the fix turned "Independent
+verification" red, which is the fix working. The cause was a defect introduced
+by the maintainer in Corrigendum 3: `selftest.sh` declares `#!/bin/sh`, and two
+constructs added in sections 9 and 10 (process substitution and a here-string)
+are bash-only. `ci.yml` runs `bash selftest.sh` and passed; this workflow runs
+`./selftest.sh` under `sh`, which stopped with a syntax error on reaching
+section 9, so sections 9 and 10 never ran there. Because of the `tee` defect
+above, the workflow showed a green tick on `120f568` while the self-test had
+crashed halfway through. Both constructs are now POSIX, reading from temporary
+files rather than pipes so that a failure inside the loop is not lost in a
+subshell. The two workflows now run the suite under `bash` and `sh`
+respectively, so a future bash-only construct fails one of them.
