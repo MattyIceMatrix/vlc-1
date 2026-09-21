@@ -102,17 +102,14 @@ def _accounted(n_events, lost, seed, coverage=None, policy=False, name=""):
         first["policy_digest"] = POLICY
     g.add(first, first=policy)   # a policy-rooted chain commits to the root
                                  # in its first record; a zero-rooted one does not
-    n_extra = 0
     if coverage is not None:
         g.add(dict(coverage, **{"class": "COVERAGE"}))
-        n_extra += 1
     for c in calls(n_events, seed=seed):
         g.add(c)
     if lost:
         g.add({"class": "DROP", "lost": lost, "from_seq": 12, "to_seq": 12 + lost - 1,
                "cause": "outbound queue full"})
-        n_extra += 1
-    g.add({"class": "END", "records": n_events + n_extra, "lost_total": lost},
+    g.add({"class": "END", "records": n_events, "lost_total": lost},
           head_field="head")
     g.write(name)
 

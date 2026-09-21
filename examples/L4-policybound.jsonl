@@ -61,4 +61,4 @@
 {"class":"inference","hash":"2f16fe9305bf361586b1de0a3edc30ccf4121c891794825fabfc94308940942e","model":"acme-7b","route":"/v1/chat","seq":58,"tokens_in":237,"ts":1757000174,"verdict":"allow"}
 {"class":"inference","hash":"526d323e10e4e6ad10711db01c6af34b3eff3a366aa6a3318a9efb1d3f1da374","model":"acme-7b","route":"/v1/chat","seq":59,"tokens_in":65,"ts":1757000177,"verdict":"allow"}
 {"cause":"outbound queue full","class":"DROP","from_seq":12,"hash":"efa18e6fa88339bfdb6d04e5697e476037defde5674ea4d3e1d2201ed3b32c7e","lost":3,"to_seq":14}
-{"class":"END","hash":"47fe6cc5238d83ebd718a2c7d7d30b1a6fb4c251cc2f42d64e04f07407dada80","head":"efa18e6fa88339bfdb6d04e5697e476037defde5674ea4d3e1d2201ed3b32c7e","lost_total":3,"records":62}
+{"class":"END","hash":"afd7c05d7ffba9733b1e947be7ab8c029117de81dc733e4b7a1f6542912aa6e0","head":"efa18e6fa88339bfdb6d04e5697e476037defde5674ea4d3e1d2201ed3b32c7e","lost_total":3,"records":60}

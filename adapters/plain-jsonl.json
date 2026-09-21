@@ -3,10 +3,26 @@
   "producer": "any application logger emitting JSON lines with no binding",
   "description": "The baseline: structured, readable, and making no verifiable claim of any kind.",
   "record_class_field": "class",
-  "marker_classes": ["EPOCH_START", "END"],
-  "non_event_classes": ["EPOCH_START", "END"],
-  "integrity": { "mechanism": "none" },
-  "loss": { "mode": "none" },
-  "coverage": { "mode": "none" },
-  "policy": { "mode": "none" }
+  "marker_classes": [
+    "EPOCH_START",
+    "END"
+  ],
+  "non_event_classes": [
+    "EPOCH_START",
+    "END",
+    "COVERAGE",
+    "DROP"
+  ],
+  "integrity": {
+    "mechanism": "none"
+  },
+  "loss": {
+    "mode": "none"
+  },
+  "coverage": {
+    "mode": "none"
+  },
+  "policy": {
+    "mode": "none"
+  }
 }

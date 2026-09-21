@@ -267,7 +267,14 @@ def check_l2(recs, ad, res):
     # the frame itself (root and end marker).  It is the verifier's own count,
     # and the identity's whole substance is that it must agree with a figure
     # the PRODUCER asserted independently.
-    delivered = [r for r in recs if r.cls not in markers]
+    # SPEC VLC-L2-5: "|delivered event records| + sum(loss declarations) ==
+    # |records produced|".  EVENT records.  A coverage declaration is not an
+    # event, and a loss declaration is not an event either -- counting the DROP
+    # record as delivered while also counting its lost_total on the other side
+    # of the identity is a double count.  non_event was computed here and never
+    # used, so the arithmetic silently ran over every bound record.
+    # Reported by pipavlo82, 2026-09-21.
+    delivered = [r for r in recs if r.cls not in markers and r.cls not in non_event]
 
     # --- produced ---------------------------------------------------------
     p = lo.get("produced", {})

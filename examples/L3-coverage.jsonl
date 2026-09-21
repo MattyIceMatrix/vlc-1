@@ -60,4 +60,4 @@
 {"class":"inference","hash":"c1ed4363623d8bc89f0911d71e5e62831a974517cb388fe2d9eacee259b643a5","model":"acme-7b","route":"/v1/chat","seq":57,"tokens_in":110,"ts":1757000171,"verdict":"audit"}
 {"class":"inference","hash":"4bfa2fd8fb72c040a126f0a498b69c170b6b74f952a9ca4aae6e0a83fef1a4e8","model":"acme-7b","route":"/v1/chat","seq":58,"tokens_in":698,"ts":1757000174,"verdict":"allow"}
 {"class":"inference","hash":"fbdeff82b30787b114662ad2acee777973eca5b9f30001e5c4618b15cccf4d83","model":"acme-7b","route":"/v1/chat","seq":59,"tokens_in":490,"ts":1757000177,"verdict":"allow"}
-{"class":"END","hash":"0d168f530da18b72a3facb8ab0978dcd61a4464d98507552c318fb3804c2d289","head":"fbdeff82b30787b114662ad2acee777973eca5b9f30001e5c4618b15cccf4d83","lost_total":0,"records":61}
+{"class":"END","hash":"0eb0351e64a2a463596c78080c22091e8d39476e6be5dc739715392e5813fb91","head":"fbdeff82b30787b114662ad2acee777973eca5b9f30001e5c4618b15cccf4d83","lost_total":0,"records":60}
