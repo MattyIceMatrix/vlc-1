@@ -12,7 +12,9 @@
     "HEAD",
     "GAP",
     "COVERAGE",
-    "EPOCH"
+    "EPOCH",
+    "BOUNDARY",
+    "CONTAINMENT"
   ],
   "integrity": {
     "mechanism": "sha256-chain-prefix",
