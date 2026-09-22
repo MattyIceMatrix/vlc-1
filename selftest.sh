@@ -548,6 +548,101 @@ done < "$ARF"
 rm -f "$ARF"
 
 hr
+echo "13. Annex K: committed findings ledger (findings.py)"
+JR=$(python3 - <<'PYJ'
+import json, os, shutil, subprocess, sys, tempfile
+sys.path.insert(0, ".")
+import findings as f
+D = "examples/findings"
+A = json.load(open(os.path.join(D, "anchors.json")))
+BASE = [json.loads(l) for l in open(os.path.join(D, "ledger.jsonl")) if l.strip()]
+T = tempfile.mkdtemp()
+def emit(msg, cond): print(("OK" if cond else "NO") + "|" + msg)
+def rehash(recs):
+    prev = f.GENESIS
+    for i, r in enumerate(recs):
+        r["seq"] = i; r["prev"] = prev; r.pop("hash", None); r["hash"] = f.record_hash(r); prev = r["hash"]
+    return recs
+def write(name, recs=None, text=None):
+    p = os.path.join(T, name)
+    with open(p, "w") as fh:
+        fh.write(text if text is not None else "".join(f.canon(r) + "\n" for r in recs))
+    return p
+def run(ledger, *extra):
+    p = subprocess.run(["python3", "findings.py", "verify", "--ledger", ledger, "--json", *extra],
+                       capture_output=True, text=True)
+    return json.loads(p.stdout)
+def st(r, rid): return r["requirements"][rid]["status"]
+def copy(): return [dict(r) for r in BASE]
+try:
+    both = ["--anchor", "subject=" + A["subject"], "--anchor", "tester=" + A["tester"]]
+    r = run(os.path.join(D, "ledger.jsonl"), "--docs", os.path.join(D, "docs"), "--as-of", "2026-11-26", *both)
+    emit("worked example: conformant, both anchors hold",
+         r["conformant"] and all(st(r, k) == "PASS" for k in r["requirements"]))
+    emit("worked example: F-002 critical is reported overdue, F-001 revealed, F-003 withdrawn",
+         r["findings"]["F-002"]["status"] == "overdue" and r["findings"]["F-002"]["class"] == "critical"
+         and r["findings"]["F-001"]["status"] == "revealed" and r["findings"]["F-003"]["status"] == "withdrawn")
+    emit("worked example: unanchored tail is counted from the earlier anchor", r["unanchored_tail"] == 3)
+    r = run(os.path.join(D, "ledger.jsonl"), "--as-of", "2026-10-10")
+    emit("status is dated: before its due date F-002 is open, not overdue", r["findings"]["F-002"]["status"] == "open")
+
+    drop = rehash([x for x in copy() if x["finding_id"] != "F-002"])
+    p = write("drop.jsonl", drop)
+    r = run(p)
+    emit("F-002 erased and chain re-hashed: with no anchor, VLC-K-6 is NOT_TESTED, never PASS",
+         st(r, "VLC-K-6") == "NOT_TESTED")
+    emit("the same erasure fails VLC-K-6 against the subject's anchor alone",
+         st(run(p, "--anchor", "subject=" + A["subject"]), "VLC-K-6") == "FAIL")
+
+    down = copy(); down[1]["class"] = "low"; rehash(down)
+    emit("undisclosed critical F-002 quietly downgraded to low: caught by the subject's anchor",
+         st(run(write("down.jsonl", down), "--anchor", "subject=" + A["subject"]), "VLC-K-6") == "FAIL")
+    down = copy(); down[0]["class"] = "low"; rehash(down)
+    emit("revealed F-001 downgraded to low after the fact: its opening no longer matches (VLC-K-4)",
+         st(run(write("down2.jsonl", down)), "VLC-K-4") == "FAIL")
+
+    tail = copy(); tail[5]["at"] = "2026-11-27T09:00:00Z"; rehash(tail)
+    p = write("tail.jsonl", tail)
+    r = run(p, "--anchor", "subject=" + A["subject"], "--anchor", "tester=" + A["tester"])
+    emit("a record after the subject's anchor is edited: subject's anchor still holds, tester's catches it",
+         "subject" in r["anchors"] and "tester" not in r["anchors"] and st(r, "VLC-K-6") == "FAIL")
+
+    d = os.path.join(T, "docs"); shutil.copytree(os.path.join(D, "docs"), d)
+    with open(os.path.join(d, "F-001.md"), "a") as fh: fh.write("Severity reassessed.\n")
+    emit("disclosed document edited after reveal fails VLC-K-5",
+         st(run(os.path.join(D, "ledger.jsonl"), "--docs", d), "VLC-K-5") == "FAIL")
+
+    two = copy() + [dict(copy()[5])]; rehash(two)
+    emit("a second reveal for an already revealed finding fails VLC-K-3", st(run(write("two.jsonl", two)), "VLC-K-3") == "FAIL")
+    back = copy(); back[3]["due"] = "2026-10-20"; rehash(back)
+    emit("a defer that moves the due date earlier fails VLC-K-3", st(run(write("back.jsonl", back)), "VLC-K-3") == "FAIL")
+    order = copy(); order[2]["at"] = "2026-10-01T00:00:00Z"; rehash(order)
+    emit("a backdated record fails VLC-K-2", st(run(write("order.jsonl", order)), "VLC-K-2") == "FAIL")
+
+    first = f.canon(BASE[0])
+    emit("a non-integer number fails VLC-K-1",
+         st(run(write("float.jsonl", text=first.replace('"seq":0', '"seq":0.0') + "\n")), "VLC-K-1") == "FAIL")
+    emit("a duplicate member fails VLC-K-1",
+         st(run(write("dup.jsonl", text=first[:-1] + ',"class":"info"}\n')), "VLC-K-1") == "FAIL")
+    na = copy(); na[3]["reason"] = "fix-in-progr\u00e9s"; rehash(na)
+    emit("a non-ASCII string fails VLC-K-1", st(run(write("na.jsonl", na)), "VLC-K-1") == "FAIL")
+    print("DONE|section 13 ran to completion")
+except Exception as e:
+    emit("section 13 aborted: %s: %s" % (type(e).__name__, e), False)
+finally:
+    shutil.rmtree(T)
+PYJ
+)
+JRF=$(mktemp)
+printf '%s\n' "$JR" | tr -d '\r' > "$JRF"
+# A crash inside the block must not read as a pass: require the completion line.
+grep -q '^DONE|' "$JRF" || bad "section 13 did not run to completion (checker crashed or produced invalid JSON)"
+while IFS='|' read -r V M; do
+  case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac
+done < "$JRF"
+rm -f "$JRF"
+
+hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL
