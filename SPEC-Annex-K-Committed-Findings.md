@@ -149,9 +149,21 @@ commitment and the tester anchor after disclosure.
 
 ## K.8 Relationship to other work
 
-Commit-then-reveal is old and well understood; the novelty here is none. This
-annex fixes one record format and one set of checks so that ledgers from
-different testers can be checked by the same tool. Where a transparency service
-such as an IETF SCITT deployment is available, each ledger record or its hash can
-be registered as a signed statement there; the anchor in K.4 is then the
-service's receipt.
+Commit-then-reveal is old and well understood; the novelty here is none, and
+that is deliberate. The commitment is the textbook hash-and-salt construction:
+publish `H(value ‖ salt)`, open it later, binding so it cannot be opened to a
+different value, hiding so the commitment discloses nothing. Applying it to
+disclosure is also not new. In 2011 Backes, Gerling and von Styp-Rekowsky
+reported an Android vulnerability to the vendor, then published a paper with its
+content removed carrying only the SHA-512 hash of the full report they had sent,
+stating that the document served merely as a timestamp of discovery
+(arXiv:1106.4184). That is this annex's commit record, done by hand, once.
+Anchoring a hash to a public chain is the same pattern OpenTimestamps provides.
+
+What this annex adds is none of that. It fixes one record format and one set of
+checks so that ledgers from different testers can be checked by the same tool,
+and it states which failures are visible to a verifier and which are not.
+
+Where a transparency service such as an IETF SCITT deployment is available, each
+ledger record or its hash can be registered as a signed statement there; the
+anchor in K.4 is then the service's receipt.
