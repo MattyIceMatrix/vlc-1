@@ -1,0 +1,50 @@
+{
+  "name": "fab-equipment-secsgem",
+  "producer": "Semiconductor production equipment logging over SECS-II/GEM (SEMI E5, E30) carried on HSMS (SEMI E37), as stored by a fab historian or EDA/Interface A collector",
+  "description": "The record a fab holds of what its tools did and what its metrology measured. On the public documentation and the open-source implementations named in `sources`, event reports (S6F11), trace samples (S6F1) and alarms (S5F1) reach the historian carrying no integrity field, no statement of which variables were being collected, and no binding to the recipe in force. The sampling period is undeclared dead time: an excursion that begins between two samples, or on a wafer the sampling plan did not measure, leaves no trace of having begun. Scored L0 on that basis. See `_basis`: the SEMI standards themselves are paywalled and have not been read, so each note below ends in the question that would settle it.",
+  "record_class_field": "sf",
+  "marker_classes": [],
+  "non_event_classes": [
+    "S1F13",
+    "S1F14",
+    "S2F23",
+    "S2F24",
+    "S7F3",
+    "S7F5"
+  ],
+  "_basis": "SEMI E5, E30 and E37 are paywalled and the author has NOT read them. This adapter is scored from publicly readable protocol documentation and from open-source implementations that interoperate with real equipment, which show what the messages carry in practice. That is weaker evidence than the standard text and is stated here rather than glossed. Every claim below is therefore written so a clause reference can settle it: if E5 or E37 defines a per-message digest, a produced-record count, or a required coverage statement, the corresponding mode changes and the level changes with it. Corrections by clause number are welcome and will be applied.",
+  "integrity": {
+    "mechanism": "none",
+    "note": "No per-message digest, signature or stored-record binding appears in the public documentation or in the open-source implementations. HSMS is a session protocol over TCP/IP (SEMI E37), so whatever it protects is the hop; the historian writes the row after the hop, and the equipment can be asked to resend. QUESTION FOR A SEMI MEMBER: does E5 or E37 define any per-message digest or signature that survives storage? A clause reference settles it and this mechanism changes."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "Two distinct losses. First, transport: data collection buffers overflow when the link or the historian falls behind. S6F1 does carry SMPLN, a genuine ordinal over the trace samples of one TRID, which would support a completeness identity for that one stream -- but it covers neither event reports nor alarms, and no record seen states how many were produced, so the file as a whole is not loss-accounted. QUESTION: does any GEM collection-event or status message report a produced count or a discard count in-band, rather than on a separate diagnostic channel? Second, and not a question at all because it follows from the design: the sampling period is itself undeclared loss. A trace at one sample per minute is fifty-nine seconds in sixty of unrecorded equipment state, and nothing marks that interval as unobserved rather than uneventful."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "Which SVIDs and DVIDs were enabled, and which wafers the sampling plan measured, are equipment and MES configuration -- changed between windows and not restated in the log. S2F23 names the SVIDs a trace requested, and S2F33/S2F35 define and link event reports, but all three may have been issued before the logged interval opened, they record a request rather than a delivery, and nothing seen reconciles them against what arrived. A variable never collected produces no record, therefore no gap, therefore no evidence anything is missing: the L2-blindness of Annex D, at the equipment layer. QUESTION: does E30 require the equipment to restate its enabled collection set within a logged interval, or to reconcile requested against delivered? If it does, coverage.mode becomes 'enumerated' and the argument here is wrong."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "S7F3 and S7F5 carry a PPID and may carry a recipe body, but no measurement record seen cites the recipe as a digest of what was in force when the measurement was taken -- only as a name. A recipe edited in place leaves earlier lot records pointing at a recipe that no longer exists as it was, and a historical result is re-readable under any later revision. QUESTION: does E30 or E42 require a recipe digest, version or checksum to accompany a result that the recipe produced?"
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "This one needs no standard to settle. The equipment reports its own state: a tool whose sensor has drifted reports the drifted value as measurement, and the log is internally consistent while being wrong about the world, because the record and the thing it records have the same author. Metrology performed by a separate tool narrows this only to the extent that the second tool is independently referenced against a certified artefact, which the log does not state.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://en.wikipedia.org/wiki/SECS-II",
+    "https://en.wikipedia.org/wiki/High-Speed_SECS_Message_Services",
+    "https://secsgem.readthedocs.io/en/latest/",
+    "https://github.com/mkjeff/secs4net",
+    "https://help.criticalmanufacturing.com/tutorials/modules/connect-iot-equipment-integration/secsgem_tutorial/secsgem_tutorial.pdf"
+  ],
+  "_sources_note": "Publicly readable documentation and open-source implementations only. The SEMI standards these describe (E5, E30, E37, E42) are paywalled and are cited by number as identifiers, not as material the author has read."
+}
