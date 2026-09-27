@@ -64,10 +64,15 @@ jobs:
           sudo apt-get install -y --no-install-recommends coq
           coqc --version
 
-      - name: compile the development
+      - name: compile every development
         run: |
           cd proofs
-          coqc -q sentinel_completeness.v
+          # EXT-019: this step named one file by hand while SPEC.md cited two.
+          # It compiles all of them now, and fails if there are none.
+          shopt -s nullglob
+          found=0
+          for f in *.v; do found=1; echo "--- coqc $f"; coqc -q -Q . Sentinel "$f"; done
+          [ "$found" = "1" ] || { echo "no proof developments found"; exit 1; }
 
       - name: every theorem must be closed under the global context
         run: |

@@ -72,14 +72,21 @@ whatever window it happens to cover.
 This is now stated as a theorem rather than an admission.
 `proofs/sentinel_interval.v`, 8 results, 0 admitted, 0 axioms:
 
-> **Correction, 2026-09-27 (EXT-019).** That file is **not in this repository**
-> and there is no record of it having been. The CI proof step globs
-> `proofs/*.v`, so it compiled the one development that is present and never
-> reported the absence. The two results below are therefore **asserted, not
-> machine-checked**, as far as any reader of this repository can establish.
-> `selftest.sh` section 16 now fails on any cited proof that is not in the
-> tree, and carries this one as a disclosed expected failure until the
-> development is published or the claim is withdrawn.
+> **Correction, 2026-09-27 (EXT-019).** When this corrigendum was published
+> that file was **not in the repository**, and there is no record of it ever
+> having been. The CI proof step named one development by hand and the
+> independent-verification step globbed `proofs/*.v`, so neither could report
+> the absence: for two weeks this document cited "8 results, 0 admitted, 0
+> axioms" in a file no reader could open.
+>
+> A development of that name is now present. **It was written on 2026-09-27
+> and is not the one this sentence originally referred to.** It proves
+> `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` from
+> scratch, along with the L3i tick-presence results `check_l3i.py` relies on:
+> **10 results, 0 admitted, 0 axioms, every one closed under the global
+> context.** Ten, not the eight printed above, because that is what the work
+> needed. The original count is left uncorrected in the line above so the
+> record of what was claimed survives.
 
 - **`producer_death_is_invisible`** — a checker's verdict on a renumbered
   truncation is *equal* to its verdict on the renumbered whole. Not weaker.

@@ -41,8 +41,10 @@ The reporter further noted that T3 in the threat model already names agent
 restart, so the threat model listed a threat no requirement addressed.
 
 Stated as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
-`proofs/sentinel_interval.v` — **a file that is not in this repository; see
-EXT-019.** The claim that these are machine-checked is unsupported here. Fixed by Corrigendum 1: §1 amended, and a new
+`proofs/sentinel_interval.v`. That file was **absent from this repository for
+two weeks** while being cited here (EXT-019); a development of that name was
+written on 2026-09-27, proves both results and eight more, and is compiled by
+CI. It is not the original and does not claim to be. Fixed by Corrigendum 1: §1 amended, and a new
 level L3i requiring interval coverage witnessed by an attestor the producer does
 not control.
 
@@ -538,10 +540,30 @@ this one as a **disclosed expected failure** until the development is published
 or the claim is withdrawn, so the suite stays honest without going permanently
 red.
 
-**Unresolved, and the maintainer's to settle:** whether the development exists
-outside this repository and can be published, or whether the result needs
-proving again. It should not be restated as machine-checked until one of those
-has happened.
+**Resolved the same day, by proving it again.** `proofs/sentinel_interval.v`
+now exists: **10 results, 0 admitted, 0 axioms, every one closed under the
+global context**, compiled by CI. It proves `producer_death_is_invisible` (the
+two accounts are *equal*, so every function of an account agrees),
+`l2_cannot_detect_producer_loss` (a dead producer's account always closes, so a
+verifier that rejects only non-closing accounts can never reject one), and the
+tick-presence results `check_l3i.py` names in its correspondence note.
+
+Three things about that file are stated in its own header and repeated here,
+because a replacement that quietly stands in for a lost original is the same
+defect wearing different clothes:
+
+- it was **written on 2026-09-27** and claims no continuity with whatever the
+  citations originally meant;
+- it has **ten results, not the eight** the corrigendum printed, because that
+  is what the work needed. The corrigendum's count is left uncorrected so the
+  record of what was claimed survives;
+- it covers **tick presence only**. The EXT-018 attacks turn on the binding of
+  a tick to a chain position, which is not modelled, and the file says so. They
+  are covered by executable cases, not by proof.
+
+The CI step that could not see the absence is also fixed: it named one
+development by hand, and now compiles every `.v` in `proofs/` and fails if
+there are none.
 
 ### What the two audits have in common
 
