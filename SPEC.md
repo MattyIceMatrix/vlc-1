@@ -630,13 +630,15 @@ rewards writing a longer list.
 
 ## Annex B (informative) — Mapping to standards in preparation
 
-| Instrument | Status at 2026-09-12 | Where VLC-1 attaches |
+| Instrument | Status at 2026-09-27 | Where VLC-1 attaches |
 |---|---|---|
 | **EU AI Act Art. 12** | In force; Arts. 9–15 apply 2 Dec 2027 | "automatic recording of events over the lifetime" — Art. 12 states the obligation; VLC-1 L2/L3 states the evidentiary property that makes a retained log discharge it. |
 | **EU AI Act Art. 19** | In force | Log retention presumes the retained log means something. |
-| **prEN 18229-1** | Public enquiry closed Jul–Aug 2026; comment disposition in progress; CEN-CENELEC target Q4 2026 | Add a completeness clause, or a normative reference to one. The draft's deferral of event content to 24970 does not cover completeness, which is a property of the log rather than of an event. |
-| **prEN 18229-3** | Public enquiry open until **22 September 2026** | Transparency and human oversight: an oversight function reading an incomplete log is not exercising oversight. The strongest attachment point available in the current window. |
-| **ISO/IEC FDIS 24970** | FDIS, last stage before publication | Too late for the base document; the route is an amendment or a new work item under SC 42. |
+| **prEN 18229-1** | CEN enquiry closed 20 Aug 2026; at disposition of comments. CEN/CENELEC approved direct publication after a positive enquiry for JTC 21 items in Oct 2025, so **there may be no Formal Vote round**: disposition is prudently treated as the last window, and it is reachable only through a national body or a WG 4 expert | Add a completeness clause, or a normative reference to one. The draft's deferral of event content to 24970 does not cover completeness, which is a property of the log rather than of an event. |
+| **prEN 18229-3** | National enquiry windows closed 22 September 2026; at disposition. National dates differ from the CEN ballot date — confirm with the national body rather than assuming | Transparency and human oversight: an oversight function reading an incomplete log is not exercising oversight. |
+| **ISO/IEC FDIS 24970** | FDIS, stage 50.20, ballot closing on or about 23 October 2026 | Too late for the base document — at FDIS the vote is yes/no and technical comments cannot change the text. The route is an amendment or a new work item under SC 42; a technical objection filed now is logged for the first revision. |
+| **EU Machinery Regulation 2023/1230** | Applies **20 January 2027**; not deferred by the July 2026 Digital Omnibus | Annex I Part A (5)–(6) put ML-based safety components under mandatory third-party conformity assessment. Annex III §1.2.1(b) requires recording of the safety-related decision-making process, retained one year and held *exclusively to demonstrate conformity* on an authority's reasoned request; §1.1.9 requires the machine to *collect evidence* of intervention. A record that cannot demonstrate conformity does not discharge either. This is the earliest binding attachment point for RAL-1 and for VLC-1 L2/L3. |
+| **prEN 50742** (machinery, protection against corruption) | Draft; harmonised standard being prepared against Machinery Annex III §1.1.9 and §1.2.1 | Requires security-relevant events to be logged and stored securely for traceability, and does not specify which events, what retention, how completeness is verified, or how a missing entry is detected. The open clause slot. Stage should be confirmed with CENELEC TC 44X. |
 | **ISO/IEC 42001** | Published | Clause 8.1 asks whether controls are *effective*, not present. A log that cannot distinguish an outage from a quiet afternoon is a control that is present. Clause 9.1 monitoring and 10.2 nonconformity both rest on it. |
 | **ISO/IEC 27001 A.8.15 / A.8.16** | Published | Logging and monitoring controls, same gap, older. |
 
@@ -760,18 +762,24 @@ The pattern across all of it: **the field solved integrity thoroughly and never
 asked the next question.** Not because it is hard — L2 is a counter — but because
 nobody has been required to answer it, and an unasked question has no budget.
 
-**2026-09-27 — where the budget went instead.** Over the twelve months to
-September 2026, AI governance startups raised roughly $1.23bn across 56 disclosed
-rounds, and the concentration is informative: about 56% of that capital went to
-policy enforcement — runtime controls, pre-execution guardrails, agent identity —
-while assurance and audit categories declined. The market's answer to agent risk
-is to decide better, and a decision that is not recorded completely cannot be
+**2026-09-27 — where the budget went instead.** The identifiable investment in
+this field over the year to September 2026 went overwhelmingly to policy
+enforcement — runtime controls, pre-execution guardrails, agent identity — and
+the products that ship are enforcement products: a kernel-level eBPF sandbox for
+MCP tool calls published by Meta, an agent control plane priced per seat by
+Microsoft, an AI gateway from Palo Alto, and several funded vendors selling agent
+identity and runtime governance. Those are checkable by anyone: the code and the
+price lists are public. Quantitative breakdowns of the capital split circulate in
+private market analyses and are **not reproduced here**, because this document
+does not cite what its reader cannot open.
+
+The observation that survives without them: the market's answer to agent risk is
+to decide better, and a decision that is not recorded completely cannot be
 reviewed at all. This is not an argument that enforcement is the wrong
 investment. It is the observation that the industry is building the half that
-acts, on top of a record whose silence still carries no meaning, and that the two
-halves are being funded at very different rates. The requirement proposed here is
-what makes an enforcement claim checkable by someone who was not present when it
-was enforced.
+acts, on top of a record whose silence still carries no meaning. The requirement
+proposed here is what makes an enforcement claim checkable by someone who was not
+present when it was enforced.
 
 ---
 
