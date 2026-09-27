@@ -1,0 +1,44 @@
+{
+  "name": "mcp-toolcall",
+  "producer": "Model Context Protocol tool-call transcript (JSON-RPC 2.0 over stdio or HTTP), as logged by agent frameworks and MCP hosts",
+  "description": "The protocol nearly every agent tool call now travels over, and the log most agentic governance products produce. JSON-RPC carries an `id` that correlates a request with its response and nothing more: no integrity field, no record counter, no statement of which servers and tools the host was in a position to record. NSA's June 2026 MCP information sheet names 'poor or missing audit logs' as a risk and recommends logging every invocation; it specifies no mechanism for integrity, loss or coverage. L0.",
+  "record_class_field": "method",
+  "marker_classes": [],
+  "non_event_classes": [
+    "notifications/initialized",
+    "notifications/cancelled",
+    "notifications/progress"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "note": "JSON-RPC defines no integrity field. Transport TLS protects the hop, not the stored record, and the host writes the log after the hop."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No record counter and no drop declaration. The `id` is a correlation token, not a sequence over a delivered file -- hosts emit ids that are random, per-session or reused, so a reader cannot distinguish a gap from an id it never saw. A host that buffers tool calls and discards under load produces a log identical to one that discarded none. Where a framework does count drops it does so on its own telemetry path: not in-band, not bound to the data."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "A host connects to a set of servers, each exposing a set of tools, and the set changes at runtime via tools/list_changed. Nothing requires the log to state which servers were connected or which tools were exposed during the logged interval. A call to a server the host was not recording produces no record, therefore no loss, therefore no gap: the L2-blindness of Annex D, at the agent layer."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Where a host or gateway permits or denies a call, the verdict is recorded without binding to the rules in force. A recorded 'allowed' is re-readable under any later policy."
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The host writing the transcript is the process making the tool calls, or is directed by it. VLC-L5-1 fails by construction: the audited party authors its own record. This is the structural defect METR's August 2026 investigation exhibited in agent transcripts, and hashing the transcript afterwards does not repair it.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://modelcontextprotocol.io/specification",
+    "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+    "https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf",
+    "https://www.coalitionforsecureai.org/wp-content/uploads/2026/03/model-context-protocol-security-1.pdf"
+  ]
+}

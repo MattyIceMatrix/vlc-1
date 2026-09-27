@@ -2,11 +2,26 @@
 
 **Target documents**
 
+*Status as at 2026-09-27. Every date below must be re-confirmed with the national
+standards body before filing; enquiry windows move and this file has already been
+wrong once.*
+
 | | |
 |---|---|
-| **prEN 18229-3** *Transparency and human oversight* | public enquiry **open until 22 September 2026** — the live window |
-| **prEN 18229-1** *AI system logging* | enquiry closed; **comment disposition in progress** — a technical comment with a working implementation still carries weight at disposition |
+| **prEN 18229-1** *AI system logging* | enquiry closed; **comment disposition in progress** — a technical comment with a working implementation still carries weight at disposition, and this is the part the proposal is aimed at |
+| **prEN 18229-3** *Transparency and human oversight* | enquiry closed 22 September 2026; at disposition |
 | **ISO/IEC FDIS 24970** *AI system logging* | FDIS; too late for the base text. Route is an amendment or NWIP via ISO/IEC JTC 1/SC 42, US TAG = INCITS/AI |
+| **Official Journal** | no JTC 21 deliverable is cited, so **no standard yet confers a presumption of conformity** under Article 40. CEN-CENELEC targets Q4 2026 for the prioritised parts; M/613 runs to 28 February 2027 |
+
+**The deferral is the window, not the excuse.** The Digital Omnibus moved Articles
+9–15 to 2 December 2027 for Annex III standalone systems and 2 August 2028 for
+Annex I embedded systems. The obvious reading is that the urgency has gone. The
+submitter's reading is the opposite: the obligation this part serves does not bite
+for fourteen months, no text is yet frozen in the Official Journal, and the
+mechanism proposed below is therefore still addable at ordinary cost. After
+citation it becomes an amendment, which is a different and much slower thing. If
+the completeness mechanism is going to be in the European logging standard at all,
+this is the cheapest moment it will ever have.
 
 **Submitter.** Matthew Moore, independent contributor. Route: national standards
 body for the CEN-CENELEC parts; INCITS/AI for the SC 42 part.
@@ -198,7 +213,45 @@ testable rather than aspirational.
 
 RFC 9162 (Certificate Transparency), RFC 5848 (signed syslog), forward-integrity
 audit logs and WORM/object-lock storage all solve X.1.2 thoroughly and none of
-them addresses X.1.3 or X.1.4. The closest existing practice is OpenTelemetry's
+them addresses X.1.3 or X.1.4.
+
+**The agent layer, added 2026-09-27.** Since this comment was first drafted, the
+gap has acquired its most consequential instance. Nearly every agent tool call in
+production now travels over the Model Context Protocol, and the transcript of
+those calls is the log that agentic governance products deliver as evidence. MCP
+is JSON-RPC 2.0: the `id` correlates a request with its response, is assigned per
+connection, and is not an ordinal over a delivered file — so a call that was never
+recorded leaves no hole. There is no integrity field, no record counter, and no
+requirement to state which servers were connected or which tools they exposed.
+NSA's *Model Context Protocol (MCP): Security Considerations* (June 2026) names
+**"poor or missing audit logs"** as a risk and recommends recording every tool and
+model invocation with its parameters, the identities involved and hashes of
+results. It specifies no mechanism for integrity, for discard, or for coverage. A
+signals-intelligence agency has therefore identified the risk in the same terms as
+this comment and stopped one step short of the requirement, which the submitter
+offers as evidence that the requirement is the missing piece rather than an
+idiosyncratic preoccupation.
+
+`adapters/mcp-toolcall.json` scores the format at **L0**, and
+`examples/third-party/mcp-toolcall.jsonl` and `-partial-host.jsonl` are the same
+agent session recorded by two differently-configured hosts. One omits an outbound
+POST to a partner API and an outbound email. The surviving ids run 3, 4, 5 with no
+gap. **The two logs are indistinguishable by every check either draft requires.**
+This is X.1.4 in a production protocol rather than in a model.
+
+**Enforcement is not evidence.** Kernel-level agent containment shipped during
+2026 — eBPF LSM taint propagation, per-process egress filtering, credential
+surrogation — and it is genuinely the strongest independence position in the
+field, because the kernel observes and the audited process cannot forge the
+observation. None of the published architectures the submitter has found emits a
+record that accounts for its own discard or declares the surface it was attached
+to. The critical literature on that layer argues about semantics: that the kernel
+sees a connection opened but not that the connection exfiltrates. It does not
+reach the prior question of whether the sensor received everything it was attached
+for. The submitter's own sensor answered that question wrongly on a real kernel —
+it attached fifteen hooks, received events from one, and declared the full surface
+covered — which is why X.1.4 is proposed with a negative control attached rather
+than as a statement of good intent. The closest existing practice is OpenTelemetry's
 dropped-span counters, which are a genuine loss-accounting primitive but travel on
 a separate metrics path, are not bound to the trace data, and disappear if the
 metrics path is the one that failed. Linux `auditd` carries an in-band `lost`

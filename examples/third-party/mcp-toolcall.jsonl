@@ -1,0 +1,16 @@
+{"id":1,"jsonrpc":"2.0","method":"initialize","params":{"capabilities":{"tools":{}},"clientInfo":{"name":"agent-host","version":"2.4.1"},"protocolVersion":"2026-07-28"}}
+{"id":1,"jsonrpc":"2.0","result":{"protocolVersion":"2026-07-28","serverInfo":{"name":"files-server","version":"1.0.0"}}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"id":2,"jsonrpc":"2.0","method":"tools/list"}
+{"id":2,"jsonrpc":"2.0","result":{"tools":[{"name":"read_file"},{"name":"write_file"}]}}
+{"id":3,"jsonrpc":"2.0","method":"tools/call","params":{"arguments":{"path":"/work/spec.md"},"name":"read_file"}}
+{"id":3,"jsonrpc":"2.0","result":{"content":[{"text":"ok, 4210 bytes","type":"text"}],"isError":false}}
+{"id":4,"jsonrpc":"2.0","method":"tools/call","params":{"arguments":{"path":"/work/out.txt"},"name":"write_file"}}
+{"id":4,"jsonrpc":"2.0","result":{"content":[{"text":"ok, 118 bytes","type":"text"}],"isError":false}}
+{"id":5,"jsonrpc":"2.0","method":"tools/call","params":{"arguments":{"url":"https://api.partner.example/v1/orders"},"name":"http_post"}}
+{"id":5,"jsonrpc":"2.0","result":{"content":[{"text":"201 created","type":"text"}],"isError":false}}
+{"id":6,"jsonrpc":"2.0","method":"tools/call","params":{"arguments":{"to":"ops@example.com"},"name":"send_email"}}
+{"id":6,"jsonrpc":"2.0","result":{"content":[{"text":"queued","type":"text"}],"isError":false}}
+{"id":7,"jsonrpc":"2.0","method":"tools/call","params":{"arguments":{"path":"/work/notes.md"},"name":"read_file"}}
+{"id":7,"jsonrpc":"2.0","result":{"content":[{"text":"ok, 902 bytes","type":"text"}],"isError":false}}
+{"jsonrpc":"2.0","method":"notifications/progress","params":{"progress":1,"progressToken":"t1"}}

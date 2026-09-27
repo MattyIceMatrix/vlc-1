@@ -1,8 +1,8 @@
 # Scoring other people's logs
 
-**2026-09-12.** VLC-1 is only worth something if it can be applied to logs this
-project did not produce. This is that exercise, run against four **open,
-publicly documented** formats — not against closed commercial products, whose
+**2026-09-12, revised 2026-09-27.** VLC-1 is only worth something if it can be
+applied to logs this project did not produce. This is that exercise, run against
+five **open, publicly documented** formats — not against closed commercial products, whose
 internals cannot be checked and about which this document therefore says
 nothing.
 
@@ -31,6 +31,7 @@ theirs to claim and ours to relay, clearly labelled as relayed.
 | **Kubernetes audit** (`audit.k8s.io/v1`) | **L0** | rich, well-specified event content; an audit **policy** that is genuine coverage information | `auditID` is a random UID, not an ordinal, so holes are invisible. Full-queue discards raise `apiserver_audit_error_total` and the error string *"audit buffer queue blocked"* — neither of which is in the log. No chain, no signature. |
 | **Linux auditd** | **L0** | the kernel **counts** discarded records in `audit_lost` | `audit_log_lost()` writes that count to **dmesg**, not to `audit.log`; it is otherwise readable only over netlink. The counter exists and is on the wrong side of the boundary. No default integrity binding. |
 | **AWS CloudTrail** (digest files) | **L0**, blocked only by **VLC-L1-3** | A real chain: `previousDigestHashValue` over the previous digest **file**, RSA signature in S3 object metadata, and an hour with no activity still emits a digest with `logFiles: []` — a rare explicit *"nothing this interval"* assertion | No end marker. Truncating the newest digest is undetectable **from the chain alone**; you need out-of-band knowledge of which hour it should be. Chain is over files, not events; no dropped-event count exists in the product; scope is in `EventSelector` config, not in the evidence. |
+| **MCP tool calls** (`tools/call` over JSON-RPC 2.0) | **L0** | a request/response correlation `id`; a `tools/list` result that is genuine coverage information | The `id` correlates a call with its reply; it is not an ordinal over the delivered file, and hosts assign it per connection, so absent calls leave no hole. No integrity field, no record counter, no requirement to state which servers were connected. NSA's June 2026 MCP information sheet names *"poor or missing audit logs"* as a risk and recommends logging every invocation — and specifies no mechanism for integrity, loss or coverage. |
 | **Agent tool-call transcripts** (every framework) | **L0** | readability | Written by the audited process. Fails **VLC-L5-1** by construction, whatever else is done to them. |
 | this project's kernel journal (live capture) | **L4 structural**, L5 attested | | its L5 rests on a declared trust boundary, and is labelled as such rather than counted as demonstrated |
 | this project's journal, **pre-2026-09-12** | **L2** | | failed VLC-L3-1(d); kept as a control |
@@ -51,6 +52,9 @@ for. Three of the four are one design decision from L2:
 - Kubernetes: make `auditID` monotonic per epoch, or emit a `dropped: n` event
   when `audit buffer queue blocked` fires.
 - auditd: emit the `audit_lost` delta into `audit.log` as a record, not to dmesg.
+- MCP: write the connected servers and their exposed tools into the transcript as
+  a record, and re-emit on `tools/list_changed`. The host already has the list —
+  it is how it routes the call.
 
 None of those is a research problem. They are afternoon-sized changes that nobody
 has been asked for, which is precisely the argument for asking in a standard
@@ -62,6 +66,24 @@ rather than in a product.
 python3 conformance.py --log examples/third-party/cloudtrail-digests.jsonl \
                        --adapter adapters/aws-cloudtrail-digest.json
 ```
+
+The MCP pair is the one to run if you only run one:
+
+```sh
+for f in mcp-toolcall mcp-toolcall-partial-host; do
+  python3 conformance.py --log examples/third-party/$f.jsonl \
+                         --adapter adapters/mcp-toolcall.json --json
+done
+```
+
+`mcp-toolcall.jsonl` is a session in which the agent called a files server, a
+partner order API and a mail server. `mcp-toolcall-partial-host.jsonl` is the
+**same session** recorded by a host connected to only the files server: the
+outbound `http_post` and the `send_email` left no trace at all. The surviving
+`id`s run 3, 4, 5 with no hole, because a host numbers per connection. The two
+logs are indistinguishable — same level, same failed requirements — and one of
+them is missing an agent posting to a third party and sending mail. That is not a
+tamper-evidence problem and no amount of hashing the transcript addresses it.
 
 Each adapter carries its `sources` inline. Disagree with a scoring by editing the
 adapter and re-running; that is a shorter argument than an email.

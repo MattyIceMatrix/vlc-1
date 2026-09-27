@@ -207,7 +207,7 @@ examples/                one worked log per rung, third-party shapes, real captu
 witness/                 reconcile a self-report against an independent record
 proofs/                  Coq: the lattice and the two impossibility results
 selftest.sh              positive, negative, lattice, independence and not-rigged controls
-THIRD-PARTY.md           scores for four public log formats
+THIRD-PARTY.md           scores for five public log formats, incl. MCP tool calls
 COMMENT-prEN-18229.md    a ready-to-file standards comment
 ACCESS.md                what is public, what to ask for, what is not distributed
 deck/                    a 16-slide presentation, and the script that builds it
@@ -224,14 +224,24 @@ cd proofs && coqc -q sentinel_completeness.v   # Coq/Rocq >= 8.16
 ```
 26 results, **0 admitted, 0 axioms**, every one closed under the global context.
 
-## Standards status (2026-09-12)
+## Standards status (2026-09-27)
 
 - **prEN 18229-1** (CEN-CENELEC JTC 21, AI system logging) — enquiry closed, comment disposition in progress.
-- **prEN 18229-3** (transparency and human oversight) — **at public enquiry.**
+- **prEN 18229-3** (transparency and human oversight) — enquiry closed 22 September 2026; at disposition.
 - **ISO/IEC FDIS 24970** (AI system logging) — FDIS, last stage before publication.
-- **EU AI Act Arts. 9–15** apply from **2 December 2027**.
+- **No JTC 21 deliverable is cited in the Official Journal**, so no standard yet
+  confers a presumption of conformity under Article 40. CEN-CENELEC targets Q4
+  2026 for the prioritised parts; the amended standardisation request M/613 runs
+  to 28 February 2027.
+- **EU AI Act Arts. 9–15** apply from **2 December 2027** for Annex III standalone
+  systems and **2 August 2028** for Annex I embedded systems, following the
+  Digital Omnibus deferral. Article 50 transparency duties applied from 2 August
+  2026 and were not deferred.
 
-None of them currently requires anything in this document.
+None of them currently requires anything in this document. The deferral widens
+the drafting window rather than closing it: the clause proposed in
+`COMMENT-prEN-18229.md` has fourteen more months in which it could still be
+adopted before the obligation it would serve takes effect.
 [`COMMENT-prEN-18229.md`](COMMENT-prEN-18229.md) is drafted in CEN template form,
 with the caveat — stated in the file — that the drafts must be read in full
 through a national standards body before anything is filed.

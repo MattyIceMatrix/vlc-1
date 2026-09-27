@@ -751,12 +751,27 @@ citable.
 | WORM storage, object-lock, blockchain anchoring | L1 by a different route | Same gap, and often marketed as if it were completeness. |
 | OpenTelemetry | Dropped-span counters exist in the SDK and collector, and are a genuine L2 primitive | They are telemetry about the telemetry, live on a separate metrics path, are not bound to the trace data, and vanish if the metrics path is the one that dropped. Not in-band, not integrity-bound. **The closest existing thing, and it is one design decision away from L2.** |
 | Linux audit / auditd `lost` counter | In-band loss count | Not integrity-bound; no coverage declaration; the ruleset is not bound to the log. |
-| AI-specific audit products (agent security posture, LLM gateways, guardrail platforms) | L1, generally via hash chain or immutable store | No loss accounting, no coverage declaration, no policy binding found in published material as of 2026-09-12. |
+| AI-specific audit products (agent security posture, LLM gateways, guardrail platforms) | L1, generally via hash chain or immutable store | No loss accounting, no coverage declaration, no policy binding found in published material as of 2026-09-27. |
+| MCP tool-call transcripts (`tools/call`, JSON-RPC 2.0) | A request/response correlation `id`; a `tools/list` result that is real coverage information, in the protocol and not in the log | The `id` is not an ordinal over the delivered file and is assigned per connection, so an absent call leaves no hole. NSA's June 2026 MCP information sheet names *poor or missing audit logs* as a risk and recommends recording every invocation with parameters, identities and result hashes; it specifies nothing about integrity, discard or coverage. **The most widely deployed agent surface in production, scored in `THIRD-PARTY.md`, and L0.** |
+| Kernel-level agent enforcement (eBPF LSM taint tracking, cgroup egress filtering, credential surrogation) | Genuine independence: the kernel observes and an unprivileged process cannot forge the observation. The strongest L5-1 position in the field | Enforcement is not evidence. Published architectures decide and block; none found as of 2026-09-27 emits a record that accounts for its own discard or declares the surface it was attached to. The critical literature attacks this layer on semantics — that the kernel sees a connection, not that the connection exfiltrates — and does not reach the prior question of whether the sensor received everything it was attached for. |
 | Agent tool-call transcripts | a readable record of intent | Written by the audited process, so VLC-L5-1 fails by construction. METR’s August 2026 investigation is what that failure looks like once someone goes looking. |
 
 The pattern across all of it: **the field solved integrity thoroughly and never
 asked the next question.** Not because it is hard — L2 is a counter — but because
 nobody has been required to answer it, and an unasked question has no budget.
+
+**2026-09-27 — where the budget went instead.** Over the twelve months to
+September 2026, AI governance startups raised roughly $1.23bn across 56 disclosed
+rounds, and the concentration is informative: about 56% of that capital went to
+policy enforcement — runtime controls, pre-execution guardrails, agent identity —
+while assurance and audit categories declined. The market's answer to agent risk
+is to decide better, and a decision that is not recorded completely cannot be
+reviewed at all. This is not an argument that enforcement is the wrong
+investment. It is the observation that the industry is building the half that
+acts, on top of a record whose silence still carries no meaning, and that the two
+halves are being funded at very different rates. The requirement proposed here is
+what makes an enforcement claim checkable by someone who was not present when it
+was enforced.
 
 ---
 
