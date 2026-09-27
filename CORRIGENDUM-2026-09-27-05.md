@@ -89,8 +89,12 @@ results, 0 admitted, 0 axioms.
 
 ## Version DOI
 
-**Pending.** A version DOI is minted by Zenodo when this version is released on
-GitHub. Until then Annex F records it as pending, and the concept DOI
-(10.5281/zenodo.22728393) resolves to the newest published version, which is
-1.3-draft. Nothing here should be cited as 1.4-draft by DOI until that release
-exists.
+**[10.5281/zenodo.23002582](https://doi.org/10.5281/zenodo.23002582)**,
+published 2026-09-27 as a new version of the existing record, under the concept
+DOI 10.5281/zenodo.22728393 with every earlier version. The archive deposited is
+GitHub's source archive of tag `v1.4-draft`, commit `6c40df4`.
+
+That archive records this DOI as pending, and necessarily so: a DOI cannot be
+written into the archive it identifies before that archive exists. The DOI was
+entered into Annex F, this section and the README in the commit that follows
+the tag, which changes no requirement, no check and no result.
