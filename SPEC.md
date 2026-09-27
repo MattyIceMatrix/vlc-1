@@ -19,16 +19,24 @@
 Every logging standard now in preparation for the EU AI Act specifies **what to
 log**. None of them specifies **how a reader knows the log is all of it**.
 
-- **prEN 18229-1** (CEN-CENELEC JTC 21, AI system logging) is not silent on the
-  *vocabulary*. It defines **integrity** as the "property of accuracy and
-  completeness" (borrowing ISO/IEC 27000:2018, 3.36), defines traceability, and
-  requires that an AI system be designed "with the technical capability to
-  automatically record events throughout its life cycle". What the reviewed
-  draft material does not appear to provide is a **mechanism**: nothing by which
-  a verifier reading the delivered log can distinguish undeclared transport loss
-  from a genuinely uneventful interval, and no declaration of the observation
-  surface sufficient to establish coverage. A search of the available draft
-  material returns no matches for *discard* or *buffer*.
+- **prEN 18229-1** (CEN-CENELEC JTC 21, *AI trustworthiness framework — Part 1:
+  Logging*) goes further than vocabulary, and the May 2026 enquiry draft has now
+  been read in full for this entry. **3.2.9** defines integrity as the property
+  of accuracy and completeness, borrowing ISO/IEC 27000:2018, 3.36. **5.2.1**
+  requires the technical capability to record events automatically across the
+  life cycle. **5.2.2 c)** requires the provider to ensure that logged
+  information has the detail and completeness needed for regulatory
+  requirements. **So completeness is required.** What is absent is any
+  **mechanism**: nothing by which a reader holding the delivered log can
+  distinguish undeclared transport loss from a genuinely uneventful interval. A
+  full-text search returns no occurrence of *discard*, *drop*, *loss*,
+  *overflow*, *buffer* or *capacity*; the nearest provision, **6.2.1 c) 3)**,
+  puts a retention and deletion policy in the instructions for use. Coverage is
+  the same shape: **6.2.1 a)** requires a description of what the system logs
+  and places it in the instructions for use rather than in the log, where it is
+  not bound to the artefact it describes. Clause numbers and paraphrase only —
+  the consulted copy is single-user licensed and no draft text is reproduced
+  here.
 - **ISO/IEC FDIS 24970** (AI system logging) specifies event content and the
   documentation burden. The committee draft reviewed contains no requirement for
   completeness *verification*, dropped-event detection, buffer-overflow handling
@@ -634,7 +642,7 @@ rewards writing a longer list.
 |---|---|---|
 | **EU AI Act Art. 12** | In force; Arts. 9–15 apply 2 Dec 2027 | "automatic recording of events over the lifetime" — Art. 12 states the obligation; VLC-1 L2/L3 states the evidentiary property that makes a retained log discharge it. |
 | **EU AI Act Art. 19** | In force | Log retention presumes the retained log means something. |
-| **prEN 18229-1** | CEN enquiry closed 20 Aug 2026; at disposition of comments. CEN/CENELEC approved direct publication after a positive enquiry for JTC 21 items in Oct 2025, so **there may be no Formal Vote round**: disposition is prudently treated as the last window, and it is reachable only through a national body or a WG 4 expert | Add a completeness clause, or a normative reference to one. The draft's deferral of event content to 24970 does not cover completeness, which is a property of the log rather than of an event. |
+| **prEN 18229-1** | CEN enquiry closed 20 Aug 2026; at disposition of comments. CEN/CENELEC approved direct publication after a positive enquiry for JTC 21 items in Oct 2025, so **there may be no Formal Vote round**: disposition is prudently treated as the last window, and it is reachable only through a national body or a WG 4 expert. **May 2026 draft read in full 2026-09-27** | Completeness is already required at **5.2.2 c)** and integrity is defined to include it at **3.2.9** — what is missing is the mechanism that makes either checkable from the delivered log. VLC-1 L2 supplies loss accounting; L3 supplies the observation surface, which 6.2.1 a) currently places in the instructions for use rather than in the log. Note that 5.4.1, 5.4.3, 5.5 and 6.1 defer most substance to FprEN ISO/IEC 24970, which is at FDIS and can no longer be technically amended — so this part is the only place the mechanism can still be added without an amendment cycle. |
 | **prEN 18229-3** | National enquiry windows closed 22 September 2026; at disposition. National dates differ from the CEN ballot date — confirm with the national body rather than assuming | Transparency and human oversight: an oversight function reading an incomplete log is not exercising oversight. |
 | **ISO/IEC FDIS 24970** | FDIS, stage 50.20, ballot closing on or about 23 October 2026 | Too late for the base document — at FDIS the vote is yes/no and technical comments cannot change the text. The route is an amendment or a new work item under SC 42; a technical objection filed now is logged for the first revision. |
 | **EU Machinery Regulation 2023/1230** | Applies **20 January 2027**; not deferred by the July 2026 Digital Omnibus | Annex I Part A (5)–(6) put ML-based safety components under mandatory third-party conformity assessment. Annex III §1.2.1(b) requires recording of the safety-related decision-making process, retained one year and held *exclusively to demonstrate conformity* on an authority's reasoned request; §1.1.9 requires the machine to *collect evidence* of intervention. A record that cannot demonstrate conformity does not discharge either. This is the earliest binding attachment point for RAL-1 and for VLC-1 L2/L3. |

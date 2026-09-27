@@ -10,10 +10,13 @@ for each published version.*
 the drafts reviewed provides a machine-checkable way for a reader to establish
 that the log is all of it.**
 
-Some of them define completeness as a *term* — prEN 18229-1 defines integrity as
-the "property of accuracy and completeness", borrowing ISO/IEC 27000. None
-supplies the *mechanism*: nothing by which a verifier reading the delivered log
-can tell undeclared transport loss from a genuinely uneventful interval.
+One of them goes further than the term and **requires** the property:
+prEN 18229-1 defines integrity to include completeness at **3.2.9** (borrowing
+ISO/IEC 27000) and requires the provider to ensure logged information is
+complete enough for regulatory purposes at **5.2.2 c)**. None supplies the
+*mechanism*: nothing by which a verifier reading the delivered log can tell
+undeclared transport loss from a genuinely uneventful interval. **A requirement
+nobody can check is the gap this specification fills.**
 
 That gap has a demonstrable consequence: an evidence export covering a two-hour
 outage, during which the logging path discarded every record, is
@@ -234,7 +237,7 @@ cd proofs && coqc -q sentinel_completeness.v   # Coq/Rocq >= 8.16
 
 ## Standards status (2026-09-27)
 
-- **prEN 18229-1** (CEN-CENELEC JTC 21, AI system logging) — enquiry closed, comment disposition in progress.
+- **prEN 18229-1** (CEN-CENELEC JTC 21, *AI trustworthiness framework — Part 1: Logging*) — CEN enquiry closed 20 August 2026; at disposition. **May 2026 draft read in full on 2026-09-27**; `COMMENT-prEN-18229.md` now cites clause numbers and records which of its earlier assertions were withdrawn. CEN/CENELEC may publish JTC 21 items without a Formal Vote, so disposition is treated as the last window.
 - **prEN 18229-3** (transparency and human oversight) — enquiry closed 22 September 2026; at disposition.
 - **ISO/IEC FDIS 24970** (AI system logging) — FDIS, last stage before publication.
 - **No JTC 21 deliverable is cited in the Official Journal**, so no standard yet
