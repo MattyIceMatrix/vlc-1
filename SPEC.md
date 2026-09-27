@@ -62,7 +62,11 @@ object as an honest one. L2 has no power against this case. It is addressed at
 **L3i** (§3.3i), which requires coverage to be declared over an interval whose
 every tick is witnessed by an attestor the producer does not control. See
 `CORRIGENDUM-2026-09-13-01.md`, finding EXT-002, reported by Shahab K., and
-`proofs/sentinel_interval.v`, theorem `producer_death_is_invisible`.
+`proofs/sentinel_interval.v`, theorem `producer_death_is_invisible` — **which
+is not in this repository.** The development was cited in six places and never
+published here; see EXT-019. Until it is, treat the result as asserted rather
+than machine-checked, and read L3i's justification from the prose above and from
+the executable cases in `examples/l3i_cases.py` instead.
 
 Tamper-evidence does not fix this. A hash chain proves that the records you were
 given were not altered. It says nothing about the records you were not given. The

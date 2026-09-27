@@ -72,6 +72,15 @@ whatever window it happens to cover.
 This is now stated as a theorem rather than an admission.
 `proofs/sentinel_interval.v`, 8 results, 0 admitted, 0 axioms:
 
+> **Correction, 2026-09-27 (EXT-019).** That file is **not in this repository**
+> and there is no record of it having been. The CI proof step globs
+> `proofs/*.v`, so it compiled the one development that is present and never
+> reported the absence. The two results below are therefore **asserted, not
+> machine-checked**, as far as any reader of this repository can establish.
+> `selftest.sh` section 16 now fails on any cited proof that is not in the
+> tree, and carries this one as a disclosed expected failure until the
+> development is published or the claim is withdrawn.
+
 - **`producer_death_is_invisible`** — a checker's verdict on a renumbered
   truncation is *equal* to its verdict on the renumbered whole. Not weaker.
   Equal. The two are the same object to the identity.

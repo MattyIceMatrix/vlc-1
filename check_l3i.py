@@ -4,9 +4,10 @@
 #
 # WHY. L3 declares coverage at a POINT (VLC-L3-3: before any event). L2 accounts
 # for loss the producer survived to declare. Neither reaches the case where the
-# PRODUCER is what failed: proofs/sentinel_interval.v proves
+# PRODUCER is what failed: proofs/sentinel_interval.v is cited for
 # producer_death_is_invisible -- a checker's verdict on a renumbered truncation
-# is EQUAL to its verdict on the renumbered whole.
+# is EQUAL to its verdict on the renumbered whole. EXT-019: that proof file is
+# NOT in this repository, so the result is asserted here, not machine-checked.
 #
 # L3i is the repair. The producer declares an interval; an attestor it cannot
 # write to witnesses every tick of it. A producer that dies stops emitting

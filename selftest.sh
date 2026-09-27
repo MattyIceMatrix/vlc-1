@@ -667,6 +667,100 @@ done
 rm -rf "$L3D"
 
 hr
+echo "15. NEGATIVE CONTROLS -- every requirement must be able to fail"
+# An audit over 1512 scorings (72 logs x 21 adapters) found six requirements
+# that passed everywhere and had never been observed to fail. A requirement
+# that cannot be made to fail is indistinguishable from one that is not
+# checked, which is how EXT-018 survived: L3i passed every log for two weeks
+# by never running. Each control below flips one requirement and nothing else.
+N15=$(mktemp -d)
+mut() {  # mut <out> <python expr over `a`>
+  python3 -c "
+import json,sys
+a=json.load(open('adapters/generic-appjsonl-policy.json'))
+$2
+json.dump(a,open('$N15/$1.json','w'))"
+}
+L4=examples/L4-policybound.jsonl
+base_l23=$(req $L4 adapters/generic-appjsonl-policy.json VLC-L2-3)
+[ "$base_l23" = "PASS" ] || bad "control precondition: L4 example should start with VLC-L2-3 PASS, got $base_l23"
+
+mut nointeg  "a['integrity']['mechanism']='none'"
+mut silent   "a['loss']['overflow_behaviour']='silent'"
+mut noob     "a['loss'].pop('overflow_behaviour',None)"
+mut cvevent  "a['non_event_classes']=[c for c in a['non_event_classes'] if c!=a['coverage']['declaration_class']]"
+mut noreplay "a['policy']['replay'].pop('reference',None)"
+
+for spec in "nointeg  VLC-L2-3 a loss declaration with no integrity binding is removable" \
+            "silent   VLC-L2-4 a producer that discards silently cannot claim L2" \
+            "noob     VLC-L2-4 overflow behaviour undeclared is not overflow behaviour declared" \
+            "cvevent  VLC-L3-5 a coverage declaration counted as an event inflates the identity" \
+            "noreplay VLC-L4-3 a policy digest with no retrievable artefact is not re-evaluable"; do
+  set -- $spec; M=$1; R=$2; shift 2
+  G=$(req $L4 "$N15/$M.json" "$R")
+  if [ "$G" = "FAIL" ]; then ok "$R fails when $*"; else bad "$R should FAIL under mutation '$M', got $G"; fi
+done
+
+# VLC-L3i-4 is attested: the reader relays that the attestor is independent.
+python3 examples/l3i_cases.py "$N15" >/dev/null 2>&1 || bad "l3i fixtures did not build for section 15"
+python3 -c "
+import json
+a=json.load(open('$N15/l3i.adapter.json'))
+a['interval']['trusted_attestors']=['someone.else.example']
+json.dump(a,open('$N15/l3i-untrusted.json','w'))"
+G=$(req "$N15/l3i-honest.jsonl" "$N15/l3i-untrusted.json" VLC-L3i-4)
+if [ "$G" = "FAIL" ]; then ok "VLC-L3i-4 fails when the declared attestor is not one the reader accepts"; else bad "VLC-L3i-4 should FAIL for an unaccepted attestor, got $G"; fi
+
+# VLC-L3-1b has no failure path ON PURPOSE: it is the attested half of the
+# coverage declaration (EXT-001) and a reader cannot recompute it. The
+# invariant that matters is that it never stands alone -- it is only ever
+# emitted alongside a well-formed declaration, so it can never carry a level
+# by itself.
+A1=$(req $L4 adapters/generic-appjsonl-policy.json VLC-L3-1a)
+B1=$(req $L4 adapters/generic-appjsonl-policy.json VLC-L3-1b)
+if [ "$A1" = "PASS" ] && [ "$B1" = "PASS" ]; then
+  ok "VLC-L3-1b is attested-only and rides with VLC-L3-1a, which is recomputed"
+else
+  bad "VLC-L3-1b/1a invariant broken: 1a=$A1 1b=$B1"
+fi
+rm -rf "$N15"
+
+hr
+echo "16. CITED ARTEFACTS -- a reference to a file that is not here is a claim"
+# EXT-019. The CI proof step globs proofs/*.v: it compiles what is present and
+# cannot notice that something CITED is absent. proofs/sentinel_interval.v is
+# referenced in six places, including a normative sentence in SPEC.md and the
+# fix claim for EXT-002, and is not in this tree. This check reads the
+# citations rather than the directory, so the gap cannot close silently.
+CIT=$(python3 - <<'PYC'
+import os, re, glob
+cited = {}
+for p in glob.glob("*.md") + glob.glob("*.py") + glob.glob("examples/*.py"):
+    try:
+        s = open(p, encoding="utf-8", errors="replace").read()
+    except OSError:
+        continue
+    for m in re.findall(r"proofs/([A-Za-z0-9_]+\.v)", s):
+        cited.setdefault(m, set()).add(p)
+for f in sorted(cited):
+    state = "present" if os.path.exists(os.path.join("proofs", f)) else "ABSENT"
+    print("%s|%s|%d" % (state, f, len(cited[f])))
+PYC
+)
+[ -n "$CIT" ] || bad "section 16: no proof citations found at all, which cannot be right"
+printf '%s\n' "$CIT" | while IFS='|' read -r STATE F N; do
+  [ -z "$F" ] && continue
+  if [ "$STATE" = "present" ]; then
+    printf '  ok    proofs/%s is cited in %s place(s) and is in the tree\n' "$F" "$N"
+  else
+    printf '  xfail proofs/%s is cited in %s place(s) and is NOT in this tree (EXT-019)\n' "$F" "$N"
+  fi
+done
+# The xfail above runs in a subshell, so count it here.
+MISSING=$(printf '%s\n' "$CIT" | grep -c '^ABSENT|' || true)
+XFAIL=$((XFAIL + MISSING))
+
+hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL

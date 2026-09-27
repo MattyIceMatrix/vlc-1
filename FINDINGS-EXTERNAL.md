@@ -40,8 +40,9 @@ window it covers.
 The reporter further noted that T3 in the threat model already names agent
 restart, so the threat model listed a threat no requirement addressed.
 
-Proved as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
-`proofs/sentinel_interval.v`. Fixed by Corrigendum 1: §1 amended, and a new
+Stated as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
+`proofs/sentinel_interval.v` — **a file that is not in this repository; see
+EXT-019.** The claim that these are machine-checked is unsupported here. Fixed by Corrigendum 1: §1 amended, and a new
 level L3i requiring interval coverage witnessed by an attestor the producer does
 not control.
 
@@ -470,3 +471,83 @@ and goes red on the three attack cases if the guards are removed. Checks: 103 �
 going is the defect class named throughout this ledger. Here it had reached the
 repair for the most serious finding the project has received, and stayed there
 for two weeks.
+
+---
+
+## EXT-019 — a tree-wide audit: six requirements that could not be seen to fail, and a proof that is not here
+
+**Found by:** the maintainer, auditing the whole tree after EXT-018 ·
+**Found:** 2026-09-27 · **Status:** confirmed; five fixed, one disclosed
+**Severity:** a normative claim of machine-checked proof, unsupported in this
+repository
+
+EXT-018 showed that a level could pass every log for two weeks by never
+running. The obvious next question is what else in this tree is in that
+position. Two audits were run.
+
+### Audit 1 — which requirements have never been seen to fail
+
+Every example, mechanism case, typed mutant and L3i fixture was scored against
+every adapter: **1512 scorings, 72 logs × 21 adapters.** Eight requirements
+passed in every one and had never been observed to fail. Two of those
+(`VLC-L1-4`, `VLC-L3-4`) do have negative controls, built inline in
+`selftest.sh` and so invisible to the sweep. **Six did not:**
+
+| Requirement | Can it fail? | Now controlled by |
+|---|---|---|
+| `VLC-L2-3` | yes | an adapter declaring no integrity binding |
+| `VLC-L2-4` | yes | `overflow_behaviour` of `silent`, and absent |
+| `VLC-L3-5` | yes | the coverage class removed from `non_event_classes` |
+| `VLC-L4-3` | yes | a policy digest with no retrievable artefact |
+| `VLC-L3i-4` | yes | a declared attestor the reader does not accept |
+| `VLC-L3-1b` | **no, by design** | see below |
+
+`VLC-L3-1b` has no failure path on purpose: it is the attested half of the
+coverage declaration, the EXT-001 fix, and a reader cannot recompute it. What
+was missing was any statement of that invariant. Section 15 now asserts that it
+is only ever emitted alongside `VLC-L3-1a`, which is recomputed, so it can
+never carry a level by itself. When the declaration is malformed, `VLC-L3-1a`
+fails, `VLC-L3-1b` is not emitted at all, and the level is capped at L0 by
+`VLC-L3-1a` regardless — checked, and benign.
+
+`selftest.sh` section 15 flips each of the five, one at a time, and requires
+the requirement to go red and nothing else to move. 109 → 116 checks.
+
+### Audit 2 — artefacts this repository cites and does not contain
+
+**`proofs/sentinel_interval.v` is cited in five files and is not in this
+tree.** It is named in a normative sentence of `SPEC.md` §1, in
+`CORRIGENDUM-2026-09-13-01.md` as "8 results, 0 admitted, 0 axioms", in this
+ledger as the fix for EXT-002, and twice in `check_l3i.py`. `proofs/` contains
+one development, `sentinel_completeness.v`.
+
+Nothing caught it because **the CI proof step globs `proofs/*.v`**. It compiles
+what is present, counts its theorems and checks for `Admitted`, and has no way
+to notice that something cited is absent. It has been reporting success over
+one file while the specification referred to two.
+
+The theorems `producer_death_is_invisible` and `l2_cannot_detect_producer_loss`
+are therefore **asserted, not machine-checked**, as far as any reader of this
+repository can establish. Every citation now says so. The corrigendum carries a
+correction rather than a rewrite, because the claim was published and a reader
+who relied on it is owed the record.
+
+`selftest.sh` section 16 now reads the citations rather than the directory:
+every `proofs/*.v` path named anywhere in the repository must exist. It carries
+this one as a **disclosed expected failure** until the development is published
+or the claim is withdrawn, so the suite stays honest without going permanently
+red.
+
+**Unresolved, and the maintainer's to settle:** whether the development exists
+outside this repository and can be published, or whether the result needs
+proving again. It should not be restated as machine-checked until one of those
+has happened.
+
+### What the two audits have in common
+
+Both defects are the same shape as EXT-018 and as the `sha256-canonical-fields`
+reorder gap found the same day: **a check that passes because there is nothing
+for it to check.** A requirement no fixture can fail, a level no adapter
+claims, a proof step that globs a directory. The ledger's own recurring lesson,
+found three times in one day by looking for it deliberately rather than waiting
+for a reporter.
