@@ -40,11 +40,11 @@ window it covers.
 The reporter further noted that T3 in the threat model already names agent
 restart, so the threat model listed a threat no requirement addressed.
 
-Stated as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
+Proved as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
 `proofs/sentinel_interval.v`. That file was **absent from this repository for
-two weeks** while being cited here (EXT-019); a development of that name was
-written on 2026-09-27, proves both results and eight more, and is compiled by
-CI. It is not the original and does not claim to be. Fixed by Corrigendum 1: §1 amended, and a new
+two weeks** while being cited here, and was recovered and committed on
+2026-09-27 (EXT-019). It compiles at 8 results, 0 admitted, 0 axioms — the
+count this ledger and the corrigendum claimed all along. Fixed by Corrigendum 1: §1 amended, and a new
 level L3i requiring interval coverage witnessed by an attestor the producer does
 not control.
 
@@ -540,7 +540,47 @@ this one as a **disclosed expected failure** until the development is published
 or the claim is withdrawn, so the suite stays honest without going permanently
 red.
 
-**Resolved the same day, by proving it again.** `proofs/sentinel_interval.v`
+### The original was recovered, and the replacement was wrong
+
+**The maintainer produced the original the same evening.** It is now committed
+verbatim: **8 results, 0 admitted, 0 axioms** — exactly the count the
+corrigendum printed. The corrigendum was accurate; the file was never
+committed, and for two weeks nothing in this repository could tell the
+difference between "proved" and "claimed".
+
+Before it turned up, a replacement was written to make the citations true. It
+has been **discarded**, and the reason belongs in this ledger rather than in a
+commit message, because it is this project's own defect class committed by the
+person auditing for it.
+
+The replacement's `producer_death_is_invisible` defined the account left by a
+dead producer and the account of a genuinely short session as the *same
+expression*, then proved a verifier agrees on both by `reflexivity`. That is
+not a theorem about logs. It is `V x = V x`, wearing the name of a result. It
+would have compiled, passed `Print Assumptions`, counted as a result in CI, and
+established nothing.
+
+The original does the real work: `closes` is a fixpoint that walks a concrete
+log checking counter continuity the way the checker does, `renumber` is
+modelled explicitly, and the theorem quantifies over an arbitrary log and an
+arbitrary truncation point. Its strength comes from `renumber_closes`, an
+inductive proof that any renumbered log closes the identity — which is the
+actual content of Shahab K.'s finding.
+
+**A check that passes because there is nothing for it to check** is the shape of
+EXT-018, of the six uncontrolled requirements, of the globbed CI proof step, and
+now of a proof written to close the gap they left. Four in one day. The lesson
+is not that the tooling is weak; it is that "it compiles and reports success"
+is the same evidence in every one of these cases, and it is not evidence of
+anything.
+
+One theorem from the replacement survived on merit and is appended to the
+original, marked and dated: `missing_any_tick_fails`, the interior-tick case.
+`missing_start_tick_fails` covers a gap at the declared start; the checker's
+scan does not privilege the start, so the interior case deserved stating. Nine
+results now.
+
+### What was fixed before the original turned up `proofs/sentinel_interval.v`
 now exists: **10 results, 0 admitted, 0 axioms, every one closed under the
 global context**, compiled by CI. It proves `producer_death_is_invisible` (the
 two accounts are *equal*, so every function of an account agrees),

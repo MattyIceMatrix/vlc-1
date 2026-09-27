@@ -62,13 +62,14 @@ object as an honest one. L2 has no power against this case. It is addressed at
 **L3i** (§3.3i), which requires coverage to be declared over an interval whose
 every tick is witnessed by an attestor the producer does not control. See
 `CORRIGENDUM-2026-09-13-01.md`, finding EXT-002, reported by Shahab K., and
-`proofs/sentinel_interval.v`, theorem `producer_death_is_invisible`. **That
-development was cited here for two weeks without being in the repository**
-(EXT-019); the file now present was written on 2026-09-27 to make the citation
-true and proves the result from scratch, claiming no continuity with whatever
-was originally meant. It does **not** cover the binding of a tick to a chain
-position — the EXT-018 attacks turn on that, and they are covered by executable
-cases in `examples/l3i_cases.py`, not by the proof.
+`proofs/sentinel_interval.v`, theorem `producer_death_is_invisible`. That
+development was cited here for two weeks **without being in the repository**
+and was recovered on 2026-09-27 (EXT-019). It proves that a checker's verdict
+on a renumbered truncation is *equal* to its verdict on the renumbered whole,
+for an arbitrary log and an arbitrary truncation point. It covers tick
+**presence** only: the EXT-018 attacks turn on the binding of a tick to a chain
+position, which is not modelled, and are covered by executable cases in
+`examples/l3i_cases.py`.
 
 Tamper-evidence does not fix this. A hash chain proves that the records you were
 given were not altered. It says nothing about the records you were not given. The

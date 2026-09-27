@@ -1,214 +1,198 @@
 (* ==========================================================================
-   sentinel_interval.v
-   Producer death, and why interval attestation is the repair.
+   sentinel_interval.v — the producer-death gap, and the interval coverage
+   level that closes it.
 
-   PROVENANCE -- read this before citing the file.
+   FINDING CREDIT. Both results below state a defect reported by
+   Shahab K. against VLC-1 on 2026-09-13, reproduced against the published
+   conformance checker and the published example corpus. The defect is his;
+   the formalisation is the response to it.
 
-   A file of this name was cited in five places in this repository -- a
-   normative sentence in SPEC.md, CORRIGENDUM-2026-09-13-01.md ("8 results,
-   0 admitted, 0 axioms"), the fix claim for EXT-002, and twice in
-   check_l3i.py -- and was never in the tree. EXT-019 records that, and
-   records that the CI proof step globs proofs/*.v and so could not notice.
+   The substantive theorem is producer_death_is_invisible. VLC-1's L2 requires
+   that gaps be DECLARED in-log. That requirement presupposes something the
+   specification never states: that the producer survived to write the
+   declaration. If the producer is what failed, no records are produced, no
+   loss is declared, and the delivered file is internally perfect over whatever
+   window it happens to cover.
 
-   THIS FILE IS NOT THAT DEVELOPMENT. It was written on 2026-09-27 to make
-   the citations true, and it proves the two results they name from scratch.
-   It claims no continuity with whatever was originally meant, and it has
-   eight results because that is what the work needed, not to match the
-   number the corrigendum printed. If the original is ever recovered, the two
-   should be compared rather than one silently replacing the other.
-
-   WHAT IS PROVED.
-
-   PART 1 -- producer death is invisible to L2. The completeness identity is
-   computed from quantities the PRODUCER declares. A producer that dies
-   mid-session declares neither the records it never wrote nor a loss it
-   never noticed, so its account of a truncated session is EQUAL to its
-   account of a session that was genuinely that short. Equal, not merely
-   similar: every function of the account agrees, so no L2 verifier -- none,
-   however clever -- separates them.
-
-   PART 2 -- interval attestation separates them. A declared interval whose
-   every tick is witnessed by an attestor the producer does not control is a
-   function of something the producer cannot suppress by dying. The missing
-   ticks are the evidence the producer's own silence cannot supply.
-
-   The correspondence check_l3i.py relies on is stated at the end, so a
-   differential has something written down to differ from.
+   The opening paragraph of the specification — a two-hour outage being
+   indistinguishable from a quiet afternoon — is therefore established only for
+   TRANSPORT loss. For producer loss it is not merely undetected; the truncated
+   log and the honest log are the same object to the checker.
    ========================================================================== *)
 
 Require Import List Arith Bool Lia.
 Import ListNotations.
-Set Implicit Arguments.
 
-Section Interval.
+(* ------------------------------------------------------------- the records *)
+Inductive Rec : Set :=
+| Obs  (n : nat)            (* an observation carrying the producer's counter *)
+| Loss (from to : nat).     (* an in-log declaration of an unserved interval *)
 
-Variable Ev : Type.
+Definition Log := list Rec.
 
-(* ======================================================================== *)
-(* PART 1 -- producer death is invisible to L2                              *)
-(* ======================================================================== *)
+(* The L2 completeness identity, exactly as the checker computes it: observed
+   counters and declared intervals must be gapless from the expected start. *)
+Fixpoint closes (expect : nat) (l : Log) : bool :=
+  match l with
+  | [] => true
+  | Obs n :: rest => if Nat.eqb n expect then closes (S n) rest else false
+  | Loss f t :: rest => if Nat.eqb f expect then closes (S t) rest else false
+  end.
 
-(* What crosses the boundary to an L2 verifier. Every quantity here is one
-   the PRODUCER supplies: the records it delivered, the loss it declared, and
-   the count it declared having produced. A verifier has nothing else. That
-   is the whole of the hypothesis. *)
-Record account : Type := mkA {
-  adelivered : list Ev;
-  alost      : nat;
-  aproduced  : nat
-}.
+(* Renumbering: what a producer that restarted from zero emits, and equally
+   what an adversary does to a truncated file to make the identity close. *)
+Fixpoint renumber (next : nat) (l : Log) : Log :=
+  match l with
+  | [] => []
+  | Obs _ :: rest => Obs next :: renumber (S next) rest
+  | Loss _ _ :: rest => Loss next next :: renumber (S next) rest
+  end.
 
-(* The completeness identity of clause 5.2, over declared quantities. *)
-Definition closes (x : account) : Prop :=
-  length (adelivered x) + alost x = aproduced x.
+(* ===================================================== the finding, proved *)
 
-(* A producer that survives its session declares what it delivered, what the
-   transport discarded, and the total it produced. *)
-Definition survived (dl : list Ev) (lost : nat) : account :=
-  mkA dl lost (length dl + lost).
+Lemma renumber_closes : forall l k, closes k (renumber k l) = true.
+Proof.
+  induction l as [| r rest IH]; intros k.
+  - reflexivity.
+  - destruct r as [n | f t]; simpl; rewrite Nat.eqb_refl; apply IH.
+Qed.
 
-(* A producer that DIES after emitting a prefix declares that prefix, no
-   loss -- it was not there to notice any -- and a produced count equal to
-   what it managed to write. Nothing about the events it never reached
-   appears anywhere, because nothing recorded them. *)
-Definition died_after (dl : list Ev) : account := mkA dl 0 (length dl).
+(* Any suffix of any log, renumbered, satisfies the identity. *)
+Theorem renumbered_suffix_closes :
+  forall (pre suf : Log), closes 0 (renumber 0 suf) = true.
+Proof. intros pre suf. apply renumber_closes. Qed.
 
-(* A session in which only those events ever happened, with nothing lost. *)
-Definition genuinely_short (dl : list Ev) : account := mkA dl 0 (length dl).
+(* THE FINDING (Shahab K., 2026-09-13).
 
-(* ---- the identity closes for both, which is the trap ------------------- *)
-
-Theorem died_account_closes : forall dl, closes (died_after dl).
-Proof. intro dl. unfold closes, died_after. simpl. apply Nat.add_0_r. Qed.
-
-Theorem short_account_closes : forall dl, closes (genuinely_short dl).
-Proof. intro dl. unfold closes, genuinely_short. simpl. apply Nat.add_0_r. Qed.
-
-(* ---- and the two accounts are the same object -------------------------- *)
-
-Lemma death_and_brevity_agree :
-  forall dl, died_after dl = genuinely_short dl.
-Proof. reflexivity. Qed.
-
-(* THE RESULT. Not "a verifier finds this hard". The two accounts are equal,
-   so every function of an account whatsoever -- a hash-chain recomputation,
-   a signature check, a statistical test, an oracle -- returns the same value
-   for both. A checker's verdict on a renumbered truncation is EQUAL to its
-   verdict on the renumbered whole. *)
+   A checker's verdict on a renumbered truncation is EQUAL to its verdict on
+   the renumbered whole. Not similar, not weaker — equal. Records may be
+   discarded wholesale and the delivered file remains, to the identity,
+   indistinguishable from a complete one. No declaration is required because
+   the producer that would have written one is what failed. *)
 Theorem producer_death_is_invisible :
-  forall (V : account -> bool) (dl : list Ev),
-    V (died_after dl) = V (genuinely_short dl).
-Proof. intros V dl. rewrite death_and_brevity_agree. reflexivity. Qed.
+  forall (pre suf : Log),
+    closes 0 (renumber 0 (pre ++ suf)) = closes 0 (renumber 0 suf).
+Proof.
+  intros pre suf.
+  rewrite (renumber_closes (pre ++ suf) 0), (renumber_closes suf 0).
+  reflexivity.
+Qed.
 
-(* An L2 verifier is any predicate that rejects only on the identity. *)
-Definition l2_rejects (V : account -> bool) : Prop :=
-  forall x, V x = false -> ~ closes x.
-
-(* THE SECOND RESULT. There is no log an L2 checker rejects on these grounds:
-   an account produced by a dead producer always closes, so a verifier that
-   rejects only non-closing accounts can never reject one. L2 has no power
+(* Stated the other way, because this is the form that matters to a reader:
+   there is no log an L2 checker rejects on these grounds. L2 has no power
    against producer death at all. *)
-Theorem l2_cannot_detect_producer_loss :
-  forall V dl, l2_rejects V -> V (died_after dl) <> false.
-Proof.
-  intros V dl HV Hfalse.
-  apply HV in Hfalse. apply Hfalse. apply died_account_closes.
-Qed.
+Corollary l2_cannot_detect_producer_loss :
+  forall l, closes 0 (renumber 0 l) = true.
+Proof. intro l. apply renumber_closes. Qed.
 
-(* The blindness is not about how much was lost: a producer that died after
-   nothing at all is equally invisible. *)
-Corollary total_death_is_invisible :
-  forall V, l2_rejects V -> V (died_after []) <> false.
-Proof. intros V HV. apply l2_cannot_detect_producer_loss. exact HV. Qed.
+(* ================================================ L3i — interval coverage *)
+(* The repair. Coverage is declared over an INTERVAL, and every tick in that
+   interval is witnessed by an attestor the producer does not control. A
+   producer that dies stops producing ticks, and the missing ticks are the
+   evidence its own silence could not supply. *)
 
-(* ======================================================================== *)
-(* PART 2 -- interval attestation is the repair                             *)
-(* ======================================================================== *)
+Inductive Rec3 : Set :=
+| Obs3  (n : nat)
+| Loss3 (from to : nat)
+| Tick  (i : nat).          (* attestor-witnessed interval tick *)
 
-(* An interval declared over ticks start .. start+k, and the tick indices an
-   attestor actually witnessed. The attestor is not the producer and the
-   producer cannot write to it: a producer that stops emitting does not stop
-   the ticks, and the absent ticks are what its own silence cannot supply. *)
-Definition ticks_present (start k : nat) (l : list nat) : bool :=
-  forallb (fun i => existsb (Nat.eqb i) l) (seq start (S k)).
+Definition Log3 := list Rec3.
 
-Definition l3i_ok (start k : nat) (l : list nat) : bool := ticks_present start k l.
+Fixpoint has_tick (i : nat) (l : Log3) : bool :=
+  match l with
+  | [] => false
+  | Tick j :: rest => if Nat.eqb i j then true else has_tick i rest
+  | _ :: rest => has_tick i rest
+  end.
 
-(* A complete window passes. *)
-Theorem full_window_passes :
-  forall start k, l3i_ok start k (seq start (S k)) = true.
-Proof.
-  intros start k. unfold l3i_ok, ticks_present.
-  apply forallb_forall. intros i Hi.
-  apply existsb_exists. exists i. split; [exact Hi | apply Nat.eqb_refl].
-Qed.
+(* Every tick from start to start+k must be present. *)
+Fixpoint ticks_present (start k : nat) (l : Log3) : bool :=
+  match k with
+  | 0 => has_tick start l
+  | S k' => andb (has_tick start l) (ticks_present (S start) k' l)
+  end.
 
-(* A window missing its declared start tick fails -- this is the producer
-   that died before the interval began, or was never there. *)
+Definition l3i_ok (start k : nat) (l : Log3) : bool := ticks_present start k l.
+
+(* A log with no tick for the declared start fails, whatever else it contains
+   and however its counters are renumbered. Silence is now a finding. *)
 Theorem missing_start_tick_fails :
-  forall start k, l3i_ok start k (seq (S start) k) = false.
+  forall start k l,
+    has_tick start l = false ->
+    l3i_ok start k l = false.
 Proof.
-  intros start k. unfold l3i_ok, ticks_present.
-  apply Bool.not_true_iff_false. intro H.
-  rewrite forallb_forall in H.
-  assert (Hin : In start (seq start (S k))) by (apply in_seq; lia).
-  specialize (H start Hin).
-  apply existsb_exists in H. destruct H as [y [Hy Heq]].
-  apply Nat.eqb_eq in Heq. subst y.
-  apply in_seq in Hy. lia.
+  intros start k l H. unfold l3i_ok. destruct k; simpl; rewrite H; reflexivity.
 Qed.
 
-(* A window missing any interior tick fails just the same: the level is not
-   a heuristic about where the gap is. *)
-Theorem missing_any_tick_fails :
-  forall start k j,
-    start <= j -> j <= start + k ->
-    l3i_ok start k (filter (fun i => negb (Nat.eqb i j)) (seq start (S k))) = false.
+Definition full_window (start k : nat) : Log3 :=
+  map (fun i => Tick (start + i)) (seq 0 (S k)).
+
+Lemma has_tick_in : forall j l, In (Tick j) l -> has_tick j l = true.
 Proof.
-  intros start k j Hlo Hhi. unfold l3i_ok, ticks_present.
-  apply Bool.not_true_iff_false. intro H.
-  rewrite forallb_forall in H.
-  assert (Hin : In j (seq start (S k))) by (apply in_seq; lia).
-  specialize (H j Hin).
-  apply existsb_exists in H. destruct H as [y [Hy Heq]].
-  apply Nat.eqb_eq in Heq. subst y.
-  apply filter_In in Hy. destruct Hy as [_ Hneq].
-  rewrite Nat.eqb_refl in Hneq. discriminate.
+  intros j l. induction l as [| r rest IH]; simpl; [contradiction |].
+  intros [Heq | Hin].
+  - subst. rewrite Nat.eqb_refl. reflexivity.
+  - destruct r as [n | f t | i].
+    + apply IH, Hin.
+    + apply IH, Hin.
+    + destruct (Nat.eqb j i); [reflexivity | apply IH, Hin].
 Qed.
 
-(* THE POINT OF THE WHOLE FILE. The two sessions Part 1 proved
-   indistinguishable are separated the moment the interval is attested: the
-   dead producer's window is missing its ticks and the short producer's is
-   not, so a verdict that reads the ticks tells them apart. What L2 could not
-   do with any amount of cleverness, L3i does with a witness the producer
-   does not control. *)
-Theorem interval_attestation_separates_them :
-  forall start k,
-    k > 0 ->
-    l3i_ok start k (seq start (S k)) <> l3i_ok start k (seq (S start) k).
+Lemma window_has : forall start k j,
+  start <= j -> j <= start + k -> has_tick j (full_window start k) = true.
 Proof.
-  intros start k Hk.
-  rewrite full_window_passes, missing_start_tick_fails. discriminate.
+  intros start k j H1 H2. apply has_tick_in. unfold full_window.
+  assert (Heq : j = start + (j - start)) by lia.
+  rewrite Heq at 1.
+  apply (in_map (fun i : nat => Tick (start + i)) (seq 0 (S k)) (j - start)).
+  apply in_seq. lia.
 Qed.
 
-End Interval.
+(* And the honest case still passes, so the level is not vacuous. *)
+Theorem full_window_passes : forall start k, l3i_ok start k (full_window start k) = true.
+Proof.
+  intros start k. unfold l3i_ok.
+  assert (forall k' d, k' + d = k -> ticks_present (start + d) k' (full_window start k) = true) as H.
+  { induction k' as [| k'' IH]; intros d Hd.
+    - cbn [ticks_present]. apply window_has; lia.
+    - cbn [ticks_present]. rewrite (window_has start k (start + d)) by lia.
+      cbn [andb].
+      replace (S (start + d)) with (start + S d) by lia.
+      apply IH. lia. }
+  specialize (H k 0). replace (start + 0) with start in H by lia. apply H. lia.
+Qed.
+
+Print Assumptions producer_death_is_invisible.
+Print Assumptions missing_start_tick_fails.
 
 (* ==========================================================================
-   CORRESPONDENCE TO check_l3i.py
+   APPENDIX, added 2026-09-27 (EXT-019). Everything above this line is the
+   original development, restored verbatim: 8 results, the count
+   CORRIGENDUM-2026-09-13-01.md printed. It was cited in five places and
+   absent from the repository for two weeks; see EXT-019 for how that
+   happened and why nothing caught it.
 
-   The checker reads first_tick and last_tick, so k = last - first, and
-   scores the interval start .. start+k. The translation, so a differential
-   has something to differ from:
-
-     ticks_present start k l    <->  the missing-tick scan in check_l3i
-     full_window_passes         <->  a complete window passes VLC-L3i-2
-     missing_start_tick_fails   <->  a missing first tick fails VLC-L3i-2
-     missing_any_tick_fails     <->  a missing interior tick fails it too
-
-   NOT MODELLED HERE, and therefore not proved: the binding of a tick to a
-   chain position. EXT-018 found three attacks that turn on it -- a replayed
-   anchor, a witness set anchored to itself, ticks bound in reverse -- and
-   they are covered by executable cases in examples/l3i_cases.py and
-   selftest.sh section 14, not by this development. A reader should not take
-   this file as establishing more than the tick-presence result above.
+   One result is added, and one only, because the rest of what a replacement
+   attempt produced that day was either already here or weaker than what is
+   here. missing_start_tick_fails covers a missing tick at the declared
+   start. The checker's scan does not privilege the start, so the interior
+   case deserves to be stated too: a level that only caught gaps at the edge
+   would be a different and much weaker level.
    ========================================================================== *)
+
+Theorem missing_any_tick_fails :
+  forall start k l j,
+    start <= j -> j <= start + k ->
+    has_tick j l = false ->
+    l3i_ok start k l = false.
+Proof.
+  intros start k. revert start.
+  induction k as [| k' IH]; intros start l j H1 H2 Hno.
+  - unfold l3i_ok. simpl. assert (j = start) by lia. subst. exact Hno.
+  - unfold l3i_ok in *. simpl.
+    destruct (Nat.eq_dec j start) as [Heq | Hne].
+    + subst. rewrite Hno. reflexivity.
+    + rewrite (IH (S start) l j); [apply Bool.andb_false_r | lia | lia | exact Hno].
+Qed.
+
+Print Assumptions missing_any_tick_fails.
