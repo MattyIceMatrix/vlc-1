@@ -45,8 +45,11 @@ Proved as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
 level L3i requiring interval coverage witnessed by an attestor the producer does
 not control.
 
-**Open, and put back to the reporter:** whether dropping attestor traffic
-wholesale, or replaying anchors across intervals, defeats L3i.
+**Answered 2026-09-27, see EXT-018.** Dropping attestor traffic wholesale does
+not defeat L3i: the absent ticks fail VLC-L3i-2. Replaying an anchor across an
+interval did defeat it, and is now refused. Both questions went unanswered for
+two weeks because L3i had no fixture, no adapter and no test, and its checker
+raised NameError the first time one was supplied.
 
 ---
 
@@ -410,3 +413,60 @@ it. It now names the log.
 
 This is the second contribution to VLC-1 from outside the project.
 
+
+---
+
+## EXT-018 — L3i had never executed, and three attacks passed it
+
+**Found by:** the maintainer, answering the two questions EXT-002's reporter
+(Shahab K.) left open · **Found:** 2026-09-27 · **Status:** confirmed, fixed
+**Severity:** the repair for EXT-002 crashed on first use; once running, a
+replayed anchor scored a window as fully witnessed
+
+EXT-002 closed with two questions put back to the reporter: whether **dropping
+attestor traffic wholesale**, or **replaying anchors across intervals**,
+defeats L3i. They were never answered, and this is why: **no adapter declared
+`interval` mode, no example carried a tick or an interval declaration, and
+`selftest.sh` had no L3i section.** Every log ever scored took the "not
+claimed" branch at the top of `check_l3i`, returned, and never reached the
+scoring body. `conformance.py` names `test_check_l3i.py` in a comment; the file
+does not exist.
+
+**First defect — it crashes.** `_dig` is called ten times in the scoring body
+and was never defined or imported. The first adapter to declare `interval` mode
+raised `NameError` out of `conformance.py` line 1041. The level had a checker, a
+Coq development (`proofs/sentinel_interval.v`) and a corrigendum, and did not
+run.
+
+**Second defect — membership was mistaken for observation.** With `_dig`
+supplied, a tick's `bound_field` was checked only for presence in the set of
+hashes occurring anywhere in the log. Three attacks then passed every L3i
+requirement:
+
+| Attack | What it does | Was |
+|---|---|---|
+| **replayed anchor** | every tick binds the *same* position: eight signatures over one observed point | PASS |
+| **self-anchored** | each tick binds the tick before it, so no tick binds a producer record at all | PASS |
+| **reversed** | positions real and distinct, bound in reverse order | PASS |
+
+A tick asserts *at tick n the log had reached position P*. Fixed by requiring
+that P be a producer record rather than another witness, that P not move
+backwards as n increases, and that the last tick reach the end of what was
+delivered — otherwise the witnesses cover a prefix and the records after it are
+unwitnessed while the interval reads as complete. Equal positions are still
+allowed: a quiet stretch leaves the head where it was, and two ticks may
+honestly bind the same record.
+
+**The reporter's questions, answered.** Dropping attestor traffic wholesale
+does **not** defeat L3i — the absent ticks fail VLC-L3i-2, which is the level
+working as designed. Replaying an anchor **did** defeat it, and now fails
+VLC-L3i-3.
+
+`examples/l3i_cases.py` builds six fixtures; `selftest.sh` section 14 runs them
+and goes red on the three attack cases if the guards are removed. Checks: 103 →
+109.
+
+**The lesson is the project's own.** A rule that holds with no test to notice it
+going is the defect class named throughout this ledger. Here it had reached the
+repair for the most serious finding the project has received, and stayed there
+for two weeks.

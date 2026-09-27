@@ -643,6 +643,30 @@ done < "$JRF"
 rm -f "$JRF"
 
 hr
+echo "14. L3i: interval attestation, and the two attacks EXT-002 left open"
+L3D=$(mktemp -d)
+python3 examples/l3i_cases.py "$L3D" >/dev/null 2>&1 || bad "l3i fixtures did not build"
+l3i_worst() {
+  python3 conformance.py --log "$L3D/$1.jsonl" --adapter "$L3D/l3i.adapter.json" --json 2>/dev/null \
+  | python3 -c 'import sys,json
+try: r=json.load(sys.stdin)["requirements"]
+except Exception: print("CRASH"); raise SystemExit
+v=[x["status"] for k,x in r.items() if k.startswith("VLC-L3i")]
+print("CRASH" if not v else ("FAIL" if "FAIL" in v else "PASS"))'
+}
+for spec in "l3i-honest PASS a complete window, each tick binding a later producer record" \
+            "l3i-producer-died FAIL the producer stopped mid-interval: the absent ticks are the evidence (EXT-002)" \
+            "l3i-attestor-dropped FAIL attestor traffic dropped wholesale -- EXT-002 reporter question 1" \
+            "l3i-anchor-replayed FAIL one anchor replayed across every tick -- EXT-002 reporter question 2 (EXT-018)" \
+            "l3i-self-anchored FAIL a witness set anchored to itself binds no producer record (EXT-018)" \
+            "l3i-reversed-binding FAIL ticks bound in reverse: observation order contradicts tick order (EXT-018)"; do
+  set -- $spec; CASE=$1; WANT=$2; shift 2
+  GOT=$(l3i_worst "$CASE")
+  if [ "$GOT" = "$WANT" ]; then ok "$CASE -> $WANT: $*"; else bad "$CASE expected $WANT, got $GOT"; fi
+done
+rm -rf "$L3D"
+
+hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL

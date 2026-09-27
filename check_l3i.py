@@ -103,6 +103,30 @@ def check_l3i(recs, ad, res):
     for t in ticks:
         (mine if _dig(t, iv.get("interval_id_field")) == ivid else foreign).append(t)
 
+    # EXT-018. A bound position used to be checked for MEMBERSHIP alone -- is
+    # this hash somewhere in this log. Membership is not observation. Three
+    # attacks passed every requirement under that rule, two of them the ones
+    # EXT-002's reporter put back and nobody could run:
+    #
+    #   replayed anchor   every tick binds the SAME position: eight signatures
+    #                     over one observed point, window scored as covered
+    #   self-anchored     each tick binds the tick before it, so no tick binds
+    #                     a producer record at all
+    #   reversed          positions real and distinct, bound in reverse: the
+    #                     order of observation contradicts the order of ticks
+    #
+    # A tick asserts "at tick n the log had reached position P". P must
+    # therefore be a producer record rather than another witness, must not go
+    # backwards as n increases, and the last tick must reach the end of what
+    # was delivered -- otherwise the witnesses cover a prefix and the records
+    # after it are unwitnessed while the interval reads as complete.
+    order = {r.hash: i for i, r in enumerate(recs) if r.hash}
+    tick_hashes = {t.hash for t in ticks if t.hash}
+    witnessable = [i for i, r in enumerate(recs)
+                   if r.cls not in (tc, dc) and r.cls not in ad.get("marker_classes", [])]
+    last_witnessable = max(witnessable) if witnessable else None
+    bound_pos, high_water = {}, None
+
     heads = {r.hash for r in recs if r.hash}
     seen, problems = {}, []
     for t in mine:
@@ -134,10 +158,34 @@ def check_l3i(recs, ad, res):
                 problems.append(f"tick {n} binds a position absent from this log: "
                                 f"a witness lifted from elsewhere")
                 continue
+            if b in tick_hashes:
+                problems.append(f"tick {n} binds another witness rather than a "
+                                f"producer record: a witness set anchored to "
+                                f"itself never observed the producer")
+                continue
+            bound_pos[n] = order[b]
         if iv.get("witness_field") and _dig(t, iv.get("witness_field")) is None:
             problems.append(f"tick {n} carries no witness")
             continue
         seen[n] = t
+
+    # Positions must not go backwards, and the witnesses must reach the end of
+    # what was delivered. Equal positions are allowed: a quiet stretch leaves
+    # the head where it was, and two ticks may honestly bind the same record.
+    # What is refused is the head standing still while later records exist.
+    for n in sorted(bound_pos):
+        if high_water is not None and bound_pos[n] < high_water:
+            problems.append(f"tick {n} binds a position earlier than an earlier "
+                            f"tick did: the order of observation contradicts the "
+                            f"order of the ticks")
+            break
+        high_water = bound_pos[n]
+    if bound_pos and last_witnessable is not None and high_water is not None \
+            and high_water < last_witnessable:
+        unwitnessed = sum(1 for i in witnessable if i > high_water)
+        problems.append(f"the last tick binds position {high_water} and "
+                        f"{unwitnessed} later record(s) were delivered: the "
+                        f"witnesses cover a prefix of the log, not the interval")
 
     if foreign:
         problems.append(f"{len(foreign)} tick(s) name a different interval and were "
@@ -190,6 +238,29 @@ def check_l3i(recs, ad, res):
 
 
 # --------------------------------------------------------------------- helpers
+def _dig(rec, path):
+    """Field lookup on a parsed record, dotted path, tolerant of absence.
+
+    EXT-018: this was called ten times in the scoring body and never defined,
+    so check_l3i raised NameError the first time an adapter actually declared
+    interval mode. Nothing caught it because no adapter, example or test
+    exercised the level -- every scored log took the "not claimed" branch at
+    the top and returned before reaching this code.
+
+    Takes the record wrapper or a bare dict, so the scoring logic stays
+    testable standalone, which is the stated reason this module is separate.
+    """
+    if path is None:
+        return None
+    cur = getattr(rec, "obj", rec)
+    for part in str(path).split("."):
+        if isinstance(cur, dict) and part in cur:
+            cur = cur[part]
+        else:
+            return None
+    return cur
+
+
 def _int(v):
     if isinstance(v, bool) or not isinstance(v, int):
         try:
