@@ -116,6 +116,60 @@ def main(out):
     case("max_ordinal-bounds-undeclared",
          chained(ev, {"records": 10, "lost_total": 0}), ap, "VLC-L2-1", "FAIL")
 
+    # --- sha256-canonical-fields: hash = sha256(canon(declared fields)) ------
+    # One canonical object over exactly the adapter's hash_fields, predecessor
+    # link included. Conditions (vlc-1#3, 2026-09-22): a field a later
+    # requirement reads must be inside hash_fields; names ASCII-only; an absent
+    # optional field is omitted, never serialized as null.
+    plain = json.load(open(os.path.join(HERE, "..", "adapters", "plain-jsonl.json")))
+    HF = ["kind", "index", "accepted_at", "request_digest", "prev", "commitment_ref"]
+    cfad = copy.deepcopy(plain)
+    cfad["name"] = "canonical-fields-case"
+    cfad["record_class_field"] = "kind"
+    cfad["marker_classes"], cfad["non_event_classes"] = [], []
+    cfad["integrity"] = {"mechanism": "sha256-canonical-fields", "hash_field": "hash",
+                         "prev_field": "prev", "hash_fields": HF,
+                         "root": {"kind": "constant", "value": "00" * 32},
+                         "primitive": "SHA-256", "documented": True, "primitive_documented": True}
+    cfa = os.path.join(out, "canonical-fields.adapter.json")
+    json.dump(cfad, open(cfa, "w"))
+
+    def cf_chain(rows, null_ref_at=None):
+        prev, outr = "00" * 32, []
+        for n, extra in enumerate(rows, 1):
+            r = {"kind": "admission", "index": n, "accepted_at": f"2026-09-2{n % 10}T00:00:0{n % 10}Z",
+                 "request_digest": sha(f"req-{n}".encode()), "prev": prev}
+            r.update(extra)
+            if null_ref_at == n:
+                r["commitment_ref"] = None               # the mutant a naive producer emits
+            r["hash"] = sha(canon({f: r[f] for f in HF if f in r}).encode())
+            outr.append(r)
+            prev = r["hash"]
+        return outr
+
+    ref = {"commitment_ref": sha(b"commitment")}
+    case("canonical-fields-optional-absent", cf_chain([{}] * 6), cfa, "VLC-L1-1", "PASS")
+    case("canonical-fields-optional-present", cf_chain([{}, ref, {}, ref, ref, {}]), cfa, "VLC-L1-1", "PASS")
+    # null-serialized: its hash is computed WITH the null, so it is self-consistent --
+    # a checker that hashed what it was given would pass it. It must be refused.
+    case("canonical-fields-null-serialized", cf_chain([{}] * 6, null_ref_at=3), cfa, "VLC-L1-1", "FAIL")
+    tampered = cf_chain([{}, ref, {}, ref, ref, {}])
+    tampered[2]["accepted_at"] = "2026-09-29T23:59:59Z"
+    case("canonical-fields-field-edited", tampered, cfa, "VLC-L1-1", "FAIL")
+    case("canonical-fields-interior-deleted",
+         [r for r in cf_chain([{}] * 6) if r["index"] != 4], cfa, "VLC-L1-1", "FAIL")
+    # a field the checker reads (record_class_field) outside hash_fields is unanchored
+    un = copy.deepcopy(cfad)
+    un["integrity"]["hash_fields"] = [f for f in HF if f != "kind"]
+    una = os.path.join(out, "canonical-fields-unanchored.adapter.json")
+    json.dump(un, open(una, "w"))
+    case("canonical-fields-unanchored-read-field", cf_chain([{}] * 6), una, "VLC-L1-1", "FAIL")
+    na = copy.deepcopy(cfad)
+    na["integrity"]["hash_fields"] = HF + ["accept\u00e9d_at"]
+    naa = os.path.join(out, "canonical-fields-non-ascii.adapter.json")
+    json.dump(na, open(naa, "w"))
+    case("canonical-fields-non-ascii-name", cf_chain([{}] * 6), naa, "VLC-L1-1", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 

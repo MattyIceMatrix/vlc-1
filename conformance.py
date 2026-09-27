@@ -166,7 +166,70 @@ def rec_hash(prev, r, ad, prev_raw=b""):
         pf = ad["integrity"]["prev_field"]
         body = {k: v for k, v in r.obj.items() if k not in (hf, pf)}
         return sha256_hex(str(dig(r.obj, pf) or "").encode() + canon(body).encode())
+    if mech == "sha256-canonical-fields":
+        # The hash covers exactly the adapter's declared hash_fields, the predecessor link
+        # included, as one canonical object: sha256(canon({f: rec[f] for f in hash_fields})).
+        # An absent optional field is OMITTED from the object, never serialized as null
+        # (a present-as-null member is refused in check_l1 before this runs). For
+        # ASCII-only names and values canon() equals RFC 8785 JCS.
+        body = {f: r.obj[f] for f in ad["integrity"]["hash_fields"] if f in r.obj}
+        return sha256_hex(canon(body).encode())
     raise SystemExit(f"adapter: unknown integrity.mechanism {mech!r}")
+
+
+def _read_fields(ad):
+    """Every record field some requirement reads, as (adapter path, field name): keys
+    ending in _field or named field (a string), and fields / *_fields (a list). The
+    integrity hash_field is the output of the binding, not an input, so it is excluded."""
+    out = []
+
+    def walk(node, path):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                p = f"{path}.{k}" if path else k
+                if p == "integrity.hash_field":
+                    continue
+                if (k == "field" or k.endswith("_field")) and isinstance(v, str):
+                    out.append((p, v))
+                elif (k == "fields" or k.endswith("_fields")) and isinstance(v, list) \
+                        and p != "integrity.hash_fields":
+                    out.extend((p, x) for x in v if isinstance(x, str))
+                else:
+                    walk(v, p)
+    walk(ad, "")
+    return out
+
+
+def check_canonical_fields_adapter(recs, ad):
+    """sha256-canonical-fields preconditions. Returns a failure note or None.
+    (1) hash_fields is a non-empty list of ASCII names; (2) the prev link field is one of
+    them and the hash field is not; (3) every field a later requirement reads is covered --
+    a field the checker relies on but the hash does not cover is unanchored, and the
+    binding would verify while it changed; (4) no record carries a hash field as null."""
+    integ = ad["integrity"]
+    hfs = integ.get("hash_fields")
+    if not (isinstance(hfs, list) and hfs and all(isinstance(f, str) and f for f in hfs)):
+        return "hash_fields must be a non-empty list of field names"
+    bad = [f for f in hfs if not f.isascii()]
+    if bad:
+        return f"hash_fields names must be ASCII-only: {bad!r}"
+    if len(set(hfs)) != len(hfs):
+        return "hash_fields lists a name twice"
+    pf, hf = integ.get("prev_field"), integ.get("hash_field")
+    if not pf or pf not in hfs:
+        return "prev_field must be declared and listed in hash_fields (the link is part of the hashed object)"
+    if hf in hfs:
+        return f"hash_field {hf!r} cannot be an input to its own hash"
+    unanchored = sorted({(p, f) for p, f in _read_fields(ad) if f.split(".")[0] not in hfs})
+    if unanchored:
+        return ("fields read by later requirements are not covered by hash_fields (unanchored): " +
+                ", ".join(f"{f} (via {p})" for p, f in unanchored))
+    for r in recs:
+        nul = [f for f in hfs if f in r.obj and r.obj[f] is None]
+        if nul:
+            return (f"record {r.i} serializes {nul} as null; an absent optional field must be "
+                    "omitted, and null is a different hashed object")
+    return None
 
 
 # Annex J -- interval coverage (Corrigendum 1, EXT-002). Kept in its own
@@ -192,6 +255,12 @@ def check_l1(recs, ad, res):
         res.fail("VLC-L1-2", "no mechanism to recompute")
         res.fail("VLC-L1-3", "no end marker binding")
         return None
+
+    if mech == "sha256-canonical-fields":
+        why = check_canonical_fields_adapter(recs, ad)
+        if why:
+            res.fail("VLC-L1-1", why)
+            return None
 
     prev = chain_root(recs, ad)
     if prev is None:
@@ -227,7 +296,7 @@ def check_l1(recs, ad, res):
     # field, so a record is self-consistent whatever that field says. Nothing
     # compared it with the hash of the record actually before it, so deleting
     # or reordering records left every hash valid. The link is checked here.
-    link_field = ad["integrity"].get("prev_field") if mech == "sha256-prev-field" else None
+    link_field = ad["integrity"].get("prev_field") if mech in ("sha256-prev-field", "sha256-canonical-fields") else None
     for r in body:
         if link_field is not None and str(dig(r.obj, link_field) or "") != prev.hex():
             res.fail("VLC-L1-1", f"record {r.i} does not link to its predecessor")
