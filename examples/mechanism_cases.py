@@ -158,6 +158,16 @@ def main(out):
     case("canonical-fields-field-edited", tampered, cfa, "VLC-L1-1", "FAIL")
     case("canonical-fields-interior-deleted",
          [r for r in cf_chain([{}] * 6) if r["index"] != 4], cfa, "VLC-L1-1", "FAIL")
+    # Deletion and reordering both fail because the predecessor link is INSIDE the
+    # hashed object, not beside it. That holds today; these two keep it holding.
+    # sha256-prev-field has had a reorder vector since EXT-014 and this mechanism
+    # shipped without one -- the protection existed with nothing to notice it going.
+    swapped = cf_chain([{}] * 6)
+    swapped[2], swapped[3] = swapped[3], swapped[2]
+    case("canonical-fields-reordered", swapped, cfa, "VLC-L1-1", "FAIL")
+    unlinked = cf_chain([{}] * 6)
+    unlinked[3]["prev"] = "00" * 32          # a valid-looking root, in the wrong place
+    case("canonical-fields-prev-substituted", unlinked, cfa, "VLC-L1-1", "FAIL")
     # a field the checker reads (record_class_field) outside hash_fields is unanchored
     un = copy.deepcopy(cfad)
     un["integrity"]["hash_fields"] = [f for f in HF if f != "kind"]
