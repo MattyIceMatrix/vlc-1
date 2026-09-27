@@ -116,6 +116,14 @@ def journal_chain_status(journal_path, adapter_path):
     if lvl < 3:
         return (f"witness demonstrates only structural L{lvl}; VLC-L5-4 requires L3 "
                 f"before a witness may corroborate")
+    # VLC-L5-6 (1.4-draft). Structural L3 says the witness's coverage accounting
+    # is recomputably complete; it says nothing about WHY the enumeration is
+    # exhaustive, because that basis is attested and a structural level cannot
+    # read it. Gating on structural alone let a witness with no stated basis
+    # produce the strong result -- including corroborating an absence.
+    if req.get("VLC-L5-6", {}).get("status") != "PASS":
+        return ("witness gives no basis for its coverage being exhaustive (VLC-L5-6): "
+                "it may corroborate what it observed, not an absence")
     return True
 
 

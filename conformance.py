@@ -19,7 +19,7 @@ no --expect, the check ran).  1 = expectation not met.  2 = usage/adapter error.
 """
 import argparse, hashlib, json, os, re, sys
 
-VERSION = "VLC-1 1.3-draft"
+VERSION = "VLC-1 1.4-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -799,6 +799,23 @@ def check_l5(recs, ad, res, own_level_reqs):
     else:
         res.fail("VLC-L5-4", f"the witnessing log itself is only L{own}: a witness with "
                              f"an undeclared coverage gap agrees with a lie honestly")
+
+    # VLC-L5-6 (1.4-draft, closes EXT-004's open question): the ATTESTED half of
+    # a witness's standing. EXT-004 made VLC-L5-4 structural-only, correctly --
+    # a structural verdict must not move with adapter text. That left nothing
+    # speaking for the witness's exhaustiveness basis (VLC-L3-1d, attested).
+    # A witness with structural L3 and no stated basis for its coverage being
+    # exhaustive passed VLC-L5-4 and qualified in witness/reconcile.py, so it
+    # could corroborate an ABSENCE -- vouch that nothing happened outside what
+    # it saw -- on a coverage claim nobody had grounded. It may corroborate
+    # what it observed; it may not stand for an absence.
+    if res.r.get("VLC-L3-1d", (FAIL, ""))[0] == PASS:
+        res.ok("VLC-L5-6", "the witness states the basis on which its coverage is "
+                           "exhaustive (attested: the basis is relayed, not recomputed)")
+    else:
+        res.fail("VLC-L5-6", "the witness gives no basis for its coverage being "
+                             "exhaustive: it can corroborate what it observed, not "
+                             "that it observed everything")
     return {"mode": mode, "witness_own_level": own}
 
 
@@ -850,7 +867,7 @@ EVIDENCE_CLASS = {
     "VLC-L4-3": "attested",   "VLC-L4-4": "attested",
     "VLC-L5-1": "attested",   "VLC-L5-2": "attested",
     "VLC-L5-3": "attested",   "VLC-L5-4": "structural",
-    "VLC-L5-5": "attested",
+    "VLC-L5-5": "attested",   "VLC-L5-6": "attested",
 }
 
 LEVEL_REQS = {
@@ -859,7 +876,7 @@ LEVEL_REQS = {
     3: ["VLC-L3-1a", "VLC-L3-1b", "VLC-L3-1d", "VLC-L3-2", "VLC-L3-3",
         "VLC-L3-4", "VLC-L3-5", "VLC-L3-6"],
     4: ["VLC-L4-1", "VLC-L4-2", "VLC-L4-3", "VLC-L4-4"],
-    5: ["VLC-L5-1", "VLC-L5-2", "VLC-L5-3", "VLC-L5-4", "VLC-L5-5"],
+    5: ["VLC-L5-1", "VLC-L5-2", "VLC-L5-3", "VLC-L5-4", "VLC-L5-5", "VLC-L5-6"],
 }
 
 

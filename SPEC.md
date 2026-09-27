@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Document | VLC-1 |
-| Version | 1.3-draft |
+| Version | 1.4-draft |
 | Date | 2026-09-12 |
 | Revision history | Annex F |
 | Status | Draft for public comment. Free to implement, free to cite, no licence required. |
@@ -448,6 +448,18 @@ the result, including every exclusion applied. An exclusion nobody can see is ho
 a reconciler is quietly rigged, and a scope that excludes everything reconciles
 perfectly.
 
+**VLC-L5-6 (the witness's coverage basis)** *(1.4-draft; attested.)* A log
+presented as a witness shall state the basis on which its coverage enumeration is
+exhaustive, and a witness that does not shall not be used to corroborate an
+absence. VLC-L5-4 is the structural half of a witness's standing and is
+recomputed; this is the attested half, and is relayed. The distinction matters
+because the dangerous thing a witness does is not agreeing with a record but
+**vouching that nothing happened outside it** — and a structural level can
+establish that a witness's accounting is complete over the surface it declared,
+never that the surface was the right one. A witness may corroborate what it
+observed without a basis; it may not stand for an absence without one. Closes
+the question EXT-004 left open; see `CORRIGENDUM-2026-09-27-05.md`.
+
 ### 7A.1 This is not a requirement only one architecture can meet
 
 Independence is a property of the trust boundary, not of a technology. A
@@ -810,7 +822,8 @@ resolves to the newest; the version DOI below pins a particular text.
 | 1.1-draft | 2026-09-12 | [10.5281/zenodo.22728851](https://doi.org/10.5281/zenodo.22728851) | External review found the checker presenting adapter-supplied assertions as independently demonstrated. Added §8.4 (structural versus attested), `VLC-V-1`..`VLC-V-5`, Annex E (the evidence manifest), and a control that runs the reviewer's attack. Narrowed the standards claim in §0 and Annex B after verifying that prEN 18229-1 does define integrity as the "property of accuracy and completeness". |
 | 1.1.1-draft | 2026-09-12 | [10.5281/zenodo.22729353](https://doi.org/10.5281/zenodo.22729353) | Corrective. The 1.1-draft bump reached this document and `CITATION.cff` but not `conformance.py`, whose `VERSION` constant still read `1.0-draft`; every report the archived 1.1-draft checker emitted therefore cited a version in which §8.4 does not appear. No requirement, no check and no computed level changed. `selftest.sh` §7 now requires the version the checker stamps into its report to match this table and `CITATION.cff`. |
 | 1.2-draft | 2026-09-22 | [10.5281/zenodo.22883942](https://doi.org/10.5281/zenodo.22883942) | Corrigenda 2 to 4 and EXT-015 to EXT-017: seventeen defects reported from outside the project or found while testing what those reports identified, recorded in `FINDINGS-EXTERNAL.md`. Normative: `VLC-E-6` added (manifest digests are over LF-normalized bytes, and release archives carry those bytes); `VLC-L2-5` clarified (a high-water mark is declared by the producer, never inferred from the ordinals that arrived); the §4 summary corrected (on a log alone, L1 establishes chain consistency, not resistance to a complete rewrite) with a note on the checker's `--expect-root` and `--expect-head`. The first two contributions from outside the project, by babyblueviper1, merged as #2 and #3. The reference journals re-recorded by the corrected sensor on a GitHub-hosted runner, the originals kept unedited. `selftest.sh`: 78 checks under both `sh` and `bash`, no expected failures. |
-| **1.3-draft** | 2026-09-22 | [10.5281/zenodo.22903521](https://doi.org/10.5281/zenodo.22903521) | Annex K added: a committed findings ledger for evaluations. A tester records a hash commitment to a finding when it is found — binding its text, severity class and disclosure date, and revealing only the class and the date — so the date of discovery cannot move, the class cannot be lowered at disclosure, and a finding that was committed and not disclosed is visible as overdue to anyone holding the ledger. Six requirements (`VLC-K-1`..`VLC-K-6`), a reference producer and checker (`findings.py`, standard library only), and a worked example regenerable byte-for-byte (`examples/findings/`). Nothing in the body of this specification changed: no requirement was altered, no level arithmetic touched, and every 1.2-draft result is unchanged. The mechanism is not novel and K.8 says so, citing hash-and-salt commitments, arXiv:1106.4184 and OpenTimestamps. `selftest.sh`: 94 checks under both `sh` and `bash`, no expected failures. |
+| 1.3-draft | 2026-09-22 | [10.5281/zenodo.22903521](https://doi.org/10.5281/zenodo.22903521) | Annex K added: a committed findings ledger for evaluations. A tester records a hash commitment to a finding when it is found — binding its text, severity class and disclosure date, and revealing only the class and the date — so the date of discovery cannot move, the class cannot be lowered at disclosure, and a finding that was committed and not disclosed is visible as overdue to anyone holding the ledger. Six requirements (`VLC-K-1`..`VLC-K-6`), a reference producer and checker (`findings.py`, standard library only), and a worked example regenerable byte-for-byte (`examples/findings/`). Nothing in the body of this specification changed: no requirement was altered, no level arithmetic touched, and every 1.2-draft result is unchanged. The mechanism is not novel and K.8 says so, citing hash-and-salt commitments, arXiv:1106.4184 and OpenTimestamps. `selftest.sh`: 94 checks under both `sh` and `bash`, no expected failures. |
+| **1.4-draft** | 2026-09-27 | *pending — minted when this version is released on GitHub* | **One normative addition: VLC-L5-6**, attested — a log presented as a witness shall state the basis on which its coverage is exhaustive, and one that does not shall not corroborate an absence. Closes the question EXT-004 left open: VLC-L5-4 was correctly made structural-only, which left `witness/reconcile.py` gating a witness on structural L3 alone, so a witness with no stated basis could vouch that nothing happened outside what it saw. Redundant for the level arithmetic (VLC-L3-1d already gates attested L3) and stated as such; what it closes is how a witness's standing is used. **No published result changes** — every log that reached attested L5 under 1.3-draft still does. Repairs in the same version, moving no result: EXT-018 (L3i had never executed; three attacks passed it) and EXT-019 (six requirements with no negative control; a cited proof absent from the tree, recovered). See `CORRIGENDUM-2026-09-27-05.md`. `selftest.sh`: 120 checks, no expected failures. |
 
 The 1.1.1 entry is kept in the normative document rather than in a release note
 on purpose. `VLC-E-2` says an incomplete citation is worse than none; a

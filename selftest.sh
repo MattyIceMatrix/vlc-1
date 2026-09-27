@@ -259,11 +259,13 @@ open(f"{d}/otherpath.jsonl", "w").write("\n".join(json.dumps(r) for r in c) + "\
 c = [json.loads(l) for l in open(H) if l.strip()] + [{"t": 1, "type": "tool_call", "tool": "shell_ext", "command": "id"}]
 open(f"{d}/unmapped.jsonl", "w").write("\n".join(json.dumps(r) for r in c) + "\n")
 
-def rec(claims, journal):
+def rec(claims, journal, adapter=None):
+    extra = ["--journal-adapter", adapter] if adapter else []
     p = subprocess.run(["python3", "witness/reconcile.py", "--claims", claims, "--journal", journal,
-                        "--scope", "witness/scope-demo.json", "--json"], capture_output=True, text=True)
+                        "--scope", "witness/scope-demo.json", "--json"] + extra, capture_output=True, text=True)
     q = subprocess.run(["python3", "witness/reconcile.py", "--claims", claims, "--journal", journal,
-                        "--scope", "witness/scope-demo.json", "--require-agreement"], capture_output=True, text=True)
+                        "--scope", "witness/scope-demo.json", "--require-agreement"] + extra,
+                       capture_output=True, text=True)
     return json.loads(p.stdout), q.returncode
 def say(ok, msg): print(("OK" if ok else "BAD") + "|" + msg)
 
@@ -273,8 +275,8 @@ say(rc == 0, "honest run: the records agree and the witness qualifies"
     if rc == 0 else "honest run refused: " + "; ".join(r["evidence_problems"])
     + f" / agreement {r['agreement']}")
 
-def refused_for(claims, journal, needle, label, where="problems"):
-    r, rc = rec(claims, journal)
+def refused_for(claims, journal, needle, label, where="problems", adapter=None):
+    r, rc = rec(claims, journal, adapter)
     hay = r["evidence_problems"] if where == "problems" else \
           [f["severity"] + " " + f["what"] for f in r["findings"]]
     say(rc != 0 and any(needle in h for h in hay), label)
@@ -295,6 +297,20 @@ P3 = f"{E}/pre-EXT-003"
 refused_for(f"{P3}/agent-transcript-honest.jsonl", f"{P3}/kernel-witness-honest-session.jsonl",
             "VLC-L5-4 requires L3",
             "a witness below structural L3 cannot corroborate (EXT-015)")
+# VLC-L5-6 (1.4-draft), the sibling of the case above. The SAME honest witness,
+# its structural level held fixed at L4, with only the exhaustiveness basis
+# taken away: the adapter's basis_field points at a field that does not exist.
+# Structural L3 is still met, so a reconciler gating on structure alone lets it
+# corroborate. It must be refused, and for this reason, not another.
+a = json.load(open("adapters/observer.json"))
+a["coverage"]["basis_field"] = "no_such_field"
+json.dump(a, open(f"{d}/nobasis.json", "w"))
+s_lvl = json.loads(subprocess.run(["python3", "conformance.py", "--log", W, "--adapter", f"{d}/nobasis.json",
+                                   "--json"], capture_output=True, text=True).stdout)["structural_level"]
+say(s_lvl >= 3, f"control precondition: removing the basis leaves the witness at structural L{s_lvl}, not below L3")
+refused_for(H, W, "VLC-L5-6",
+            "a witness at structural L3+ with no exhaustiveness basis cannot corroborate an absence (VLC-L5-6)",
+            adapter=f"{d}/nobasis.json")
 PYX
 while IFS='|' read -r V M; do
   case "$V" in

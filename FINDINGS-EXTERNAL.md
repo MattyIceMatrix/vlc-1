@@ -111,6 +111,16 @@ accounting is complete and only its exhaustiveness basis, an attested claim, is
 missing. If that basis should still count against a witness, it belongs in a
 separate attested requirement. Left open.
 
+**Closed 2026-09-27 in 1.4-draft, by VLC-L5-6.** It should count, and the place it
+mattered was not the checker's level arithmetic — VLC-L3-1d already gates
+attested L3 — but `witness/reconcile.py`, which let a witness corroborate on its
+structural level alone. With the basis removed, the reference implementation's
+honest session dropped to attested L2 in the checker and still qualified in the
+reconciler, free to vouch for an absence on a coverage claim nobody had grounded.
+VLC-L5-6 is the attested half of a witness's standing, VLC-L5-4 stays the
+structural half, and the reconciler requires both. See
+`CORRIGENDUM-2026-09-27-05.md`.
+
 **Fix verified independently.** The reporter checked the fix against the repository tree, not the maintainer's account of it, on 2026-09-21 (trustless-ai/recompute-kit#48). They also confirmed that their original structural figure was wrong and that the attested level was the one that moved, as reproduced above.
 
 
