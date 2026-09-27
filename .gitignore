@@ -4,6 +4,7 @@ proofs/*.vok
 proofs/*.vos
 proofs/*.glob
 proofs/.*.aux
+proofs/.lia.cache
 proofs/_a.v
 proofs/_a.out
 
