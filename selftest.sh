@@ -78,15 +78,15 @@ done
 
 hr; echo "2b. MECHANISMS -- every chain mechanism and produced-count kind, not only the one the examples use"
 # Section 2 runs its mutations against one adapter. These run the ones that
-# apply against the sentinel prefix chain, and exercise the chain mechanism and
+# apply against the observer prefix chain, and exercise the chain mechanism and
 # produced-count kinds no worked example reaches. Writing them found EXT-013.
 KW=examples/reference-impl/kernel-witness-L5.jsonl
 if [ -f "$KW" ]; then
-  kb=$(level "$KW" adapters/sentinel.json)
+  kb=$(level "$KW" adapters/observer.json)
   for m in flip-byte drop-interior truncate-tail drop-coverage; do
-    got=$(level_m "$KW" adapters/sentinel.json $m)
-    if [ "$got" -lt "$kb" ] || [ "$got" = "0" ]; then ok "sentinel prefix chain: $m -> L$got (was L$kb)"
-    else bad "sentinel prefix chain: $m -> L$got, not lowered from L$kb"; fi
+    got=$(level_m "$KW" adapters/observer.json $m)
+    if [ "$got" -lt "$kb" ] || [ "$got" = "0" ]; then ok "observer prefix chain: $m -> L$got (was L$kb)"
+    else bad "observer prefix chain: $m -> L$got, not lowered from L$kb"; fi
   done
 fi
 MC=$(mktemp -d)
@@ -201,9 +201,9 @@ hr; echo "5. NOT RIGGED -- the author's own journals, judged by the same rules"
 # must still FAIL on it. If that ever passes, the checker has been loosened.
 PRE=examples/reference-impl/pre-basis-L2.jsonl
 if [ -f "$PRE" ]; then
-	got=$(level "$PRE" adapters/sentinel.json)
-	l25=$(req "$PRE" adapters/sentinel.json VLC-L2-5)
-	l31d=$(req "$PRE" adapters/sentinel.json VLC-L3-1d)
+	got=$(level "$PRE" adapters/observer.json)
+	l25=$(req "$PRE" adapters/observer.json VLC-L2-5)
+	l31d=$(req "$PRE" adapters/observer.json VLC-L3-1d)
 	if [ "$got" = "1" ] && [ "$l25" = "FAIL" ] && [ "$l31d" = "FAIL" ]; then
 		ok "pre-fix capture -> L1: identity fails (predates EXT-003), and VLC-L3-1d still fails (the gap it was kept to show)"
 	else
@@ -214,8 +214,8 @@ else
 fi
 for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl/kernel-witness-with-loss-L5.jsonl; do
 	[ -f "$j" ] || continue
-	got=$(level  "$j" adapters/sentinel.json)
-	sgot=$(slevel "$j" adapters/sentinel.json)
+	got=$(level  "$j" adapters/observer.json)
+	sgot=$(slevel "$j" adapters/observer.json)
 	# Re-captured 2026-09-21 by the corrected sensor on a GitHub-hosted runner;
 	# the 2026-09-12 captures are kept in pre-EXT-003/ (Corrigendum 2).
 	if [ "$got" = "5" ] && [ "$sgot" = "4" ]; then
@@ -400,7 +400,7 @@ hr; echo "10. EVIDENCE MANIFEST -- a citation that is not complete is weaker tha
 # and the negative control VLC-E-5 requires was not required.
 EVR=$(python3 - <<'PYX'
 import json, subprocess, copy, tempfile, os
-base = json.load(open("adapters/sentinel.json"))
+base = json.load(open("adapters/observer.json"))
 log = "examples/reference-impl/kernel-witness-honest-session.jsonl"
 def status(ad):
     fd, p = tempfile.mkstemp(suffix=".json"); os.close(fd); json.dump(ad, open(p, "w"))

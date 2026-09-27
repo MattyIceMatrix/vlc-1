@@ -251,7 +251,7 @@ function stat(s, x, y, w, num, label, col, dk){
 { const s = light();
   title(s, 'Three products, one decision function', 'What is public, what you can ask for, and what is not distributed — named, so nobody has to guess.', false);
   const prods = [
-    ['OCTA Sentinel', 'governs what an agent DOES\nthe Linux syscall boundary',
+    ['OCTA Observer', 'governs what an agent DOES\nthe Linux syscall boundary',
      'PUBLIC   the VLC-1 specification · the conformance checker and adapters · the completeness lattice proof · the witness reconciler · real captured journals',
      'ASK FOR   the proof estate · verify.sh, the one-command re-verification you run on your own hardware · the live demonstration suite · the conformity pack and auditor runbook',
      'PRIVATE   the sensor, policy engine, classifier, pinning and object tiers'],

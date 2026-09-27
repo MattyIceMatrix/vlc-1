@@ -2,7 +2,7 @@
 """
 The witness tier -- reconcile an agent's own transcript against the kernel's record.
 
-    ./reconcile.py --claims agent.jsonl --journal sentinel.jsonl --scope scope.json
+    ./reconcile.py --claims agent.jsonl --journal observer.jsonl --scope scope.json
 
 WHY THIS EXISTS
 ---------------
@@ -22,7 +22,7 @@ record is a claim.
 This reconciles TWO independent records:
 
     the CLAIM   -- the agent's own transcript, produced inside the blast radius
-    the WITNESS -- the sentinel journal, produced by a kernel probe the governed
+    the WITNESS -- the Observer journal, produced by a kernel probe the governed
                    session cannot write to, hash-chained, with its coverage and
                    its losses declared (VLC-1 L4)
 
@@ -53,7 +53,7 @@ VERSION = "witness/reconcile 1.3"
 
 
 # --------------------------------------------------------------------------
-# Paths in a sentinel journal are POSIX paths, because they came out of a Linux
+# Paths in an Observer journal are POSIX paths, because they came out of a Linux
 # kernel, no matter what machine is reading the journal afterwards.  Using
 # os.path here was a real bug: on Windows os.path.normpath("/etc/hostname")
 # returns "\\etc\\hostname", the scope regexes stopped matching, and an HONEST
@@ -72,7 +72,7 @@ def base(p):
 
 
 def load_jsonl(path, strip_chain=True):
-    """Read JSONL.  Sentinel records carry a trailing ,"h":"..." chain member;
+    """Read JSONL.  Observer records carry a trailing ,"h":"..." chain member;
     json.loads handles it fine, so nothing special is needed -- but a record
     that does not parse is reported rather than skipped silently."""
     out, bad = [], 0
@@ -211,7 +211,7 @@ def witnessed_effects(journal, scope):
 def main():
     ap = argparse.ArgumentParser(description=VERSION)
     ap.add_argument("--claims", required=True, help="the agent's own transcript (JSONL)")
-    ap.add_argument("--journal", required=True, help="the kernel witness (sentinel JSONL)")
+    ap.add_argument("--journal", required=True, help="the kernel witness (Observer JSONL)")
     ap.add_argument("--scope", required=True, help="declared reconciliation scope (JSON)")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--require-agreement", action="store_true",
@@ -219,7 +219,7 @@ def main():
                          "non-vacuously over the declared scope")
     ap.add_argument("--journal-adapter",
                     default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                         "..", "adapters", "sentinel.json"),
+                                         "..", "adapters", "observer.json"),
                     help="adapter used to verify the witness journal's own chain")
     a = ap.parse_args()
 

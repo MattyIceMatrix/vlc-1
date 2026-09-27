@@ -30,7 +30,7 @@ body:
       label: Which product is this about?
       multiple: true
       options:
-        - OCTA Sentinel (syscall-boundary sensor)
+        - OCTA Observer (syscall-boundary sensor)
         - OCTA Gateway (tool authorisation)
         - MooreOS (bare metal)
         - Just the VLC-1 specification

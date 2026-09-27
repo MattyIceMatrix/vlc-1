@@ -12,7 +12,11 @@ right now, runs from a clean checkout, and needs no contact with anyone.
 
 ## The three products
 
-### 1. OCTA Sentinel — governs what an agent **does**
+OCTA is **Observe · Connect · Transform · Adapt**. The sensor was called *OCTA
+Sentinel* until 2026-09-27; records produced before that date carry the old name
+and are not rewritten.
+
+### 1. OCTA Observer — governs what an agent **does**
 
 A Linux syscall-boundary sensor. It records, and can deny, what a governed AI
 workload actually does — files opened, processes executed, network destinations
@@ -48,7 +52,7 @@ reach at all.
 | **PRIVATE** | kernel source |
 
 **How to check an item before you are given it.** Each "ask for" item that
-backs a VLC-1 attested requirement has an entry in `adapters/sentinel.json`
+backs a VLC-1 attested requirement has an entry in `adapters/observer.json`
 under `evidence`, naming the runner, **the SHA-256 of the runner**, and **the
 SHA-256 of its output**. Those digests are public. The artefacts are not. That is
 deliberate: the digest is what stops a private artefact being swapped for a

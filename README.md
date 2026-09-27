@@ -187,9 +187,17 @@ pass is a loosened checker, not an improved product.
 ## What you can get, and how to ask
 
 [`ACCESS.md`](ACCESS.md) names what is public, what you can request, and what is
-not distributed, across all three products — **OCTA Sentinel** (governs what an
-agent *does*), **OCTA Gateway** (governs what it *asks for*), and **MooreOS**
+not distributed, across all three products. OCTA is **Observe · Connect ·
+Transform · Adapt**: **OCTA Observer** (governs what an agent *does* — the
+Observe surface), **OCTA Gateway** (governs what it *asks for*), and **MooreOS**
 (the same decision function on bare metal).
+
+> **Renamed 2026-09-27.** The sensor was called *OCTA Sentinel* until this date.
+> Evidence, corrigenda and findings recorded before it keep the old name, because
+> the name is inside the hash chain in captured journals and because a corrigendum
+> is a record of what was written at the time. The proof files keep
+> `sentinel_*.v`, and the Coq namespace stays `Sentinel`, so the published
+> independent-verification recipe continues to work unchanged.
 
 There are four **access** levels — not to be confused with the six conformance levels above — and **the first needs no request at all**: clone this and
 run `./selftest.sh`. Level 1 — *"here are our log field names, what level are

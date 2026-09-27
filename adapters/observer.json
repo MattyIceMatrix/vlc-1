@@ -1,6 +1,6 @@
 {
-  "name": "sentinel-jsonl",
-  "producer": "OCTA Sentinel kernel sensor (the reference implementation)",
+  "name": "observer-jsonl",
+  "producer": "OCTA Observer kernel sensor (the reference implementation)",
   "description": "SHA-256 prefix-chained JSONL journal rooted in the policy digest, with in-chain GAP and COVERAGE records.",
   "record_class_field": "class",
   "marker_classes": [
