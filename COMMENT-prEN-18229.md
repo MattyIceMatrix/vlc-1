@@ -61,18 +61,22 @@ Both logging documents specify **what to record**, and prEN 18229-1 is not
 silent on the vocabulary: it defines **integrity** as the "property of accuracy
 and completeness" (ISO/IEC 27000:2018, 3.36), defines traceability, and requires
 the technical capability to record events automatically throughout the life
-cycle. **The gap is not the term; it is the mechanism.** Neither document
-appears to provide anything by which a reader of the delivered log can
-distinguish undeclared transport loss from a genuinely uneventful interval, or
-establish which sources were capable of producing a record at all. The
+cycle. **The gap is not the term; it is the mechanism.** The submitter has not
+been able to read either document in full and therefore asserts nothing about
+their contents. Every item below is put as a question the committee can settle
+from the text in front of it: is there a provision by which a reader of the
+delivered log can distinguish undeclared transport loss from a genuinely
+uneventful interval, or establish which sources were capable of producing a
+record at all? If there is, a clause reference in reply closes the matter and
+the submitter withdraws the corresponding item with thanks. The
 consequence is
 demonstrable and not hypothetical: an evidence export covering a two-hour outage
 during which the logging path discarded every event is indistinguishable, by
-every check the drafts require, from an export covering a quiet afternoon. Under
+integrity checking alone, from an export covering a quiet afternoon. Under
 Article 12 the log is the artefact the obligation produces; under Article 19 it
-is retained; under the drafts as they stand, its silence carries no meaning. One
-short normative clause fixes this, is implementable at any layer, and is
-testable.
+is retained. **Unless some provision gives that silence a meaning, it has
+none.** One short normative clause supplies it, is implementable at any layer,
+and is testable.
 
 ---
 
@@ -82,10 +86,10 @@ testable.
 
 | MB | Clause | Type | Comment | Proposed change |
 |---|---|---|---|---|
-| — | General | **ge** | The draft **defines** integrity as the property of accuracy and completeness (3.x, from ISO/IEC 27000:2018, 3.36) but does not make that property **demonstrable from the delivered log**. Completeness is a property of the *log*, not of an *event*, so it falls between this document and ISO/IEC 24970, to which event content is deferred. A conformant implementation may therefore discard an arbitrary fraction of events and produce a log indistinguishable from one that discarded none, while satisfying the definition. | Add a normative clause making the defined property demonstrable. Proposed text at §3 below. The submitter's position is that the definition is right and the mechanism is missing, not that the definition is absent. |
-| — | General | **te** | The reviewed draft material contains no requirement addressing dropped events, buffer-exhaustion behaviour, or gap accounting; a search of it returns no matches for *discard* or *buffer*. Bounded buffers are universal in production logging; silent discard under load is the normal failure, and it occurs preferentially during incidents — exactly the intervals the log exists to cover. | Require in-band, integrity-bound declaration of discarded records, and a stated overflow behaviour. See §3, requirement (b). |
-| — | General | **te** | No requirement in the reviewed material addresses the *observation surface*. Where a producer is not attached to a source, activity at that source generates no event, therefore no loss, therefore no gap: the log is complete with respect to what was watched and silent about what was not, with nothing marking the difference. This failure is invisible to every integrity and accounting mechanism and, to the submitter's knowledge, is not named in any published AI logging standard or draft. | Require the log to enumerate the observation surface. See §3, requirement (c). This is the load-bearing comment. |
-| — | General | **te** | No requirement in the reviewed material binds recorded verdicts to the decision rules in force when they were made. A recorded "permitted" is re-readable under any later policy. | See §3, requirement (d). |
+| — | General | **ge** | Integrity is understood as the property of accuracy and completeness (ISO/IEC 27000:2018, 3.36). **Question: which provision makes that property demonstrable from the delivered log?** Completeness is a property of the *log*, not of an *event*, so it may fall between this document and ISO/IEC 24970, to which event content is understood to be deferred. If no provision does, then a conformant implementation may discard an arbitrary fraction of events and produce a log indistinguishable from one that discarded none while satisfying the definition. | Add a normative clause making the property demonstrable. Proposed text at §3 below. The submitter's position is that the definition is right and a mechanism is needed, not that the definition is absent. |
+| — | General | **te** | **Question: which requirement addresses dropped events, buffer-exhaustion behaviour, or gap accounting?** Bounded buffers are universal in production logging; silent discard under load is the normal failure, and it occurs preferentially during incidents — exactly the intervals the log exists to cover. A log that cannot declare its own discard cannot be distinguished from one that had nothing to declare. | If none does: require in-band, integrity-bound declaration of discarded records, and a stated overflow behaviour. See §3, requirement (b). |
+| — | General | **te** | **Question: which requirement addresses the *observation surface* — the set of sources the logging function was capable of recording from?** Where a producer is not attached to a source, activity at that source generates no event, therefore no loss, therefore no gap: the log is complete with respect to what was watched and silent about what was not, with nothing marking the difference. This failure is invisible to every integrity and accounting mechanism, and the submitter has not found it named in any published AI logging standard. | If none does: require the log to enumerate the observation surface. See §3, requirement (c). This is the load-bearing comment, and the one the submitter most wants to be wrong about. |
+| — | General | **te** | **Question: which requirement binds a recorded verdict to the decision rules in force when it was made?** Absent such a binding, a recorded "permitted" is re-readable under any later policy. | If none does: see §3, requirement (d). |
 | — | General | **ed** | The draft uses "logging" for both the act of recording and the resulting artefact. The requirements proposed here are about the artefact and the distinction should be made explicit. | Define "log record", "delivered log" and "observation surface". |
 
 ### prEN 18229-3 (enquiry open to 22 September 2026)
@@ -263,14 +267,31 @@ elsewhere by another name, and as an invitation to be corrected.
 
 ---
 
-## 7. Caveat on sources
+## 7. What the submitter has and has not read
 
-The readings of prEN 18229-1 and ISO/IEC FDIS 24970 above are from published
-drafts and specialist commentary, not from committee documents. Before this is
-filed, both must be read in full through a national standards body, and every
-"no requirement addresses X" statement above must be re-checked against the
-actual text and withdrawn if wrong. **A comment that mischaracterises the draft is
-worse than no comment**, and the submitter would rather find that out privately.
+**The submitter has not read either document in full**, and this comment is
+written so that it does not need to. Both are behind a paywall; the readings
+that informed it come from published abstracts, scope statements, specialist
+commentary and third parties' published comments, not from the committee text.
+
+Every item in §2 is therefore framed as a **question**, not a finding. Where a
+provision already exists, a clause reference in reply settles it and the
+submitter withdraws that item — gladly, because a requirement already in the
+draft is a better outcome than one that has to be added.
+
+What does **not** depend on reading the drafts, and is offered on its own terms:
+
+- the proposed normative text at §3, which stands as drafting material whatever
+  the current text says;
+- the impossibility result at §4, which is a statement about logs in general and
+  is machine-checked, not asserted;
+- the testability requirement at §5, including the negative control without
+  which a coverage declaration is only a list;
+- the survey at §6 of what existing work does and does not cover, which is drawn
+  from published specifications the submitter has read in full.
+
+**A comment that mischaracterises a draft is worse than no comment.** That
+principle is why this one asks rather than states.
 
 ---
 
