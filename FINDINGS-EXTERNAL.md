@@ -159,6 +159,8 @@ The worked example itself declared records 12–14 lost while delivering them.
 The generator now omits them from the sequence.
 
 Fixed: each obligation is checked as SPEC states it. `adapters/sentinel.json`
+(now `adapters/observer.json`; records written before 2026-09-27 keep the old
+name, per the forward-only rule)
 declares that a GAP record's interval is its chain position, which is weaker
 than an explicit range and is said so in the adapter. Selftest section 9
 re-seals ten mutants and asserts the specific requirement each must fail, with
@@ -432,7 +434,7 @@ defeats L3i. They were never answered, and this is why: **no adapter declared
 `interval` mode, no example carried a tick or an interval declaration, and
 `selftest.sh` had no L3i section.** Every log ever scored took the "not
 claimed" branch at the top of `check_l3i`, returned, and never reached the
-scoring body. `conformance.py` names `test_check_l3i.py` in a comment; the file
+scoring body. `conformance.py` named `test_check_l3i.py` in a comment; the file
 does not exist.
 
 **First defect — it crashes.** `_dig` is called ten times in the scoring body

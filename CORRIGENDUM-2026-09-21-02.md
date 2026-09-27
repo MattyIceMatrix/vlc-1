@@ -52,7 +52,9 @@ records at will could defeat it without touching the hash chain.
 
 ### Why it was not caught
 
-`adapters/sentinel.json` and `adapters/generic-appjsonl.json` already declared
+`adapters/sentinel.json` (renamed `adapters/observer.json` on 2026-09-27; this
+document keeps the name it was written with, per the forward-only rule in the
+README) and `adapters/generic-appjsonl.json` already declared
 `COVERAGE`, `EPOCH`, `GAP` and `POLICY` as `non_event_classes`. **The adapters
 were correct and the checker ignored them.** `adapters/plain-jsonl.json` did
 not declare them, and `examples/make_examples.py` computed the produced count

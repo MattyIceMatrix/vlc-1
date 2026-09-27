@@ -233,7 +233,10 @@ def check_canonical_fields_adapter(recs, ad):
 
 
 # Annex J -- interval coverage (Corrigendum 1, EXT-002). Kept in its own
-# module so the scoring logic is testable standalone; see test_check_l3i.py.
+# module so the scoring logic is testable standalone. It is exercised by
+# examples/l3i_cases.py and selftest.sh section 14; an earlier version of this
+# comment named a test_check_l3i.py that never existed, which is part of how
+# EXT-018 survived -- the level looked tested because a comment said so.
 # Reported as a QUALIFIER, not a rung: LEVEL_REQS is keyed by integers and the
 # level arithmetic indexes it numerically, so a "3i" key would break it.
 try:
