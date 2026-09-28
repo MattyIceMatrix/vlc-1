@@ -80,22 +80,37 @@ jobs:
           for f in *.v; do found=1; echo "--- coqc $f"; coqc -q -Q . Sentinel "$f"; done
           [ "$found" = "1" ] || { echo "no proof developments found"; exit 1; }
 
-      - name: every theorem must be closed under the global context
+      - name: every result must be closed under the global context
         run: |
           cd proofs
-          printf 'Require Import sentinel_completeness.\n' > _audit.v
-          grep -oE '^[[:space:]]*Theorem [a-zA-Z_0-9]+' sentinel_completeness.v \
-            | awk '{print "Print Assumptions " $2 "."}' >> _audit.v
-          coqc -q -R . "" _audit.v > _audit.out 2>&1 || { cat _audit.out; exit 1; }
+          # Audits every Theorem, Lemma and Corollary in every development, under the
+          # same logical path the compile step uses (-Q . Sentinel). Sections add no
+          # prefix, so each result is Sentinel.<file>.<name>. The closed count must
+          # equal the number of results audited, so a result that fails to print
+          # cannot pass silently.
+          shopt -s nullglob
+          : > _audit.v
+          audited=0
+          for f in *.v; do
+            [ "$f" = "_audit.v" ] && continue
+            m="${f%.v}"
+            printf 'Require Import Sentinel.%s.\n' "$m" >> _audit.v
+            for name in $(grep -oE '^[[:space:]]*(Theorem|Lemma|Corollary)[[:space:]]+[A-Za-z_0-9]+' "$f" | awk '{print $2}'); do
+              printf 'Print Assumptions Sentinel.%s.%s.\n' "$m" "$name" >> _audit.v
+              audited=$((audited+1))
+            done
+          done
+          coqc -q -Q . Sentinel _audit.v > _audit.out 2>&1 || { cat _audit.out; exit 1; }
           cat _audit.out
           closed=$(grep -c 'Closed under the global context' _audit.out || true)
           other=$(grep -vc 'Closed under the global context' _audit.out || true)
-          echo "closed: $closed   anything else: $other"
+          echo "audited: $audited   closed: $closed   anything else: $other"
+          test "$audited" -gt 0
           test "$other" = "0"
-          test "$closed" -gt 0
+          test "$closed" = "$audited"
 
       - name: no admitted proofs, no axioms
         run: |
           cd proofs
-          ! grep -nE '^[[:space:]]*(Admitted|Axiom|Parameter|Conjecture)\b' sentinel_completeness.v
+          ! grep -nE '^[[:space:]]*(Admitted|Axiom|Parameter|Conjecture)\b' *.v
           echo "0 admitted, 0 axioms"
