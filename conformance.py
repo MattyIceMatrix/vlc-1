@@ -180,14 +180,17 @@ def rec_hash(prev, r, ad, prev_raw=b""):
 def _read_fields(ad):
     """Every record field some requirement reads, as (adapter path, field name): keys
     ending in _field or named field (a string), and fields / *_fields (a list). The
-    integrity hash_field is the output of the binding, not an input, so it is excluded."""
+    integrity hash_field is the output of the binding, not an input, so it is excluded.
+    integrity.end_marker.head_field is excluded too: VLC-L1-3 compares its value with the head recomputed from
+    the chain, so a changed head already fails there, whether or not the end marker is self-bound. Other
+    end-marker fields (the loss-accounting counts) have no such comparison and stay in the read set."""
     out = []
 
     def walk(node, path):
         if isinstance(node, dict):
             for k, v in node.items():
                 p = f"{path}.{k}" if path else k
-                if p == "integrity.hash_field":
+                if p in ("integrity.hash_field", "integrity.end_marker.head_field"):
                     continue
                 if (k == "field" or k.endswith("_field")) and isinstance(v, str):
                     out.append((p, v))
