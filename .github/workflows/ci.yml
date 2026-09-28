@@ -112,5 +112,14 @@ jobs:
       - name: no admitted proofs, no axioms
         run: |
           cd proofs
-          ! grep -nE '^[[:space:]]*(Admitted|Axiom|Parameter|Conjecture)\b' *.v
+          # Written as `! grep ...` until 2026-09-28, which could not fail: bash -e
+          # ignores the status of a command negated with `!`, so the step printed
+          # any match and passed (EXT-021). It also matched Admitted only at the
+          # start of a line, which the usual `Proof. Admitted.` is not.
+          # Hypothesis/Variable are not flagged: inside a Section they are
+          # discharged when it closes, and the audit above proves every result closed.
+          if grep -nwE 'Admitted|admit' *.v; then echo "admitted proof found"; exit 1; fi
+          if grep -nE '^[[:space:]]*(Axiom|Axioms|Parameter|Parameters|Conjecture)[[:space:]]' *.v; then
+            echo "axiom found"; exit 1
+          fi
           echo "0 admitted, 0 axioms"

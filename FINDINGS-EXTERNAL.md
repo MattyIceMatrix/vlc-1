@@ -667,3 +667,58 @@ were committed.
 This is the fourth contribution to VLC-1 from babyblueviper1, and the first
 finding from Oga.
 
+---
+
+## EXT-021 — the Coq job was red for a day, and one of its checks had never been able to fail
+
+**Diagnosed by:** babyblueviper1, on #6 · **Reported:** 2026-09-28 ·
+**Status:** fixed by the reporter in #7, merged as `7171eb1`; the second defect
+fixed by the maintainer
+**Severity:** CI could not confirm the proofs from `fb834af` to `08be31c`,
+including the 1.4-draft release commit `6c40df4`; separately, the
+no-axioms check had passed unconditionally since 2026-09-12
+
+**The red job.** EXT-019 made the CI compile step build every development under
+the logical prefix `Sentinel` (`-Q . Sentinel`). The audit step that follows,
+which prints the assumptions behind each result, still loaded the compiled
+files with `-R . ""`, and Coq refused: the file "contains library
+Sentinel.sentinel_completeness and not library sentinel_completeness". The Coq
+job failed on every commit from `fb834af` onward. 1.4-draft was released from
+one of them. The maintainer had checked the proofs from a clean clone before
+release, but did not check that CI was green.
+
+babyblueviper1 noticed the failure while his #6 was open, traced it to the
+mismatch, and fixed it in #7. At the maintainer's request the fix also widened
+the audit: it had covered Theorems in one development only, and now covers
+every Theorem, Lemma and Corollary in every `proofs/*.v`, and requires the
+number of closed results to equal the number audited. 35 audited, 35 closed.
+His negative control, a Lemma proved from an Axiom, fails the step.
+
+**The check that could not fail.** Re-running that control during review
+showed the next step, "no admitted proofs, no axioms", printing the offending
+`Axiom` line and passing anyway. It was written `! grep ...`, and bash with
+`-e` ignores the status of a command negated with `!`, so the step's result
+was always that of the `echo` after it. It had been written that way since
+`1881316` (2026-09-12). It also matched `Admitted` only at the start of a
+line, which the usual `Proof. Admitted.` is not.
+
+The damage was limited by the audit step: any axiom or admitted proof that a
+result depends on appears in its printed assumptions. An axiom no result used
+would have passed. Fixed: the step uses `if grep ...; then exit 1; fi`, flags
+`Admitted` and `admit` anywhere in a line and top-level `Axiom`, `Parameter`
+and `Conjecture`, and was checked against three controls (a mid-line
+`Admitted`, an `Axiom`, an `admit`), all of which now fail it. Section
+`Hypothesis` and `Variable` are not flagged; they are discharged when the
+Section closes, which the audit confirms.
+
+**A count that was wrong.** The 1.4-draft release notes and Corrigendum 5 gave
+the proofs as 20 results. The audit counts 35: 26 in `sentinel_completeness.v`
+and 9 in `sentinel_interval.v`. The first figure was mis-taken; the README had
+it right. Corrigendum 5 is corrected in place with a note; the Zenodo record is
+left as published.
+
+All three are the same shape the ledger keeps finding: a check that passes
+because it cannot see what it is meant to check.
+
+This is the fifth contribution to VLC-1 from babyblueviper1.
+

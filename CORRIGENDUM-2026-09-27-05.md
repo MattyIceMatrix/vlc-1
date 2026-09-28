@@ -84,8 +84,16 @@ same rules as everyone else's, is unchanged.
 witness at structural L3 or above, and the negative control itself, in which
 only the exhaustiveness basis is removed and the strong result must be refused
 for that reason. Verified in both directions: with the reconciler's new gate
-disabled the control fails, and nothing else does. Two proof developments, 20
-results, 0 admitted, 0 axioms.
+disabled the control fails, and nothing else does. Two proof developments, 35
+results (26 in `sentinel_completeness.v`, 9 in `sentinel_interval.v`), 0
+admitted, 0 axioms.
+
+> **Correction, 2026-09-28 (EXT-021).** As issued, this section said 20 results.
+> The count for `sentinel_completeness.v` was taken wrongly; it has 26, as the
+> README has always said. The 1.4-draft release notes and the Zenodo record
+> (10.5281/zenodo.23002582) carry the figure 20 and are left as published. The
+> error understated the proof corpus; no result was added or removed. CI was
+> also red when this version was released, which EXT-021 records.
 
 ## Version DOI
 
