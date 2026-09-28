@@ -195,6 +195,25 @@ def main(out):
     bad_head[-1]["head"] = "ab" * 32
     case("canonical-fields-end-marker-head-edited", bad_head, ema, "VLC-L1-3", "FAIL")
 
+    # EXT-020, maintainer's review of #6: the exemption must be exactly as narrow as stated. The head is
+    # exempt from hash_fields only because VLC-L1-3 anchors it, so every way of misstating the head must still
+    # fail there, and an end-marker field with no such comparison must still be refused as unanchored.
+    no_head = copy.deepcopy(chain_em)
+    del no_head[-1]["head"]
+    case("canonical-fields-end-marker-head-missing", no_head, ema, "VLC-L1-3", "FAIL")
+    early_head = copy.deepcopy(chain_em)
+    early_head[-1]["head"] = chain_em[3]["hash"]           # a real record, claiming a shorter log
+    case("canonical-fields-end-marker-head-earlier", early_head, ema, "VLC-L1-3", "FAIL")
+    tail_cut = copy.deepcopy(chain_em[:-2]) + [copy.deepcopy(chain_em[-1])]   # last event dropped, marker kept
+    case("canonical-fields-end-marker-tail-dropped", tail_cut, ema, "VLC-L1-3", "FAIL")
+    emc = copy.deepcopy(em)
+    emc["loss"] = dict(emc.get("loss", {}), produced={"kind": "field_of_end_marker", "field": "produced"})
+    emca = os.path.join(out, "canonical-fields-end-marker-count.adapter.json")
+    json.dump(emc, open(emca, "w"))
+    counted = copy.deepcopy(chain_em)
+    counted[-1]["produced"] = 6
+    case("canonical-fields-end-marker-count-unhashed", counted, emca, "VLC-L1-1", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 

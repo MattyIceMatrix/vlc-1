@@ -625,3 +625,45 @@ for it to check.** A requirement no fixture can fail, a level no adapter
 claims, a proof step that globs a directory. The ledger's own recurring lesson,
 found three times in one day by looking for it deliberately rather than waiting
 for a reporter.
+
+---
+
+## EXT-020 — an honest log refused L1 because its end marker's head was not hashed
+
+**Reporter:** ogasurfproject-jpg (Oga), while working on #5 · **Reported:**
+2026-09-27 · **Status:** fixed by babyblueviper1 in #6, merged as `b8316d5`
+**Severity:** false positive: an honest log failed VLC-L1-1 and scored L0
+
+Under `sha256-canonical-fields`, a precondition requires every field some later
+requirement reads to be listed in `hash_fields`, because a field the checker
+relies on but the hash does not cover could change while the binding still
+verified. That rule swept in `integrity.end_marker.head_field`. For an end
+marker that is not self-bound, no hashed record carries that field, so an
+honest log could not satisfy the precondition and was refused at L1.
+
+The design note on #4 had predicted exactly this class of error: the read-set
+collects every `*_field` key, and some of them do not need hash coverage.
+
+**Why this field, and only this field, can be exempt.** VLC-L1-3 compares the
+end marker's head with the head recomputed from the chain. An edited head fails
+there whether or not the marker is self-bound; the comparison anchors it, and
+the hash does not need to. The other end-marker fields, the loss-accounting
+counts read by `field_of_end_marker` and `sum_of_end_marker_fields`, have no
+such comparison, so they stay in the read set and must still be hashed.
+
+Fixed in #6: `_read_fields` excludes that one adapter path. The match is on the
+full path, so a field of the same name read by any other requirement is still
+required in `hash_fields`. Three vectors: head not hashed passes VLC-L1-1, head
+correct passes VLC-L1-3, head edited fails VLC-L1-3. The first two fail against
+the checker before the fix.
+
+**Maintainer's review.** Four further vectors check that the exemption is no
+wider than stated: an end marker with no head, a head naming an earlier real
+record, and a log with its last event dropped and the original marker kept all
+fail VLC-L1-3; a loss count on the end marker left out of `hash_fields` is
+still refused as unanchored. All four held on the patched checker before they
+were committed.
+
+This is the fourth contribution to VLC-1 from babyblueviper1, and the first
+finding from Oga.
+
