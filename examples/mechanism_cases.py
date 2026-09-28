@@ -180,6 +180,21 @@ def main(out):
     json.dump(na, open(naa, "w"))
     case("canonical-fields-non-ascii-name", cf_chain([{}] * 6), naa, "VLC-L1-1", "FAIL")
 
+    # End marker's head field (Oga, vlc-1#5, 2026-09-27): VLC-L1-3 compares it with the head recomputed from the
+    # chain, so it is anchored by that comparison and need not be listed in hash_fields. A non-self-bound end
+    # marker whose head is NOT in hash_fields must pass; the same log with the head edited must still fail L1-3.
+    em = copy.deepcopy(cfad)
+    em["integrity"]["end_marker"] = {"class": "END", "head_field": "head", "self_bound": False}
+    ema = os.path.join(out, "canonical-fields-end-marker.adapter.json")
+    json.dump(em, open(ema, "w"))
+    chain_em = cf_chain([{}] * 6)
+    chain_em.append({"kind": "END", "head": chain_em[-1]["hash"]})
+    case("canonical-fields-end-marker-head-unhashed", chain_em, ema, "VLC-L1-1", "PASS")
+    case("canonical-fields-end-marker-head-ok", chain_em, ema, "VLC-L1-3", "PASS")
+    bad_head = copy.deepcopy(chain_em)
+    bad_head[-1]["head"] = "ab" * 32
+    case("canonical-fields-end-marker-head-edited", bad_head, ema, "VLC-L1-3", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 
