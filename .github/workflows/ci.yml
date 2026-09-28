@@ -45,7 +45,9 @@ jobs:
                    mcp-toolcall:mcp-toolcall:0:0 mcp-toolcall:mcp-toolcall-partial-host:0:0 \
                    fab-equipment-secsgem:fab-equipment-full:0:0 \
                    fab-equipment-secsgem:fab-equipment-sampled:0:0 \
-                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1; do
+                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1 \
+                   nvidia-openshell-ocsf:openshell-ocsf-full:0:0 \
+                   nvidia-openshell-ocsf:openshell-ocsf-scrubbed:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
