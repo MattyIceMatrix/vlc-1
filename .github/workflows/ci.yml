@@ -38,14 +38,20 @@ jobs:
           # Each entry is adapter:log:structural:attested.
           set -e
           bad=0
+          # MCP, fab and JIDEC were scored in THIRD-PARTY.md but not asserted
+          # here until 2026-09-28, so a change could move them silently.
           for a in otel-otlp-logs:otlp-logs:0:0 k8s-audit:k8s-audit:0:0 \
-                   linux-auditd:linux-auditd:0:0 aws-cloudtrail-digest:cloudtrail-digests:0:0; do
+                   linux-auditd:linux-auditd:0:0 aws-cloudtrail-digest:cloudtrail-digests:0:0 \
+                   mcp-toolcall:mcp-toolcall:0:0 mcp-toolcall:mcp-toolcall-partial-host:0:0 \
+                   fab-equipment-secsgem:fab-equipment-full:0:0 \
+                   fab-equipment-secsgem:fab-equipment-sampled:0:0 \
+                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
-            if [ "$got" = "$ws $wa" ]; then echo "ok    $n: structural/attested $got"
-            else echo "FAIL  $n: got $got, expected $ws $wa"; bad=1; fi
+            if [ "$got" = "$ws $wa" ]; then echo "ok    $n / $f: structural/attested $got"
+            else echo "FAIL  $n / $f: got $got, expected $ws $wa"; bad=1; fi
           done
           exit $bad
 

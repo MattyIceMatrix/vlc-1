@@ -35,7 +35,7 @@
   },
   "loss": {
     "mode": "none",
-    "note": "n is assigned sequentially by the ledger worker, so a gap in n is visible to a reader. But no entry declares loss, no record states the total produced, and there is no end marker, so truncation of the newest entries is undetectable from the export alone; a reader needs an independently held latest n."
+    "note": "n is assigned sequentially by the ledger worker, so a gap in n is visible to a reader, and since jidec-chain-v1 the export ends in a jidec-head-v1 marker, so truncation of the newest entries fails VLC-L1-3. But no entry declares loss and no record states how many submissions arrived or were dropped, so the L2 identity has nothing to close over. (Maintainer fixup, 2026-09-28: this note was carried over from the L0 adapter and still said there was no end marker.)"
   },
   "coverage": {
     "mode": "none",
