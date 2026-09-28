@@ -1,0 +1,61 @@
+{
+  "name": "jidec-ledger-chained",
+  "producer": "JIDEC public verification ledger (HORIZON SHIELD), entries as served at GET https://ledger.horizonshield.dev/ledger/{n}?format=json",
+  "description": "The same ledger after jidec-chain-v1 (2026-09-28), exported live from GET https://ledger.horizonshield.dev/ledger/export.jsonl. Each row carries prev_entry_sha256 and entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})), this specification's sha256-canonical-fields recipe, and the export ends in a jidec-head-v1 record whose head is the last entry_sha256. The binding is derived from fields every entry already carried, so no stored entry was rewritten and every per-entry Bitcoin anchor is unchanged. The daily witness batch carries the head inside its stamped bytes, which is the independently held value --expect-head wants. Loss, coverage and policy are unchanged from the L0 scoring.",
+  "record_class_field": "schema",
+  "marker_classes": [
+    "jidec-head-v1"
+  ],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "sha256-canonical-fields",
+    "hash_field": "entry_sha256",
+    "prev_field": "prev_entry_sha256",
+    "hash_fields": [
+      "n",
+      "schema",
+      "claim_sha256",
+      "created_at",
+      "prev_entry_sha256",
+      "head"
+    ],
+    "root": {
+      "kind": "constant",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "primitive": "SHA-256",
+    "documented": true,
+    "primitive_documented": true,
+    "end_marker": {
+      "class": "jidec-head-v1",
+      "head_field": "head",
+      "self_bound": false
+    },
+    "note": "jidec-chain-v1 (2026-09-28): entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})), the VLC-1 canonical-fields recipe; entry 1 links to 64 zeros; GET /ledger/export.jsonl ends with a jidec-head-v1 record whose head is the last entry_sha256. The binding is derived from fields each entry already carried, so no stored entry was rewritten; each claim_sha256 is also anchored to Bitcoin on its own, and each daily witness batch carries the head inside its stamped bytes. head is listed in hash_fields only because the end marker reads it; no entry carries it, so it is omitted from every entry's hashed object and the recipe is unchanged."
+  },
+  "loss": {
+    "mode": "none",
+    "note": "n is assigned sequentially by the ledger worker, so a gap in n is visible to a reader. But no entry declares loss, no record states the total produced, and there is no end marker, so truncation of the newest entries is undetectable from the export alone; a reader needs an independently held latest n."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The ledger records what submitters and the operator's schedule send it (witness batches, specifications, datasets). It does not enumerate what it was supposed to receive; a submission that never arrived leaves no trace."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Acceptance rules live in the worker's source, not in the entries. An entry does not bind the intake rules that admitted it."
+  },
+  "independence": {
+    "mode": "self_reported",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The ledger is operated by the same company whose specifications, datasets and gate measurements appear in it, and the operator holds the write token. Witness batches bundle walks written by third parties, but the batch entry itself is written by the operator's worker. The Bitcoin anchor is external; the ledger is not."
+  },
+  "sources": [
+    "https://github.com/ogasurfproject-jpg/horizon-shield/tree/main/workers/hs-ledger",
+    "https://ledger.horizonshield.dev/ledger/57?format=json",
+    "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/path/JIDEC_PATH_SPEC_v1.md",
+    "https://ledger.horizonshield.dev/ledger/head",
+    "https://ledger.horizonshield.dev/ledger/export.jsonl",
+    "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/src/chain_v1.mjs"
+  ]
+}
