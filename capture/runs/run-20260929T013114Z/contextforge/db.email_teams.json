@@ -1,0 +1,15 @@
+[
+ {
+  "id": "ae050c195bc64e98adf4dba28b4160d0",
+  "name": "Platform Administrator's Team",
+  "slug": "platform-administrators-team",
+  "description": "Personal workspace for admin@example.com",
+  "created_by": "admin@example.com",
+  "is_personal": 1,
+  "visibility": "private",
+  "max_members": null,
+  "created_at": "2026-09-29 01:30:50.880181",
+  "updated_at": "2026-09-29 01:30:50.880183",
+  "is_active": 1
+ }
+]

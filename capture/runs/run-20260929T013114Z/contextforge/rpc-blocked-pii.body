@@ -1,0 +1,2 @@
+{"error":{"code":-32602,"message":"Plugin Violation: Sensitive information detected in tool arguments","data":{"description":"Sensitive information detected in tool arguments","details":{"detected_types":["ssn"],"count":1},"plugin_error_code":"PII_DETECTED_IN_TOOL_ARGS","plugin_name":"PIIFilterPlugin"}}}
+HTTP 200

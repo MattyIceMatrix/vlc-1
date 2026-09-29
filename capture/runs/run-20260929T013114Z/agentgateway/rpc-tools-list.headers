@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+content-type: text/event-stream
+cache-control: no-cache
+transfer-encoding: chunked
+date: Tue, 29 Sep 2026 01:30:34 GMT
+

@@ -1,0 +1,13 @@
+[
+ {
+  "id": 1,
+  "timestamp": "2026-09-29 01:30:50.890441",
+  "user_email": "admin@example.com",
+  "event_type": "registration",
+  "success": 1,
+  "ip_address": null,
+  "user_agent": null,
+  "failure_reason": null,
+  "details": null
+ }
+]

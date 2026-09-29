@@ -1,0 +1,18 @@
+[
+ {
+  "id": 1,
+  "tool_id": "6cf42a80f44843d2bc0121a758c3c18d",
+  "timestamp": "2026-09-29 01:30:59.293864",
+  "response_time": 0.029663362000007965,
+  "is_success": 1,
+  "error_message": null
+ },
+ {
+  "id": 2,
+  "tool_id": "6cf42a80f44843d2bc0121a758c3c18d",
+  "timestamp": "2026-09-29 01:30:59.330929",
+  "response_time": 0.0031061699999952452,
+  "is_success": 0,
+  "error_message": null
+ }
+]

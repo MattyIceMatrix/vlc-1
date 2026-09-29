@@ -1,0 +1,121 @@
+$ pip install -q mcp-contextforge-gateway[plugins]
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+$ pip show mcp-contextforge-gateway
+Name: mcp-contextforge-gateway
+Version: 1.0.11
+Summary: ContextForge AI Gateway — an AI gateway, registry, and proxy for MCP, A2A, and REST/gRPC APIs. Exposes a unified control plane with centralized governance, discovery, and observability. Optimizes agent and tool calling, and supports plugins.
+Home-page: https://ibm.github.io/mcp-context-forge/
+Author: 
+Author-email: Mihai Criveti <redacted@ibm.com>
+License-Expression: Apache-2.0
+Location: /tmp/tmp.6a0KPHWT6i/.venv/lib/python3.12/site-packages
+Requires: alembic, argon2-cffi, base58, brotli, click, cpex, cryptography, fastapi, filelock, gunicorn, h2, httpx, idna, jinja2, jq, jsonpath-ng, jsonschema, Mako, mcp, mcp-types, msgpack, orjson, parse, prometheus-fastapi-instrumentator, prometheus_client, psutil, pydantic, pydantic-settings, pyjwt, python-json-logger, python-multipart, PyYAML, redis, requests, requests-oauthlib, sqlalchemy, sse-starlette, starlette, starlette-compress, typer, urllib3, uvicorn
+Required-by: 
+[exit 0]
+$ python3 -m mcpgateway.scripts.init_secrets
+✅  Secrets written to .env.secrets
+
+Next steps:
+  1. Review the generated secrets in .env.secrets
+  2. Copy JWT_SECRET_KEY and AUTH_ENCRYPTION_SECRET into your .env file.
+     Or run: python -m mcpgateway.scripts.init_secrets --patch-env .env
+  3. IMPORTANT: never commit .env.secrets to Git.
+[exit 0]
+generated secret names: JWT_SECRET_KEY AUTH_ENCRYPTION_SECRET BASIC_AUTH_PASSWORD PLATFORM_ADMIN_PASSWORD DEFAULT_USER_PASSWORD 
+2026-09-29T01:30:52 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:30:52 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+2026-09-29T01:30:52 - mcpgateway.config - INFO - MCP_REQUIRE_AUTH not set; defaulting to True to match AUTH_REQUIRED=True.
+⚠️  WARNING: Creating token with elevated claims (admin/teams/scopes)
+   This requires JWT_SECRET_KEY and is intended for development/testing only.
+   For production token management, use the /tokens API endpoint.
+
+2026-09-29T01:30:52 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:30:52 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+2026-09-29T01:30:52 - mcpgateway.config - INFO - MCP_REQUIRE_AUTH not set; defaulting to True to match AUTH_REQUIRED=True.
+⚠️  WARNING: Creating token with elevated claims (admin/teams/scopes)
+   This requires JWT_SECRET_KEY and is intended for development/testing only.
+   For production token management, use the /tokens API endpoint.
+
+token minted: yes; limited token: yes
+register: {"id":"fcbcfef9d47d4d31b285a32e62084bab","name":"everything","url":"http://localhost:9000/sse","description":null,"transport":"SSE","capabilities":{"logging":{},"prompts":{"listChanged":true},"resources":{"subscribe":true,"listChanged":true},"tools":{"listChanged":true},"completions":{},"tasks":{"list":{},"cancel":{},"requests":{"tools":{"call":{}}}}},"createdAt":"2026-09-29T01:30:53.613646","upda
+echo tool registered as: everything-echo
+rpc allowed: {"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Echo: vlc1 allowed"}],"isError":false},"id":1} HTTP 200 
+rpc blocked-pii: {"error":{"code":-32602,"message":"Plugin Violation: Sensitive information detected in tool arguments","data":{"description":"Sensitive information detected in tool arguments","details":{"detected_types":["ssn"],"count":1},"plugin_error_code":"PII_DETECTED_IN_TOOL_ARGS","plugin_name":"PIIFilterPlugin"}}} HTTP 200 
+rpc denied-scope: {"jsonrpc":"2.0","error":{"code":-32003,"message":"Access denied","data":{"method":"tools/call"}},"id":1} HTTP 200 
+table a2a_agent_auth 0
+table a2a_agent_metrics 0
+table a2a_agent_metrics_hourly 0
+table a2a_agent_plugin_bindings 0
+table a2a_agents 0
+table a2a_push_notification_configs 0
+table a2a_task_events 0
+table a2a_tasks 0
+table alembic_version 1
+table audit_trails 1
+table email_api_tokens 0
+table email_auth_events 1
+table email_team_invitations 0
+table email_team_join_requests 0
+table email_team_member_history 1
+table email_team_members 1
+table email_teams 1
+table email_users 1
+table gateways 1
+table global_config 0
+table grpc_services 0
+table llm_models 0
+table llm_providers 0
+table mcp_app_sessions 0
+table mcp_messages 0
+table mcp_sessions 0
+table migration_metadata 4
+table oauth_states 0
+table oauth_tokens 0
+table observability_events 0
+table observability_metrics 0
+table observability_saved_queries 0
+table observability_spans 5
+table observability_traces 3
+table password_history 0
+table password_reset_tokens 0
+table pending_user_approvals 0
+table performance_aggregates 0
+table performance_metrics 0
+table performance_snapshots 0
+table permission_audit_log 0
+table prompt_metrics 0
+table prompt_metrics_hourly 0
+table prompts 4
+table registered_oauth_clients 0
+table resource_metrics 0
+table resource_metrics_hourly 0
+table resource_subscriptions 0
+table resources 9
+table roles 5
+table security_events 8
+table server_a2a_association 0
+table server_interfaces 0
+table server_metrics 0
+table server_metrics_hourly 0
+table server_prompt_association 0
+table server_resource_association 0
+table server_task_mappings 0
+table server_tool_association 0
+table servers 0
+table sqlite_sequence 1
+table sso_auth_sessions 0
+table sso_providers 0
+table structured_log_entries 13
+table token_revocations 0
+table token_usage_logs 0
+table tool_metrics 2
+table tool_metrics_hourly 0
+table tool_plugin_bindings 0
+table toolops_test_cases 0
+table tools 13
+table user_roles 1
+done
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:31:06Z

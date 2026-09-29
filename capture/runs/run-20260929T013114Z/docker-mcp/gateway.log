@@ -1,0 +1,45 @@
+Note: dynamic-tools disabled when using --servers flag
+- Reading configuration...
+  - Reading catalog from [ci.yaml]
+- Configuration read in 143.214µs
+- Using images:
+  - mcp/time
+Warning: signature verification is disabled; MCP server images will not be verified and may use mutable tags
+> Images pulled in 2.704807ms
+- Those servers are enabled: time
+- Listing MCP tools...
+  - Running mcp/time with [run --rm -i --init --security-opt no-new-privileges --cpus 1 --memory 2Gb --pull never -l docker-mcp=true -l docker-mcp-tool-type=mcp -l docker-mcp-name=time -l docker-mcp-transport=stdio]
+  > time: (1 tools)
+> 1 tools listed in 722.121351ms
+> Initialized in 725.899047ms
+> Start streaming server on port 8811
+> Gateway URL: http://localhost:8811/mcp
+> Use Bearer token from MCP_GATEWAY_AUTH_TOKEN environment variable
+- Client initialized vlc1-capture@1 
+- Current working directory: /home/runner/work/vlc-1/vlc-1
+- Initialize request:
+  {
+    "capabilities": {
+      "roots": {}
+    },
+    "clientInfo": {
+      "name": "vlc1-capture",
+      "version": "1"
+    },
+    "protocolVersion": "2025-06-18"
+  }
+  - Scanning tool call arguments for secrets...
+  > No secret found in arguments.
+  - Calling tool get_current_time with arguments: object with 1 field(s)
+  - Running mcp/time with [run --rm -i --init --security-opt no-new-privileges --cpus 1 --memory 2Gb --pull never -l docker-mcp=true -l docker-mcp-tool-type=mcp -l docker-mcp-name=time -l docker-mcp-transport=stdio]
+  > Calling tool get_current_time took: 648.689019ms
+  - Scanning tool call response for secrets...
+  > No secret found in response.
+  - Scanning tool call arguments for secrets...
+  > No secret found in arguments.
+  - Calling tool convert_time with arguments: object with 3 field(s)
+  - Scanning tool call arguments for secrets...
+  - Scanning tool call arguments for secrets...
+  > No secret found in arguments.
+  - Calling tool no_such_tool with arguments: object with 0 field(s)
+accept tcp 127.0.0.1:8811: use of closed network connection

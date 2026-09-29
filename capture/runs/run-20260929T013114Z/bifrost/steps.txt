@@ -1,0 +1,30 @@
+$ npm view @maximhq/bifrost version
+1.6.3
+[exit 0]
+clients: {"clients":[{"config":{"allow_on_all_virtual_keys":false,"client_id":"d22f6d3c-97f6-4742-91a9-f108bc2d0f98","name":"fs","endpoint_slug":"fs","is_code_mode_client":false,"connection_type":"stdio","stdio_config":{"command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","/tmp/tmp.UUdJ4BTv4F/root"],"envs":["HOME","PATH"]},"auth_type":"headers","tools_to_execute":["list_directory"],"is_pi
+exec allowed (fs-list_directory): {"role":"tool","content":"[FILE] plain.txt","tool_call_id":"allowed"}  HTTP 200 
+exec denied-not-in-allowlist (fs-write_file): {"is_bifrost_error":false,"error":{"error":"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)","message":"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)"},"extra_fields":{"routing_info":{},"request_type":"chat_completion","mcp_request_type":"chat_tool_call"}}  HTTP 400 
+exec nonexistent (fs-no_such_tool): {"is_bifrost_error":false,"error":{"error":"tool 'fs-no_such_tool' is not available or not permitted","message":"tool 'fs-no_such_tool' is not available or not permitted"},"extra_fields":{"routing_info":{},"request_type":"chat_completion","mcp_request_type":"chat_tool_call"}}  HTTP 400 
+record of the refused write_file call: 74dbebec-cf6f-4495-9e94-33d5908ad3a8
+DELETE /api/mcp-logs {"ids":["74dbebec-cf6f-4495-9e94-33d5908ad3a8"]} -> {"message":"MCP tool logs deleted successfully"}  HTTP 200 
+after delete: 2 records: ['no_such_tool', 'list_directory']
+dropped counter after delete: {"dropped_requests":0}
+total 57432
+drwxr-xr-x 2 runner runner     4096 Sep 29 01:30 .
+drwx------ 4 runner runner     4096 Sep 29 01:30 ..
+-rw-r--r-- 1 runner runner 28991488 Sep 29 01:30 config.db
+-rw-r--r-- 1 runner runner    65536 Sep 29 01:30 config.db-shm
+-rw-r--r-- 1 runner runner 28337392 Sep 29 01:30 config.db-wal
+-rw-r--r-- 1 runner runner      322 Sep 29 01:30 config.json
+-rw-r--r-- 1 runner runner     4096 Sep 29 01:30 logs.db
+-rw-r--r-- 1 runner runner    32768 Sep 29 01:30 logs.db-shm
+-rw-r--r-- 1 runner runner  1363752 Sep 29 01:30 logs.db-wal
+table async_jobs 0
+table logs 0
+table mcp_tool_logs 2
+table migrations 92
+table user_agent_mappings 0
+table webhook_deliveries 0
+wrote x.txt? no
+done
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:30:50Z

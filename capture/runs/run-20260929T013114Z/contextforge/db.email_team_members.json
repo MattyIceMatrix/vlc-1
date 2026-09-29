@@ -1,0 +1,12 @@
+[
+ {
+  "id": "87a8d268d9644adaae96438c91707f8c",
+  "team_id": "ae050c195bc64e98adf4dba28b4160d0",
+  "user_email": "admin@example.com",
+  "role": "owner",
+  "joined_at": "2026-09-29 01:30:50.880615",
+  "invited_by": null,
+  "is_active": 1,
+  "grant_source": null
+ }
+]

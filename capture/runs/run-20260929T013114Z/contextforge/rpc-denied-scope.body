@@ -1,0 +1,2 @@
+{"jsonrpc":"2.0","error":{"code":-32003,"message":"Access denied","data":{"method":"tools/call"}},"id":1}
+HTTP 200
