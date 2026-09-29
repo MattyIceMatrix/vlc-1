@@ -30,6 +30,19 @@ ex denied-not-in-allowlist fs-write_file "{\"path\":\"$W/root/x.txt\",\"content\
 ex nonexistent fs-no_such_tool '{}'
 sleep 5
 for ep in mcp-logs logs/dropped; do curl -sS "http://127.0.0.1:8080/api/$ep" > "$O/api-$(echo $ep | tr / -).json" 2>&1; done
+# Deletion probe, run 4: can a caller on the same port remove the refused call's record?
+DID=$(python3 -c "import json;l=json.load(open('$O/api-mcp-logs.json'))['logs'];print(next(x['id'] for x in l if x['tool_name']=='write_file'))" 2>>"$O/steps.txt")
+note "record of the refused write_file call: ${DID:-<none>}"
+if [ -n "$DID" ]; then
+  for body in "{\"ids\":[\"$DID\"]}"; do
+    curl -sS -X DELETE -H 'Content-Type: application/json' -d "$body" -w '\nHTTP %{http_code}\n' http://127.0.0.1:8080/api/mcp-logs > "$O/delete-attempt.body" 2>&1
+    note "DELETE /api/mcp-logs $body -> $(tr '\n' ' ' < "$O/delete-attempt.body")"
+  done
+  curl -sS http://127.0.0.1:8080/api/mcp-logs > "$O/api-mcp-logs-after-delete.json" 2>&1
+  note "after delete: $(python3 -c "import json;l=json.load(open('$O/api-mcp-logs-after-delete.json'))['logs'];print(len(l),'records:',[x['tool_name'] for x in l])" 2>&1)"
+  curl -sS http://127.0.0.1:8080/api/logs/dropped > "$O/api-logs-dropped-after-delete.json" 2>&1
+  note "dropped counter after delete: $(cat "$O/api-logs-dropped-after-delete.json")"
+fi
 kill "${PIDS[@]}" 2>/dev/null; sleep 2
 ls -la "$W/bf" | tee -a "$O/steps.txt"
 [ -f "$W/bf/logs.db" ] && dump_sqlite "$W/bf/logs.db" "$O/logsdb"
