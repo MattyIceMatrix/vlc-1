@@ -24,7 +24,7 @@ reached — with the record produced by a probe the workload cannot write to.
 
 | | |
 |---|---|
-| **PUBLIC** | the VLC-1 specification · the conformance checker and its adapters · the completeness lattice proof and the two impossibility results (`proofs/`, 26 results, 0 admitted, 0 axioms) · the witness reconciler · real captured journals at L2 and L5 |
+| **PUBLIC** | the VLC-1 specification · the conformance checker and its adapters · the completeness lattice proof and the two impossibility results (for counts, see `proofs/` and the CI audit) · the witness reconciler · real captured journals at L2 and L5 |
 | **ASK FOR** | the proof estate · `verify.sh`, the one-command re-verification you run from source on your own hardware · the live demonstration suite · the conformity pack, auditor runbook, ISO 42001 gap assessment and EU AI Act evidence mapping · the evidence verifier that recomputes each control rather than asserting it |
 | **PRIVATE** | the eBPF sensor, the policy engine, the classifier, and the pinning and object tiers |
 

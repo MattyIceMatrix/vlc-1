@@ -2,12 +2,15 @@
 
 **2026-09-12, revised 2026-09-27.** VLC-1 is only worth something if it can be
 applied to logs this project did not produce. This is that exercise, run against
-five **open, publicly documented** formats — not against closed commercial products, whose
+eight formats: six scored from their **open, public documentation**, one (NVIDIA
+OpenShell, open source) from a single live capture, and one (the JIDEC ledger)
+scored by its own operator. It is not run against closed commercial products, whose
 internals cannot be checked and about which this document therefore says
 nothing.
 
-Every sample under `examples/third-party/` is **shape-accurate synthetic data
-built from the public specification**, not a capture. Field names, structures and
+Except the OpenShell capture and the JIDEC export, which the table labels as
+such, every sample under `examples/third-party/` is **shape-accurate synthetic
+data built from the public specification**, not a capture. Field names, structures and
 chaining are taken from the sources cited per adapter. If a field name is wrong,
 the adapter is wrong and a correction is welcome — that is the point of shipping
 the adapters as data.
@@ -49,7 +52,7 @@ before most of this field existed.
 
 The pattern is not incompetence. It is that **integrity was specified and
 completeness never was**, so every team built the property someone asked them
-for. Three of the four are one design decision from L2:
+for. Four of them are one design decision from L2:
 
 - OpenTelemetry: put `rejected_log_records` in-band, in the stream, instead of
   only on the metrics path and the response.

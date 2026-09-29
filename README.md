@@ -35,7 +35,7 @@ clauses into a standard without asking.
 
 ## The levels
 
-Six of them, L0 to L5 — five substantive increments above recorded-only L0.
+Six levels, L0–L5 — five substantive increments above recorded-only L0.
 
 |  | | refuses |
 |---|---|---|
@@ -48,8 +48,10 @@ Six of them, L0 to L5 — five substantive increments above recorded-only L0.
 
 Of the log formats scored so far — see [`THIRD-PARTY.md`](THIRD-PARTY.md) —
 those that establish anything establish integrity, and none establishes loss
-accounting or coverage from the delivered evidence. That is four open formats,
-not a census of the market, and it is stated that narrowly on purpose.
+accounting or coverage from the delivered evidence. That is eight formats — six
+scored from public documentation, one from a single live capture, one scored by
+its own operator — not a census of the market, and it is stated that narrowly on
+purpose.
 
 The claim that **does** generalise is the one the proof makes: a self-authored
 transcript cannot, by itself, establish independent witnessing of the behaviour
@@ -165,14 +167,17 @@ python3 witness/reconcile.py \
 
 ## Scoring other people's logs
 
-[`THIRD-PARTY.md`](THIRD-PARTY.md) scores four open, publicly documented formats —
-OpenTelemetry, Kubernetes audit, Linux auditd and AWS CloudTrail digest files —
-from their specifications, with the adapters and samples included so you can
-disagree by editing a file rather than by writing an email.
+[`THIRD-PARTY.md`](THIRD-PARTY.md) scores eight formats. Six are scored from their
+public documentation — OpenTelemetry, Kubernetes audit, Linux auditd, AWS
+CloudTrail digest files, MCP tool calls and fab equipment (SECS-II/GEM). NVIDIA
+OpenShell is scored from a single live capture, and the JIDEC ledger by its own
+operator. The adapters and samples are included so you can disagree by editing a
+file rather than by writing an email.
 
 Short version: none of them is badly engineered. **Integrity was specified and
 completeness never was**, so every team built the property someone asked them
-for. Three of the four are one afternoon-sized change away from L2.
+for. Four of them — OpenTelemetry, Kubernetes audit, auditd and MCP — are each
+one afternoon-sized change away from L2.
 
 ## What the checker did to its own author first
 
@@ -218,7 +223,7 @@ examples/                one worked log per rung, third-party shapes, real captu
 witness/                 reconcile a self-report against an independent record
 proofs/                  Coq: the lattice and the two impossibility results
 selftest.sh              positive, negative, lattice, independence and not-rigged controls
-THIRD-PARTY.md           scores for five public log formats, incl. MCP tool calls
+THIRD-PARTY.md           scores for eight log formats, incl. MCP tool calls and OpenShell
 COMMENT-prEN-18229.md    a ready-to-file standards comment
 ACCESS.md                what is public, what to ask for, what is not distributed
 deck/                    a 16-slide presentation, and the script that builds it
@@ -233,7 +238,8 @@ docs/                    why this exists, and how to talk to us
 ```sh
 cd proofs && coqc -q sentinel_completeness.v   # Coq/Rocq >= 8.16
 ```
-26 results, **0 admitted, 0 axioms**, every one closed under the global context.
+For result counts, and for the check that none is admitted or rests on an axiom,
+see `proofs/` and the CI audit.
 
 ## Standards status (2026-09-27)
 

@@ -41,7 +41,7 @@ with nothing committed.
 Doing it by hand instead:
 
 ```sh
-git init && git add -- . && git commit -m "VLC-1 1.1.1-draft"
+git init && git add -- . && git commit -m "VLC-1 1.4-draft"
 git branch -M main
 git remote add origin git@github.com:<you>/vlc-1.git
 git push -u origin main
@@ -50,17 +50,17 @@ git push -u origin main
 Suggested repository description:
 
 > A vendor-neutral specification and conformance suite for proving an AI audit
-> log is complete — not just tamper-evident. Six levels, a checker you can run
+> log is complete — not just tamper-evident. Six levels, L0–L5, a checker you can run
 > against any log, and a machine-checked proof that each level is necessary.
 
 Topics: `ai-governance` `audit-logging` `eu-ai-act` `formal-verification`
 `observability` `compliance` `coq`
 
 If the description is already set from an earlier release, update it — the
-scheme has six levels, not five:
+scheme has six levels, L0–L5, not five:
 
 ```sh
-gh repo edit <you>/vlc-1 --description "A vendor-neutral specification and conformance suite for proving an AI audit log is complete, not just tamper-evident. Six levels, a checker that reports separately what it recomputed and what it relayed, and a machine-checked proof that each level is necessary."
+gh repo edit <you>/vlc-1 --description "A vendor-neutral specification and conformance suite for proving an AI audit log is complete, not just tamper-evident. Six levels, L0–L5, a checker that reports separately what it recomputed and what it relayed, and a machine-checked proof that each level is necessary."
 ```
 
 ## 3. Mint a DOI — do this, it is the step that matters
