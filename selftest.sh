@@ -218,9 +218,9 @@ hr; echo "5. NOT RIGGED -- the author's own journals, judged by the same rules"
 # that restores the old numbers without binding the end marker turns this red.
 PRE=examples/reference-impl/pre-basis-L2.jsonl
 if [ -f "$PRE" ]; then
-	got=$(level "$PRE" adapters/observer.json)
-	l13=$(req "$PRE" adapters/observer.json VLC-L1-3)
-	l31d=$(req "$PRE" adapters/observer.json VLC-L3-1d)
+	got=$(level "$PRE" adapters/observer-legacy.json)
+	l13=$(req "$PRE" adapters/observer-legacy.json VLC-L1-3)
+	l31d=$(req "$PRE" adapters/observer-legacy.json VLC-L3-1d)
 	if [ "$got" = "0" ] && [ "$l13" = "FAIL" ] && [ "$l31d" = "FAIL" ]; then
 		ok "pre-fix capture -> L0: its end marker is unbound (EXT-022), and VLC-L3-1d still fails (the gap it was kept to show)"
 	else
@@ -229,20 +229,33 @@ if [ -f "$PRE" ]; then
 else
 	bad "pre-fix capture missing: the not-rigged control cannot run"
 fi
-for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl/kernel-witness-with-loss-L5.jsonl; do
+for j in examples/reference-impl/pre-EXT-022/kernel-witness-L5.jsonl examples/reference-impl/pre-EXT-022/kernel-witness-with-loss-L5.jsonl; do
 	[ -f "$j" ] || continue
-	got=$(level  "$j" adapters/observer.json)
-	sgot=$(slevel "$j" adapters/observer.json)
+	got=$(level  "$j" adapters/observer-legacy.json)
+	sgot=$(slevel "$j" adapters/observer-legacy.json)
 	JH=$(tail -n 1 "$j" | python3 -c 'import json,sys;print(json.load(sys.stdin)["h"])' | tr -d '\r')
-	A=$($C --log "$j" --adapter adapters/observer.json --expect-head "$JH" --json 2>/dev/null | python3 -c \
+	A=$($C --log "$j" --adapter adapters/observer-legacy.json --expect-head "$JH" --json 2>/dev/null | python3 -c \
 	  'import json,sys;r=json.load(sys.stdin);q=r["requirements"];print(r["structural_level"],r["attested_level"],q["VLC-L1-3"]["status"],q["VLC-L2-1"]["status"])' | tr -d '\r')
 	if [ "$sgot" = "0" ] && [ "$got" = "0" ] && [ "$A" = "1 1 PASS FAIL" ]; then
-		ok "$(basename $j) -> L0 on the log alone; L1 with its head anchored, blocked at VLC-L2-1 (count on an unbound marker)"
+		ok "pre-EXT-022/$(basename $j) -> L0 on the log alone; L1 with its head anchored, blocked at VLC-L2-1 (count on an unbound marker)"
 	else
 		bad "$(basename $j) -> structural L$sgot, attested L$got, anchored [$A]; expected 0, 0, [1 1 PASS FAIL]"
 	fi
 done
-ok "the reference implementation is scored by the same rules: its journals' end marker is not chained, and the levels say so"
+# EXT-022, closed in the sensor (octa-sentinel 269b176): HEAD is chained and
+# names the head it closes. Re-captured 2026-09-29 on live eBPF tracepoints.
+for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl/kernel-witness-with-loss-L5.jsonl; do
+	[ -f "$j" ] || { bad "re-captured journal missing: $j"; continue; }
+	got=$(level  "$j" adapters/observer.json)
+	sgot=$(slevel "$j" adapters/observer.json)
+	l13=$(req "$j" adapters/observer.json VLC-L1-3)
+	if [ "$sgot" = "4" ] && [ "$got" = "5" ] && [ "$l13" = "PASS" ]; then
+		ok "$(basename $j) (sealed HEAD) -> structural L4, attested L5 on the log alone; VLC-L1-3 PASS because HEAD is chained"
+	else
+		bad "$(basename $j) (sealed HEAD) -> structural L$sgot, attested L$got, VLC-L1-3 $l13; expected 4, 5, PASS"
+	fi
+done
+ok "the reference implementation is scored by the same rules: pre-fix captures stay at L0, captures from the fixed sensor earn L4/L5"
 
 hr; echo "6. THE WITNESS -- reconciling a self-report against an independent record"
 R="python3 witness/reconcile.py"
@@ -331,10 +344,14 @@ def refused_for(claims, journal, needle, label, where="problems", adapter=SAP):
           [f["severity"] + " " + f["what"] for f in r["findings"]]
     say(rc != 0 and any(needle in h for h in hay), label)
 
-# EXT-022: the same honest run against the capture as recorded, whose end marker
-# is not chained, is refused -- and for that reason
-refused_for(H, W, "VLC-L1-3", "the captured journal, end marker unchained, is refused as a witness (EXT-022)",
-            adapter=None)
+# EXT-022: the honest run against the pre-fix capture, whose end marker is not
+# chained, is refused -- and for that reason. The re-capture from the fixed
+# sensor (HEAD chained) is accepted as a witness with the shipped adapter.
+refused_for(f"{E}/pre-EXT-022/agent-transcript-honest.jsonl", f"{E}/pre-EXT-022/kernel-witness-honest-session.jsonl",
+            "VLC-L1-3", "the pre-fix capture, end marker unchained, is refused as a witness (EXT-022)",
+            adapter="adapters/observer-legacy.json")
+_r, _rc = rec(H, W, None)
+say(_rc == 0, "the re-captured honest session, HEAD chained, is accepted as a witness with the shipped adapter")
 refused_for(f"{d}/empty.jsonl", f"{d}/empty.jsonl", "claim record is empty",
             "two empty inputs are refused as empty, not reported as agreement")
 refused_for(f"{d}/badline.jsonl", SW, "unparseable line(s) in the claim record",
@@ -842,7 +859,8 @@ echo "17. UNBOUND END MARKER -- a tail cut with the marker rewritten, and no has
 U17=$(python3 - <<'PYU'
 import json, os, subprocess, tempfile
 d = tempfile.mkdtemp()
-KW = "examples/reference-impl/kernel-witness-L5.jsonl"
+KW = "examples/reference-impl/pre-EXT-022/kernel-witness-L5.jsonl"
+LEG = "adapters/observer-legacy.json"
 src = [l.rstrip("\n") for l in open(KW) if l.strip()]
 head = json.loads(src[-1]); H = head["h"]
 k = 5
@@ -850,7 +868,7 @@ cut = json.loads(src[-1]); cut["h"] = json.loads(src[-2 - k])["h"]
 cut["records"] -= k; cut["chained"] -= k
 T = os.path.join(d, "truncated.jsonl")
 open(T, "w").write("\n".join(src[:-1 - k] + [json.dumps(cut, separators=(",", ":"))]) + "\n")
-def run(log, ad="adapters/observer.json", *extra):
+def run(log, ad=LEG, *extra):
     p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", ad, "--json", *extra],
                        capture_output=True, text=True)
     return json.loads(p.stdout)
@@ -859,13 +877,26 @@ def emit(msg, cond): print(("OK" if cond else "BAD") + "|" + msg)
 r = run(T)
 emit("5 records cut from the reference journal's tail, HEAD rewritten: VLC-L1-3 FAIL, structural L0 "
      "(was structural L4, attested L5)", st(r, "VLC-L1-3") == "FAIL" and r["structural_level"] == 0)
-r = run(T, "adapters/observer.json", "--expect-head", H)
+r = run(T, LEG, "--expect-head", H)
 emit("the same cut against the journal's independently held head: VLC-L1-1 FAIL", st(r, "VLC-L1-1") == "FAIL")
-r = run(KW, "adapters/observer.json", "--expect-head", H)
+r = run(KW, LEG, "--expect-head", H)
 emit("the untouched journal with its head anchored: VLC-L1-3 PASS -- the anchor establishes the tail",
      st(r, "VLC-L1-3") == "PASS" and st(r, "VLC-L1-1") == "PASS")
 emit("...and VLC-L2-1 still FAIL: an anchored head does not bind the counts on an unchained marker",
      st(r, "VLC-L2-1") == "FAIL")
+# the same attack on a capture from the fixed sensor: HEAD is chained, so the
+# rewrite breaks the chain and nothing above L0 survives
+NK = "examples/reference-impl/kernel-witness-L5.jsonl"
+ns = [l.rstrip("\n") for l in open(NK) if l.strip()]
+nh = json.loads(ns[-1]); nh["head"] = json.loads(ns[-2 - k])["h"]
+nh["records"] -= k; nh["chained"] -= k
+NT = os.path.join(d, "sealed-truncated.jsonl")
+open(NT, "w").write("\n".join(ns[:-1 - k] + [json.dumps(nh, separators=(",", ":"))]) + "\n")
+r = run(NT, "adapters/observer.json")
+emit("the same cut on a sealed-HEAD capture: structural L0 on the log alone, no anchor needed", r["structural_level"] == 0)
+r = run(NK, "adapters/observer.json")
+emit("the untouched sealed-HEAD capture: VLC-L1-3 PASS and VLC-L2-5 PASS on the log alone",
+     st(r, "VLC-L1-3") == "PASS" and st(r, "VLC-L2-5") == "PASS")
 r = run("examples/L1-hashchain.jsonl", "adapters/generic-appjsonl.json")
 emit("positive control: a chained end marker still establishes VLC-L1-3 on the log alone", st(r, "VLC-L1-3") == "PASS")
 # self_bound defaults to true, and a marker declared bound that carries no hash

@@ -1,7 +1,7 @@
 {
-  "name": "observer-jsonl",
+  "name": "observer-jsonl-legacy",
   "producer": "OCTA Observer kernel sensor (the reference implementation)",
-  "description": "SHA-256 prefix-chained JSONL journal rooted in the policy digest, with in-chain GAP and COVERAGE records.",
+  "description": "Observer journals captured BEFORE EXT-022 (examples/reference-impl/pre-EXT-022/, pre-basis-L2.jsonl): HEAD not chained. Kept so those historical captures stay scoreable; they reach L0 on the log alone.",
   "record_class_field": "class",
   "marker_classes": [
     "H0",
@@ -29,8 +29,8 @@
     },
     "end_marker": {
       "class": "HEAD",
-      "head_field": "head",
-      "self_bound": true
+      "head_field": "h",
+      "self_bound": false
     }
   },
   "loss": {
