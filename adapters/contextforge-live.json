@@ -1,0 +1,40 @@
+{
+  "name": "contextforge-live",
+  "producer": "IBM ContextForge 1.0.11 (mcp-contextforge-gateway, PyPI), SQLite, with AUDIT_TRAIL_ENABLED, PERMISSION_AUDIT_ENABLED, SECURITY_LOGGING_ENABLED (level all) and STRUCTURED_LOGGING_DATABASE_ENABLED; the structured_log_entries table, which /api/logs/search serves",
+  "description": "A live capture, 2026-09-29: server-everything registered through ContextForge's own stdio bridge. Three calls: one allowed, one blocked by the PII filter plugin (an SSN in the arguments), one refused because the token lacked tools.execute. The refusals reached the plain log file. In the database a security team would query they did not: in structured_log_entries the PII block is an ERROR row, `Tool 'everything-echo' invocation failed`, with is_security_event 0 and no error message, plus a `POST /rpc - 200` row; the scope refusal left only `Request completed: POST /rpc - 200`. security_events holds eight authentication successes, one for each refused request among them, and neither refusal; tool_metrics holds an is_success 0 row for the PII call; permission_audit_log is empty. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/gateway-capture.yml and capture/scripts/ on branch capture/gateways, run run-20260929T013114Z, on a GitHub-hosted runner. The raw record, the configuration used and the client's view of every call are committed there; examples/third-party/gateways-live/convert.py turns the record into this JSONL without adding any field except `class`. The file log (logfiles/mcpgateway.log on the capture branch) does carry both refusals as WARNING lines: `Plugin PIIFilterPlugin blocked request ... [PII_DETECTED_IN_TOOL_ARGS]` and `RPC permission denied (token scope)`.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "Primary keys are random UUIDs; no hash, signature or chaining on any table. contextforge-live-scrubbed.jsonl removes the two rows of the PII-blocked call and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No sequence number over entries and no drop count. According to the source, the optional SIEM export drops the oldest events under backpressure (not exercised here)."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "Nothing states which gateways, servers or tools the record covers for the interval."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The plugin configuration is not recorded. The row for the blocked call does not say it was blocked, by which plugin, or under which rule; the row for the scope refusal records HTTP 200. With every audit switch on, the security tables recorded authentication and nothing about either refusal."
+  },
+  "independence": {
+    "mode": "external_proxy",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "In this capture the client -- curl, not an agent -- reached ContextForge over HTTP with a bearer token and did not touch its database. The token used was an admin token (an earlier run on the capture branch shows a token without `teams: null` and `is_admin` refused every permission); whether an admin token can alter log tables through the API was not tested and is not claimed.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/IBM/mcp-context-forge",
+    "https://pypi.org/project/mcp-contextforge-gateway/1.0.11/",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/gateways/capture/runs/run-20260929T013114Z"
+  ]
+}

@@ -1,0 +1,4 @@
+{"client":{"enable_logging":true,"disable_auth_on_inference":true},
+ "mcp":{"client_configs":[{"name":"fs","connection_type":"stdio",
+   "stdio_config":{"command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","/tmp/tmp.UUdJ4BTv4F/root"],"envs":["HOME","PATH"]},
+   "tools_to_execute":["list_directory"]}]}}

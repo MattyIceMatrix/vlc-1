@@ -1,0 +1,42 @@
+{
+  "name": "docker-mcp-live",
+  "producer": "Docker MCP Gateway v0.44.1 (docker mcp CLI plugin, sha256 88aea31e...), run headless on Docker Engine with --log-calls --block-secrets --verbose; its log on stderr",
+  "description": "A live capture, 2026-09-29: the mcp/time server behind the gateway with a one-tool allow-list (--tools). Four calls: one allowed, one outside the allow-list, one carrying a GitHub-token-shaped argument that --block-secrets refused, one to a tool that does not exist. The log records the call outside the allow-list as `Calling tool convert_time` -- the line an executed call gets -- and the blocked call as an argument scan with no outcome. Neither refusal is written as a refusal. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/gateway-capture.yml and capture/scripts/ on branch capture/gateways, run run-20260929T013114Z, on a GitHub-hosted runner. The raw record, the configuration used and the client's view of every call are committed there; examples/third-party/gateways-live/convert.py turns the record into this JSONL without adding any field except `class`. The first start exited because mcp/time was not pinned to a digest ('image must be referenced by digest'); the capture passed --verify-signatures=false rather than pinning.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [
+    "trace"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "note": "Plain text on stderr: no timestamps, no hash, no signature. docker-mcp-live-scrubbed.jsonl removes the `Calling tool convert_time` line and the blocked call's unanswered argument scan (convert_time's other scan lines stay) and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No sequence number and no drop accounting in the log. According to the source (pkg/policy, v0.44.1), Docker's own policy-audit events (allowed/denied, reason) are sent only to Docker Desktop; none appeared on Engine in this capture. The only drop signal in the source is a log line when that audit queue fills."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The log lists the enabled servers and the number of tools at start-up, which is more than most. According to the source it does not restate them when the set changes (not exercised here), and a call to a tool outside the allow-list is logged as if the tool were there."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The allow-list and the secret scanner are command-line flags, not recorded as policy. A refused call leaves `Calling tool X` with no result line; an executed call leaves `Calling tool X` and `Calling tool X took: N ms`. What separates a refusal from an execution is absence: no `Running mcp/time`, no `took:`, no response scan. The refused call's lines have the same shape as those of the call to a tool that does not exist."
+  },
+  "independence": {
+    "mode": "external_proxy",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "In this capture the client -- curl, not an agent -- reached the gateway only over HTTP with a bearer token; the log is the gateway's stderr on the host, which that connection gives no access to. Independent of the client, not of whoever runs the gateway.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/docker/mcp-gateway",
+    "https://docs.docker.com/ai/mcp-gateway/",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/gateways/capture/runs/run-20260929T013114Z"
+  ]
+}

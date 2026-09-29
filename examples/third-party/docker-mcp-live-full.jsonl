@@ -1,0 +1,45 @@
+{"class":"trace","msg":"Note: dynamic-tools disabled when using --servers flag"}
+{"class":"trace","msg":"- Reading configuration..."}
+{"class":"trace","msg":"  - Reading catalog from [ci.yaml]"}
+{"class":"trace","msg":"- Configuration read in 143.214\u00b5s"}
+{"class":"trace","msg":"- Using images:"}
+{"class":"trace","msg":"  - mcp/time"}
+{"class":"trace","msg":"Warning: signature verification is disabled; MCP server images will not be verified and may use mutable tags"}
+{"class":"trace","msg":"> Images pulled in 2.704807ms"}
+{"class":"trace","msg":"- Those servers are enabled: time"}
+{"class":"trace","msg":"- Listing MCP tools..."}
+{"class":"trace","msg":"  - Running mcp/time with [run --rm -i --init --security-opt no-new-privileges --cpus 1 --memory 2Gb --pull never -l docker-mcp=true -l docker-mcp-tool-type=mcp -l docker-mcp-name=time -l docker-mcp-transport=stdio]"}
+{"class":"trace","msg":"  > time: (1 tools)"}
+{"class":"trace","msg":"> 1 tools listed in 722.121351ms"}
+{"class":"trace","msg":"> Initialized in 725.899047ms"}
+{"class":"trace","msg":"> Start streaming server on port 8811"}
+{"class":"trace","msg":"> Gateway URL: http://localhost:8811/mcp"}
+{"class":"trace","msg":"> Use Bearer token from MCP_GATEWAY_AUTH_TOKEN environment variable"}
+{"class":"trace","msg":"- Client initialized vlc1-capture@1 "}
+{"class":"trace","msg":"- Current working directory: /home/runner/work/vlc-1/vlc-1"}
+{"class":"trace","msg":"- Initialize request:"}
+{"class":"trace","msg":"  {"}
+{"class":"trace","msg":"    \"capabilities\": {"}
+{"class":"trace","msg":"      \"roots\": {}"}
+{"class":"trace","msg":"    },"}
+{"class":"trace","msg":"    \"clientInfo\": {"}
+{"class":"trace","msg":"      \"name\": \"vlc1-capture\","}
+{"class":"trace","msg":"      \"version\": \"1\""}
+{"class":"trace","msg":"    },"}
+{"class":"trace","msg":"    \"protocolVersion\": \"2025-06-18\""}
+{"class":"trace","msg":"  }"}
+{"class":"secret_scan","msg":"  - Scanning tool call arguments for secrets..."}
+{"class":"secret_scan","msg":"  > No secret found in arguments."}
+{"class":"call","msg":"  - Calling tool get_current_time with arguments: object with 1 field(s)"}
+{"class":"trace","msg":"  - Running mcp/time with [run --rm -i --init --security-opt no-new-privileges --cpus 1 --memory 2Gb --pull never -l docker-mcp=true -l docker-mcp-tool-type=mcp -l docker-mcp-name=time -l docker-mcp-transport=stdio]"}
+{"class":"call_result","msg":"  > Calling tool get_current_time took: 648.689019ms"}
+{"class":"secret_scan","msg":"  - Scanning tool call response for secrets..."}
+{"class":"secret_scan","msg":"  > No secret found in response."}
+{"class":"secret_scan","msg":"  - Scanning tool call arguments for secrets..."}
+{"class":"secret_scan","msg":"  > No secret found in arguments."}
+{"class":"call","msg":"  - Calling tool convert_time with arguments: object with 3 field(s)"}
+{"class":"secret_scan","msg":"  - Scanning tool call arguments for secrets..."}
+{"class":"secret_scan","msg":"  - Scanning tool call arguments for secrets..."}
+{"class":"secret_scan","msg":"  > No secret found in arguments."}
+{"class":"call","msg":"  - Calling tool no_such_tool with arguments: object with 0 field(s)"}
+{"class":"trace","msg":"accept tcp 127.0.0.1:8811: use of closed network connection"}

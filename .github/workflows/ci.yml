@@ -47,13 +47,28 @@ jobs:
                    fab-equipment-secsgem:fab-equipment-sampled:0:0 \
                    jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1 \
                    nvidia-openshell-live:openshell-live-full:0:0 \
-                   nvidia-openshell-live:openshell-live-scrubbed:0:0; do
+                   nvidia-openshell-live:openshell-live-scrubbed:0:0 \
+                   agentgateway-live:agentgateway-live-full:0:0 agentgateway-live:agentgateway-live-scrubbed:0:0 \
+                   docker-mcp-live:docker-mcp-live-full:0:0 docker-mcp-live:docker-mcp-live-scrubbed:0:0 \
+                   contextforge-live:contextforge-live-full:0:0 contextforge-live:contextforge-live-scrubbed:0:0 \
+                   lasso-live:lasso-live-full:0:0 lasso-live:lasso-live-scrubbed:0:0 \
+                   bifrost-live:bifrost-live-full:0:0 bifrost-live:bifrost-live-scrubbed:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
             if [ "$got" = "$ws $wa" ]; then echo "ok    $n / $f: structural/attested $got"
             else echo "FAIL  $n / $f: got $got, expected $ws $wa"; bad=1; fi
+          done
+          # The claim THIRD-PARTY.md makes about each live capture: removing the
+          # refused calls' records changes no requirement result at all.
+          for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
+                   contextforge-live lasso-live bifrost-live; do
+            IFS=: read -r f n <<< "$g"; n=${n:-$f}
+            r() { python3 conformance.py --log "examples/third-party/$f-$1.jsonl" --adapter "adapters/$n.json" --json \
+                  | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
+            if [ "$(r full)" = "$(r scrubbed)" ]; then echo "ok    $f: scrubbed scores identically to full"
+            else echo "FAIL  $f: scrubbed and full differ"; bad=1; fi
           done
           exit $bad
 

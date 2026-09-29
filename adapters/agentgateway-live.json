@@ -1,0 +1,45 @@
+{
+  "name": "agentgateway-live",
+  "producer": "agentgateway 1.5.0 (Linux Foundation), standalone binary agentgateway-linux-amd64 (sha256 daca5cda...), its JSON log on stdout with config.logging.format: json",
+  "description": "A live capture, 2026-09-29: one MCP server (server-everything, stdio) behind the gateway, mcpAuthorization rules allowing `echo` and denying `get-sum` (which server-everything 2026.8.31 registers, dist/tools/index.js; tools/list through the gateway returned only `echo`). The allowed call succeeded; the denied call was refused. The gateway logs every MCP request with method, tool name and session. The refusal is logged exactly as a call to a tool that does not exist: same HTTP 400, same `Unknown tool` error, same `reason: MCP`, no policy field. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/gateway-capture.yml and capture/scripts/ on branch capture/gateways, run run-20260929T013114Z, on a GitHub-hosted runner. The raw record, the configuration used and the client's view of every call are committed there; examples/third-party/gateways-live/convert.py turns the record into this JSONL without adding any field except `class`.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [
+    "trace",
+    "stdio",
+    "request",
+    "request:notifications/initialized"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "note": "No hash, signature or chaining on any line. agentgateway-live-scrubbed.jsonl is this capture with the denied call's one line removed and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No sequence number and no record of lines dropped. Request lines carry a session id and a timestamp; neither is an ordinal over the delivered log."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The gateway logs what reaches its listener. Nothing states which routes, targets or tools it was in a position to observe during the interval."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The config is loaded from a watched file and logged as loaded, without a hash or version. A request line does not name the rule that decided it. The policy denial of get-sum is recorded as `error: mcp: Unknown tool: get-sum, reason: MCP` -- byte for byte the shape of the line for a tool that does not exist (`no-such-tool`, one line later). A reader of the log cannot tell a policy refusal from a typo."
+  },
+  "independence": {
+    "mode": "external_proxy",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "In this capture the client -- curl, not an agent -- used only HTTP to port 3000, and the log is the gateway process's stdout, which that port gives no access to. The admin listener is loopback-only (127.0.0.1:15000) and so reachable from any process on the same host; the config file is watched and reloaded. The gateway belongs to its operator, so the record is independent of the client, not of the operator.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/agentgateway/agentgateway",
+    "https://agentgateway.dev/docs/standalone/main/mcp/mcp-observability/",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/gateways/capture/runs/run-20260929T013114Z"
+  ]
+}
