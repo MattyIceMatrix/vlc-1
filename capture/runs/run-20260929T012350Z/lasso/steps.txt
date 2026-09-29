@@ -1,0 +1,34 @@
+$ pip install -q mcp-gateway[xetrack]
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+$ pip show mcp-gateway
+Name: mcp-gateway
+Version: 1.2.1
+Summary: A gateway for MCP servers
+Home-page: 
+Author: 
+Author-email: 
+License-Expression: MIT
+Location: /tmp/tmp.JBPl8qUGt4/.venv/lib/python3.12/site-packages
+Requires: beautifulsoup4, mcp, requests
+Required-by: 
+[exit 0]
+initialize: null
+Traceback (most recent call last):
+  File "<stdin>", line 26, in <module>
+  File "<stdin>", line 8, in send
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 44, in <module>
+BrokenPipeError: [Errno 32] Broken pipe
+done
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:20:20Z

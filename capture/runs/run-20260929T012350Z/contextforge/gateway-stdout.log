@@ -1,0 +1,73 @@
+2026-09-29T01:20:27 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:20:27 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+Traceback (most recent call last):
+  File "/tmp/tmp.679o30wqKj/.venv/bin/mcpgateway", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/cli.py", line 355, in main
+    uvicorn.main()  # pylint: disable=no-value-for-parameter
+    ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/click/core.py", line 1631, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/click/core.py", line 1552, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/click/core.py", line 1415, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/click/core.py", line 910, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/uvicorn/main.py", line 448, in main
+    run(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/uvicorn/main.py", line 620, in run
+    config.load_app()
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/uvicorn/config.py", line 434, in load_app
+    return import_from_string(self.app)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/main.py", line 76, in <module>
+    from mcpgateway import version as version_module
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/version.py", line 72, in <module>
+    from mcpgateway.auth import normalize_token_teams
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/auth.py", line 86, in <module>
+    from mcpgateway.auth_context import normalize_token_teams
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/auth_context.py", line 136, in <module>
+    from mcpgateway.db import EmailUser
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/db.py", line 46, in <module>
+    from mcpgateway.common.validators import SecurityValidator
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 373, in <module>
+    class SecurityValidator:
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 377, in SecurityValidator
+    DANGEROUS_HTML_PATTERN = settings.validation_dangerous_html_pattern  # Default: '<(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)\b|</*(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)>'
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4225, in __getattr__
+    return getattr(get_settings(), key)
+                   ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4168, in get_settings
+    cfg = Settings(**kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4051, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic_settings/main.py", line 262, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1778, in validate_security_combinations
+    self._enforce_secret_strength(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1700, in _enforce_secret_strength
+    raise SecurityConfigurationError(f"{field_name}: too short ({len(value)} chars, minimum {min_length}). {remediation}{hint}")
+mcpgateway.config.SecurityConfigurationError: default_user_password: too short (8 chars, minimum 12). Run 'python -m mcpgateway.scripts.init_secrets' to generate strong values, or use 'make init-secrets-patch-env' to write them directly into .env.

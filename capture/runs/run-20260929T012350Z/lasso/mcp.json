@@ -1,0 +1,2 @@
+{"mcpServers":{"mcp-gateway":{"command":"mcp-gateway","args":[],
+  "servers":{"filesystem":{"command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","/tmp/tmp.JBPl8qUGt4/root"]}}}}}

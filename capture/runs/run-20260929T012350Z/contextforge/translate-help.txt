@@ -1,0 +1,34 @@
+2026-09-29T01:20:25 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:20:25 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/translate.py", line 149, in <module>
+    from mcpgateway.services.logging_service import LoggingService
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/services/__init__.py", line 14, in <module>
+    from mcpgateway.services.gateway_service import GatewayError, GatewayService
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/services/gateway_service.py", line 86, in <module>
+    from mcpgateway.common.validators import SecurityValidator
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 373, in <module>
+    class SecurityValidator:
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 377, in SecurityValidator
+    DANGEROUS_HTML_PATTERN = settings.validation_dangerous_html_pattern  # Default: '<(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)\b|</*(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)>'
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4225, in __getattr__
+    return getattr(get_settings(), key)
+                   ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4168, in get_settings
+    cfg = Settings(**kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4051, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic_settings/main.py", line 262, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1778, in validate_security_combinations
+    self._enforce_secret_strength(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1700, in _enforce_secret_strength
+    raise SecurityConfigurationError(f"{field_name}: too short ({len(value)} chars, minimum {min_length}). {remediation}{hint}")
+mcpgateway.config.SecurityConfigurationError: default_user_password: too short (8 chars, minimum 12). Run 'python -m mcpgateway.scripts.init_secrets' to generate strong values, or use 'make init-secrets-patch-env' to write them directly into .env.

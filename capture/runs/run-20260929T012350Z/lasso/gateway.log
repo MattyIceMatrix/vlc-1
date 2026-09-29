@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/tmp.JBPl8qUGt4/.venv/bin/mcp-gateway", line 5, in <module>
+    from mcp_gateway.server import main
+  File "/tmp/tmp.JBPl8qUGt4/.venv/lib/python3.12/site-packages/mcp_gateway/server.py", line 21, in <module>
+    from mcp.server.fastmcp import Context
+  File "/tmp/tmp.JBPl8qUGt4/.venv/lib/python3.12/site-packages/mcp/server/fastmcp.py", line 16, in <module>
+    raise ModuleNotFoundError(_MESSAGE, name=__name__)
+ModuleNotFoundError: No module named 'mcp.server.fastmcp'. This is mcp 2.x, where FastMCP was renamed to MCPServer (from mcp.server.mcpserver import MCPServer) and other APIs changed; see the migration guide at https://py.sdk.modelcontextprotocol.io/v2/migration/#fastmcp-renamed-to-mcpserver or pin 'mcp<2' to keep running v1 code.

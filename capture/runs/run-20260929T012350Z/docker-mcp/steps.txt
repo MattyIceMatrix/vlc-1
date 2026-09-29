@@ -1,0 +1,76 @@
+tag=
+$ gh release download  -R docker/mcp-gateway -p docker-mcp-linux-amd64.tar.gz -D /tmp/tmp.n5aZ8Vy6TT
+release not found
+[exit 1]
+$ docker mcp version
+docker: unknown command: docker mcp
+
+Run 'docker --help' for more information
+[exit 1]
+$ docker pull mcp/time
+Using default tag: latest
+latest: Pulling from mcp/time
+dad67da3f26b: Pulling fs layer
+25244d620b74: Pulling fs layer
+ebb07cd170cc: Pulling fs layer
+d6413c75b31d: Pulling fs layer
+548fdd178e51: Pulling fs layer
+5192e4241b72: Pulling fs layer
+53073b8e396f: Pulling fs layer
+548fdd178e51: Waiting
+5192e4241b72: Waiting
+53073b8e396f: Waiting
+d6413c75b31d: Waiting
+25244d620b74: Verifying Checksum
+25244d620b74: Download complete
+ebb07cd170cc: Verifying Checksum
+ebb07cd170cc: Download complete
+dad67da3f26b: Verifying Checksum
+dad67da3f26b: Download complete
+d6413c75b31d: Verifying Checksum
+d6413c75b31d: Download complete
+548fdd178e51: Verifying Checksum
+548fdd178e51: Download complete
+53073b8e396f: Verifying Checksum
+53073b8e396f: Download complete
+5192e4241b72: Verifying Checksum
+5192e4241b72: Download complete
+dad67da3f26b: Pull complete
+25244d620b74: Pull complete
+ebb07cd170cc: Pull complete
+d6413c75b31d: Pull complete
+548fdd178e51: Pull complete
+5192e4241b72: Pull complete
+53073b8e396f: Pull complete
+Digest: sha256:9c46a918633fb474bf8035e3ee90ebac6bcf2b18ccb00679ac4c179cba0ebfcf
+Status: Downloaded newer image for mcp/time:latest
+docker.io/mcp/time:latest
+[exit 0]
+$ docker mcp gateway run --catalog=ci.yaml --servers=time --tools=time:get_current_time --secrets=/nonexistent.env (attempt a)
+gateway exited (a):
+unknown flag: --catalog
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+$ docker mcp gateway run --catalog=ci.yaml --servers=time --tools=time:get_current_time --secrets=/nonexistent.env --verify-signatures=false (attempt b)
+gateway exited (b):
+unknown flag: --catalog
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+$ docker mcp catalog init
+docker: unknown command: docker mcp
+
+Run 'docker --help' for more information
+[exit 1]
+$ docker mcp gateway run --servers=time --tools=get_current_time --secrets=/nonexistent.env --verify-signatures=false (attempt c)
+gateway exited (c):
+unknown flag: --servers
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+NO WORKING CONFIGURATION
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:20:10Z

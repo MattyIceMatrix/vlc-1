@@ -1,0 +1,554 @@
+[
+ {
+  "id": "logs_init",
+  "sequence": 1,
+  "applied_at": "2026-09-29 01:20:00.776226625+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_update_object_column_values",
+  "sequence": 2,
+  "applied_at": "2026-09-29 01:20:00.777154+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_add_parent_request_id_column",
+  "sequence": 3,
+  "applied_at": "2026-09-29 01:20:00.77750192+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_add_responses_output_column",
+  "sequence": 4,
+  "applied_at": "2026-09-29 01:20:00.777936158+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_add_cost_and_cache_debug_column",
+  "sequence": 5,
+  "applied_at": "2026-09-29 01:20:00.778296526+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_guardrail_debug_column",
+  "sequence": 6,
+  "applied_at": "2026-09-29 01:20:00.778596434+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_add_responses_input_history_column",
+  "sequence": 7,
+  "applied_at": "2026-09-29 01:20:00.778893307+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_init_add_number_of_retries_and_fallback_index_and_selected_key_and_virtual_key_columns",
+  "sequence": 8,
+  "applied_at": "2026-09-29 01:20:00.779395677+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_performance_indexes",
+  "sequence": 9,
+  "applied_at": "2026-09-29 01:20:00.779909074+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_performance_indexes_v2",
+  "sequence": 10,
+  "applied_at": "2026-09-29 01:20:00.78081085+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_update_timestamp_format",
+  "sequence": 11,
+  "applied_at": "2026-09-29 01:20:00.781164028+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_raw_request_column",
+  "sequence": 12,
+  "applied_at": "2026-09-29 01:20:00.781476504+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_init",
+  "sequence": 13,
+  "applied_at": "2026-09-29 01:20:00.783048912+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_cost_column",
+  "sequence": 14,
+  "applied_at": "2026-09-29 01:20:00.783518193+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_image_generation_output_column",
+  "sequence": 15,
+  "applied_at": "2026-09-29 01:20:00.783812462+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_image_generation_input_column",
+  "sequence": 16,
+  "applied_at": "2026-09-29 01:20:00.784138228+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_routing_rule_id_and_routing_rule_name_columns",
+  "sequence": 17,
+  "applied_at": "2026-09-29 01:20:00.784453529+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_virtual_key_columns",
+  "sequence": 18,
+  "applied_at": "2026-09-29 01:20:00.784810011+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_routing_engine_used_column",
+  "sequence": 19,
+  "applied_at": "2026-09-29 01:20:00.785163429+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_routing_engines_used_column",
+  "sequence": 20,
+  "applied_at": "2026-09-29 01:20:00.785475024+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_list_models_output_column",
+  "sequence": 21,
+  "applied_at": "2026-09-29 01:20:00.785752969+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_rerank_output_column",
+  "sequence": 22,
+  "applied_at": "2026-09-29 01:20:00.78607481+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_routing_engine_logs_column",
+  "sequence": 23,
+  "applied_at": "2026-09-29 01:20:00.78638938+00:00",
+  "status": "success"
+ },
+ {
+  "id": "async_jobs_init",
+  "sequence": 24,
+  "applied_at": "2026-09-29 01:20:00.787128403+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_metadata_column",
+  "sequence": 25,
+  "applied_at": "2026-09-29 01:20:00.787497284+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_metadata_column",
+  "sequence": 26,
+  "applied_at": "2026-09-29 01:20:00.787793476+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_histogram_composite_indexes",
+  "sequence": 27,
+  "applied_at": "2026-09-29 01:20:00.788226593+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_video_columns",
+  "sequence": 28,
+  "applied_at": "2026-09-29 01:20:00.788695763+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_provider_histogram_index",
+  "sequence": 29,
+  "applied_at": "2026-09-29 01:20:00.788929302+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_large_payload_columns",
+  "sequence": 30,
+  "applied_at": "2026-09-29 01:20:00.789312344+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_passthrough_request_body_column",
+  "sequence": 31,
+  "applied_at": "2026-09-29 01:20:00.78960424+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_passthrough_response_body_column",
+  "sequence": 32,
+  "applied_at": "2026-09-29 01:20:00.789909105+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_metadata_gin_index_v3",
+  "sequence": 33,
+  "applied_at": "2026-09-29 01:20:00.790137025+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_dashboard_enhancements",
+  "sequence": 34,
+  "applied_at": "2026-09-29 01:20:00.790395982+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_and_dashboard_performance_indexes",
+  "sequence": 35,
+  "applied_at": "2026-09-29 01:20:00.79062882+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_image_edit_input_column",
+  "sequence": 36,
+  "applied_at": "2026-09-29 01:20:00.790938222+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_image_variation_input_column",
+  "sequence": 37,
+  "applied_at": "2026-09-29 01:20:00.791213503+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_plugin_logs_column",
+  "sequence": 38,
+  "applied_at": "2026-09-29 01:20:00.7915266+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_alias_column",
+  "sequence": 39,
+  "applied_at": "2026-09-29 01:20:00.791817014+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_governance_context_columns",
+  "sequence": 40,
+  "applied_at": "2026-09-29 01:20:00.792374947+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_matviews_with_governance_columns",
+  "sequence": 41,
+  "applied_at": "2026-09-29 01:20:00.792669166+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_ocr_output_column",
+  "sequence": 42,
+  "applied_at": "2026-09-29 01:20:00.793025879+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_request_id_column",
+  "sequence": 43,
+  "applied_at": "2026-09-29 01:20:00.793456962+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_has_object_column",
+  "sequence": 44,
+  "applied_at": "2026-09-29 01:20:00.793821066+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_has_object_column",
+  "sequence": 45,
+  "applied_at": "2026-09-29 01:20:00.794147113+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_attempt_trail_column",
+  "sequence": 46,
+  "applied_at": "2026-09-29 01:20:00.794470816+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_selected_prompt_columns",
+  "sequence": 47,
+  "applied_at": "2026-09-29 01:20:00.795120006+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_user_name_column",
+  "sequence": 48,
+  "applied_at": "2026-09-29 01:20:00.795519943+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_ocr_input_column",
+  "sequence": 49,
+  "applied_at": "2026-09-29 01:20:00.795924096+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_stop_reason_column",
+  "sequence": 50,
+  "applied_at": "2026-09-29 01:20:00.796891706+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_safe_jsonb_function",
+  "sequence": 51,
+  "applied_at": "2026-09-29 01:20:00.797342509+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_dac_columns",
+  "sequence": 52,
+  "applied_at": "2026-09-29 01:20:00.797723007+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_cluster_governance_columns",
+  "sequence": 53,
+  "applied_at": "2026-09-29 01:20:00.798147851+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_inc_number_column",
+  "sequence": 54,
+  "applied_at": "2026-09-29 01:20:00.79846212+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_filter_users_matview",
+  "sequence": 55,
+  "applied_at": "2026-09-29 01:20:00.798703371+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_multi_team_business_unit_columns",
+  "sequence": 56,
+  "applied_at": "2026-09-29 01:20:00.799140804+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_multi_team_bu_gin_indexes_v1",
+  "sequence": 57,
+  "applied_at": "2026-09-29 01:20:00.799382695+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_filter_team_bu_matviews_multivalue",
+  "sequence": 58,
+  "applied_at": "2026-09-29 01:20:00.799652748+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_customer_array_columns",
+  "sequence": 59,
+  "applied_at": "2026-09-29 01:20:00.799996942+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_customer_array_gin_indexes_v1",
+  "sequence": 60,
+  "applied_at": "2026-09-29 01:20:00.800227326+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_filter_customers_matview_multivalue",
+  "sequence": 61,
+  "applied_at": "2026-09-29 01:20:00.800466102+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_canonical_model_columns_v2",
+  "sequence": 62,
+  "applied_at": "2026-09-29 01:20:00.800772139+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_redaction_mapping_column",
+  "sequence": 63,
+  "applied_at": "2026-09-29 01:20:00.801051236+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_redaction_mapping_column",
+  "sequence": 64,
+  "applied_at": "2026-09-29 01:20:00.801264835+00:00",
+  "status": "success"
+ },
+ {
+  "id": "webhook_deliveries_init",
+  "sequence": 65,
+  "applied_at": "2026-09-29 01:20:00.802020123+00:00",
+  "status": "success"
+ },
+ {
+  "id": "async_jobs_add_webhook_endpoint_id_column",
+  "sequence": 66,
+  "applied_at": "2026-09-29 01:20:00.802322685+00:00",
+  "status": "success"
+ },
+ {
+  "id": "async_jobs_add_request_id_column",
+  "sequence": 67,
+  "applied_at": "2026-09-29 01:20:00.802616764+00:00",
+  "status": "success"
+ },
+ {
+  "id": "webhook_deliveries_add_request_id_column",
+  "sequence": 68,
+  "applied_at": "2026-09-29 01:20:00.80293549+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_content_hidden_column",
+  "sequence": 69,
+  "applied_at": "2026-09-29 01:20:00.803234496+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_server_side_fallback_model_column",
+  "sequence": 70,
+  "applied_at": "2026-09-29 01:20:00.803524068+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_billing_fidelity_columns",
+  "sequence": 71,
+  "applied_at": "2026-09-29 01:20:00.803901222+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_user_agent_column",
+  "sequence": 72,
+  "applied_at": "2026-09-29 01:20:00.804591853+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_user_agent_column",
+  "sequence": 73,
+  "applied_at": "2026-09-29 01:20:00.804993823+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_matviews_with_app_column",
+  "sequence": 74,
+  "applied_at": "2026-09-29 01:20:00.805260942+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_endpoint_columns",
+  "sequence": 75,
+  "applied_at": "2026-09-29 01:20:00.80570167+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_plugin_logs_column",
+  "sequence": 76,
+  "applied_at": "2026-09-29 01:20:00.80601019+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_video_edit_input_column",
+  "sequence": 77,
+  "applied_at": "2026-09-29 01:20:00.806314565+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_upstream_and_overhead_latency_columns",
+  "sequence": 78,
+  "applied_at": "2026-09-29 01:20:00.806663656+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_complexity_routing_columns",
+  "sequence": 79,
+  "applied_at": "2026-09-29 01:20:00.807093778+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_session_id_column",
+  "sequence": 80,
+  "applied_at": "2026-09-29 01:20:00.807509449+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_routing_metadata_column",
+  "sequence": 81,
+  "applied_at": "2026-09-29 01:20:00.807835907+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_batch_debug_column",
+  "sequence": 82,
+  "applied_at": "2026-09-29 01:20:00.808126731+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_cost_breakdown_columns",
+  "sequence": 83,
+  "applied_at": "2026-09-29 01:20:00.808490844+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_recreate_matviews_with_cost_breakdown",
+  "sequence": 84,
+  "applied_at": "2026-09-29 01:20:00.808739816+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_overhead_breakdown_column",
+  "sequence": 85,
+  "applied_at": "2026-09-29 01:20:00.809051622+00:00",
+  "status": "success"
+ },
+ {
+  "id": "webhook_deliveries_add_filter_indexes_v1",
+  "sequence": 86,
+  "applied_at": "2026-09-29 01:20:00.80949253+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_video_debug_column",
+  "sequence": 87,
+  "applied_at": "2026-09-29 01:20:00.809790475+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_project_columns",
+  "sequence": 88,
+  "applied_at": "2026-09-29 01:20:00.81012869+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_project_columns",
+  "sequence": 89,
+  "applied_at": "2026-09-29 01:20:00.810445283+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_served_model_column",
+  "sequence": 90,
+  "applied_at": "2026-09-29 01:20:00.810758921+00:00",
+  "status": "success"
+ },
+ {
+  "id": "logs_add_tool_call_names_column",
+  "sequence": 91,
+  "applied_at": "2026-09-29 01:20:00.811077577+00:00",
+  "status": "success"
+ },
+ {
+  "id": "mcp_tool_logs_add_governance_snapshots",
+  "sequence": 92,
+  "applied_at": "2026-09-29 01:20:00.811768719+00:00",
+  "status": "success"
+ }
+]

@@ -1,0 +1,142 @@
+$ pip install -q mcp-contextforge-gateway[plugins]
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+$ pip show mcp-contextforge-gateway
+Name: mcp-contextforge-gateway
+Version: 1.0.11
+Summary: ContextForge AI Gateway — an AI gateway, registry, and proxy for MCP, A2A, and REST/gRPC APIs. Exposes a unified control plane with centralized governance, discovery, and observability. Optimizes agent and tool calling, and supports plugins.
+Home-page: https://ibm.github.io/mcp-context-forge/
+Author: 
+Author-email: Mihai Criveti <redacted@ibm.com>
+License-Expression: Apache-2.0
+Location: /tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages
+Requires: alembic, argon2-cffi, base58, brotli, click, cpex, cryptography, fastapi, filelock, gunicorn, h2, httpx, idna, jinja2, jq, jsonpath-ng, jsonschema, Mako, mcp, mcp-types, msgpack, orjson, parse, prometheus-fastapi-instrumentator, prometheus_client, psutil, pydantic, pydantic-settings, pyjwt, python-json-logger, python-multipart, PyYAML, redis, requests, requests-oauthlib, sqlalchemy, sse-starlette, starlette, starlette-compress, typer, urllib3, uvicorn
+Required-by: 
+[exit 0]
+$ python3 -m mcpgateway.scripts.init_secrets
+✅  Secrets written to .env.secrets
+
+Next steps:
+  1. Review the generated secrets in .env.secrets
+  2. Copy JWT_SECRET_KEY and AUTH_ENCRYPTION_SECRET into your .env file.
+     Or run: python -m mcpgateway.scripts.init_secrets --patch-env .env
+  3. IMPORTANT: never commit .env.secrets to Git.
+[exit 0]
+gateway not answering
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/main.py", line 76, in <module>
+    from mcpgateway import version as version_module
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/version.py", line 72, in <module>
+    from mcpgateway.auth import normalize_token_teams
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/auth.py", line 86, in <module>
+    from mcpgateway.auth_context import normalize_token_teams
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/auth_context.py", line 136, in <module>
+    from mcpgateway.db import EmailUser
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/db.py", line 46, in <module>
+    from mcpgateway.common.validators import SecurityValidator
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 373, in <module>
+    class SecurityValidator:
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/common/validators.py", line 377, in SecurityValidator
+    DANGEROUS_HTML_PATTERN = settings.validation_dangerous_html_pattern  # Default: '<(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)\b|</*(script|iframe|object|embed|link|meta|base|form|img|svg|video|audio|source|track|area|map|canvas|applet|frame|frameset|html|head|body|style)>'
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4225, in __getattr__
+    return getattr(get_settings(), key)
+                   ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4168, in get_settings
+    cfg = Settings(**kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4051, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic_settings/main.py", line 262, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1778, in validate_security_combinations
+    self._enforce_secret_strength(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1700, in _enforce_secret_strength
+    raise SecurityConfigurationError(f"{field_name}: too short ({len(value)} chars, minimum {min_length}). {remediation}{hint}")
+mcpgateway.config.SecurityConfigurationError: default_user_password: too short (8 chars, minimum 12). Run 'python -m mcpgateway.scripts.init_secrets' to generate strong values, or use 'make init-secrets-patch-env' to write them directly into .env.
+translate bridge not answering
+2026-09-29T01:23:27 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:23:27 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/utils/create_jwt_token.py", line 71, in <module>
+    DEFAULT_ALGO: str = settings.jwt_algorithm
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4225, in __getattr__
+    return getattr(get_settings(), key)
+                   ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4168, in get_settings
+    cfg = Settings(**kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4051, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic_settings/main.py", line 262, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1778, in validate_security_combinations
+    self._enforce_secret_strength(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1700, in _enforce_secret_strength
+    raise SecurityConfigurationError(f"{field_name}: too short ({len(value)} chars, minimum {min_length}). {remediation}{hint}")
+mcpgateway.config.SecurityConfigurationError: default_user_password: too short (8 chars, minimum 12). Run 'python -m mcpgateway.scripts.init_secrets' to generate strong values, or use 'make init-secrets-patch-env' to write them directly into .env.
+2026-09-29T01:23:27 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:23:27 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/utils/create_jwt_token.py", line 71, in <module>
+    DEFAULT_ALGO: str = settings.jwt_algorithm
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4225, in __getattr__
+    return getattr(get_settings(), key)
+                   ^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4168, in get_settings
+    cfg = Settings(**kwargs)
+          ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 4051, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic_settings/main.py", line 262, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1778, in validate_security_combinations
+    self._enforce_secret_strength(
+  File "/tmp/tmp.679o30wqKj/.venv/lib/python3.12/site-packages/mcpgateway/config.py", line 1700, in _enforce_secret_strength
+    raise SecurityConfigurationError(f"{field_name}: too short ({len(value)} chars, minimum {min_length}). {remediation}{hint}")
+mcpgateway.config.SecurityConfigurationError: default_user_password: too short (8 chars, minimum 12). Run 'python -m mcpgateway.scripts.init_secrets' to generate strong values, or use 'make init-secrets-patch-env' to write them directly into .env.
+token minted: ; limited token: 
+register: 
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/json/decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/json/decoder.py", line 356, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+echo tool registered as: <not found>
+rpc allowed: curl: (7) Failed to connect to 127.0.0.1 port 4444 after 0 ms: Couldn't connect to server  HTTP 000 
+rpc blocked-pii: curl: (7) Failed to connect to 127.0.0.1 port 4444 after 0 ms: Couldn't connect to server  HTTP 000 
+rpc denied-scope: curl: (7) Failed to connect to 127.0.0.1 port 4444 after 0 ms: Couldn't connect to server  HTTP 000 
+done
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:23:39Z

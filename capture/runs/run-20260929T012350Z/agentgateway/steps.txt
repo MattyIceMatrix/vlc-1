@@ -1,0 +1,49 @@
+$ gh release view -R agentgateway/agentgateway --json tagName,publishedAt,assets -q {tag:.tagName,date:.publishedAt,assets:[.assets[].name]}
+{"assets":["agctl-darwin-arm64","agctl-darwin-arm64.sha256","agctl-linux-amd64","agctl-linux-amd64.sha256","agctl-linux-arm64","agctl-linux-arm64.sha256","agctl-windows-amd64.exe","agctl-windows-amd64.exe.sha256","agentgateway-darwin-arm64","agentgateway-darwin-arm64.sha256","agentgateway-linux-amd64","agentgateway-linux-amd64.sha256","agentgateway-linux-arm64","agentgateway-linux-arm64.sha256","agentgateway-windows-amd64.exe","agentgateway-windows-amd64.exe.sha256"],"date":"2026-08-27T18:01:08Z","tag":"v1.5.0"}
+[exit 0]
+tag=v1.5.0 asset=agentgateway-linux-amd64
+$ gh release download v1.5.0 -R agentgateway/agentgateway -p agentgateway-linux-amd64 -D /tmp/tmp.bCPEZE9V9m
+[exit 0]
+$ /tmp/tmp.bCPEZE9V9m/agentgateway-linux-amd64 --version
+{
+  "version": "1.5.0",
+  "git_revision": "fe6732474a96a0363dfb9822859af4e9bab360fa",
+  "rust_version": "1.98.0",
+  "build_profile": "release",
+  "build_target": "x86_64-unknown-linux-musl"
+}
+[exit 0]
+$ /tmp/tmp.bCPEZE9V9m/agentgateway-linux-amd64 --help
+Usage: agentgateway-linux-amd64 [OPTIONS] [COMMAND]
+
+Commands:
+  oneshot  Run agentgateway as a subprocess and exec a command when ready
+  import   Import standalone configuration from another gateway
+  migrate  Migrate deprecated fields in a local agentgateway configuration
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -c, --config <config>  Use config from bytes
+  -f, --file <file>      Use config from file
+      --validate-only    
+  -V                     Print version (as a simple version string)
+      --version          Print version (as JSON)
+  -h, --help             Print help
+[exit 0]
+$ npm view @modelcontextprotocol/server-everything version
+2026.8.31
+[exit 0]
+gateway up with config-a (pid 2391)
+rpc initialize -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"logging":{},"completions":{},"prompts":{"listChanged":true},"resources":{"subscribe":true,"listChanged":true},"tools":{"listChanged":true}},"serverInfo":{"name":"mcp-servers/everything","title":"Everything Reference Server","version":"2.0.0"},"instructions":"# Everything Server – Server Instructions\n\nAudience: These instructions are written for an LLM or autonomous agent integrating with th
+session id: 871d31e1-6a36-4e4d-a9a3-923ac115bcfb
+rpc initialized -> HTTP 202: 
+rpc tools-list -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","title":"Echo Tool","description":"Echoes back the input string","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"message":{"type":"string","description":"Message to echo"}},"required":["message"]},"annotations":{"readOnlyHint":true,"destructiveHint":false,"idempotentHint":true,"openWorldHint":false}}]}}  
+rpc initialize -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"logging":{},"completions":{},"prompts":{"listChanged":true},"resources":{"subscribe":true,"listChanged":true},"tools":{"listChanged":true}},"serverInfo":{"name":"mcp-servers/everything","title":"Everything Reference Server","version":"2.0.0"},"instructions":"# Everything Server – Server Instructions\n\nAudience: These instructions are written for an LLM or autonomous agent integrating with th
+session id: ef20c34d-1a60-499a-ad98-bdaf08a4a4d8
+rpc initialized -> HTTP 202: 
+rpc tools-list -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","title":"Echo Tool","description":"Echoes back the input string","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"message":{"type":"string","description":"Message to echo"}},"required":["message"]},"annotations":{"readOnlyHint":true,"destructiveHint":false,"idempotentHint":true,"openWorldHint":false}}]}}  
+rpc allowed-echo -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"Echo: vlc1 allowed"}]}}  
+rpc denied-get-sum -> HTTP 400: {"jsonrpc":"2.0","id":4,"error":{"code":-32602,"message":"Unknown tool: get-sum"}}
+rpc nonexistent -> HTTP 400: {"jsonrpc":"2.0","id":5,"error":{"code":-32602,"message":"Unknown tool: no-such-tool"}}
+gateway.log: 33 lines
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:20:14Z
