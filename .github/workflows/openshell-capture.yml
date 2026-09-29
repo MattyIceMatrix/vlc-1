@@ -1,0 +1,53 @@
+name: openshell-capture
+# Live capture of NVIDIA OpenShell's OCSF security log, to replace the
+# documentation-based VLC-1 score in THIRD-PARTY.md. Runs ONLY on this branch,
+# ONLY on a GitHub-hosted runner (never a maintainer's machine). The runner
+# installs OpenShell, runs one sandbox with one allowed and one denied
+# connection, and commits what it observed to capture/ on this branch, because
+# job logs and artifacts are not readable from the maintainer's tooling.
+on:
+  push:
+    branches: [capture/openshell-ocsf]
+    paths: ['.github/workflows/openshell-capture.yml', 'capture/REQUEST']
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: capture
+        shell: bash
+        run: |
+          set -u
+          O=capture/run-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$O"
+          note() { echo "$*" | tee -a "$O/steps.txt"; }
+          run() { note "\$ $*"; ( "$@" ) >>"$O/steps.txt" 2>&1; note "[exit $?]"; }
+          curl -fsSL https://raw.githubusercontent.com/NVIDIA/OpenShell/main/install.sh -o "$O/install.sh" || note "install.sh download failed"
+          sha256sum "$O/install.sh" | tee "$O/install.sh.sha256"
+          run sh "$O/install.sh"
+          export PATH="$HOME/.local/bin:$HOME/.openshell/bin:$HOME/.cargo/bin:$PATH"
+          run openshell --version
+          for c in "" sandbox "sandbox create" "sandbox exec" settings logs policy; do
+            note "----- openshell $c --help"; ( openshell $c --help ) >>"$O/help.txt" 2>&1; echo >>"$O/help.txt"
+          done
+          run docker --version
+          run openshell settings set --global --key ocsf_json_enabled --value true
+          run timeout 600 openshell sandbox create --name vlccap -- sh -c 'curl -s -m 10 https://api.github.com/zen; echo; curl -s -m 10 https://example.com >/dev/null; echo done; sleep 20'
+          sleep 15
+          run openshell sandbox list
+          run openshell logs vlccap
+          openshell logs vlccap > "$O/openshell-logs.txt" 2>&1 || true
+          # Where is the OCSF file, and can a process inside the sandbox write to it?
+          for cmd in "ls -la /var/log/" "cat /var/log/openshell-ocsf.*.log" "sh -c 'echo probe >> /var/log/openshell-ocsf.$(date -u +%Y-%m-%d).log && echo WRITABLE || echo NOT_WRITABLE'"; do
+            run openshell sandbox exec vlccap -- sh -c "$cmd"
+          done
+          for id in $(docker ps -aq 2>/dev/null); do
+            note "----- container $id"; docker inspect --format '{{.Name}} {{.Config.Image}}' "$id" >>"$O/steps.txt" 2>&1
+            docker cp "$id:/var/log/." "$O/varlog-$id" >>"$O/steps.txt" 2>&1 || true
+          done
+          find "$O" -name 'openshell-ocsf*' -exec ls -la {} \; | tee -a "$O/steps.txt"
+          run openshell sandbox delete vlccap
+          git config user.name "openshell-capture"; git config user.email "actions@users.noreply.github.com"
+          git add capture/ && git commit -q -m "capture: OpenShell OCSF run $(basename "$O")" && git push -q origin HEAD:capture/openshell-ocsf
