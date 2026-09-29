@@ -1,0 +1,40 @@
+{
+  "name": "lasso-live",
+  "producer": "Lasso MCP Gateway 1.2.1 (mcp-gateway, PyPI) with the basic guardrail and xetrack tracing, mcp SDK pinned to 1.30.0; the xetrack events table",
+  "description": "A live capture, 2026-09-29: server-filesystem wrapped by the gateway over stdio. Five calls. The basic guardrail masked a GitHub-token-shaped string in one response, as documented. The trace stores the masked text with isError 0 and no marker field that anything was changed (only structuredContent is null on that row); the note that it was is only on stderr. A call that failed inside the gateway (read_text_file, whose optional arguments the gateway re-declares as required) left no trace row at all. Only responses are traced; requests are not. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/gateway-capture.yml and capture/scripts/ on branch capture/gateways, run run-20260929T013114Z, on a GitHub-hosted runner. The raw record, the configuration used and the client's view of every call are committed there; examples/third-party/gateways-live/convert.py turns the record into this JSONL without adding any field except `class`. With the current mcp SDK (2.x) the gateway did not start (ModuleNotFoundError: mcp.server.fastmcp; run run-20260929T012350Z on the capture branch); this run pins mcp<2.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "No hash, signature or chaining. lasso-live-scrubbed.jsonl removes the masked call's row and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "Each row has a random call_id (uuid4) and a timestamp; no ordinal and no drop count. The failed read_text_file call is absent and nothing marks the absence."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "Nothing states which servers and tools were proxied. The get_metadata tool reports it to the client, not to the trace."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Which guardrail plugins were enabled is logged on stderr at start-up, not in the trace. A masked response is recorded as if it were the tool's output."
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The gateway is a stdio subprocess started by the agent's MCP host and writes its trace to a file path taken from the host's environment, with the host's permissions. The host can stop it, point it elsewhere or edit the file.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/lasso-security/mcp-gateway",
+    "https://pypi.org/project/mcp-gateway/1.2.1/",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/gateways/capture/runs/run-20260929T013114Z"
+  ]
+}

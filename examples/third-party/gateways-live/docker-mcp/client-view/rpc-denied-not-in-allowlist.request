@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"convert_time","arguments":{"source_timezone":"UTC","time":"12:00","target_timezone":"Europe/Berlin"}}}

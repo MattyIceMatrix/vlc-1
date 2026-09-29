@@ -1,0 +1,40 @@
+{
+  "name": "bifrost-live",
+  "producer": "Bifrost 2.2.3 (Maxim AI; npx @maximhq/bifrost 1.6.3), open-source build, no provider key and no authentication configured; the mcp_tool_logs table read through GET /api/mcp-logs",
+  "description": "A live capture, 2026-09-29: server-filesystem as an MCP client with a one-tool allow-list. The allowed call succeeded; the call outside the allow-list was refused and, unlike the other gateways scored, recorded as a refusal (`not permitted (not in client's ToolsToExecute allow-list)`), distinct from a nonexistent tool. Then, on the same unauthenticated port the tool calls use, DELETE /api/mcp-logs with that record's id returned `MCP tool logs deleted successfully`; the record was gone and /api/logs/dropped still read 0. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/gateway-capture.yml and capture/scripts/ on branch capture/gateways, run run-20260929T013114Z, on a GitHub-hosted runner. The raw record, the configuration used and the client's view of every call are committed there; examples/third-party/gateways-live/convert.py turns the record into this JSONL without adding any field except `class`. bifrost-live-scrubbed.jsonl is not an edit: it is the table as Bifrost served it after that delete.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "No hash, signature or chaining on rows; ids are random UUIDs."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "Bifrost counts dropped log writes and serves the count at /api/logs/dropped -- a real loss counter, out of band. A record deleted through the API is not counted: after the delete the counter read {\"dropped_requests\":0}."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "Nothing in the record states which MCP clients and tools were configured."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Refusals carry a reason naming the allow-list, which is better than the others. The allow-list itself is configuration, not recorded with a version or hash."
+  },
+  "independence": {
+    "mode": "external_proxy",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "With no admin authentication configured -- the capture also set disable_auth_on_inference -- the endpoint that deletes tool-call records was served on the same port and to the same caller as the endpoint that executes tools, and the caller removed the record of its own refused call. Whether authentication, once configured, covers DELETE /api/mcp-logs was not tested and is not claimed.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/maximhq/bifrost",
+    "https://github.com/maximhq/bifrost/blob/main/docs/mcp/filtering.mdx",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/gateways/capture/runs/run-20260929T013114Z"
+  ]
+}

@@ -1,0 +1,9 @@
+plugin_settings: {plugin_timeout: 30, fail_on_plugin_error: false}
+plugins:
+  - name: PIIFilterPlugin
+    kind: cpex_pii_filter.PIIFilterPlugin
+    hooks: [tool_pre_invoke]
+    mode: enforce
+    priority: 50
+    conditions: []
+    config: {detect_ssn: true, block_on_detection: true, log_detections: true, include_detection_details: true}
