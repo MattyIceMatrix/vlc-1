@@ -759,3 +759,24 @@ VLC-V-3. Fixed for L3-1a, L3-6 and L4-1. One residual case is disclosed as an
 expected failure in §18: a relabelled record that no other role claims still
 reaches structural L3. It is bounded by `adapter_sha256` in every report.
 Control: §18.
+
+### EXT-022 — closed in the sensor, 2026-09-29
+
+The reference sensor now chains its HEAD record (octa-sentinel `269b176`):
+HEAD names the head it closes (`"head"`) and carries its own `h`. The four
+reference journals were re-captured on 2026-09-29 on live eBPF tracepoints and
+replace the old ones; the originals are kept byte-for-byte in
+`examples/reference-impl/pre-EXT-022/` and are scored with
+`adapters/observer-legacy.json`, where they stay at L0. `adapters/observer.json`
+now declares the end marker `self_bound: true`, `head_field: "head"`.
+
+| Journal | pre-EXT-022 capture | re-capture, sealed HEAD |
+|---|---|---|
+| kernel-witness-L5 | L0 / L0 | **L4 / L5** (85 events, 0 lost) |
+| kernel-witness-with-loss-L5 | L0 / L0 | **L4 / L5** (60 delivered, 1,832 declared lost in-chain) |
+| kernel-witness-honest-session | refused as witness | accepted under `--require-agreement` |
+| kernel-witness-spoofed-session | — | substitution signature raised |
+
+`selftest.sh` §17 now runs the EXT-022 attack against both: the old capture
+needs an independently held head to be caught, the sealed capture is caught on
+the log alone.
