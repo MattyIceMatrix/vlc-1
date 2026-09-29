@@ -1,0 +1,164 @@
+$ sh capture/run-20260929T001808Z/install.sh
+openshell: resolving latest version...
+openshell: downloading v0.1.2 release checksums...
+openshell: selected openshell_0.1.2-1_amd64.deb
+openshell: downloading openshell_0.1.2-1_amd64.deb...
+openshell: verifying checksum...
+openshell: installing openshell_0.1.2-1_amd64.deb...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  openshell
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+Need to get 0 B/74.5 MB of archives.
+After this operation, 0 B of additional disk space will be used.
+Get:1 /tmp/tmp.tWp5EZ9KYY/openshell_0.1.2-1_amd64.deb openshell amd64 0.1.2-1 [74.5 MB]
+Selecting previously unselected package openshell.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 202190 files and directories currently installed.)
+Preparing to unpack .../openshell_0.1.2-1_amd64.deb ...
+Unpacking openshell (0.1.2-1) ...
+Setting up openshell (0.1.2-1) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+openshell: installed openshell package from v0.1.2
+openshell: restarting openshell-gateway user service as runner...
+Created symlink /home/runner/.config/systemd/user/default.target.wants/openshell-gateway.service → /usr/lib/systemd/user/openshell-gateway.service.
+openshell: registering local gateway as runner...
+✓ Gateway 'openshell' added and set as active
+  Endpoint: https://127.0.0.1:17670
+  Type: local
+✓ TLS certificates present
+openshell: waiting for local gateway listener to become reachable...
+openshell: local gateway listener is reachable
+openshell: waiting for openshell status to report connected...
+openshell: openshell status reports connected
+[exit 0]
+$ openshell --version
+openshell 0.1.2
+[exit 0]
+----- openshell  --help
+----- openshell sandbox --help
+----- openshell sandbox create --help
+----- openshell sandbox exec --help
+----- openshell settings --help
+----- openshell logs --help
+----- openshell policy --help
+$ docker --version
+Docker version 28.0.4, build b8034c0
+[exit 0]
+$ openshell settings set --global --key ocsf_json_enabled --value true
+Error:   × global setting updates require confirmation; pass --yes in non-interactive
+  │ mode
+
+[exit 1]
+$ timeout 600 openshell sandbox create --name vlccap -- sh -c curl -s -m 10 https://api.github.com/zen; echo; curl -s -m 10 https://example.com >/dev/null; echo done; sleep 20
+
+Created sandbox: vlccap
+
+  [0.0s] Requesting compute...
+[0.0s] Sandbox allocated
+[0.0s] Pulling image nvcr.io/nvidia/base/ubuntu:24.04
+[0.0s] Pulling image nvcr.io/nvidia/base/ubuntu:24.04
+[0.9s] Pulling image Pulling from nvidia/base/ubuntu 24.04
+[1.2s] Pulling image Pulling fs layer e51aee9c82ec
+[1.2s] Pulling image Pulling fs layer 606647e99e77
+[1.4s] Pulling image Downloading 606647e99e77 (63 KB/6 MB)
+[1.4s] Pulling image Downloading e51aee9c82ec (303 KB/28 MB)
+[1.4s] Pulling image Verifying Checksum 606647e99e77
+[1.4s] Pulling image Download complete 606647e99e77
+[1.5s] Pulling image Verifying Checksum e51aee9c82ec
+[1.5s] Pulling image Download complete e51aee9c82ec
+[1.5s] Pulling image Extracting e51aee9c82ec (320 KB/28 MB)
+[1.6s] Pulling image Extracting e51aee9c82ec (5 MB/28 MB)
+[1.7s] Pulling image Extracting e51aee9c82ec (9 MB/28 MB)
+[1.8s] Pulling image Extracting e51aee9c82ec (15 MB/28 MB)
+[1.9s] Pulling image Extracting e51aee9c82ec (23 MB/28 MB)
+[2.1s] Pulling image Extracting e51aee9c82ec (24 MB/28 MB)
+[2.2s] Pulling image Extracting e51aee9c82ec (26 MB/28 MB)
+[2.4s] Pulling image Extracting e51aee9c82ec (28 MB/28 MB)
+[2.4s] Pulling image Extracting e51aee9c82ec (28 MB/28 MB)
+[2.5s] Pulling image Pull complete e51aee9c82ec
+[2.5s] Pulling image Extracting 606647e99e77 (64 KB/6 MB)
+[2.6s] Pulling image Extracting 606647e99e77 (2 MB/6 MB)
+[2.7s] Pulling image Extracting 606647e99e77 (6 MB/6 MB)
+[2.7s] Pulling image Pull complete 606647e99e77
+[2.7s] Pulling image Digest: sha256:c280ee89f8bfcbdaba6179ad4347f60c509e841cbe63eb93002f01bf70e0819c
+[2.7s] Pulling image Status: Downloaded newer image for nvcr.io/nvidia/base/ubuntu:24.04
+[2.7s] Image pulled
+[2.8s] Starting sandbox Container created
+
+done
+sh: 1: curl: not found
+sh: 1: curl: not found
+[exit 0]
+$ openshell sandbox list
+NAME    CREATED              PHASE
+vlccap  2026-09-29 00:18:20  Completed
+[exit 0]
+$ openshell logs vlccap
+[1790641100.508] [gateway] [INFO ] [openshell_server::grpc::sandbox] CreateSandbox request completed successfully
+[1790641103.561] [sandbox] [INFO ] [openshell_supervisor] Starting sandbox supervision command=["sh", "-c", "curl -s -m 10 https://api.github.com/zen; echo; curl -s -m 10 https://example.com >/dev/null; echo done; sleep 20"]
+[1790641103.654] [gateway] [INFO ] [openshell_server::grpc::policy] UpdateConfig: backfilled spec.policy from sandbox-discovered policy
+[1790641103.658] [gateway] [INFO ] [openshell_server::grpc::policy] GetSandboxProviderEnvironment request completed successfully
+[1790641103.696] [gateway] [INFO ] [openshell_server::supervisor_session] supervisor session: accepted
+[1790641103.699] [gateway] [INFO ] [openshell_server::grpc::policy] ReportPolicyStatus: sandbox reported policy load result
+[1790641103.792] [gateway] [INFO ] [openshell_server::supervisor_session] supervisor session: relay opened successfully
+[1790641103.792] [gateway] [INFO ] [openshell_server::supervisor_session] relay stream: claimed pending relay, bridging
+[1790641103.641] [sandbox] [INFO ] [openshell_supervisor] Fetching sandbox policy via gRPC endpoint=https://127.0.0.1:17670 sandbox=vlccap sandbox_id=deae6642-7844-4ecf-bbf2-6cc121d10fa4
+[1790641103.650] [sandbox] [OCSF ] [ocsf] CONFIG:DISCOVERY [INFO] Server returned no policy; attempting local discovery
+[1790641103.659] [sandbox] [INFO ] [openshell_supervisor_network::opa] Configured OPA runtime binary identity mode require_binary_identity=true source=proto
+[1790641103.659] [sandbox] [OCSF ] [ocsf] CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]
+[1790641103.674] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary attached backend=openshell-sandbox
+[1790641103.675] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary enforcement confirmed backend=openshell-sandbox
+[1790641103.676] [sandbox] [OCSF ] [ocsf] CONFIG:ENABLED [INFO] TLS termination enabled: ephemeral CA generated
+[1790641103.676] [sandbox] [OCSF ] [ocsf] CONFIG:READY [INFO] Policy DNS connected to isolation boundary
+[1790641103.676] [sandbox] [OCSF ] [ocsf] NET:LISTEN [INFO] 127.0.0.1:3128
+[1790641103.677] [sandbox] [WARN ] [openshell_supervisor_network::proxy] host.openshell.internal maps to a non-link-local IP; trusted-gateway SSRF exemption disabled ip=127.0.0.1
+[1790641103.691] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary agent started backend=openshell-sandbox
+[1790641103.692] [sandbox] [OCSF ] [ocsf] SSH:LISTEN [INFO]
+[1790641103.700] [sandbox] [OCSF ] [ocsf] CONFIG:LOADED [INFO] Acknowledged initial policy revision as loaded [version:1] [hash:a45a8ff3564f00ae26cbd66f1131f37eedd8b54a66fbfec103d65a204c19c6e8]
+[1790641103.702] [sandbox] [OCSF ] [ocsf] NET:OPEN [INFO] 127.0.0.1:17670
+[1790641103.702] [sandbox] [INFO ] [openshell_supervisor] Control-mode access plane started backend=openshell-sandbox
+[1790641103.792] [sandbox] [OCSF ] [ocsf] EVENT [INFO] ssh relay open (channel_id=8ddbf80c-15a4-4fbf-baba-8f05c9d46020, target=unix:/run/openshell/ssh.sock)
+[1790641103.792] [sandbox] [OCSF ] [ocsf] SSH:OPEN [INFO] ALLOWED
+[1790641113.702] [gateway] [INFO ] [openshell_server::grpc::policy] GetSandboxProviderEnvironment request completed successfully
+[1790641113.698] [sandbox] [OCSF ] [ocsf] CONFIG:DETECTED [INFO] Settings poll: config change detected [old_revision:16709790733110020355 new_revision:16709790733110020355 policy_changed:false provider_env_changed:true]
+[1790641113.702] [sandbox] [INFO ] [openshell_supervisor_network::opa] Configured OPA runtime binary identity mode require_binary_identity=true source=proto
+[1790641113.702] [sandbox] [OCSF ] [ocsf] CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]
+[1790641123.698] [sandbox] [OCSF ] [ocsf] EVENT [INFO] ssh relay closed (channel_id=8ddbf80c-15a4-4fbf-baba-8f05c9d46020, target=unix:/run/openshell/ssh.sock)
+[1790641123.701] [sandbox] [INFO ] [openshell_supervisor] Canonical process exited; retaining control-mode access plane backend=openshell-sandbox
+[exit 0]
+$ openshell sandbox exec vlccap -- sh -c ls -la /var/log/
+→ Using sandbox 'vlccap' (last used)
+Error:   × sandbox 'vlccap' is not ready (phase: Completed); wait for it to reach
+  │ Ready state
+
+[exit 1]
+$ openshell sandbox exec vlccap -- sh -c cat /var/log/openshell-ocsf.*.log
+→ Using sandbox 'vlccap' (last used)
+Error:   × sandbox 'vlccap' is not ready (phase: Completed); wait for it to reach
+  │ Ready state
+
+[exit 1]
+$ openshell sandbox exec vlccap -- sh -c sh -c 'echo probe >> /var/log/openshell-ocsf.2026-09-29.log && echo WRITABLE || echo NOT_WRITABLE'
+→ Using sandbox 'vlccap' (last used)
+Error:   × sandbox 'vlccap' is not ready (phase: Completed); wait for it to reach
+  │ Ready state
+
+[exit 1]
+----- container 28d2c2ea0c09
+/openshell-default--vlccap-deae6642-7844-4ecf-bbf2-6cc121d10fa4-supervisor sha256:494b86855b51987cd68e205aa1b08d67592d4ea7b989f94c66e7179e17a97388
+----- container b22d5da4e389
+/openshell-default--vlccap-deae6642-7844-4ecf-bbf2-6cc121d10fa4 sha256:34ccdd2b86815a056b212e6f677aaac6506577c1f8995321f72c5a28cd79f703
+$ openshell sandbox delete vlccap
+✓ Sandbox vlccap deletion accepted; cleanup is pending
+[exit 0]

@@ -1,0 +1,31 @@
+[1790641100.508] [gateway] [INFO ] [openshell_server::grpc::sandbox] CreateSandbox request completed successfully
+[1790641103.561] [sandbox] [INFO ] [openshell_supervisor] Starting sandbox supervision command=["sh", "-c", "curl -s -m 10 https://api.github.com/zen; echo; curl -s -m 10 https://example.com >/dev/null; echo done; sleep 20"]
+[1790641103.654] [gateway] [INFO ] [openshell_server::grpc::policy] UpdateConfig: backfilled spec.policy from sandbox-discovered policy
+[1790641103.658] [gateway] [INFO ] [openshell_server::grpc::policy] GetSandboxProviderEnvironment request completed successfully
+[1790641103.696] [gateway] [INFO ] [openshell_server::supervisor_session] supervisor session: accepted
+[1790641103.699] [gateway] [INFO ] [openshell_server::grpc::policy] ReportPolicyStatus: sandbox reported policy load result
+[1790641103.792] [gateway] [INFO ] [openshell_server::supervisor_session] supervisor session: relay opened successfully
+[1790641103.792] [gateway] [INFO ] [openshell_server::supervisor_session] relay stream: claimed pending relay, bridging
+[1790641103.641] [sandbox] [INFO ] [openshell_supervisor] Fetching sandbox policy via gRPC endpoint=https://127.0.0.1:17670 sandbox=vlccap sandbox_id=deae6642-7844-4ecf-bbf2-6cc121d10fa4
+[1790641103.650] [sandbox] [OCSF ] [ocsf] CONFIG:DISCOVERY [INFO] Server returned no policy; attempting local discovery
+[1790641103.659] [sandbox] [INFO ] [openshell_supervisor_network::opa] Configured OPA runtime binary identity mode require_binary_identity=true source=proto
+[1790641103.659] [sandbox] [OCSF ] [ocsf] CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]
+[1790641103.674] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary attached backend=openshell-sandbox
+[1790641103.675] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary enforcement confirmed backend=openshell-sandbox
+[1790641103.676] [sandbox] [OCSF ] [ocsf] CONFIG:ENABLED [INFO] TLS termination enabled: ephemeral CA generated
+[1790641103.676] [sandbox] [OCSF ] [ocsf] CONFIG:READY [INFO] Policy DNS connected to isolation boundary
+[1790641103.676] [sandbox] [OCSF ] [ocsf] NET:LISTEN [INFO] 127.0.0.1:3128
+[1790641103.677] [sandbox] [WARN ] [openshell_supervisor_network::proxy] host.openshell.internal maps to a non-link-local IP; trusted-gateway SSRF exemption disabled ip=127.0.0.1
+[1790641103.691] [sandbox] [INFO ] [openshell_supervisor] Isolation boundary agent started backend=openshell-sandbox
+[1790641103.692] [sandbox] [OCSF ] [ocsf] SSH:LISTEN [INFO]
+[1790641103.700] [sandbox] [OCSF ] [ocsf] CONFIG:LOADED [INFO] Acknowledged initial policy revision as loaded [version:1] [hash:a45a8ff3564f00ae26cbd66f1131f37eedd8b54a66fbfec103d65a204c19c6e8]
+[1790641103.702] [sandbox] [OCSF ] [ocsf] NET:OPEN [INFO] 127.0.0.1:17670
+[1790641103.702] [sandbox] [INFO ] [openshell_supervisor] Control-mode access plane started backend=openshell-sandbox
+[1790641103.792] [sandbox] [OCSF ] [ocsf] EVENT [INFO] ssh relay open (channel_id=8ddbf80c-15a4-4fbf-baba-8f05c9d46020, target=unix:/run/openshell/ssh.sock)
+[1790641103.792] [sandbox] [OCSF ] [ocsf] SSH:OPEN [INFO] ALLOWED
+[1790641113.702] [gateway] [INFO ] [openshell_server::grpc::policy] GetSandboxProviderEnvironment request completed successfully
+[1790641113.698] [sandbox] [OCSF ] [ocsf] CONFIG:DETECTED [INFO] Settings poll: config change detected [old_revision:16709790733110020355 new_revision:16709790733110020355 policy_changed:false provider_env_changed:true]
+[1790641113.702] [sandbox] [INFO ] [openshell_supervisor_network::opa] Configured OPA runtime binary identity mode require_binary_identity=true source=proto
+[1790641113.702] [sandbox] [OCSF ] [ocsf] CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]
+[1790641123.698] [sandbox] [OCSF ] [ocsf] EVENT [INFO] ssh relay closed (channel_id=8ddbf80c-15a4-4fbf-baba-8f05c9d46020, target=unix:/run/openshell/ssh.sock)
+[1790641123.701] [sandbox] [INFO ] [openshell_supervisor] Canonical process exited; retaining control-mode access plane backend=openshell-sandbox

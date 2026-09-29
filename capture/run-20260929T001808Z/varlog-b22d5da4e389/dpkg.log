@@ -1,0 +1,2763 @@
+2026-09-05 12:55:13 startup archives install
+2026-09-05 12:55:13 install base-passwd:amd64 <none> 3.6.3build1
+2026-09-05 12:55:13 status half-installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:13 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:13 configure base-passwd:amd64 3.6.3build1 3.6.3build1
+2026-09-05 12:55:13 status half-configured base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:13 status installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:13 startup archives install
+2026-09-05 12:55:13 install base-files:amd64 <none> 13ubuntu10
+2026-09-05 12:55:13 status half-installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:13 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:13 configure base-files:amd64 13ubuntu10 13ubuntu10
+2026-09-05 12:55:13 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 12:55:13 status installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:13 startup archives install
+2026-09-05 12:55:13 upgrade dpkg 1.22.6ubuntu6 1.22.6ubuntu6
+2026-09-05 12:55:13 status half-configured dpkg 1.22.6ubuntu6
+2026-09-05 12:55:13 status unpacked dpkg 1.22.6ubuntu6
+2026-09-05 12:55:13 status half-installed dpkg 1.22.6ubuntu6
+2026-09-05 12:55:13 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:13 configure dpkg:amd64 1.22.6ubuntu6 1.22.6ubuntu6
+2026-09-05 12:55:13 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:13 status installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:13 startup archives install
+2026-09-05 12:55:13 install libc6:amd64 <none> 2.39-0ubuntu8
+2026-09-05 12:55:13 status half-installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:14 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:14 configure libc6:amd64 2.39-0ubuntu8 2.39-0ubuntu8
+2026-09-05 12:55:14 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:14 status installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:14 startup archives install
+2026-09-05 12:55:14 install perl-base:amd64 <none> 5.38.2-3.2build2
+2026-09-05 12:55:14 status half-installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:14 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:14 configure perl-base:amd64 5.38.2-3.2build2 5.38.2-3.2build2
+2026-09-05 12:55:14 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:14 status installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:14 startup archives install
+2026-09-05 12:55:14 install mawk:amd64 <none> 1.3.4.20240123-1build1
+2026-09-05 12:55:14 status half-installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:14 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:14 configure mawk:amd64 1.3.4.20240123-1build1 1.3.4.20240123-1build1
+2026-09-05 12:55:14 status half-configured mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:14 status installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:14 startup archives unpack
+2026-09-05 12:55:14 upgrade base-files:amd64 13ubuntu10 13ubuntu10
+2026-09-05 12:55:14 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 12:55:14 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:14 status half-installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:14 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:14 upgrade base-passwd:amd64 3.6.3build1 3.6.3build1
+2026-09-05 12:55:14 status half-configured base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:14 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:14 status half-installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:14 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:14 install bash:amd64 <none> 5.2.21-2ubuntu4
+2026-09-05 12:55:14 status half-installed bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:14 status unpacked bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:14 install bsdutils:amd64 <none> 1:2.39.3-9ubuntu6
+2026-09-05 12:55:14 status half-installed bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:14 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:14 install coreutils:amd64 <none> 9.4-3ubuntu6
+2026-09-05 12:55:14 status half-installed coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:14 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:14 install dash:amd64 <none> 0.5.12-6ubuntu5
+2026-09-05 12:55:14 status half-installed dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:14 status unpacked dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:14 install debconf:all <none> 1.5.86ubuntu1
+2026-09-05 12:55:14 status half-installed debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:14 status unpacked debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:14 install debianutils:amd64 <none> 5.17build1
+2026-09-05 12:55:14 status half-installed debianutils:amd64 5.17build1
+2026-09-05 12:55:14 status unpacked debianutils:amd64 5.17build1
+2026-09-05 12:55:15 install diffutils:amd64 <none> 1:3.10-1build1
+2026-09-05 12:55:15 status half-installed diffutils:amd64 1:3.10-1build1
+2026-09-05 12:55:15 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 12:55:15 upgrade dpkg:amd64 1.22.6ubuntu6 1.22.6ubuntu6
+2026-09-05 12:55:15 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:15 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:15 status half-installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:15 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:15 install e2fsprogs:amd64 <none> 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:15 status half-installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:15 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:15 install findutils:amd64 <none> 4.9.0-5build1
+2026-09-05 12:55:15 status half-installed findutils:amd64 4.9.0-5build1
+2026-09-05 12:55:15 status unpacked findutils:amd64 4.9.0-5build1
+2026-09-05 12:55:15 install gcc-14-base:amd64 <none> 14-20240412-0ubuntu1
+2026-09-05 12:55:15 status half-installed gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:15 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:15 install grep:amd64 <none> 3.11-4build1
+2026-09-05 12:55:15 status half-installed grep:amd64 3.11-4build1
+2026-09-05 12:55:15 status unpacked grep:amd64 3.11-4build1
+2026-09-05 12:55:15 install gzip:amd64 <none> 1.12-1ubuntu3
+2026-09-05 12:55:15 status half-installed gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:55:15 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:55:15 install hostname:amd64 <none> 3.23+nmu2ubuntu2
+2026-09-05 12:55:15 status half-installed hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:55:15 status unpacked hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:55:15 install init-system-helpers:all <none> 1.66ubuntu1
+2026-09-05 12:55:15 status half-installed init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:55:15 status unpacked init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:55:15 install libacl1:amd64 <none> 2.3.2-1build1
+2026-09-05 12:55:15 status half-installed libacl1:amd64 2.3.2-1build1
+2026-09-05 12:55:15 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 12:55:15 install libattr1:amd64 <none> 1:2.5.2-1build1
+2026-09-05 12:55:15 status half-installed libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:55:15 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:55:15 install libaudit-common:all <none> 1:3.1.2-2.1build1
+2026-09-05 12:55:15 status half-installed libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:55:15 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:55:15 install libaudit1:amd64 <none> 1:3.1.2-2.1build1
+2026-09-05 12:55:15 status half-installed libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:55:15 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:55:15 install libblkid1:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:15 status half-installed libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:15 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:15 install libbz2-1.0:amd64 <none> 1.0.8-5.1
+2026-09-05 12:55:15 status half-installed libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:55:15 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:55:15 install libc-bin:amd64 <none> 2.39-0ubuntu8
+2026-09-05 12:55:15 status half-installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 upgrade libc6:amd64 2.39-0ubuntu8 2.39-0ubuntu8
+2026-09-05 12:55:15 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 status half-installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:15 install libcap-ng0:amd64 <none> 0.8.4-2build2
+2026-09-05 12:55:15 status half-installed libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:55:15 status unpacked libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:55:15 install libcap2:amd64 <none> 1:2.66-5ubuntu2
+2026-09-05 12:55:15 status half-installed libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:55:15 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:55:15 install libcom-err2:amd64 <none> 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:15 status half-installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:15 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 install libcrypt1:amd64 <none> 1:4.4.36-4build1
+2026-09-05 12:55:16 status half-installed libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:55:16 status unpacked libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:55:16 install libdebconfclient0:amd64 <none> 0.271ubuntu3
+2026-09-05 12:55:16 status half-installed libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:55:16 status unpacked libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:55:16 install libext2fs2t64:amd64 <none> 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 status half-installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 install libgcc-s1:amd64 <none> 14-20240412-0ubuntu1
+2026-09-05 12:55:16 status half-installed libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:16 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:16 install libgcrypt20:amd64 <none> 1.10.3-2build1
+2026-09-05 12:55:16 status half-installed libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:55:16 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:55:16 install libgmp10:amd64 <none> 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:16 status half-installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:16 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:16 install libgpg-error0:amd64 <none> 1.47-3build2
+2026-09-05 12:55:16 status half-installed libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:55:16 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:55:16 install liblz4-1:amd64 <none> 1.9.4-1build1
+2026-09-05 12:55:16 status half-installed liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:55:16 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:55:16 install liblzma5:amd64 <none> 5.6.1+really5.4.5-1
+2026-09-05 12:55:16 status half-installed liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:55:16 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:55:16 install libmd0:amd64 <none> 1.1.0-2build1
+2026-09-05 12:55:16 status half-installed libmd0:amd64 1.1.0-2build1
+2026-09-05 12:55:16 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 12:55:16 install libmount1:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status half-installed libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:16 install libncursesw6:amd64 <none> 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 status half-installed libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 install libpam-modules:amd64 <none> 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status half-installed libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 install libpam-modules-bin:amd64 <none> 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status half-installed libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 install libpam-runtime:all <none> 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status half-installed libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:55:16 install libpam0g:amd64 <none> 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status half-installed libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:16 install libpcre2-8-0:amd64 <none> 10.42-4ubuntu2
+2026-09-05 12:55:16 status half-installed libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:55:16 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:55:16 install libproc2-0:amd64 <none> 2:4.0.4-4ubuntu3
+2026-09-05 12:55:16 status half-installed libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:16 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:16 install libselinux1:amd64 <none> 3.5-2ubuntu2
+2026-09-05 12:55:16 status half-installed libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:55:16 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:55:16 install libsemanage-common:all <none> 3.5-1build5
+2026-09-05 12:55:16 status half-installed libsemanage-common:all 3.5-1build5
+2026-09-05 12:55:16 status unpacked libsemanage-common:all 3.5-1build5
+2026-09-05 12:55:16 install libsemanage2:amd64 <none> 3.5-1build5
+2026-09-05 12:55:16 status half-installed libsemanage2:amd64 3.5-1build5
+2026-09-05 12:55:16 status unpacked libsemanage2:amd64 3.5-1build5
+2026-09-05 12:55:16 install libsepol2:amd64 <none> 3.5-2build1
+2026-09-05 12:55:16 status half-installed libsepol2:amd64 3.5-2build1
+2026-09-05 12:55:16 status unpacked libsepol2:amd64 3.5-2build1
+2026-09-05 12:55:16 install libsmartcols1:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status half-installed libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:16 install libss2:amd64 <none> 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 status half-installed libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:16 install libssl3t64:amd64 <none> 3.0.13-0ubuntu3
+2026-09-05 12:55:16 status half-installed libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:55:16 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:55:16 install libsystemd0:amd64 <none> 255.4-1ubuntu8
+2026-09-05 12:55:16 status half-installed libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 12:55:16 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 12:55:16 install libtinfo6:amd64 <none> 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 status half-installed libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:16 install libudev1:amd64 <none> 255.4-1ubuntu8
+2026-09-05 12:55:16 status half-installed libudev1:amd64 255.4-1ubuntu8
+2026-09-05 12:55:16 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 12:55:16 install libuuid1:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status half-installed libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:16 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:17 install libzstd1:amd64 <none> 1.5.5+dfsg2-2build1
+2026-09-05 12:55:17 status half-installed libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 12:55:17 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 12:55:17 install login:amd64 <none> 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 status half-installed login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 install logsave:amd64 <none> 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:17 status half-installed logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:17 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:17 upgrade mawk:amd64 1.3.4.20240123-1build1 1.3.4.20240123-1build1
+2026-09-05 12:55:17 status half-configured mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:17 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:17 status half-installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:17 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:17 install mount:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:17 status half-installed mount:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:17 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:17 install ncurses-base:all <none> 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 status half-installed ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 install ncurses-bin:amd64 <none> 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 status half-installed ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:17 install passwd:amd64 <none> 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:17 upgrade perl-base:amd64 5.38.2-3.2build2 5.38.2-3.2build2
+2026-09-05 12:55:17 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:17 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:17 status half-installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:17 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:17 install procps:amd64 <none> 2:4.0.4-4ubuntu3
+2026-09-05 12:55:17 status half-installed procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:17 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:17 install sed:amd64 <none> 4.9-2build1
+2026-09-05 12:55:17 status half-installed sed:amd64 4.9-2build1
+2026-09-05 12:55:17 status unpacked sed:amd64 4.9-2build1
+2026-09-05 12:55:17 install sensible-utils:all <none> 0.0.22
+2026-09-05 12:55:17 status half-installed sensible-utils:all 0.0.22
+2026-09-05 12:55:17 status unpacked sensible-utils:all 0.0.22
+2026-09-05 12:55:17 install sysvinit-utils:amd64 <none> 3.08-6ubuntu3
+2026-09-05 12:55:17 status half-installed sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 12:55:17 status unpacked sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 12:55:17 install tar:amd64 <none> 1.35+dfsg-3build1
+2026-09-05 12:55:17 status half-installed tar:amd64 1.35+dfsg-3build1
+2026-09-05 12:55:17 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 12:55:17 install util-linux:amd64 <none> 2.39.3-9ubuntu6
+2026-09-05 12:55:17 status half-installed util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 install zlib1g:amd64 <none> 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 status half-installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 startup packages configure
+2026-09-05 12:55:18 configure gcc-14-base:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:55:18 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 status half-configured gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 status installed gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 configure libaudit-common:all 1:3.1.2-2.1build1 <none>
+2026-09-05 12:55:18 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:55:18 status half-configured libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:55:18 status installed libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:55:18 configure libsemanage-common:all 3.5-1build5 <none>
+2026-09-05 12:55:18 status unpacked libsemanage-common:all 3.5-1build5
+2026-09-05 12:55:18 status half-configured libsemanage-common:all 3.5-1build5
+2026-09-05 12:55:18 status installed libsemanage-common:all 3.5-1build5
+2026-09-05 12:55:18 configure debconf:all 1.5.86ubuntu1 <none>
+2026-09-05 12:55:18 status unpacked debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:18 status half-configured debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:18 status installed debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:18 configure ncurses-base:all 6.4+20240113-1ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status half-configured ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status installed ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 configure init-system-helpers:all 1.66ubuntu1 <none>
+2026-09-05 12:55:18 status unpacked init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:55:18 status half-configured init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:55:18 status installed init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:55:18 configure sensible-utils:all 0.0.22 <none>
+2026-09-05 12:55:18 status unpacked sensible-utils:all 0.0.22
+2026-09-05 12:55:18 status half-configured sensible-utils:all 0.0.22
+2026-09-05 12:55:18 status installed sensible-utils:all 0.0.22
+2026-09-05 12:55:18 configure libgcc-s1:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:55:18 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 status half-configured libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 status installed libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:18 configure libc6:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:18 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 status installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 configure libmd0:amd64 1.1.0-2build1 <none>
+2026-09-05 12:55:18 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 12:55:18 status half-configured libmd0:amd64 1.1.0-2build1
+2026-09-05 12:55:18 status installed libmd0:amd64 1.1.0-2build1
+2026-09-05 12:55:18 configure libattr1:amd64 1:2.5.2-1build1 <none>
+2026-09-05 12:55:18 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:55:18 status half-configured libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:55:18 status installed libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:55:18 configure sysvinit-utils:amd64 3.08-6ubuntu3 <none>
+2026-09-05 12:55:18 status unpacked sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 12:55:18 status half-configured sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 12:55:18 status installed sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 12:55:18 configure libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status half-configured libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 configure debianutils:amd64 5.17build1 <none>
+2026-09-05 12:55:18 status unpacked debianutils:amd64 5.17build1
+2026-09-05 12:55:18 status half-configured debianutils:amd64 5.17build1
+2026-09-05 12:55:18 status installed debianutils:amd64 5.17build1
+2026-09-05 12:55:18 configure mawk:amd64 1.3.4.20240123-1build1 <none>
+2026-09-05 12:55:18 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:18 status half-configured mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:18 status installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 12:55:18 configure libdebconfclient0:amd64 0.271ubuntu3 <none>
+2026-09-05 12:55:18 status unpacked libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:55:18 status half-configured libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:55:18 status installed libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:55:18 configure libbz2-1.0:amd64 1.0.8-5.1 <none>
+2026-09-05 12:55:18 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:55:18 status half-configured libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:55:18 status installed libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:55:18 configure libblkid1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:18 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status half-configured libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status installed libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 configure libtinfo6:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status half-configured libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status installed libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 configure libzstd1:amd64 1.5.5+dfsg2-2build1 <none>
+2026-09-05 12:55:18 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 12:55:18 status half-configured libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 12:55:18 status installed libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 12:55:18 configure liblzma5:amd64 5.6.1+really5.4.5-1 <none>
+2026-09-05 12:55:18 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:55:18 status half-configured liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:55:18 status installed liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:55:18 configure libgpg-error0:amd64 1.47-3build2 <none>
+2026-09-05 12:55:18 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:55:18 status half-configured libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:55:18 status installed libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:55:18 configure libssl3t64:amd64 3.0.13-0ubuntu3 <none>
+2026-09-05 12:55:18 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:55:18 status half-configured libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:55:18 status installed libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:55:18 configure liblz4-1:amd64 1.9.4-1build1 <none>
+2026-09-05 12:55:18 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:55:18 status half-configured liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:55:18 status installed liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:55:18 configure libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:18 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 configure ncurses-bin:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status half-configured ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status installed ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 configure libacl1:amd64 2.3.2-1build1 <none>
+2026-09-05 12:55:18 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:18 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 12:55:18 status half-configured libacl1:amd64 2.3.2-1build1
+2026-09-05 12:55:18 status installed libacl1:amd64 2.3.2-1build1
+2026-09-05 12:55:18 configure libsmartcols1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:18 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status half-configured libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status installed libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 configure libgcrypt20:amd64 1.10.3-2build1 <none>
+2026-09-05 12:55:18 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:55:18 status half-configured libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:55:18 status installed libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:55:18 configure zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 status half-configured zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 status installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 12:55:18 configure libcrypt1:amd64 1:4.4.36-4build1 <none>
+2026-09-05 12:55:18 status unpacked libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:55:18 status half-configured libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:55:18 status installed libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:55:18 configure libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status half-configured libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 configure diffutils:amd64 1:3.10-1build1 <none>
+2026-09-05 12:55:18 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 12:55:18 status half-configured diffutils:amd64 1:3.10-1build1
+2026-09-05 12:55:18 status installed diffutils:amd64 1:3.10-1build1
+2026-09-05 12:55:18 configure libcap2:amd64 1:2.66-5ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:55:18 status half-configured libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:55:18 status installed libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:55:18 configure hostname:amd64 3.23+nmu2ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:55:18 status half-configured hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:55:18 status installed hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:55:18 configure libcap-ng0:amd64 0.8.4-2build2 <none>
+2026-09-05 12:55:18 status unpacked libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:55:18 status half-configured libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:55:18 status installed libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:55:18 configure libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6 <none>
+2026-09-05 12:55:18 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:18 status half-configured libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:18 status installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:55:18 configure libaudit1:amd64 1:3.1.2-2.1build1 <none>
+2026-09-05 12:55:18 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:55:18 status half-configured libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:55:18 status installed libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:55:18 configure libuuid1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:18 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status half-configured libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 status installed libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:18 configure libss2:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status half-configured libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status installed libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 configure libsepol2:amd64 3.5-2build1 <none>
+2026-09-05 12:55:18 status unpacked libsepol2:amd64 3.5-2build1
+2026-09-05 12:55:18 status half-configured libsepol2:amd64 3.5-2build1
+2026-09-05 12:55:18 status installed libsepol2:amd64 3.5-2build1
+2026-09-05 12:55:18 configure libpcre2-8-0:amd64 10.42-4ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:55:18 status half-configured libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:55:18 status installed libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:55:18 configure libncursesw6:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status half-configured libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 status installed libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:55:18 configure logsave:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status half-configured logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status installed logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 configure libudev1:amd64 255.4-1ubuntu8 <none>
+2026-09-05 12:55:18 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 status half-configured libudev1:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 status installed libudev1:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 configure base-files:amd64 13ubuntu10 <none>
+2026-09-05 12:55:18 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:18 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 12:55:18 status installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:18 configure bash:amd64 5.2.21-2ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:18 status half-configured bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:18 status installed bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:18 configure grep:amd64 3.11-4build1 <none>
+2026-09-05 12:55:18 status unpacked grep:amd64 3.11-4build1
+2026-09-05 12:55:18 status half-configured grep:amd64 3.11-4build1
+2026-09-05 12:55:18 status installed grep:amd64 3.11-4build1
+2026-09-05 12:55:18 configure e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:55:18 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status half-configured e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 status installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:55:18 configure libsystemd0:amd64 255.4-1ubuntu8 <none>
+2026-09-05 12:55:18 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 status half-configured libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 status installed libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 12:55:18 configure libselinux1:amd64 3.5-2ubuntu2 <none>
+2026-09-05 12:55:18 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:55:18 status half-configured libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:55:18 status installed libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:55:18 configure libpam0g:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:55:18 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status half-configured libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status installed libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 configure sed:amd64 4.9-2build1 <none>
+2026-09-05 12:55:19 status unpacked sed:amd64 4.9-2build1
+2026-09-05 12:55:19 status half-configured sed:amd64 4.9-2build1
+2026-09-05 12:55:19 status installed sed:amd64 4.9-2build1
+2026-09-05 12:55:19 configure libproc2-0:amd64 2:4.0.4-4ubuntu3 <none>
+2026-09-05 12:55:19 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 status half-configured libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 status installed libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 configure findutils:amd64 4.9.0-5build1 <none>
+2026-09-05 12:55:19 status unpacked findutils:amd64 4.9.0-5build1
+2026-09-05 12:55:19 status half-configured findutils:amd64 4.9.0-5build1
+2026-09-05 12:55:19 status installed findutils:amd64 4.9.0-5build1
+2026-09-05 12:55:19 configure libmount1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status half-configured libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status installed libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 configure procps:amd64 2:4.0.4-4ubuntu3 <none>
+2026-09-05 12:55:19 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 status half-configured procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 status installed procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:55:19 configure libsemanage2:amd64 3.5-1build5 <none>
+2026-09-05 12:55:19 status unpacked libsemanage2:amd64 3.5-1build5
+2026-09-05 12:55:19 status half-configured libsemanage2:amd64 3.5-1build5
+2026-09-05 12:55:19 status installed libsemanage2:amd64 3.5-1build5
+2026-09-05 12:55:19 configure base-passwd:amd64 3.6.3build1 <none>
+2026-09-05 12:55:19 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:19 status half-configured base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:19 status installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:19 configure bsdutils:amd64 1:2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:19 status half-configured bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:19 status installed bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:19 configure tar:amd64 1.35+dfsg-3build1 <none>
+2026-09-05 12:55:19 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 12:55:19 status half-configured tar:amd64 1.35+dfsg-3build1
+2026-09-05 12:55:19 status installed tar:amd64 1.35+dfsg-3build1
+2026-09-05 12:55:19 configure libpam-modules-bin:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:55:19 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status half-configured libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status installed libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 configure coreutils:amd64 9.4-3ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:19 status half-configured coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:19 status installed coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:19 configure util-linux:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status half-configured util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status installed util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 configure dpkg:amd64 1.22.6ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:19 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:19 status installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:55:19 configure mount:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:19 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status half-configured mount:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 status installed mount:amd64 2.39.3-9ubuntu6
+2026-09-05 12:55:19 configure dash:amd64 0.5.12-6ubuntu5 <none>
+2026-09-05 12:55:19 status unpacked dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:19 status half-configured dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:19 status installed dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:19 configure libpam-modules:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:55:19 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status half-configured libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status installed libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:55:19 configure perl-base:amd64 5.38.2-3.2build2 <none>
+2026-09-05 12:55:19 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:19 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:19 status installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 12:55:19 configure gzip:amd64 1.12-1ubuntu3 <none>
+2026-09-05 12:55:19 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:55:19 status half-configured gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:55:19 status installed gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:55:19 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+2026-09-05 12:55:19 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 configure libpam-runtime:all 1.5.3-5ubuntu5 <none>
+2026-09-05 12:55:19 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status half-configured libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:55:19 status installed libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:55:19 configure login:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+2026-09-05 12:55:19 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 status half-configured login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 status installed login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 12:55:19 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:19 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:19 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:19 startup archives unpack
+2026-09-05 12:55:19 install apt:amd64 <none> 2.7.14build2
+2026-09-05 12:55:19 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:19 status half-installed apt:amd64 2.7.14build2
+2026-09-05 12:55:19 status unpacked apt:amd64 2.7.14build2
+2026-09-05 12:55:20 install gpgv:amd64 <none> 2.4.4-2ubuntu17
+2026-09-05 12:55:20 status half-installed gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:55:20 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:55:20 install libapt-pkg6.0t64:amd64 <none> 2.7.14build2
+2026-09-05 12:55:20 status half-installed libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:55:20 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:55:20 install libassuan0:amd64 <none> 2.5.6-1build1
+2026-09-05 12:55:20 status half-installed libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:55:20 status unpacked libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:55:20 install libffi8:amd64 <none> 3.4.6-1build1
+2026-09-05 12:55:20 status half-installed libffi8:amd64 3.4.6-1build1
+2026-09-05 12:55:20 status unpacked libffi8:amd64 3.4.6-1build1
+2026-09-05 12:55:20 install libgnutls30t64:amd64 <none> 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 status half-installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 install libhogweed6t64:amd64 <none> 3.9.1-2.2build1
+2026-09-05 12:55:20 status half-installed libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 install libidn2-0:amd64 <none> 2.3.7-2build1
+2026-09-05 12:55:20 status half-installed libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:55:20 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:55:20 install libnettle8t64:amd64 <none> 3.9.1-2.2build1
+2026-09-05 12:55:20 status half-installed libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 install libnpth0t64:amd64 <none> 1.6-3.1build1
+2026-09-05 12:55:20 status half-installed libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:55:20 status unpacked libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:55:20 install libp11-kit0:amd64 <none> 0.25.3-4ubuntu2
+2026-09-05 12:55:20 status half-installed libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:55:20 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:55:20 install libseccomp2:amd64 <none> 2.5.5-1ubuntu3
+2026-09-05 12:55:20 status half-installed libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:55:20 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:55:20 install libstdc++6:amd64 <none> 14-20240412-0ubuntu1
+2026-09-05 12:55:20 status half-installed libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:20 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:20 install libtasn1-6:amd64 <none> 4.19.0-3build1
+2026-09-05 12:55:20 status half-installed libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 12:55:20 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 12:55:20 install libunistring5:amd64 <none> 1.1-2build1
+2026-09-05 12:55:20 status half-installed libunistring5:amd64 1.1-2build1
+2026-09-05 12:55:20 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 12:55:20 install libxxhash0:amd64 <none> 0.8.2-2build1
+2026-09-05 12:55:20 status half-installed libxxhash0:amd64 0.8.2-2build1
+2026-09-05 12:55:20 status unpacked libxxhash0:amd64 0.8.2-2build1
+2026-09-05 12:55:20 install ubuntu-keyring:all <none> 2023.11.28.1
+2026-09-05 12:55:20 status half-installed ubuntu-keyring:all 2023.11.28.1
+2026-09-05 12:55:20 status unpacked ubuntu-keyring:all 2023.11.28.1
+2026-09-05 12:55:20 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:20 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:20 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:20 startup packages configure
+2026-09-05 12:55:20 configure libnpth0t64:amd64 1.6-3.1build1 <none>
+2026-09-05 12:55:20 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:20 status unpacked libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:55:20 status half-configured libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:55:20 status installed libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:55:20 configure libassuan0:amd64 2.5.6-1build1 <none>
+2026-09-05 12:55:20 status unpacked libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:55:20 status half-configured libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:55:20 status installed libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:55:20 configure ubuntu-keyring:all 2023.11.28.1 <none>
+2026-09-05 12:55:20 status unpacked ubuntu-keyring:all 2023.11.28.1
+2026-09-05 12:55:20 status half-configured ubuntu-keyring:all 2023.11.28.1
+2026-09-05 12:55:20 status installed ubuntu-keyring:all 2023.11.28.1
+2026-09-05 12:55:20 configure libseccomp2:amd64 2.5.5-1ubuntu3 <none>
+2026-09-05 12:55:20 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:55:20 status half-configured libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:55:20 status installed libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:55:20 configure libnettle8t64:amd64 3.9.1-2.2build1 <none>
+2026-09-05 12:55:20 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status half-configured libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status installed libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 configure libunistring5:amd64 1.1-2build1 <none>
+2026-09-05 12:55:20 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 12:55:20 status half-configured libunistring5:amd64 1.1-2build1
+2026-09-05 12:55:20 status installed libunistring5:amd64 1.1-2build1
+2026-09-05 12:55:20 configure libffi8:amd64 3.4.6-1build1 <none>
+2026-09-05 12:55:20 status unpacked libffi8:amd64 3.4.6-1build1
+2026-09-05 12:55:20 status half-configured libffi8:amd64 3.4.6-1build1
+2026-09-05 12:55:20 status installed libffi8:amd64 3.4.6-1build1
+2026-09-05 12:55:20 configure libhogweed6t64:amd64 3.9.1-2.2build1 <none>
+2026-09-05 12:55:20 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status half-configured libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 status installed libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:55:20 configure gpgv:amd64 2.4.4-2ubuntu17 <none>
+2026-09-05 12:55:20 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:55:20 status half-configured gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:55:20 status installed gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:55:20 configure libxxhash0:amd64 0.8.2-2build1 <none>
+2026-09-05 12:55:20 status unpacked libxxhash0:amd64 0.8.2-2build1
+2026-09-05 12:55:20 status half-configured libxxhash0:amd64 0.8.2-2build1
+2026-09-05 12:55:20 status installed libxxhash0:amd64 0.8.2-2build1
+2026-09-05 12:55:20 configure libtasn1-6:amd64 4.19.0-3build1 <none>
+2026-09-05 12:55:20 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 12:55:20 status half-configured libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 12:55:20 status installed libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 12:55:20 configure libstdc++6:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:55:20 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:20 status half-configured libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:20 status installed libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:55:20 configure libidn2-0:amd64 2.3.7-2build1 <none>
+2026-09-05 12:55:20 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:55:20 status half-configured libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:55:20 status installed libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:55:20 configure libp11-kit0:amd64 0.25.3-4ubuntu2 <none>
+2026-09-05 12:55:20 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:55:20 status half-configured libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:55:20 status installed libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:55:20 configure libapt-pkg6.0t64:amd64 2.7.14build2 <none>
+2026-09-05 12:55:20 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:55:20 status half-configured libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:55:20 status installed libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:55:20 configure libgnutls30t64:amd64 3.8.3-1.1ubuntu3 <none>
+2026-09-05 12:55:20 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 status half-configured libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 status installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:55:20 configure apt:amd64 2.7.14build2 <none>
+2026-09-05 12:55:20 status unpacked apt:amd64 2.7.14build2
+2026-09-05 12:55:20 status half-configured apt:amd64 2.7.14build2
+2026-09-05 12:55:20 status installed apt:amd64 2.7.14build2
+2026-09-05 12:55:20 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:20 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:20 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:24 startup archives unpack
+2026-09-05 12:55:24 upgrade apt:amd64 2.7.14build2 2.7.14build2
+2026-09-05 12:55:24 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:24 status half-configured apt:amd64 2.7.14build2
+2026-09-05 12:55:24 status unpacked apt:amd64 2.7.14build2
+2026-09-05 12:55:24 status half-installed apt:amd64 2.7.14build2
+2026-09-05 12:55:25 status unpacked apt:amd64 2.7.14build2
+2026-09-05 12:55:25 startup packages configure
+2026-09-05 12:55:25 configure apt:amd64 2.7.14build2 <none>
+2026-09-05 12:55:25 status unpacked apt:amd64 2.7.14build2
+2026-09-05 12:55:25 status half-configured apt:amd64 2.7.14build2
+2026-09-05 12:55:25 status installed apt:amd64 2.7.14build2
+2026-09-05 12:55:25 startup packages configure
+2026-09-05 12:55:25 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:55:25 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:25 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:55:29 startup archives unpack
+2026-09-05 12:55:29 upgrade base-files:amd64 13ubuntu10 13ubuntu10
+2026-09-05 12:55:29 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 status half-installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 startup packages configure
+2026-09-05 12:55:29 configure base-files:amd64 13ubuntu10 <none>
+2026-09-05 12:55:29 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 12:55:29 status installed base-files:amd64 13ubuntu10
+2026-09-05 12:55:30 startup packages configure
+2026-09-05 12:55:33 startup archives unpack
+2026-09-05 12:55:33 upgrade base-passwd:amd64 3.6.3build1 3.6.3build1
+2026-09-05 12:55:33 status half-configured base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:33 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:33 status half-installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:33 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:34 startup packages configure
+2026-09-05 12:55:34 configure base-passwd:amd64 3.6.3build1 <none>
+2026-09-05 12:55:34 status unpacked base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:34 status half-configured base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:34 status installed base-passwd:amd64 3.6.3build1
+2026-09-05 12:55:34 startup packages configure
+2026-09-05 12:55:38 startup archives unpack
+2026-09-05 12:55:38 upgrade bash:amd64 5.2.21-2ubuntu4 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status half-configured bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status unpacked bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status half-installed bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status triggers-pending debianutils:amd64 5.17build1
+2026-09-05 12:55:38 status unpacked bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 startup packages configure
+2026-09-05 12:55:38 configure bash:amd64 5.2.21-2ubuntu4 <none>
+2026-09-05 12:55:38 status unpacked bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status half-configured bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 status installed bash:amd64 5.2.21-2ubuntu4
+2026-09-05 12:55:38 startup packages configure
+2026-09-05 12:55:38 trigproc debianutils:amd64 5.17build1 <none>
+2026-09-05 12:55:38 status half-configured debianutils:amd64 5.17build1
+2026-09-05 12:55:38 status installed debianutils:amd64 5.17build1
+2026-09-05 12:55:42 startup archives unpack
+2026-09-05 12:55:42 upgrade bsdutils:amd64 1:2.39.3-9ubuntu6 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status half-configured bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status half-installed bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 startup packages configure
+2026-09-05 12:55:42 configure bsdutils:amd64 1:2.39.3-9ubuntu6 <none>
+2026-09-05 12:55:42 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status half-configured bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:42 status installed bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 12:55:43 startup packages configure
+2026-09-05 12:55:46 startup archives unpack
+2026-09-05 12:55:46 upgrade coreutils:amd64 9.4-3ubuntu6 9.4-3ubuntu6
+2026-09-05 12:55:46 status half-configured coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 status half-installed coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 startup packages configure
+2026-09-05 12:55:46 configure coreutils:amd64 9.4-3ubuntu6 <none>
+2026-09-05 12:55:46 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 status half-configured coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:46 status installed coreutils:amd64 9.4-3ubuntu6
+2026-09-05 12:55:47 startup packages configure
+2026-09-05 12:55:50 startup archives unpack
+2026-09-05 12:55:50 upgrade dash:amd64 0.5.12-6ubuntu5 0.5.12-6ubuntu5
+2026-09-05 12:55:50 status half-configured dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:50 status unpacked dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:50 status half-installed dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:50 status triggers-pending debianutils:amd64 5.17build1
+2026-09-05 12:55:50 status unpacked dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:51 startup packages configure
+2026-09-05 12:55:51 configure dash:amd64 0.5.12-6ubuntu5 <none>
+2026-09-05 12:55:51 status unpacked dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:51 status half-configured dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:51 status installed dash:amd64 0.5.12-6ubuntu5
+2026-09-05 12:55:51 startup packages configure
+2026-09-05 12:55:51 trigproc debianutils:amd64 5.17build1 <none>
+2026-09-05 12:55:51 status half-configured debianutils:amd64 5.17build1
+2026-09-05 12:55:51 status installed debianutils:amd64 5.17build1
+2026-09-05 12:55:55 startup archives unpack
+2026-09-05 12:55:55 upgrade debconf:all 1.5.86ubuntu1 1.5.86ubuntu1
+2026-09-05 12:55:55 status half-configured debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 status unpacked debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 status half-installed debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 status unpacked debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 startup packages configure
+2026-09-05 12:55:55 configure debconf:all 1.5.86ubuntu1 <none>
+2026-09-05 12:55:55 status unpacked debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 status half-configured debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 status installed debconf:all 1.5.86ubuntu1
+2026-09-05 12:55:55 startup packages configure
+2026-09-05 12:55:59 startup archives unpack
+2026-09-05 12:55:59 upgrade debianutils:amd64 5.17build1 5.17build1
+2026-09-05 12:55:59 status half-configured debianutils:amd64 5.17build1
+2026-09-05 12:55:59 status unpacked debianutils:amd64 5.17build1
+2026-09-05 12:55:59 status half-installed debianutils:amd64 5.17build1
+2026-09-05 12:55:59 status unpacked debianutils:amd64 5.17build1
+2026-09-05 12:55:59 startup packages configure
+2026-09-05 12:55:59 configure debianutils:amd64 5.17build1 <none>
+2026-09-05 12:55:59 status unpacked debianutils:amd64 5.17build1
+2026-09-05 12:55:59 status half-configured debianutils:amd64 5.17build1
+2026-09-05 12:55:59 status installed debianutils:amd64 5.17build1
+2026-09-05 12:56:00 startup packages configure
+2026-09-05 12:56:03 startup archives unpack
+2026-09-05 12:56:03 upgrade diffutils:amd64 1:3.10-1build1 1:3.10-1build1
+2026-09-05 12:56:03 status half-configured diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:03 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:03 status half-installed diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:03 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:04 startup packages configure
+2026-09-05 12:56:04 configure diffutils:amd64 1:3.10-1build1 <none>
+2026-09-05 12:56:04 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:04 status half-configured diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:04 status installed diffutils:amd64 1:3.10-1build1
+2026-09-05 12:56:04 startup packages configure
+2026-09-05 12:56:07 startup archives unpack
+2026-09-05 12:56:07 upgrade dpkg:amd64 1.22.6ubuntu6 1.22.6ubuntu6
+2026-09-05 12:56:07 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:07 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:07 status half-installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:08 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:08 startup packages configure
+2026-09-05 12:56:08 configure dpkg:amd64 1.22.6ubuntu6 <none>
+2026-09-05 12:56:08 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:08 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:08 status installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 12:56:08 startup packages configure
+2026-09-05 12:56:12 startup archives unpack
+2026-09-05 12:56:12 upgrade e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status half-configured e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status half-installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 startup packages configure
+2026-09-05 12:56:12 configure e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:56:12 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status half-configured e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:12 status installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:56:16 startup archives unpack
+2026-09-05 12:56:16 upgrade findutils:amd64 4.9.0-5build1 4.9.0-5build1
+2026-09-05 12:56:16 status half-configured findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 status unpacked findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 status half-installed findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 status unpacked findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 startup packages configure
+2026-09-05 12:56:16 configure findutils:amd64 4.9.0-5build1 <none>
+2026-09-05 12:56:16 status unpacked findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 status half-configured findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:16 status installed findutils:amd64 4.9.0-5build1
+2026-09-05 12:56:17 startup packages configure
+2026-09-05 12:56:20 startup archives unpack
+2026-09-05 12:56:20 upgrade gcc-14-base:amd64 14-20240412-0ubuntu1 14-20240412-0ubuntu1
+2026-09-05 12:56:20 status half-configured gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:20 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:20 status half-installed gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:20 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:21 startup packages configure
+2026-09-05 12:56:21 configure gcc-14-base:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:56:21 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:21 status half-configured gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:21 status installed gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 12:56:21 startup packages configure
+2026-09-05 12:56:25 startup archives unpack
+2026-09-05 12:56:25 upgrade gpgv:amd64 2.4.4-2ubuntu17 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status half-configured gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status half-installed gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 startup packages configure
+2026-09-05 12:56:25 configure gpgv:amd64 2.4.4-2ubuntu17 <none>
+2026-09-05 12:56:25 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status half-configured gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 status installed gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 12:56:25 startup packages configure
+2026-09-05 12:56:29 startup archives unpack
+2026-09-05 12:56:29 upgrade grep:amd64 3.11-4build1 3.11-4build1
+2026-09-05 12:56:29 status half-configured grep:amd64 3.11-4build1
+2026-09-05 12:56:29 status unpacked grep:amd64 3.11-4build1
+2026-09-05 12:56:29 status half-installed grep:amd64 3.11-4build1
+2026-09-05 12:56:29 status unpacked grep:amd64 3.11-4build1
+2026-09-05 12:56:29 startup packages configure
+2026-09-05 12:56:29 configure grep:amd64 3.11-4build1 <none>
+2026-09-05 12:56:29 status unpacked grep:amd64 3.11-4build1
+2026-09-05 12:56:29 status half-configured grep:amd64 3.11-4build1
+2026-09-05 12:56:29 status installed grep:amd64 3.11-4build1
+2026-09-05 12:56:29 startup packages configure
+2026-09-05 12:56:33 startup archives unpack
+2026-09-05 12:56:33 upgrade gzip:amd64 1.12-1ubuntu3 1.12-1ubuntu3
+2026-09-05 12:56:33 status half-configured gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 status half-installed gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 startup packages configure
+2026-09-05 12:56:33 configure gzip:amd64 1.12-1ubuntu3 <none>
+2026-09-05 12:56:33 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 status half-configured gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:33 status installed gzip:amd64 1.12-1ubuntu3
+2026-09-05 12:56:34 startup packages configure
+2026-09-05 12:56:37 startup archives unpack
+2026-09-05 12:56:37 upgrade hostname:amd64 3.23+nmu2ubuntu2 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status half-configured hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status unpacked hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status half-installed hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status unpacked hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 startup packages configure
+2026-09-05 12:56:37 configure hostname:amd64 3.23+nmu2ubuntu2 <none>
+2026-09-05 12:56:37 status unpacked hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status half-configured hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:37 status installed hostname:amd64 3.23+nmu2ubuntu2
+2026-09-05 12:56:38 startup packages configure
+2026-09-05 12:56:41 startup archives unpack
+2026-09-05 12:56:41 upgrade init-system-helpers:all 1.66ubuntu1 1.66ubuntu1
+2026-09-05 12:56:41 status half-configured init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:41 status unpacked init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:41 status half-installed init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:41 status unpacked init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:42 startup packages configure
+2026-09-05 12:56:42 configure init-system-helpers:all 1.66ubuntu1 <none>
+2026-09-05 12:56:42 status unpacked init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:42 status half-configured init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:42 status installed init-system-helpers:all 1.66ubuntu1
+2026-09-05 12:56:42 startup packages configure
+2026-09-05 12:56:46 startup archives unpack
+2026-09-05 12:56:46 upgrade libacl1:amd64 2.3.2-1build1 2.3.2-1build1
+2026-09-05 12:56:46 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:46 status half-configured libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 status half-installed libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 startup packages configure
+2026-09-05 12:56:46 configure libacl1:amd64 2.3.2-1build1 <none>
+2026-09-05 12:56:46 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 status half-configured libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 status installed libacl1:amd64 2.3.2-1build1
+2026-09-05 12:56:46 startup packages configure
+2026-09-05 12:56:46 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:56:46 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:46 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:50 startup archives unpack
+2026-09-05 12:56:50 upgrade libapt-pkg6.0t64:amd64 2.7.14build2 2.7.14build2
+2026-09-05 12:56:50 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:50 status half-configured libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 status half-installed libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 startup packages configure
+2026-09-05 12:56:50 configure libapt-pkg6.0t64:amd64 2.7.14build2 <none>
+2026-09-05 12:56:50 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 status half-configured libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 status installed libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 12:56:50 startup packages configure
+2026-09-05 12:56:50 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:56:50 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:50 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:54 startup archives unpack
+2026-09-05 12:56:54 upgrade libassuan0:amd64 2.5.6-1build1 2.5.6-1build1
+2026-09-05 12:56:54 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:54 status half-configured libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 status unpacked libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 status half-installed libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 status unpacked libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 startup packages configure
+2026-09-05 12:56:54 configure libassuan0:amd64 2.5.6-1build1 <none>
+2026-09-05 12:56:54 status unpacked libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 status half-configured libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:54 status installed libassuan0:amd64 2.5.6-1build1
+2026-09-05 12:56:55 startup packages configure
+2026-09-05 12:56:55 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:56:55 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:55 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:58 startup archives unpack
+2026-09-05 12:56:58 upgrade libattr1:amd64 1:2.5.2-1build1 1:2.5.2-1build1
+2026-09-05 12:56:58 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:58 status half-configured libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:58 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:58 status half-installed libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:58 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:59 startup packages configure
+2026-09-05 12:56:59 configure libattr1:amd64 1:2.5.2-1build1 <none>
+2026-09-05 12:56:59 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:59 status half-configured libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:59 status installed libattr1:amd64 1:2.5.2-1build1
+2026-09-05 12:56:59 startup packages configure
+2026-09-05 12:56:59 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:56:59 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:56:59 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:02 startup archives unpack
+2026-09-05 12:57:02 upgrade libaudit-common:all 1:3.1.2-2.1build1 1:3.1.2-2.1build1
+2026-09-05 12:57:02 status half-configured libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:02 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:02 status half-installed libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:02 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:03 startup packages configure
+2026-09-05 12:57:03 configure libaudit-common:all 1:3.1.2-2.1build1 <none>
+2026-09-05 12:57:03 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:03 status half-configured libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:03 status installed libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 12:57:03 startup packages configure
+2026-09-05 12:57:07 startup archives unpack
+2026-09-05 12:57:07 upgrade libaudit1:amd64 1:3.1.2-2.1build1 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:07 status half-configured libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status half-installed libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 startup packages configure
+2026-09-05 12:57:07 configure libaudit1:amd64 1:3.1.2-2.1build1 <none>
+2026-09-05 12:57:07 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status half-configured libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 status installed libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 12:57:07 startup packages configure
+2026-09-05 12:57:07 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:07 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:07 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:11 startup archives unpack
+2026-09-05 12:57:11 upgrade libblkid1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:11 status half-configured libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status half-installed libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 startup packages configure
+2026-09-05 12:57:11 configure libblkid1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:57:11 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status half-configured libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 status installed libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:57:11 startup packages configure
+2026-09-05 12:57:11 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:11 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:11 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:15 startup archives unpack
+2026-09-05 12:57:15 upgrade libbz2-1.0:amd64 1.0.8-5.1 1.0.8-5.1
+2026-09-05 12:57:15 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:15 status half-configured libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 status half-installed libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 startup packages configure
+2026-09-05 12:57:15 configure libbz2-1.0:amd64 1.0.8-5.1 <none>
+2026-09-05 12:57:15 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 status half-configured libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:15 status installed libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 12:57:16 startup packages configure
+2026-09-05 12:57:16 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:16 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:16 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:19 startup archives unpack
+2026-09-05 12:57:19 upgrade libc-bin:amd64 2.39-0ubuntu8 2.39-0ubuntu8
+2026-09-05 12:57:19 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:19 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:19 status half-installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:19 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:20 startup packages configure
+2026-09-05 12:57:20 configure libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:20 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:20 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:20 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:20 startup packages configure
+2026-09-05 12:57:24 startup archives unpack
+2026-09-05 12:57:24 upgrade libc6:amd64 2.39-0ubuntu8 2.39-0ubuntu8
+2026-09-05 12:57:24 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 status half-installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 startup packages configure
+2026-09-05 12:57:24 configure libc6:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:24 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:24 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:25 status installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 12:57:25 startup packages configure
+2026-09-05 12:57:25 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:25 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:26 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:29 startup archives unpack
+2026-09-05 12:57:29 upgrade libcap-ng0:amd64 0.8.4-2build2 0.8.4-2build2
+2026-09-05 12:57:29 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:29 status half-configured libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 status unpacked libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 status half-installed libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 status unpacked libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 startup packages configure
+2026-09-05 12:57:29 configure libcap-ng0:amd64 0.8.4-2build2 <none>
+2026-09-05 12:57:29 status unpacked libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 status half-configured libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:29 status installed libcap-ng0:amd64 0.8.4-2build2
+2026-09-05 12:57:30 startup packages configure
+2026-09-05 12:57:30 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:30 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:30 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:33 startup archives unpack
+2026-09-05 12:57:33 upgrade libcap2:amd64 1:2.66-5ubuntu2 1:2.66-5ubuntu2
+2026-09-05 12:57:33 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:33 status half-configured libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:33 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:33 status half-installed libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:33 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:34 startup packages configure
+2026-09-05 12:57:34 configure libcap2:amd64 1:2.66-5ubuntu2 <none>
+2026-09-05 12:57:34 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:34 status half-configured libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:34 status installed libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 12:57:34 startup packages configure
+2026-09-05 12:57:34 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:34 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:34 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:38 startup archives unpack
+2026-09-05 12:57:38 upgrade libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:38 status half-configured libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status half-installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 startup packages configure
+2026-09-05 12:57:38 configure libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:57:38 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status half-configured libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 status installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:38 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:38 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:38 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:42 startup archives unpack
+2026-09-05 12:57:42 upgrade libcrypt1:amd64 1:4.4.36-4build1 1:4.4.36-4build1
+2026-09-05 12:57:42 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:42 status half-configured libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 status unpacked libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 status half-installed libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 status unpacked libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 startup packages configure
+2026-09-05 12:57:42 configure libcrypt1:amd64 1:4.4.36-4build1 <none>
+2026-09-05 12:57:42 status unpacked libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 status half-configured libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 status installed libcrypt1:amd64 1:4.4.36-4build1
+2026-09-05 12:57:42 startup packages configure
+2026-09-05 12:57:42 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:42 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:42 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:46 startup archives unpack
+2026-09-05 12:57:46 upgrade libdebconfclient0:amd64 0.271ubuntu3 0.271ubuntu3
+2026-09-05 12:57:46 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:46 status half-configured libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 status unpacked libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 status half-installed libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 status unpacked libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 startup packages configure
+2026-09-05 12:57:46 configure libdebconfclient0:amd64 0.271ubuntu3 <none>
+2026-09-05 12:57:46 status unpacked libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 status half-configured libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 status installed libdebconfclient0:amd64 0.271ubuntu3
+2026-09-05 12:57:46 startup packages configure
+2026-09-05 12:57:46 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:46 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:46 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:50 startup archives unpack
+2026-09-05 12:57:50 upgrade libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:50 status half-configured libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status half-installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 startup packages configure
+2026-09-05 12:57:50 configure libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:57:50 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status half-configured libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 status installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:57:50 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:50 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:50 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:54 startup archives unpack
+2026-09-05 12:57:54 upgrade libffi8:amd64 3.4.6-1build1 3.4.6-1build1
+2026-09-05 12:57:54 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:54 status half-configured libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 status unpacked libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 status half-installed libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 status unpacked libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 startup packages configure
+2026-09-05 12:57:54 configure libffi8:amd64 3.4.6-1build1 <none>
+2026-09-05 12:57:54 status unpacked libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 status half-configured libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 status installed libffi8:amd64 3.4.6-1build1
+2026-09-05 12:57:54 startup packages configure
+2026-09-05 12:57:54 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:54 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:54 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:58 startup archives unpack
+2026-09-05 12:57:58 upgrade libgcc-s1:amd64 14-20240412-0ubuntu1 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:58 status half-configured libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status half-installed libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 startup packages configure
+2026-09-05 12:57:58 configure libgcc-s1:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:57:58 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status half-configured libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:58 status installed libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 12:57:59 startup packages configure
+2026-09-05 12:57:59 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:57:59 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:57:59 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:02 startup archives unpack
+2026-09-05 12:58:02 upgrade libgcrypt20:amd64 1.10.3-2build1 1.10.3-2build1
+2026-09-05 12:58:02 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:02 status half-configured libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:02 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:02 status half-installed libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:02 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:03 startup packages configure
+2026-09-05 12:58:03 configure libgcrypt20:amd64 1.10.3-2build1 <none>
+2026-09-05 12:58:03 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:03 status half-configured libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:03 status installed libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 12:58:03 startup packages configure
+2026-09-05 12:58:03 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:03 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:03 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:06 startup archives unpack
+2026-09-05 12:58:06 upgrade libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:06 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:06 status half-configured libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:06 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:06 status half-installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:06 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:07 startup packages configure
+2026-09-05 12:58:07 configure libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6 <none>
+2026-09-05 12:58:07 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:07 status half-configured libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:07 status installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 12:58:07 startup packages configure
+2026-09-05 12:58:07 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:07 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:07 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:11 startup archives unpack
+2026-09-05 12:58:11 upgrade libgnutls30t64:amd64 3.8.3-1.1ubuntu3 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:11 status half-configured libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status half-installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 startup packages configure
+2026-09-05 12:58:11 configure libgnutls30t64:amd64 3.8.3-1.1ubuntu3 <none>
+2026-09-05 12:58:11 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status half-configured libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 status installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 12:58:11 startup packages configure
+2026-09-05 12:58:11 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:11 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:11 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:15 startup archives unpack
+2026-09-05 12:58:15 upgrade libgpg-error0:amd64 1.47-3build2 1.47-3build2
+2026-09-05 12:58:15 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:15 status half-configured libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 status half-installed libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 startup packages configure
+2026-09-05 12:58:15 configure libgpg-error0:amd64 1.47-3build2 <none>
+2026-09-05 12:58:15 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 status half-configured libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:15 status installed libgpg-error0:amd64 1.47-3build2
+2026-09-05 12:58:16 startup packages configure
+2026-09-05 12:58:16 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:16 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:16 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:19 startup archives unpack
+2026-09-05 12:58:19 upgrade libhogweed6t64:amd64 3.9.1-2.2build1 3.9.1-2.2build1
+2026-09-05 12:58:19 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:19 status half-configured libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 status half-installed libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 startup packages configure
+2026-09-05 12:58:19 configure libhogweed6t64:amd64 3.9.1-2.2build1 <none>
+2026-09-05 12:58:19 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 status half-configured libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:19 status installed libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:20 startup packages configure
+2026-09-05 12:58:20 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:20 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:20 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:23 startup archives unpack
+2026-09-05 12:58:23 upgrade libidn2-0:amd64 2.3.7-2build1 2.3.7-2build1
+2026-09-05 12:58:23 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:23 status half-configured libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:23 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:23 status half-installed libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:23 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:24 startup packages configure
+2026-09-05 12:58:24 configure libidn2-0:amd64 2.3.7-2build1 <none>
+2026-09-05 12:58:24 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:24 status half-configured libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:24 status installed libidn2-0:amd64 2.3.7-2build1
+2026-09-05 12:58:24 startup packages configure
+2026-09-05 12:58:24 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:24 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:24 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:28 startup archives unpack
+2026-09-05 12:58:28 upgrade liblz4-1:amd64 1.9.4-1build1 1.9.4-1build1
+2026-09-05 12:58:28 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:28 status half-configured liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 status half-installed liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 startup packages configure
+2026-09-05 12:58:28 configure liblz4-1:amd64 1.9.4-1build1 <none>
+2026-09-05 12:58:28 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 status half-configured liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 status installed liblz4-1:amd64 1.9.4-1build1
+2026-09-05 12:58:28 startup packages configure
+2026-09-05 12:58:28 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:28 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:28 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:32 startup archives unpack
+2026-09-05 12:58:32 upgrade liblzma5:amd64 5.6.1+really5.4.5-1 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:32 status half-configured liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status half-installed liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 startup packages configure
+2026-09-05 12:58:32 configure liblzma5:amd64 5.6.1+really5.4.5-1 <none>
+2026-09-05 12:58:32 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status half-configured liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 status installed liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 12:58:32 startup packages configure
+2026-09-05 12:58:32 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:32 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:32 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:36 startup archives unpack
+2026-09-05 12:58:36 upgrade libmd0:amd64 1.1.0-2build1 1.1.0-2build1
+2026-09-05 12:58:36 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:36 status half-configured libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 status half-installed libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 startup packages configure
+2026-09-05 12:58:36 configure libmd0:amd64 1.1.0-2build1 <none>
+2026-09-05 12:58:36 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 status half-configured libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:36 status installed libmd0:amd64 1.1.0-2build1
+2026-09-05 12:58:37 startup packages configure
+2026-09-05 12:58:37 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:37 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:37 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:40 startup archives unpack
+2026-09-05 12:58:40 upgrade libmount1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:40 status half-configured libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status half-installed libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 startup packages configure
+2026-09-05 12:58:40 configure libmount1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:58:40 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status half-configured libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:40 status installed libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:58:41 startup packages configure
+2026-09-05 12:58:41 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:41 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:41 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:44 startup archives unpack
+2026-09-05 12:58:44 upgrade libncursesw6:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2
+2026-09-05 12:58:44 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:44 status half-configured libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:44 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:44 status half-installed libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:44 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:45 startup packages configure
+2026-09-05 12:58:45 configure libncursesw6:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 12:58:45 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:45 status half-configured libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:45 status installed libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 12:58:45 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:45 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:45 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:48 startup archives unpack
+2026-09-05 12:58:48 upgrade libnettle8t64:amd64 3.9.1-2.2build1 3.9.1-2.2build1
+2026-09-05 12:58:48 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:48 status half-configured libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:48 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:48 status half-installed libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:48 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:49 startup packages configure
+2026-09-05 12:58:49 configure libnettle8t64:amd64 3.9.1-2.2build1 <none>
+2026-09-05 12:58:49 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:49 status half-configured libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:49 status installed libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 12:58:49 startup packages configure
+2026-09-05 12:58:49 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:49 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:49 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:52 startup archives unpack
+2026-09-05 12:58:52 upgrade libnpth0t64:amd64 1.6-3.1build1 1.6-3.1build1
+2026-09-05 12:58:52 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:52 status half-configured libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:52 status unpacked libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:52 status half-installed libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:52 status unpacked libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:53 startup packages configure
+2026-09-05 12:58:53 configure libnpth0t64:amd64 1.6-3.1build1 <none>
+2026-09-05 12:58:53 status unpacked libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:53 status half-configured libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:53 status installed libnpth0t64:amd64 1.6-3.1build1
+2026-09-05 12:58:53 startup packages configure
+2026-09-05 12:58:53 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:53 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:53 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:57 startup archives unpack
+2026-09-05 12:58:57 upgrade libp11-kit0:amd64 0.25.3-4ubuntu2 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:57 status half-configured libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status half-installed libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 startup packages configure
+2026-09-05 12:58:57 configure libp11-kit0:amd64 0.25.3-4ubuntu2 <none>
+2026-09-05 12:58:57 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status half-configured libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 status installed libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 12:58:57 startup packages configure
+2026-09-05 12:58:57 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:58:57 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:58:57 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:01 startup archives unpack
+2026-09-05 12:59:01 upgrade libpam-modules:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status half-configured libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status half-installed libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 startup packages configure
+2026-09-05 12:59:01 configure libpam-modules:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:59:01 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status half-configured libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:01 status installed libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:02 startup packages configure
+2026-09-05 12:59:05 startup archives unpack
+2026-09-05 12:59:05 upgrade libpam-modules-bin:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5
+2026-09-05 12:59:05 status half-configured libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:05 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:05 status half-installed libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:05 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:06 startup packages configure
+2026-09-05 12:59:06 configure libpam-modules-bin:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:59:06 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:06 status half-configured libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:06 status installed libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:06 startup packages configure
+2026-09-05 12:59:09 startup archives unpack
+2026-09-05 12:59:09 upgrade libpam-runtime:all 1.5.3-5ubuntu5 1.5.3-5ubuntu5
+2026-09-05 12:59:09 status half-configured libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:09 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:09 status half-installed libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:09 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:10 startup packages configure
+2026-09-05 12:59:10 configure libpam-runtime:all 1.5.3-5ubuntu5 <none>
+2026-09-05 12:59:10 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:10 status half-configured libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:10 status installed libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 12:59:10 startup packages configure
+2026-09-05 12:59:14 startup archives unpack
+2026-09-05 12:59:14 upgrade libpam0g:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:14 status half-configured libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status half-installed libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 startup packages configure
+2026-09-05 12:59:14 configure libpam0g:amd64 1.5.3-5ubuntu5 <none>
+2026-09-05 12:59:14 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status half-configured libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 status installed libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 12:59:14 startup packages configure
+2026-09-05 12:59:14 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:14 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:14 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:18 startup archives unpack
+2026-09-05 12:59:18 upgrade libpcre2-8-0:amd64 10.42-4ubuntu2 10.42-4ubuntu2
+2026-09-05 12:59:18 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:18 status half-configured libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 status half-installed libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 startup packages configure
+2026-09-05 12:59:18 configure libpcre2-8-0:amd64 10.42-4ubuntu2 <none>
+2026-09-05 12:59:18 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 status half-configured libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:18 status installed libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 12:59:19 startup packages configure
+2026-09-05 12:59:19 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:19 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:19 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:22 startup archives unpack
+2026-09-05 12:59:22 upgrade libproc2-0:amd64 2:4.0.4-4ubuntu3 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:22 status half-configured libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status half-installed libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 startup packages configure
+2026-09-05 12:59:22 configure libproc2-0:amd64 2:4.0.4-4ubuntu3 <none>
+2026-09-05 12:59:22 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status half-configured libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 status installed libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 12:59:22 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:22 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:22 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:26 startup archives unpack
+2026-09-05 12:59:26 upgrade libseccomp2:amd64 2.5.5-1ubuntu3 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:26 status half-configured libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status half-installed libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 startup packages configure
+2026-09-05 12:59:26 configure libseccomp2:amd64 2.5.5-1ubuntu3 <none>
+2026-09-05 12:59:26 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status half-configured libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:26 status installed libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 12:59:27 startup packages configure
+2026-09-05 12:59:27 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:27 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:27 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:30 startup archives unpack
+2026-09-05 12:59:30 upgrade libselinux1:amd64 3.5-2ubuntu2 3.5-2ubuntu2
+2026-09-05 12:59:30 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:30 status half-configured libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:30 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:30 status half-installed libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:30 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:31 startup packages configure
+2026-09-05 12:59:31 configure libselinux1:amd64 3.5-2ubuntu2 <none>
+2026-09-05 12:59:31 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:31 status half-configured libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:31 status installed libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 12:59:31 startup packages configure
+2026-09-05 12:59:31 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:31 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:31 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:34 startup archives unpack
+2026-09-05 12:59:34 upgrade libsemanage-common:all 3.5-1build5 3.5-1build5
+2026-09-05 12:59:34 status half-configured libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:34 status unpacked libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:34 status half-installed libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:34 status unpacked libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:35 startup packages configure
+2026-09-05 12:59:35 configure libsemanage-common:all 3.5-1build5 <none>
+2026-09-05 12:59:35 status unpacked libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:35 status half-configured libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:35 status installed libsemanage-common:all 3.5-1build5
+2026-09-05 12:59:38 startup archives unpack
+2026-09-05 12:59:38 upgrade libsemanage2:amd64 3.5-1build5 3.5-1build5
+2026-09-05 12:59:38 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:38 status half-configured libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:38 status unpacked libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:38 status half-installed libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:38 status unpacked libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:39 startup packages configure
+2026-09-05 12:59:39 configure libsemanage2:amd64 3.5-1build5 <none>
+2026-09-05 12:59:39 status unpacked libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:39 status half-configured libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:39 status installed libsemanage2:amd64 3.5-1build5
+2026-09-05 12:59:39 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:39 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:39 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:42 startup archives unpack
+2026-09-05 12:59:42 upgrade libsepol2:amd64 3.5-2build1 3.5-2build1
+2026-09-05 12:59:42 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:42 status half-configured libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:42 status unpacked libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:42 status half-installed libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:42 status unpacked libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:43 startup packages configure
+2026-09-05 12:59:43 configure libsepol2:amd64 3.5-2build1 <none>
+2026-09-05 12:59:43 status unpacked libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:43 status half-configured libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:43 status installed libsepol2:amd64 3.5-2build1
+2026-09-05 12:59:43 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:43 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:43 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:46 startup archives unpack
+2026-09-05 12:59:46 upgrade libsmartcols1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:46 status half-configured libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status half-installed libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 startup packages configure
+2026-09-05 12:59:46 configure libsmartcols1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 12:59:46 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status half-configured libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:46 status installed libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 12:59:47 startup packages configure
+2026-09-05 12:59:47 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:47 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:47 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:50 startup archives unpack
+2026-09-05 12:59:50 upgrade libss2:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:50 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:50 status half-configured libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:50 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:50 status half-installed libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:50 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:51 startup packages configure
+2026-09-05 12:59:51 configure libss2:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 12:59:51 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:51 status half-configured libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:51 status installed libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 12:59:51 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:51 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:51 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:54 startup archives unpack
+2026-09-05 12:59:54 upgrade libssl3t64:amd64 3.0.13-0ubuntu3 3.0.13-0ubuntu3
+2026-09-05 12:59:54 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:54 status half-configured libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:54 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:54 status half-installed libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:54 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:55 startup packages configure
+2026-09-05 12:59:55 configure libssl3t64:amd64 3.0.13-0ubuntu3 <none>
+2026-09-05 12:59:55 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:55 status half-configured libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:55 status installed libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 12:59:55 startup packages configure
+2026-09-05 12:59:55 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:55 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:55 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:59 startup archives unpack
+2026-09-05 12:59:59 upgrade libstdc++6:amd64 14-20240412-0ubuntu1 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:59 status half-configured libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status half-installed libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 startup packages configure
+2026-09-05 12:59:59 configure libstdc++6:amd64 14-20240412-0ubuntu1 <none>
+2026-09-05 12:59:59 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status half-configured libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 status installed libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 12:59:59 startup packages configure
+2026-09-05 12:59:59 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 12:59:59 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 12:59:59 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:03 startup archives unpack
+2026-09-05 13:00:03 upgrade libsystemd0:amd64 255.4-1ubuntu8 255.4-1ubuntu8
+2026-09-05 13:00:03 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:03 status half-configured libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 status half-installed libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 startup packages configure
+2026-09-05 13:00:03 configure libsystemd0:amd64 255.4-1ubuntu8 <none>
+2026-09-05 13:00:03 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 status half-configured libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 status installed libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:00:03 startup packages configure
+2026-09-05 13:00:03 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:03 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:03 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:07 startup archives unpack
+2026-09-05 13:00:07 upgrade libtasn1-6:amd64 4.19.0-3build1 4.19.0-3build1
+2026-09-05 13:00:07 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:07 status half-configured libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 status half-installed libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 startup packages configure
+2026-09-05 13:00:07 configure libtasn1-6:amd64 4.19.0-3build1 <none>
+2026-09-05 13:00:07 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 status half-configured libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:07 status installed libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:00:08 startup packages configure
+2026-09-05 13:00:08 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:08 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:08 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:11 startup archives unpack
+2026-09-05 13:00:11 upgrade libtinfo6:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2
+2026-09-05 13:00:11 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:11 status half-configured libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:11 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:11 status half-installed libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:11 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:12 startup packages configure
+2026-09-05 13:00:12 configure libtinfo6:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 13:00:12 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:12 status half-configured libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:12 status installed libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:12 startup packages configure
+2026-09-05 13:00:12 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:12 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:12 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:15 startup archives unpack
+2026-09-05 13:00:16 upgrade libudev1:amd64 255.4-1ubuntu8 255.4-1ubuntu8
+2026-09-05 13:00:16 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:16 status half-configured libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 status half-installed libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 startup packages configure
+2026-09-05 13:00:16 configure libudev1:amd64 255.4-1ubuntu8 <none>
+2026-09-05 13:00:16 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 status half-configured libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 status installed libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:00:16 startup packages configure
+2026-09-05 13:00:16 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:16 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:16 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:20 startup archives unpack
+2026-09-05 13:00:20 upgrade libunistring5:amd64 1.1-2build1 1.1-2build1
+2026-09-05 13:00:20 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:20 status half-configured libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 status half-installed libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 startup packages configure
+2026-09-05 13:00:20 configure libunistring5:amd64 1.1-2build1 <none>
+2026-09-05 13:00:20 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 status half-configured libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 status installed libunistring5:amd64 1.1-2build1
+2026-09-05 13:00:20 startup packages configure
+2026-09-05 13:00:20 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:20 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:20 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:24 startup archives unpack
+2026-09-05 13:00:24 upgrade libuuid1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:24 status half-configured libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status half-installed libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 startup packages configure
+2026-09-05 13:00:24 configure libuuid1:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 13:00:24 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status half-configured libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:24 status installed libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:25 startup packages configure
+2026-09-05 13:00:25 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:25 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:25 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:28 startup archives unpack
+2026-09-05 13:00:28 upgrade libxxhash0:amd64 0.8.2-2build1 0.8.2-2build1
+2026-09-05 13:00:28 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:28 status half-configured libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:28 status unpacked libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:28 status half-installed libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:28 status unpacked libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:29 startup packages configure
+2026-09-05 13:00:29 configure libxxhash0:amd64 0.8.2-2build1 <none>
+2026-09-05 13:00:29 status unpacked libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:29 status half-configured libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:29 status installed libxxhash0:amd64 0.8.2-2build1
+2026-09-05 13:00:29 startup packages configure
+2026-09-05 13:00:29 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:29 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:29 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:33 startup archives unpack
+2026-09-05 13:00:33 upgrade libzstd1:amd64 1.5.5+dfsg2-2build1 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:33 status half-configured libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status half-installed libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 startup packages configure
+2026-09-05 13:00:33 configure libzstd1:amd64 1.5.5+dfsg2-2build1 <none>
+2026-09-05 13:00:33 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status half-configured libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 status installed libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:00:33 startup packages configure
+2026-09-05 13:00:33 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:00:33 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:33 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:00:37 startup archives unpack
+2026-09-05 13:00:37 upgrade login:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status half-configured login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status half-installed login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 startup packages configure
+2026-09-05 13:00:37 configure login:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+2026-09-05 13:00:37 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status half-configured login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 status installed login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:00:37 startup packages configure
+2026-09-05 13:00:41 startup archives unpack
+2026-09-05 13:00:41 upgrade logsave:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status half-configured logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status half-installed logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 startup packages configure
+2026-09-05 13:00:41 configure logsave:amd64 1.47.0-2.4~exp1ubuntu4 <none>
+2026-09-05 13:00:41 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status half-configured logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:41 status installed logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:00:45 startup archives unpack
+2026-09-05 13:00:45 upgrade mawk:amd64 1.3.4.20240123-1build1 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status half-configured mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status half-installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 startup packages configure
+2026-09-05 13:00:45 configure mawk:amd64 1.3.4.20240123-1build1 <none>
+2026-09-05 13:00:45 status unpacked mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status half-configured mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:45 status installed mawk:amd64 1.3.4.20240123-1build1
+2026-09-05 13:00:49 startup archives unpack
+2026-09-05 13:00:49 upgrade mount:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status half-configured mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status half-installed mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 startup packages configure
+2026-09-05 13:00:49 configure mount:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 13:00:49 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status half-configured mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:49 status installed mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:00:53 startup archives unpack
+2026-09-05 13:00:53 upgrade ncurses-base:all 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status half-configured ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status half-installed ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 startup packages configure
+2026-09-05 13:00:53 configure ncurses-base:all 6.4+20240113-1ubuntu2 <none>
+2026-09-05 13:00:53 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status half-configured ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 status installed ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:00:53 startup packages configure
+2026-09-05 13:00:57 startup archives unpack
+2026-09-05 13:00:57 upgrade ncurses-bin:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status half-configured ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status half-installed ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 startup packages configure
+2026-09-05 13:00:57 configure ncurses-bin:amd64 6.4+20240113-1ubuntu2 <none>
+2026-09-05 13:00:57 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status half-configured ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 status installed ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:00:57 startup packages configure
+2026-09-05 13:01:01 startup archives unpack
+2026-09-05 13:01:01 upgrade passwd:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 startup packages configure
+2026-09-05 13:01:01 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3 <none>
+2026-09-05 13:01:01 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:01 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:05 startup archives unpack
+2026-09-05 13:01:05 upgrade perl-base:amd64 5.38.2-3.2build2 5.38.2-3.2build2
+2026-09-05 13:01:05 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:05 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:05 status half-installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:05 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:06 startup packages configure
+2026-09-05 13:01:06 configure perl-base:amd64 5.38.2-3.2build2 <none>
+2026-09-05 13:01:06 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:06 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:06 status installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:06 startup packages configure
+2026-09-05 13:01:10 startup archives unpack
+2026-09-05 13:01:10 upgrade procps:amd64 2:4.0.4-4ubuntu3 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status half-configured procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status half-installed procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 startup packages configure
+2026-09-05 13:01:10 configure procps:amd64 2:4.0.4-4ubuntu3 <none>
+2026-09-05 13:01:10 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status half-configured procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:10 status installed procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:14 startup archives unpack
+2026-09-05 13:01:14 upgrade sed:amd64 4.9-2build1 4.9-2build1
+2026-09-05 13:01:14 status half-configured sed:amd64 4.9-2build1
+2026-09-05 13:01:14 status unpacked sed:amd64 4.9-2build1
+2026-09-05 13:01:14 status half-installed sed:amd64 4.9-2build1
+2026-09-05 13:01:14 status unpacked sed:amd64 4.9-2build1
+2026-09-05 13:01:14 startup packages configure
+2026-09-05 13:01:14 configure sed:amd64 4.9-2build1 <none>
+2026-09-05 13:01:14 status unpacked sed:amd64 4.9-2build1
+2026-09-05 13:01:14 status half-configured sed:amd64 4.9-2build1
+2026-09-05 13:01:14 status installed sed:amd64 4.9-2build1
+2026-09-05 13:01:14 startup packages configure
+2026-09-05 13:01:18 startup archives unpack
+2026-09-05 13:01:18 upgrade sensible-utils:all 0.0.22 0.0.22
+2026-09-05 13:01:18 status half-configured sensible-utils:all 0.0.22
+2026-09-05 13:01:18 status unpacked sensible-utils:all 0.0.22
+2026-09-05 13:01:18 status half-installed sensible-utils:all 0.0.22
+2026-09-05 13:01:18 status unpacked sensible-utils:all 0.0.22
+2026-09-05 13:01:18 startup packages configure
+2026-09-05 13:01:18 configure sensible-utils:all 0.0.22 <none>
+2026-09-05 13:01:18 status unpacked sensible-utils:all 0.0.22
+2026-09-05 13:01:18 status half-configured sensible-utils:all 0.0.22
+2026-09-05 13:01:18 status installed sensible-utils:all 0.0.22
+2026-09-05 13:01:22 startup archives unpack
+2026-09-05 13:01:22 upgrade sysvinit-utils:amd64 3.08-6ubuntu3 3.08-6ubuntu3
+2026-09-05 13:01:22 status half-configured sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 status unpacked sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 status half-installed sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 status unpacked sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 startup packages configure
+2026-09-05 13:01:22 configure sysvinit-utils:amd64 3.08-6ubuntu3 <none>
+2026-09-05 13:01:22 status unpacked sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 status half-configured sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 status installed sysvinit-utils:amd64 3.08-6ubuntu3
+2026-09-05 13:01:22 startup packages configure
+2026-09-05 13:01:26 startup archives unpack
+2026-09-05 13:01:26 upgrade tar:amd64 1.35+dfsg-3build1 1.35+dfsg-3build1
+2026-09-05 13:01:26 status half-configured tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 status half-installed tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 startup packages configure
+2026-09-05 13:01:26 configure tar:amd64 1.35+dfsg-3build1 <none>
+2026-09-05 13:01:26 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 status half-configured tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:26 status installed tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:27 startup packages configure
+2026-09-05 13:01:30 startup archives unpack
+2026-09-05 13:01:30 upgrade ubuntu-keyring:all 2023.11.28.1 2023.11.28.1
+2026-09-05 13:01:30 status half-configured ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 status unpacked ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 status half-installed ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 status unpacked ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 startup packages configure
+2026-09-05 13:01:30 configure ubuntu-keyring:all 2023.11.28.1 <none>
+2026-09-05 13:01:30 status unpacked ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 status half-configured ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:30 status installed ubuntu-keyring:all 2023.11.28.1
+2026-09-05 13:01:31 startup packages configure
+2026-09-05 13:01:34 startup archives unpack
+2026-09-05 13:01:34 upgrade util-linux:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6
+2026-09-05 13:01:34 status half-configured util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:34 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:34 status half-installed util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:34 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:35 startup packages configure
+2026-09-05 13:01:35 configure util-linux:amd64 2.39.3-9ubuntu6 <none>
+2026-09-05 13:01:35 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:35 status half-configured util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:35 status installed util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:35 startup packages configure
+2026-09-05 13:01:39 startup archives unpack
+2026-09-05 13:01:39 upgrade zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:39 status half-configured zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status half-installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 startup packages configure
+2026-09-05 13:01:39 configure zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2 <none>
+2026-09-05 13:01:39 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status half-configured zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 status installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:39 startup packages configure
+2026-09-05 13:01:39 trigproc libc-bin:amd64 2.39-0ubuntu8 <none>
+2026-09-05 13:01:39 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:39 status installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:47 startup archives unpack
+2026-09-05 13:01:47 upgrade gcc-14-base:amd64 14-20240412-0ubuntu1 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status half-configured gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status half-installed gcc-14-base:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked gcc-14-base:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup packages configure
+2026-09-05 13:01:47 configure gcc-14-base:amd64 14.2.0-4ubuntu2~24.04.1 <none>
+2026-09-05 13:01:47 status unpacked gcc-14-base:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status half-configured gcc-14-base:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status installed gcc-14-base:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup archives unpack
+2026-09-05 13:01:47 upgrade libgcc-s1:amd64 14-20240412-0ubuntu1 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status triggers-pending libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:47 status half-configured libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status half-installed libgcc-s1:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked libgcc-s1:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup packages configure
+2026-09-05 13:01:47 configure libgcc-s1:amd64 14.2.0-4ubuntu2~24.04.1 <none>
+2026-09-05 13:01:47 status unpacked libgcc-s1:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status half-configured libgcc-s1:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status installed libgcc-s1:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup archives unpack
+2026-09-05 13:01:47 upgrade libstdc++6:amd64 14-20240412-0ubuntu1 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status half-configured libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status half-installed libstdc++6:amd64 14-20240412-0ubuntu1
+2026-09-05 13:01:47 status unpacked libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup packages configure
+2026-09-05 13:01:47 configure libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1 <none>
+2026-09-05 13:01:47 status unpacked libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status half-configured libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 status installed libstdc++6:amd64 14.2.0-4ubuntu2~24.04.1
+2026-09-05 13:01:47 startup archives unpack
+2026-09-05 13:01:47 upgrade libc6:amd64 2.39-0ubuntu8 2.39-0ubuntu8.8
+2026-09-05 13:01:47 status half-configured libc6:amd64 2.39-0ubuntu8
+2026-09-05 13:01:47 status unpacked libc6:amd64 2.39-0ubuntu8
+2026-09-05 13:01:47 status half-installed libc6:amd64 2.39-0ubuntu8
+2026-09-05 13:01:47 status unpacked libc6:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:47 startup packages configure
+2026-09-05 13:01:47 configure libc6:amd64 2.39-0ubuntu8.8 <none>
+2026-09-05 13:01:47 status unpacked libc6:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:47 status half-configured libc6:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:47 status installed libc6:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:47 startup archives unpack
+2026-09-05 13:01:47 upgrade base-files:amd64 13ubuntu10 13ubuntu10.4
+2026-09-05 13:01:47 status half-configured base-files:amd64 13ubuntu10
+2026-09-05 13:01:47 status unpacked base-files:amd64 13ubuntu10
+2026-09-05 13:01:47 status half-installed base-files:amd64 13ubuntu10
+2026-09-05 13:01:47 status unpacked base-files:amd64 13ubuntu10.4
+2026-09-05 13:01:47 startup packages configure
+2026-09-05 13:01:47 configure base-files:amd64 13ubuntu10.4 <none>
+2026-09-05 13:01:47 status unpacked base-files:amd64 13ubuntu10.4
+2026-09-05 13:01:48 status half-configured base-files:amd64 13ubuntu10.4
+2026-09-05 13:01:48 status installed base-files:amd64 13ubuntu10.4
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade bsdutils:amd64 1:2.39.3-9ubuntu6 1:2.39.3-9ubuntu6.6
+2026-09-05 13:01:48 status half-configured bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 13:01:48 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 13:01:48 status half-installed bsdutils:amd64 1:2.39.3-9ubuntu6
+2026-09-05 13:01:48 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6.6
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure bsdutils:amd64 1:2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:48 status unpacked bsdutils:amd64 1:2.39.3-9ubuntu6.6
+2026-09-05 13:01:48 status half-configured bsdutils:amd64 1:2.39.3-9ubuntu6.6
+2026-09-05 13:01:48 status installed bsdutils:amd64 1:2.39.3-9ubuntu6.6
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade coreutils:amd64 9.4-3ubuntu6 9.4-3ubuntu6.3
+2026-09-05 13:01:48 status half-configured coreutils:amd64 9.4-3ubuntu6
+2026-09-05 13:01:48 status unpacked coreutils:amd64 9.4-3ubuntu6
+2026-09-05 13:01:48 status half-installed coreutils:amd64 9.4-3ubuntu6
+2026-09-05 13:01:48 status unpacked coreutils:amd64 9.4-3ubuntu6.3
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure coreutils:amd64 9.4-3ubuntu6.3 <none>
+2026-09-05 13:01:48 status unpacked coreutils:amd64 9.4-3ubuntu6.3
+2026-09-05 13:01:48 status half-configured coreutils:amd64 9.4-3ubuntu6.3
+2026-09-05 13:01:48 status installed coreutils:amd64 9.4-3ubuntu6.3
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade diffutils:amd64 1:3.10-1build1 1:3.10-1ubuntu0.1
+2026-09-05 13:01:48 status half-configured diffutils:amd64 1:3.10-1build1
+2026-09-05 13:01:48 status unpacked diffutils:amd64 1:3.10-1build1
+2026-09-05 13:01:48 status half-installed diffutils:amd64 1:3.10-1build1
+2026-09-05 13:01:48 status unpacked diffutils:amd64 1:3.10-1ubuntu0.1
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure diffutils:amd64 1:3.10-1ubuntu0.1 <none>
+2026-09-05 13:01:48 status unpacked diffutils:amd64 1:3.10-1ubuntu0.1
+2026-09-05 13:01:48 status half-configured diffutils:amd64 1:3.10-1ubuntu0.1
+2026-09-05 13:01:48 status installed diffutils:amd64 1:3.10-1ubuntu0.1
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libbz2-1.0:amd64 1.0.8-5.1 1.0.8-5.1ubuntu0.1
+2026-09-05 13:01:48 status half-configured libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 13:01:48 status unpacked libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 13:01:48 status half-installed libbz2-1.0:amd64 1.0.8-5.1
+2026-09-05 13:01:48 status unpacked libbz2-1.0:amd64 1.0.8-5.1ubuntu0.1
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure libbz2-1.0:amd64 1.0.8-5.1ubuntu0.1 <none>
+2026-09-05 13:01:48 status unpacked libbz2-1.0:amd64 1.0.8-5.1ubuntu0.1
+2026-09-05 13:01:48 status half-configured libbz2-1.0:amd64 1.0.8-5.1ubuntu0.1
+2026-09-05 13:01:48 status installed libbz2-1.0:amd64 1.0.8-5.1ubuntu0.1
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libgpg-error0:amd64 1.47-3build2 1.47-3build2.1
+2026-09-05 13:01:48 status half-configured libgpg-error0:amd64 1.47-3build2
+2026-09-05 13:01:48 status unpacked libgpg-error0:amd64 1.47-3build2
+2026-09-05 13:01:48 status half-installed libgpg-error0:amd64 1.47-3build2
+2026-09-05 13:01:48 status unpacked libgpg-error0:amd64 1.47-3build2.1
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure libgpg-error0:amd64 1.47-3build2.1 <none>
+2026-09-05 13:01:48 status unpacked libgpg-error0:amd64 1.47-3build2.1
+2026-09-05 13:01:48 status half-configured libgpg-error0:amd64 1.47-3build2.1
+2026-09-05 13:01:48 status installed libgpg-error0:amd64 1.47-3build2.1
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libgcrypt20:amd64 1.10.3-2build1 1.10.3-2ubuntu0.2
+2026-09-05 13:01:48 status half-configured libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 13:01:48 status unpacked libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 13:01:48 status half-installed libgcrypt20:amd64 1.10.3-2build1
+2026-09-05 13:01:48 status unpacked libgcrypt20:amd64 1.10.3-2ubuntu0.2
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure libgcrypt20:amd64 1.10.3-2ubuntu0.2 <none>
+2026-09-05 13:01:48 status unpacked libgcrypt20:amd64 1.10.3-2ubuntu0.2
+2026-09-05 13:01:48 status half-configured libgcrypt20:amd64 1.10.3-2ubuntu0.2
+2026-09-05 13:01:48 status installed libgcrypt20:amd64 1.10.3-2ubuntu0.2
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade liblz4-1:amd64 1.9.4-1build1 1.9.4-1build1.1
+2026-09-05 13:01:48 status half-configured liblz4-1:amd64 1.9.4-1build1
+2026-09-05 13:01:48 status unpacked liblz4-1:amd64 1.9.4-1build1
+2026-09-05 13:01:48 status half-installed liblz4-1:amd64 1.9.4-1build1
+2026-09-05 13:01:48 status unpacked liblz4-1:amd64 1.9.4-1build1.1
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure liblz4-1:amd64 1.9.4-1build1.1 <none>
+2026-09-05 13:01:48 status unpacked liblz4-1:amd64 1.9.4-1build1.1
+2026-09-05 13:01:48 status half-configured liblz4-1:amd64 1.9.4-1build1.1
+2026-09-05 13:01:48 status installed liblz4-1:amd64 1.9.4-1build1.1
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade liblzma5:amd64 5.6.1+really5.4.5-1 5.6.1+really5.4.5-1ubuntu0.3
+2026-09-05 13:01:48 status half-configured liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 13:01:48 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 13:01:48 status half-installed liblzma5:amd64 5.6.1+really5.4.5-1
+2026-09-05 13:01:48 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1ubuntu0.3
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure liblzma5:amd64 5.6.1+really5.4.5-1ubuntu0.3 <none>
+2026-09-05 13:01:48 status unpacked liblzma5:amd64 5.6.1+really5.4.5-1ubuntu0.3
+2026-09-05 13:01:48 status half-configured liblzma5:amd64 5.6.1+really5.4.5-1ubuntu0.3
+2026-09-05 13:01:48 status installed liblzma5:amd64 5.6.1+really5.4.5-1ubuntu0.3
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libcap2:amd64 1:2.66-5ubuntu2 1:2.66-5ubuntu2.4
+2026-09-05 13:01:48 status half-configured libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 13:01:48 status unpacked libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 13:01:48 status half-installed libcap2:amd64 1:2.66-5ubuntu2
+2026-09-05 13:01:48 status unpacked libcap2:amd64 1:2.66-5ubuntu2.4
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure libcap2:amd64 1:2.66-5ubuntu2.4 <none>
+2026-09-05 13:01:48 status unpacked libcap2:amd64 1:2.66-5ubuntu2.4
+2026-09-05 13:01:48 status half-configured libcap2:amd64 1:2.66-5ubuntu2.4
+2026-09-05 13:01:48 status installed libcap2:amd64 1:2.66-5ubuntu2.4
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libzstd1:amd64 1.5.5+dfsg2-2build1 1.5.5+dfsg2-2build1.1
+2026-09-05 13:01:48 status half-configured libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:01:48 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:01:48 status half-installed libzstd1:amd64 1.5.5+dfsg2-2build1
+2026-09-05 13:01:48 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1.1
+2026-09-05 13:01:48 startup packages configure
+2026-09-05 13:01:48 configure libzstd1:amd64 1.5.5+dfsg2-2build1.1 <none>
+2026-09-05 13:01:48 status unpacked libzstd1:amd64 1.5.5+dfsg2-2build1.1
+2026-09-05 13:01:48 status half-configured libzstd1:amd64 1.5.5+dfsg2-2build1.1
+2026-09-05 13:01:48 status installed libzstd1:amd64 1.5.5+dfsg2-2build1.1
+2026-09-05 13:01:48 startup archives unpack
+2026-09-05 13:01:48 upgrade libsystemd0:amd64 255.4-1ubuntu8 255.4-1ubuntu8.17
+2026-09-05 13:01:48 status half-configured libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:01:48 status unpacked libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:01:48 status half-installed libsystemd0:amd64 255.4-1ubuntu8
+2026-09-05 13:01:48 status unpacked libsystemd0:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure libsystemd0:amd64 255.4-1ubuntu8.17 <none>
+2026-09-05 13:01:49 status unpacked libsystemd0:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 status half-configured libsystemd0:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 status installed libsystemd0:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade libudev1:amd64 255.4-1ubuntu8 255.4-1ubuntu8.17
+2026-09-05 13:01:49 status half-configured libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:01:49 status unpacked libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:01:49 status half-installed libudev1:amd64 255.4-1ubuntu8
+2026-09-05 13:01:49 status unpacked libudev1:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure libudev1:amd64 255.4-1ubuntu8.17 <none>
+2026-09-05 13:01:49 status unpacked libudev1:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 status half-configured libudev1:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 status installed libudev1:amd64 255.4-1ubuntu8.17
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2 1:1.3.dfsg-3.1ubuntu2.2
+2026-09-05 13:01:49 status half-configured zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:49 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:49 status half-installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2
+2026-09-05 13:01:49 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2.2
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2.2 <none>
+2026-09-05 13:01:49 status unpacked zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2.2
+2026-09-05 13:01:49 status half-configured zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2.2
+2026-09-05 13:01:49 status installed zlib1g:amd64 1:1.3.dfsg-3.1ubuntu2.2
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade libapt-pkg6.0t64:amd64 2.7.14build2 2.8.3
+2026-09-05 13:01:49 status half-configured libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 13:01:49 status unpacked libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 13:01:49 status half-installed libapt-pkg6.0t64:amd64 2.7.14build2
+2026-09-05 13:01:49 status unpacked libapt-pkg6.0t64:amd64 2.8.3
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure libapt-pkg6.0t64:amd64 2.8.3 <none>
+2026-09-05 13:01:49 status unpacked libapt-pkg6.0t64:amd64 2.8.3
+2026-09-05 13:01:49 status half-configured libapt-pkg6.0t64:amd64 2.8.3
+2026-09-05 13:01:49 status installed libapt-pkg6.0t64:amd64 2.8.3
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade tar:amd64 1.35+dfsg-3build1 1.35+dfsg-3ubuntu0.4
+2026-09-05 13:01:49 status half-configured tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:49 status unpacked tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:49 status half-installed tar:amd64 1.35+dfsg-3build1
+2026-09-05 13:01:49 status unpacked tar:amd64 1.35+dfsg-3ubuntu0.4
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure tar:amd64 1.35+dfsg-3ubuntu0.4 <none>
+2026-09-05 13:01:49 status unpacked tar:amd64 1.35+dfsg-3ubuntu0.4
+2026-09-05 13:01:49 status half-configured tar:amd64 1.35+dfsg-3ubuntu0.4
+2026-09-05 13:01:49 status installed tar:amd64 1.35+dfsg-3ubuntu0.4
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade dpkg:amd64 1.22.6ubuntu6 1.22.6ubuntu6.6
+2026-09-05 13:01:49 status half-configured dpkg:amd64 1.22.6ubuntu6
+2026-09-05 13:01:49 status unpacked dpkg:amd64 1.22.6ubuntu6
+2026-09-05 13:01:49 status half-installed dpkg:amd64 1.22.6ubuntu6
+2026-09-05 13:01:49 status unpacked dpkg:amd64 1.22.6ubuntu6.6
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure dpkg:amd64 1.22.6ubuntu6.6 <none>
+2026-09-05 13:01:49 status unpacked dpkg:amd64 1.22.6ubuntu6.6
+2026-09-05 13:01:49 status half-configured dpkg:amd64 1.22.6ubuntu6.6
+2026-09-05 13:01:49 status installed dpkg:amd64 1.22.6ubuntu6.6
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade gzip:amd64 1.12-1ubuntu3 1.12-1ubuntu3.2
+2026-09-05 13:01:49 status half-configured gzip:amd64 1.12-1ubuntu3
+2026-09-05 13:01:49 status unpacked gzip:amd64 1.12-1ubuntu3
+2026-09-05 13:01:49 status half-installed gzip:amd64 1.12-1ubuntu3
+2026-09-05 13:01:49 status unpacked gzip:amd64 1.12-1ubuntu3.2
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure gzip:amd64 1.12-1ubuntu3.2 <none>
+2026-09-05 13:01:49 status unpacked gzip:amd64 1.12-1ubuntu3.2
+2026-09-05 13:01:49 status half-configured gzip:amd64 1.12-1ubuntu3.2
+2026-09-05 13:01:49 status installed gzip:amd64 1.12-1ubuntu3.2
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade login:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:49 status half-configured login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:49 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:49 status half-installed login:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:49 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure login:amd64 1:4.13+dfsg1-4ubuntu3.2 <none>
+2026-09-05 13:01:49 status unpacked login:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:49 status half-configured login:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:49 status installed login:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade ncurses-bin:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:49 status half-configured ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:49 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:49 status half-installed ncurses-bin:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:49 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:49 startup packages configure
+2026-09-05 13:01:49 configure ncurses-bin:amd64 6.4+20240113-1ubuntu2.2 <none>
+2026-09-05 13:01:49 status unpacked ncurses-bin:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:49 status half-configured ncurses-bin:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:49 status installed ncurses-bin:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:49 startup archives unpack
+2026-09-05 13:01:49 upgrade perl-base:amd64 5.38.2-3.2build2 5.38.2-3.2ubuntu0.4
+2026-09-05 13:01:49 status half-configured perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:49 status unpacked perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:49 status half-installed perl-base:amd64 5.38.2-3.2build2
+2026-09-05 13:01:50 status unpacked perl-base:amd64 5.38.2-3.2ubuntu0.4
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure perl-base:amd64 5.38.2-3.2ubuntu0.4 <none>
+2026-09-05 13:01:50 status unpacked perl-base:amd64 5.38.2-3.2ubuntu0.4
+2026-09-05 13:01:50 status half-configured perl-base:amd64 5.38.2-3.2ubuntu0.4
+2026-09-05 13:01:50 status installed perl-base:amd64 5.38.2-3.2ubuntu0.4
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade sed:amd64 4.9-2build1 4.9-2ubuntu0.24.04.1
+2026-09-05 13:01:50 status half-configured sed:amd64 4.9-2build1
+2026-09-05 13:01:50 status unpacked sed:amd64 4.9-2build1
+2026-09-05 13:01:50 status half-installed sed:amd64 4.9-2build1
+2026-09-05 13:01:50 status unpacked sed:amd64 4.9-2ubuntu0.24.04.1
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure sed:amd64 4.9-2ubuntu0.24.04.1 <none>
+2026-09-05 13:01:50 status unpacked sed:amd64 4.9-2ubuntu0.24.04.1
+2026-09-05 13:01:50 status half-configured sed:amd64 4.9-2ubuntu0.24.04.1
+2026-09-05 13:01:50 status installed sed:amd64 4.9-2ubuntu0.24.04.1
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade util-linux:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:50 status half-configured util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:50 status unpacked util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:50 status half-installed util-linux:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:50 status unpacked util-linux:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure util-linux:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:50 status unpacked util-linux:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:50 status half-configured util-linux:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:50 status installed util-linux:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade libc-bin:amd64 2.39-0ubuntu8 2.39-0ubuntu8.8
+2026-09-05 13:01:50 status half-configured libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:50 status unpacked libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:50 status half-installed libc-bin:amd64 2.39-0ubuntu8
+2026-09-05 13:01:50 status unpacked libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure libc-bin:amd64 2.39-0ubuntu8.8 <none>
+2026-09-05 13:01:50 status unpacked libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:50 status half-configured libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:50 status installed libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade ncurses-base:all 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:50 status half-configured ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:01:50 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:01:50 status half-installed ncurses-base:all 6.4+20240113-1ubuntu2
+2026-09-05 13:01:50 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure ncurses-base:all 6.4+20240113-1ubuntu2.2 <none>
+2026-09-05 13:01:50 status unpacked ncurses-base:all 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:50 status half-configured ncurses-base:all 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:50 status installed ncurses-base:all 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade gpgv:amd64 2.4.4-2ubuntu17 2.4.4-2ubuntu17.6
+2026-09-05 13:01:50 status half-configured gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 13:01:50 status unpacked gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 13:01:50 status half-installed gpgv:amd64 2.4.4-2ubuntu17
+2026-09-05 13:01:50 status unpacked gpgv:amd64 2.4.4-2ubuntu17.6
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure gpgv:amd64 2.4.4-2ubuntu17.6 <none>
+2026-09-05 13:01:50 status unpacked gpgv:amd64 2.4.4-2ubuntu17.6
+2026-09-05 13:01:50 status half-configured gpgv:amd64 2.4.4-2ubuntu17.6
+2026-09-05 13:01:50 status installed gpgv:amd64 2.4.4-2ubuntu17.6
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6 2:6.3.0+dfsg-2ubuntu6.1
+2026-09-05 13:01:50 status triggers-pending libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:50 status half-configured libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 13:01:50 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 13:01:50 status half-installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6
+2026-09-05 13:01:50 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6.1
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6.1 <none>
+2026-09-05 13:01:50 status unpacked libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6.1
+2026-09-05 13:01:50 status half-configured libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6.1
+2026-09-05 13:01:50 status installed libgmp10:amd64 2:6.3.0+dfsg-2ubuntu6.1
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade libnettle8t64:amd64 3.9.1-2.2build1 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status half-configured libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status unpacked libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status half-installed libnettle8t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status unpacked libnettle8t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure libnettle8t64:amd64 3.9.1-2.2build1.1 <none>
+2026-09-05 13:01:50 status unpacked libnettle8t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status half-configured libnettle8t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status installed libnettle8t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade libhogweed6t64:amd64 3.9.1-2.2build1 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status half-configured libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status half-installed libhogweed6t64:amd64 3.9.1-2.2build1
+2026-09-05 13:01:50 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure libhogweed6t64:amd64 3.9.1-2.2build1.1 <none>
+2026-09-05 13:01:50 status unpacked libhogweed6t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status half-configured libhogweed6t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 status installed libhogweed6t64:amd64 3.9.1-2.2build1.1
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:50 upgrade libunistring5:amd64 1.1-2build1 1.1-2build1.1
+2026-09-05 13:01:50 status half-configured libunistring5:amd64 1.1-2build1
+2026-09-05 13:01:50 status unpacked libunistring5:amd64 1.1-2build1
+2026-09-05 13:01:50 status half-installed libunistring5:amd64 1.1-2build1
+2026-09-05 13:01:50 status unpacked libunistring5:amd64 1.1-2build1.1
+2026-09-05 13:01:50 startup packages configure
+2026-09-05 13:01:50 configure libunistring5:amd64 1.1-2build1.1 <none>
+2026-09-05 13:01:50 status unpacked libunistring5:amd64 1.1-2build1.1
+2026-09-05 13:01:50 status half-configured libunistring5:amd64 1.1-2build1.1
+2026-09-05 13:01:50 status installed libunistring5:amd64 1.1-2build1.1
+2026-09-05 13:01:50 startup archives unpack
+2026-09-05 13:01:51 upgrade libidn2-0:amd64 2.3.7-2build1 2.3.7-2build1.1
+2026-09-05 13:01:51 status half-configured libidn2-0:amd64 2.3.7-2build1
+2026-09-05 13:01:51 status unpacked libidn2-0:amd64 2.3.7-2build1
+2026-09-05 13:01:51 status half-installed libidn2-0:amd64 2.3.7-2build1
+2026-09-05 13:01:51 status unpacked libidn2-0:amd64 2.3.7-2build1.1
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libidn2-0:amd64 2.3.7-2build1.1 <none>
+2026-09-05 13:01:51 status unpacked libidn2-0:amd64 2.3.7-2build1.1
+2026-09-05 13:01:51 status half-configured libidn2-0:amd64 2.3.7-2build1.1
+2026-09-05 13:01:51 status installed libidn2-0:amd64 2.3.7-2build1.1
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade libp11-kit0:amd64 0.25.3-4ubuntu2 0.25.3-4ubuntu2.2
+2026-09-05 13:01:51 status half-configured libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 13:01:51 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 13:01:51 status half-installed libp11-kit0:amd64 0.25.3-4ubuntu2
+2026-09-05 13:01:51 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2.2
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libp11-kit0:amd64 0.25.3-4ubuntu2.2 <none>
+2026-09-05 13:01:51 status unpacked libp11-kit0:amd64 0.25.3-4ubuntu2.2
+2026-09-05 13:01:51 status half-configured libp11-kit0:amd64 0.25.3-4ubuntu2.2
+2026-09-05 13:01:51 status installed libp11-kit0:amd64 0.25.3-4ubuntu2.2
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade libtasn1-6:amd64 4.19.0-3build1 4.19.0-3ubuntu0.24.04.2
+2026-09-05 13:01:51 status half-configured libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:01:51 status unpacked libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:01:51 status half-installed libtasn1-6:amd64 4.19.0-3build1
+2026-09-05 13:01:51 status unpacked libtasn1-6:amd64 4.19.0-3ubuntu0.24.04.2
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libtasn1-6:amd64 4.19.0-3ubuntu0.24.04.2 <none>
+2026-09-05 13:01:51 status unpacked libtasn1-6:amd64 4.19.0-3ubuntu0.24.04.2
+2026-09-05 13:01:51 status half-configured libtasn1-6:amd64 4.19.0-3ubuntu0.24.04.2
+2026-09-05 13:01:51 status installed libtasn1-6:amd64 4.19.0-3ubuntu0.24.04.2
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade libgnutls30t64:amd64 3.8.3-1.1ubuntu3 3.8.3-1.1ubuntu3.6
+2026-09-05 13:01:51 status half-configured libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 13:01:51 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 13:01:51 status half-installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3
+2026-09-05 13:01:51 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3.6
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libgnutls30t64:amd64 3.8.3-1.1ubuntu3.6 <none>
+2026-09-05 13:01:51 status unpacked libgnutls30t64:amd64 3.8.3-1.1ubuntu3.6
+2026-09-05 13:01:51 status half-configured libgnutls30t64:amd64 3.8.3-1.1ubuntu3.6
+2026-09-05 13:01:51 status installed libgnutls30t64:amd64 3.8.3-1.1ubuntu3.6
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade libseccomp2:amd64 2.5.5-1ubuntu3 2.5.5-1ubuntu3.1
+2026-09-05 13:01:51 status half-configured libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 13:01:51 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 13:01:51 status half-installed libseccomp2:amd64 2.5.5-1ubuntu3
+2026-09-05 13:01:51 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3.1
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libseccomp2:amd64 2.5.5-1ubuntu3.1 <none>
+2026-09-05 13:01:51 status unpacked libseccomp2:amd64 2.5.5-1ubuntu3.1
+2026-09-05 13:01:51 status half-configured libseccomp2:amd64 2.5.5-1ubuntu3.1
+2026-09-05 13:01:51 status installed libseccomp2:amd64 2.5.5-1ubuntu3.1
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade apt:amd64 2.7.14build2 2.8.3
+2026-09-05 13:01:51 status half-configured apt:amd64 2.7.14build2
+2026-09-05 13:01:51 status unpacked apt:amd64 2.7.14build2
+2026-09-05 13:01:51 status half-installed apt:amd64 2.7.14build2
+2026-09-05 13:01:51 status unpacked apt:amd64 2.8.3
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure apt:amd64 2.8.3 <none>
+2026-09-05 13:01:51 status unpacked apt:amd64 2.8.3
+2026-09-05 13:01:51 status half-configured apt:amd64 2.8.3
+2026-09-05 13:01:51 status installed apt:amd64 2.8.3
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade logsave:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 status half-configured logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status half-installed logsave:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 upgrade libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 status half-configured libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status half-installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4.1 <none>
+2026-09-05 13:01:51 status unpacked libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 status half-configured libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 status installed libext2fs2t64:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 status half-configured e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status half-installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:51 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:51 upgrade mount:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:51 status half-configured mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:51 status unpacked mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:51 status half-installed mount:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:51 status unpacked mount:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:51 upgrade libacl1:amd64 2.3.2-1build1 2.3.2-1build1.1
+2026-09-05 13:01:51 status half-configured libacl1:amd64 2.3.2-1build1
+2026-09-05 13:01:51 status unpacked libacl1:amd64 2.3.2-1build1
+2026-09-05 13:01:51 status half-installed libacl1:amd64 2.3.2-1build1
+2026-09-05 13:01:51 status unpacked libacl1:amd64 2.3.2-1build1.1
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:51 configure libacl1:amd64 2.3.2-1build1.1 <none>
+2026-09-05 13:01:51 status unpacked libacl1:amd64 2.3.2-1build1.1
+2026-09-05 13:01:51 status half-configured libacl1:amd64 2.3.2-1build1.1
+2026-09-05 13:01:51 status installed libacl1:amd64 2.3.2-1build1.1
+2026-09-05 13:01:51 startup archives unpack
+2026-09-05 13:01:51 upgrade libattr1:amd64 1:2.5.2-1build1 1:2.5.2-1ubuntu0.1
+2026-09-05 13:01:51 status half-configured libattr1:amd64 1:2.5.2-1build1
+2026-09-05 13:01:51 status unpacked libattr1:amd64 1:2.5.2-1build1
+2026-09-05 13:01:51 status half-installed libattr1:amd64 1:2.5.2-1build1
+2026-09-05 13:01:51 status unpacked libattr1:amd64 1:2.5.2-1ubuntu0.1
+2026-09-05 13:01:51 startup packages configure
+2026-09-05 13:01:52 configure libattr1:amd64 1:2.5.2-1ubuntu0.1 <none>
+2026-09-05 13:01:52 status unpacked libattr1:amd64 1:2.5.2-1ubuntu0.1
+2026-09-05 13:01:52 status half-configured libattr1:amd64 1:2.5.2-1ubuntu0.1
+2026-09-05 13:01:52 status installed libattr1:amd64 1:2.5.2-1ubuntu0.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libaudit-common:all 1:3.1.2-2.1build1 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status half-configured libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status unpacked libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status half-installed libaudit-common:all 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status unpacked libaudit-common:all 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libaudit-common:all 1:3.1.2-2.1build1.1 <none>
+2026-09-05 13:01:52 status unpacked libaudit-common:all 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status half-configured libaudit-common:all 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status installed libaudit-common:all 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libaudit1:amd64 1:3.1.2-2.1build1 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status half-configured libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status unpacked libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status half-installed libaudit1:amd64 1:3.1.2-2.1build1
+2026-09-05 13:01:52 status unpacked libaudit1:amd64 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libaudit1:amd64 1:3.1.2-2.1build1.1 <none>
+2026-09-05 13:01:52 status unpacked libaudit1:amd64 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status half-configured libaudit1:amd64 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 status installed libaudit1:amd64 1:3.1.2-2.1build1.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libblkid1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status half-installed libblkid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libblkid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libblkid1:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:52 status unpacked libblkid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libblkid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status installed libblkid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libmd0:amd64 1.1.0-2build1 1.1.0-2build1.1
+2026-09-05 13:01:52 status half-configured libmd0:amd64 1.1.0-2build1
+2026-09-05 13:01:52 status unpacked libmd0:amd64 1.1.0-2build1
+2026-09-05 13:01:52 status half-installed libmd0:amd64 1.1.0-2build1
+2026-09-05 13:01:52 status unpacked libmd0:amd64 1.1.0-2build1.1
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libmd0:amd64 1.1.0-2build1.1 <none>
+2026-09-05 13:01:52 status unpacked libmd0:amd64 1.1.0-2build1.1
+2026-09-05 13:01:52 status half-configured libmd0:amd64 1.1.0-2build1.1
+2026-09-05 13:01:52 status installed libmd0:amd64 1.1.0-2build1.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libpcre2-8-0:amd64 10.42-4ubuntu2 10.42-4ubuntu2.1
+2026-09-05 13:01:52 status half-configured libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 13:01:52 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 13:01:52 status half-installed libpcre2-8-0:amd64 10.42-4ubuntu2
+2026-09-05 13:01:52 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2.1
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libpcre2-8-0:amd64 10.42-4ubuntu2.1 <none>
+2026-09-05 13:01:52 status unpacked libpcre2-8-0:amd64 10.42-4ubuntu2.1
+2026-09-05 13:01:52 status half-configured libpcre2-8-0:amd64 10.42-4ubuntu2.1
+2026-09-05 13:01:52 status installed libpcre2-8-0:amd64 10.42-4ubuntu2.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libselinux1:amd64 3.5-2ubuntu2 3.5-2ubuntu2.1
+2026-09-05 13:01:52 status half-configured libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 13:01:52 status unpacked libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 13:01:52 status half-installed libselinux1:amd64 3.5-2ubuntu2
+2026-09-05 13:01:52 status unpacked libselinux1:amd64 3.5-2ubuntu2.1
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libselinux1:amd64 3.5-2ubuntu2.1 <none>
+2026-09-05 13:01:52 status unpacked libselinux1:amd64 3.5-2ubuntu2.1
+2026-09-05 13:01:52 status half-configured libselinux1:amd64 3.5-2ubuntu2.1
+2026-09-05 13:01:52 status installed libselinux1:amd64 3.5-2ubuntu2.1
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libmount1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status half-installed libmount1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libmount1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libmount1:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:52 status unpacked libmount1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libmount1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status installed libmount1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libpam-runtime:all 1.5.3-5ubuntu5 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status half-configured libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status unpacked libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status half-installed libpam-runtime:all 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status unpacked libpam-runtime:all 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libpam-runtime:all 1.5.3-5ubuntu5.7 <none>
+2026-09-05 13:01:52 status unpacked libpam-runtime:all 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status half-configured libpam-runtime:all 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status installed libpam-runtime:all 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libpam0g:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status half-configured libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status unpacked libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status half-installed libpam0g:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:52 status unpacked libpam0g:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libpam0g:amd64 1.5.3-5ubuntu5.7 <none>
+2026-09-05 13:01:52 status unpacked libpam0g:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status half-configured libpam0g:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 status installed libpam0g:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libsmartcols1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status half-installed libsmartcols1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:52 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libsmartcols1:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:52 status unpacked libsmartcols1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status half-configured libsmartcols1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 status installed libsmartcols1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libssl3t64:amd64 3.0.13-0ubuntu3 3.0.13-0ubuntu3.15
+2026-09-05 13:01:52 status half-configured libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 13:01:52 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 13:01:52 status half-installed libssl3t64:amd64 3.0.13-0ubuntu3
+2026-09-05 13:01:52 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3.15
+2026-09-05 13:01:52 startup packages configure
+2026-09-05 13:01:52 configure libssl3t64:amd64 3.0.13-0ubuntu3.15 <none>
+2026-09-05 13:01:52 status unpacked libssl3t64:amd64 3.0.13-0ubuntu3.15
+2026-09-05 13:01:52 status half-configured libssl3t64:amd64 3.0.13-0ubuntu3.15
+2026-09-05 13:01:52 status installed libssl3t64:amd64 3.0.13-0ubuntu3.15
+2026-09-05 13:01:52 startup archives unpack
+2026-09-05 13:01:52 upgrade libncursesw6:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:52 status half-configured libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:52 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:52 status half-installed libncursesw6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:52 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 upgrade libtinfo6:amd64 6.4+20240113-1ubuntu2 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 status half-configured libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:53 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:53 status half-installed libtinfo6:amd64 6.4+20240113-1ubuntu2
+2026-09-05 13:01:53 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 startup packages configure
+2026-09-05 13:01:53 configure libtinfo6:amd64 6.4+20240113-1ubuntu2.2 <none>
+2026-09-05 13:01:53 status unpacked libtinfo6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 status half-configured libtinfo6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 status installed libtinfo6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 startup archives unpack
+2026-09-05 13:01:53 upgrade libuuid1:amd64 2.39.3-9ubuntu6 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 status half-configured libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:53 status unpacked libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:53 status half-installed libuuid1:amd64 2.39.3-9ubuntu6
+2026-09-05 13:01:53 status unpacked libuuid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 startup packages configure
+2026-09-05 13:01:53 configure libuuid1:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:53 status unpacked libuuid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 status half-configured libuuid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 status installed libuuid1:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 startup archives unpack
+2026-09-05 13:01:53 upgrade libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status half-installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 upgrade libproc2-0:amd64 2:4.0.4-4ubuntu3 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status half-configured libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status half-installed libproc2-0:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 upgrade libss2:amd64 1.47.0-2.4~exp1ubuntu4 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status half-installed libss2:amd64 1.47.0-2.4~exp1ubuntu4
+2026-09-05 13:01:53 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 upgrade passwd:amd64 1:4.13+dfsg1-4ubuntu3 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:53 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:53 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:53 status half-installed passwd:amd64 1:4.13+dfsg1-4ubuntu3
+2026-09-05 13:01:53 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:53 upgrade procps:amd64 2:4.0.4-4ubuntu3 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status half-configured procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status unpacked procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status half-installed procps:amd64 2:4.0.4-4ubuntu3
+2026-09-05 13:01:53 status unpacked procps:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 startup packages configure
+2026-09-05 13:01:53 configure libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4.1 <none>
+2026-09-05 13:01:53 status unpacked libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status installed libcom-err2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 configure libproc2-0:amd64 2:4.0.4-4ubuntu3.3 <none>
+2026-09-05 13:01:53 status unpacked libproc2-0:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status half-configured libproc2-0:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status installed libproc2-0:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 configure libss2:amd64 1.47.0-2.4~exp1ubuntu4.1 <none>
+2026-09-05 13:01:53 status unpacked libss2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured libss2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status installed libss2:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 configure libncursesw6:amd64 6.4+20240113-1ubuntu2.2 <none>
+2026-09-05 13:01:53 status unpacked libncursesw6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 status half-configured libncursesw6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 status installed libncursesw6:amd64 6.4+20240113-1ubuntu2.2
+2026-09-05 13:01:53 configure logsave:amd64 1.47.0-2.4~exp1ubuntu4.1 <none>
+2026-09-05 13:01:53 status unpacked logsave:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured logsave:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status installed logsave:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 configure passwd:amd64 1:4.13+dfsg1-4ubuntu3.2 <none>
+2026-09-05 13:01:53 status unpacked passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:53 status half-configured passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:53 status installed passwd:amd64 1:4.13+dfsg1-4ubuntu3.2
+2026-09-05 13:01:53 configure mount:amd64 2.39.3-9ubuntu6.6 <none>
+2026-09-05 13:01:53 status unpacked mount:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 status half-configured mount:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 status installed mount:amd64 2.39.3-9ubuntu6.6
+2026-09-05 13:01:53 configure procps:amd64 2:4.0.4-4ubuntu3.3 <none>
+2026-09-05 13:01:53 status unpacked procps:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status half-configured procps:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 status installed procps:amd64 2:4.0.4-4ubuntu3.3
+2026-09-05 13:01:53 configure e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4.1 <none>
+2026-09-05 13:01:53 status unpacked e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status half-configured e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 status installed e2fsprogs:amd64 1.47.0-2.4~exp1ubuntu4.1
+2026-09-05 13:01:53 trigproc libc-bin:amd64 2.39-0ubuntu8.8 <none>
+2026-09-05 13:01:53 status half-configured libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:53 status installed libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:55 startup archives unpack
+2026-09-05 13:01:55 install libdb5.3t64:amd64 <none> 5.3.28+dfsg2-7
+2026-09-05 13:01:55 status triggers-pending libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:55 status half-installed libdb5.3t64:amd64 5.3.28+dfsg2-7
+2026-09-05 13:01:55 status unpacked libdb5.3t64:amd64 5.3.28+dfsg2-7
+2026-09-05 13:01:55 startup packages configure
+2026-09-05 13:01:55 configure libdb5.3t64:amd64 5.3.28+dfsg2-7 <none>
+2026-09-05 13:01:55 status unpacked libdb5.3t64:amd64 5.3.28+dfsg2-7
+2026-09-05 13:01:55 status half-configured libdb5.3t64:amd64 5.3.28+dfsg2-7
+2026-09-05 13:01:55 status installed libdb5.3t64:amd64 5.3.28+dfsg2-7
+2026-09-05 13:01:55 startup archives unpack
+2026-09-05 13:01:55 upgrade libpam-modules-bin:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status half-configured libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status half-installed libpam-modules-bin:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 startup packages configure
+2026-09-05 13:01:55 configure libpam-modules-bin:amd64 1.5.3-5ubuntu5.7 <none>
+2026-09-05 13:01:55 status unpacked libpam-modules-bin:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status half-configured libpam-modules-bin:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status installed libpam-modules-bin:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 startup archives unpack
+2026-09-05 13:01:55 upgrade libpam-modules:amd64 1.5.3-5ubuntu5 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status half-configured libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status half-installed libpam-modules:amd64 1.5.3-5ubuntu5
+2026-09-05 13:01:55 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 startup packages configure
+2026-09-05 13:01:55 configure libpam-modules:amd64 1.5.3-5ubuntu5.7 <none>
+2026-09-05 13:01:55 status unpacked libpam-modules:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status half-configured libpam-modules:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 status installed libpam-modules:amd64 1.5.3-5ubuntu5.7
+2026-09-05 13:01:55 startup packages configure
+2026-09-05 13:01:55 trigproc libc-bin:amd64 2.39-0ubuntu8.8 <none>
+2026-09-05 13:01:55 status half-configured libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:55 status installed libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-05 13:01:56 startup archives unpack
+2026-09-05 13:01:56 install unminimize:amd64 <none> 0.2.1
+2026-09-05 13:01:56 status half-installed unminimize:amd64 0.2.1
+2026-09-05 13:01:56 status unpacked unminimize:amd64 0.2.1
+2026-09-05 13:01:56 startup packages configure
+2026-09-05 13:01:56 configure unminimize:amd64 0.2.1 <none>
+2026-09-05 13:01:56 status unpacked unminimize:amd64 0.2.1
+2026-09-05 13:01:56 status half-configured unminimize:amd64 0.2.1
+2026-09-05 13:01:56 status installed unminimize:amd64 0.2.1
+2026-09-14 04:54:55 startup archives unpack
+2026-09-14 04:54:55 upgrade libc6:amd64 2.39-0ubuntu8.8 2.39-0ubuntu8.9
+2026-09-14 04:54:55 status triggers-pending libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:55 status half-configured libc6:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:55 status unpacked libc6:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:55 status half-installed libc6:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:56 status unpacked libc6:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:56 startup packages configure
+2026-09-14 04:54:56 configure libc6:amd64 2.39-0ubuntu8.9 <none>
+2026-09-14 04:54:56 status unpacked libc6:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:56 status half-configured libc6:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:57 status installed libc6:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:57 startup archives unpack
+2026-09-14 04:54:57 upgrade base-files:amd64 13ubuntu10.4 13ubuntu10.5
+2026-09-14 04:54:57 status half-configured base-files:amd64 13ubuntu10.4
+2026-09-14 04:54:57 status unpacked base-files:amd64 13ubuntu10.4
+2026-09-14 04:54:57 status half-installed base-files:amd64 13ubuntu10.4
+2026-09-14 04:54:57 status unpacked base-files:amd64 13ubuntu10.5
+2026-09-14 04:54:57 startup packages configure
+2026-09-14 04:54:57 configure base-files:amd64 13ubuntu10.5 <none>
+2026-09-14 04:54:57 status unpacked base-files:amd64 13ubuntu10.5
+2026-09-14 04:54:57 status half-configured base-files:amd64 13ubuntu10.5
+2026-09-14 04:54:57 status installed base-files:amd64 13ubuntu10.5
+2026-09-14 04:54:57 startup archives unpack
+2026-09-14 04:54:57 upgrade libc-bin:amd64 2.39-0ubuntu8.8 2.39-0ubuntu8.9
+2026-09-14 04:54:57 status half-configured libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:57 status unpacked libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:57 status half-installed libc-bin:amd64 2.39-0ubuntu8.8
+2026-09-14 04:54:57 status unpacked libc-bin:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:57 startup packages configure
+2026-09-14 04:54:57 configure libc-bin:amd64 2.39-0ubuntu8.9 <none>
+2026-09-14 04:54:57 status unpacked libc-bin:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:57 status half-configured libc-bin:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:58 status installed libc-bin:amd64 2.39-0ubuntu8.9
+2026-09-14 04:54:58 startup packages configure
