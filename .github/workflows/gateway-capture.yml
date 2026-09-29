@@ -1,0 +1,57 @@
+name: gateway-capture
+# Live captures of five open-source MCP / agent gateways, to score their records against
+# VLC-1 the way OpenShell was scored. Runs ONLY on this branch and ONLY on GitHub-hosted
+# runners. Each job runs one gateway with one allowed and one refused tool call and keeps
+# everything it observed; the collect job commits the results to capture/runs/ on this
+# branch, because job logs and artifacts are not readable from the maintainer's tooling.
+on:
+  push:
+    branches: [capture/gateways]
+    paths: ['.github/workflows/gateway-capture.yml', 'capture/scripts/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        gw: [agentgateway, docker-mcp, contextforge, lasso, bifrost]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: capture ${{ matrix.gw }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUT: ${{ github.workspace }}/out
+        run: |
+          mkdir -p "$OUT"
+          timeout 1200 bash capture/scripts/${{ matrix.gw }}.sh || echo "script exit $?" >> "$OUT/${{ matrix.gw }}/steps.txt"
+          echo "runner: $(uname -srm); $(date -u +%FT%TZ)" >> "$OUT/${{ matrix.gw }}/steps.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cap-${{ matrix.gw }}
+          path: out/
+          if-no-files-found: warn
+  collect:
+    needs: capture
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: capture/gateways }
+      - uses: actions/download-artifact@v4
+        with: { path: dl, pattern: cap-*, merge-multiple: true }
+      - name: commit results
+        run: |
+          D=capture/runs/run-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"
+          cp -r dl/. "$D/" 2>/dev/null || true
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "gateway-capture"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: gateway run $(basename "$D")" && git push -q origin HEAD:capture/gateways
