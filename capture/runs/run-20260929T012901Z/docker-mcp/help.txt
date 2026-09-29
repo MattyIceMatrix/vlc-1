@@ -1,0 +1,39 @@
+Docker MCP Toolkit's CLI - Manage your MCP servers and clients.
+
+Usage: docker mcp gateway run
+
+Flags:
+      --additional-catalog strings        Additional catalog paths must resolve under ~/.docker/mcp/catalogs/
+      --additional-config strings         Additional config paths to merge with the default config.yaml
+      --additional-registry strings       Additional registry paths to merge with the default registry.yaml
+      --additional-tools-config strings   Additional tools paths to merge with the default tools.yaml
+      --allow-unauthenticated             Allow unauthenticated HTTP/SSE gateway requests
+      --block-network                     Block tools from accessing forbidden network resources
+      --block-secrets                     Block secrets from being/received sent to/from tools (default true)
+      --catalog strings                   Catalog paths must resolve under ~/.docker/mcp/catalogs/
+      --config strings                    Paths to the config files (absolute or relative to ~/.docker/mcp/)
+      --cpus int                          CPUs allocated to each MCP Server (default is 1) (default 1)
+      --debug-dns                         Debug DNS resolution
+      --dry-run                           Start the gateway but do not listen for connections (useful for testing the configuration)
+      --enable-all-servers                Enable all servers in the catalog (instead of using individual --servers options)
+      --host string                       Host or IP address to bind TCP transports to
+      --interceptor stringArray           List of interceptors to use (format: when:type:path, e.g. 'before:exec:/bin/path')
+      --log-calls                         Log calls to the tools (default true)
+      --long-lived                        Containers are long-lived and will not be removed until the gateway is stopped, useful for stateful servers
+      --mcp-registry strings              MCP registry URLs to fetch servers from (can be repeated)
+      --memory string                     Memory allocated to each MCP Server (default is 2Gb) (default "2Gb")
+      --oci-ref stringArray               OCI image references to use
+      --port int                          TCP port to listen on (default is to listen on stdio)
+      --preserve-tool-schema-dialect      Relay tool schemas with the JSON Schema dialect the server declared, instead of translating pre-2020-12 dialects
+      --profile string                    Profile ID to use (mutually exclusive with --servers and --enable-all-servers)
+      --registry strings                  Paths to the registry files (absolute or relative to ~/.docker/mcp/)
+      --secrets docker-desktop            Colon separated paths to search for secrets. Can be docker-desktop or a path to a .env file (default to using Docker Desktop's secrets API) (default "docker-desktop:/run/secrets/mcp_secret:/.env")
+      --servers strings                   Names of the servers to enable (if non empty, ignore --registry flag)
+      --static                            Enable static mode (aka pre-started servers)
+      --tools strings                     List of tools to enable
+      --tools-config strings              Paths to the tools files (absolute or relative to ~/.docker/mcp/)
+      --transport string                  stdio, sse or streaming. Uses MCP_GATEWAY_AUTH_TOKEN environment variable for localhost authentication to prevent dns rebinding attacks. (default "stdio")
+      --verbose                           Verbose output (default true)
+      --verify-signatures                 Verify signatures of Docker MCP server images (default true)
+      --watch                             Watch for changes and reconfigure the gateway
+

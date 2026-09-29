@@ -1,0 +1,3 @@
+event: message
+data: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"description":"Get current time in a specific timezones","inputSchema":{"properties":{"timezone":{"description":"IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use 'UTC' as local timezone if no timezone provided by the user.","type":"string"}},"required":["timezone"],"type":"object"},"name":"get_current_time"}]}}
+

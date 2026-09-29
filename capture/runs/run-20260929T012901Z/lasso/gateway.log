@@ -1,0 +1,171 @@
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Initializing server 'MCP Gateway'
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourcesRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for ReadResourceRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for PromptListRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for GetPromptRequest
+2026-09-29 01:28:27,214 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListResourceTemplatesRequest
+2026-09-29 01:28:27,216 - mcp_gateway.server - INFO - Starting MCP Gateway server via legacy server.py entry point...
+2026-09-29 01:28:27,217 - mcp_gateway.gateway - INFO - Security scanner: disabled
+2026-09-29 01:28:27,217 - mcp_gateway.gateway - INFO - Starting MCP gateway server directly...
+2026-09-29 01:28:27,226 - asyncio - DEBUG - Using selector: EpollSelector
+2026-09-29 01:28:27,227 - mcp_gateway.gateway - INFO - MCP gateway lifespan starting...
+2026-09-29 01:28:27,227 - mcp_gateway.plugins.manager - DEBUG - Discovering plugins...
+2026-09-29 01:28:27,227 - mcp_gateway.plugins.manager - INFO - Registered plugin: BasicGuardrailPlugin (type: guardrail)
+2026-09-29 01:28:27,228 - mcp_gateway.plugins.manager - INFO - Registered plugin: LassoGuardrailPlugin (type: guardrail)
+2026-09-29 01:28:27,228 - mcp_gateway.plugins.manager - INFO - Registered plugin: PresidioGuardrailPlugin (type: guardrail)
+2026-09-29 01:28:27,376 - mcp_gateway.plugins.manager - INFO - Registered plugin: XetrackTracingPlugin (type: tracing)
+2026-09-29 01:28:27,376 - mcp_gateway.plugins.manager - INFO - Discovered 8 plugins
+2026-09-29 01:28:27,376 - mcp_gateway.gateway - INFO - Enabling guardrail plugin: basic
+2026-09-29 01:28:27,376 - mcp_gateway.gateway - INFO - Enabling tracing plugin: xetrack
+2026-09-29 01:28:27,376 - mcp_gateway.gateway - INFO - Guardrail plugins ENABLED: ['basic']
+2026-09-29 01:28:27,376 - mcp_gateway.gateway - INFO - Tracing plugins ENABLED: ['xetrack']
+2026-09-29 01:28:27,378 - mcp_gateway.plugins.guardrails.basic - INFO - BasicGuardrailPlugin loaded. Secret patterns enabled: 12
+2026-09-29 01:28:27,378 - mcp_gateway.plugins.manager - INFO - Loaded plugin: BasicGuardrailPlugin (type: guardrail)
+2026-09-29 01:28:27,378 - mcp_gateway.plugins.manager - DEBUG - Skipping plugin LassoGuardrailPlugin - not explicitly enabled
+2026-09-29 01:28:27,378 - mcp_gateway.plugins.manager - DEBUG - Skipping plugin PresidioGuardrailPlugin - not explicitly enabled
+2026-09-29 01:28:27,378 - xetrack.engine - DEBUG - Connecting to /tmp/tmp.I75KilncAd/tracing.db
+2026-09-29 01:28:27,380 - xetrack.engine - DEBUG - sqlitedict not installed, assets functionality will be disabled
+2026-09-29 01:28:27,383 - xetrack.engine - INFO - Created events table: default
+2026-09-29 01:28:27,388 - mcp_gateway.plugins.tracing.xetrack - INFO - XetrackTracingPlugin loaded with db_path=/tmp/tmp.I75KilncAd/tracing.db, logs_path=/tmp/tmp.I75KilncAd/logs/, logs_stdout=False
+2026-09-29 01:28:27,388 - mcp_gateway.plugins.manager - INFO - Loaded plugin: XetrackTracingPlugin (type: tracing)
+2026-09-29 01:28:27,388 - mcp_gateway.plugins.manager - INFO - Loaded 1 plugins of type 'guardrail'
+2026-09-29 01:28:27,388 - mcp_gateway.plugins.manager - INFO - Loaded 1 plugins of type 'tracing'
+2026-09-29 01:28:27,388 - mcp_gateway.config - INFO - Using configuration file at: /tmp/tmp.I75KilncAd/mcp.json
+2026-09-29 01:28:27,389 - mcp_gateway.config - WARNING - Found config file at: /tmp/tmp.I75KilncAd/mcp.json
+2026-09-29 01:28:27,389 - mcp_gateway.config - INFO - Loading configuration from: /tmp/tmp.I75KilncAd/mcp.json
+2026-09-29 01:28:27,389 - mcp_gateway.config - INFO - Successfully extracted nested 'servers' config for proxied servers from /tmp/tmp.I75KilncAd/mcp.json.
+2026-09-29 01:28:27,389 - mcp_gateway.server - INFO - Initialized Proxied Server: filesystem
+2026-09-29 01:28:27,389 - mcp_gateway.gateway - INFO - Starting all configured proxied servers...
+2026-09-29 01:28:27,389 - mcp_gateway.server - INFO - Starting proxied server: filesystem...
+Secure MCP Filesystem Server running on stdio
+2026-09-29 01:28:31,671 - mcp_gateway.server - INFO - Proxied server 'filesystem' started and initialized successfully.
+Client does not support MCP Roots, using allowed directories set from server args: [ '/tmp/tmp.I75KilncAd/root' ]
+2026-09-29 01:28:31,680 - mcp_gateway.server - DEBUG - Failed to list resources for filesystem: Method not found
+2026-09-29 01:28:31,680 - mcp_gateway.server - DEBUG - Failed to list prompts for filesystem: Method not found
+2026-09-29 01:28:31,680 - mcp_gateway.server - INFO - Fetched initial capabilities for filesystem: 14 tools, 0 resources, 0 prompts.
+2026-09-29 01:28:31,680 - mcp_gateway.gateway - INFO - Successfully started server 'filesystem'.
+2026-09-29 01:28:31,680 - mcp_gateway.gateway - INFO - Attempted to start all configured proxied servers.
+2026-09-29 01:28:31,680 - mcp_gateway.gateway - INFO - Dynamically registering capabilities from proxied servers...
+2026-09-29 01:28:31,680 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_read_file
+2026-09-29 01:28:31,682 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_read_file' with FastMCP
+2026-09-29 01:28:31,682 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_read_text_file
+2026-09-29 01:28:31,683 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_read_text_file' with FastMCP
+2026-09-29 01:28:31,683 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_read_media_file
+2026-09-29 01:28:31,683 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_read_media_file' with FastMCP
+2026-09-29 01:28:31,683 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_read_multiple_files
+2026-09-29 01:28:31,684 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_read_multiple_files' with FastMCP
+2026-09-29 01:28:31,684 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_write_file
+2026-09-29 01:28:31,685 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_write_file' with FastMCP
+2026-09-29 01:28:31,685 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_edit_file
+2026-09-29 01:28:31,686 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_edit_file' with FastMCP
+2026-09-29 01:28:31,686 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_create_directory
+2026-09-29 01:28:31,686 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_create_directory' with FastMCP
+2026-09-29 01:28:31,687 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_list_directory
+2026-09-29 01:28:31,687 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_list_directory' with FastMCP
+2026-09-29 01:28:31,687 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_list_directory_with_sizes
+2026-09-29 01:28:31,688 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_list_directory_with_sizes' with FastMCP
+2026-09-29 01:28:31,688 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_directory_tree
+2026-09-29 01:28:31,689 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_directory_tree' with FastMCP
+2026-09-29 01:28:31,689 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_move_file
+2026-09-29 01:28:31,690 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_move_file' with FastMCP
+2026-09-29 01:28:31,690 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_search_files
+2026-09-29 01:28:31,691 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_search_files' with FastMCP
+2026-09-29 01:28:31,691 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_get_file_info
+2026-09-29 01:28:31,691 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_get_file_info' with FastMCP
+2026-09-29 01:28:31,691 - mcp_gateway.gateway - DEBUG - Attempting to register dynamic tool: filesystem_list_allowed_directories
+2026-09-29 01:28:31,692 - mcp_gateway.gateway - INFO - Registered dynamic tool 'filesystem_list_allowed_directories' with FastMCP
+2026-09-29 01:28:31,692 - mcp_gateway.gateway - INFO - Dynamic registration process complete. Attempted to register 14 tools and 0 prompts with FastMCP.
+2026-09-29 01:28:31,694 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-09-29 01:28:39,694 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81aeb31040>
+2026-09-29 01:28:39,695 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-09-29 01:28:39,695 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-09-29 01:28:39,695 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:39,696 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81af2ad520>
+2026-09-29 01:28:39,697 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-09-29 01:28:39,697 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-09-29 01:28:39,697 - mcp_gateway.gateway - INFO - Executing dynamic tool 'filesystem_list_directory' (proxied from filesystem/list_directory)
+2026-09-29 01:28:39,697 - mcp_gateway.server - DEBUG - Calling tool filesystem/list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.sanitizers - INFO - Sanitizing tool call args for filesystem tool list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.sanitizers - DEBUG - Running request plugins for filesystem/tool/list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,697 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing request for filesystem/list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.sanitizers - INFO - Sanitizing tool call result for filesystem tool list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.sanitizers - DEBUG - Running response plugins for filesystem/tool/list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing response for filesystem/list_directory
+2026-09-29 01:28:39,702 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/list_directory
+2026-09-29 01:28:39,718 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:39,719 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81aeaa8bc0>
+2026-09-29 01:28:39,719 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-09-29 01:28:39,719 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-09-29 01:28:39,719 - mcp_gateway.gateway - INFO - Executing dynamic tool 'filesystem_read_multiple_files' (proxied from filesystem/read_multiple_files)
+2026-09-29 01:28:39,719 - mcp_gateway.server - DEBUG - Calling tool filesystem/read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.sanitizers - INFO - Sanitizing tool call args for filesystem tool read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.sanitizers - DEBUG - Running request plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,719 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing request for filesystem/read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.sanitizers - INFO - Sanitizing tool call result for filesystem tool read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.sanitizers - DEBUG - Running response plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing response for filesystem/read_multiple_files
+2026-09-29 01:28:39,722 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,725 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:39,725 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81ae98de20>
+2026-09-29 01:28:39,725 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-09-29 01:28:39,726 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-09-29 01:28:39,726 - mcp_gateway.gateway - INFO - Executing dynamic tool 'filesystem_read_multiple_files' (proxied from filesystem/read_multiple_files)
+2026-09-29 01:28:39,726 - mcp_gateway.server - DEBUG - Calling tool filesystem/read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.sanitizers - INFO - Sanitizing tool call args for filesystem tool read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.sanitizers - DEBUG - Running request plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,726 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing request for filesystem/read_multiple_files
+2026-09-29 01:28:39,727 - mcp_gateway.sanitizers - INFO - Sanitizing tool call result for filesystem tool read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.sanitizers - DEBUG - Running response plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing response for filesystem/read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.guardrails.basic - INFO - Removed potential secrets from text using regex.
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.guardrails.basic - INFO - Cleaned secrets from CallToolResult content for filesystem/read_multiple_files
+2026-09-29 01:28:39,728 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,729 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:39,730 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81aeb300e0>
+2026-09-29 01:28:39,730 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-09-29 01:28:39,730 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-09-29 01:28:39,730 - mcp_gateway.gateway - INFO - Executing dynamic tool 'filesystem_read_multiple_files' (proxied from filesystem/read_multiple_files)
+2026-09-29 01:28:39,730 - mcp_gateway.server - DEBUG - Calling tool filesystem/read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.sanitizers - INFO - Sanitizing tool call args for filesystem tool read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.sanitizers - DEBUG - Running request plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,730 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing request for filesystem/read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.sanitizers - INFO - Sanitizing tool call result for filesystem tool read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.sanitizers - DEBUG - Running response plugins for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.plugins.guardrails.basic - DEBUG - BasicGuardrail processing response for filesystem/read_multiple_files
+2026-09-29 01:28:39,731 - mcp_gateway.plugins.base - DEBUG - PluginContext created for filesystem/tool/read_multiple_files
+2026-09-29 01:28:39,732 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:39,733 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x7f81af2ad520>
+2026-09-29 01:28:39,733 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-09-29 01:28:39,733 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-09-29 01:28:39,734 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-09-29 01:28:41,735 - mcp_gateway.gateway - INFO - MCP gateway lifespan shutting down...
+2026-09-29 01:28:41,735 - mcp_gateway.server - INFO - Stopping proxied server: filesystem...
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.1.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.1.0
+npm notice To update run: npm install -g npm@12.1.0
+npm notice
+2026-09-29 01:28:41,792 - mcp_gateway.gateway - INFO - All active proxied servers stopped.
+2026-09-29 01:28:41,792 - mcp_gateway.gateway - INFO - MCP gateway shutdown complete.

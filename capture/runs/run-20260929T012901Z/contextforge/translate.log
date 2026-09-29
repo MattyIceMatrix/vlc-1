@@ -1,0 +1,52 @@
+2026-09-29T01:28:28 - mcpgateway.config - INFO - Using SQLite database. Consider PostgreSQL for production.
+2026-09-29T01:28:28 - mcpgateway.config - INFO - SIEM URL allowlist is empty — all outbound destination URLs are permitted
+2026-09-29T01:28:28 - mcpgateway.config - INFO - MCP_REQUIRE_AUTH not set; defaulting to True to match AUTH_REQUIRED=True.
+2026-09-29T01:28:28 - mcpgateway.db - INFO - Configuring SQLite with pool_size=50, max_overflow=10. Note: With gunicorn multi-worker deployment, each worker gets its own pool. 
+2026-09-29T01:28:28 - mcpgateway.instrumentation.sqlalchemy - INFO - Span writer worker started
+2026-09-29T01:28:28 - mcpgateway.instrumentation.sqlalchemy - INFO - Started background span writer thread
+2026-09-29T01:28:28 - mcpgateway.instrumentation.sqlalchemy - INFO - SQLAlchemy instrumentation enabled
+2026-09-29T01:28:28 - mcpgateway.db - INFO - SQLAlchemy instrumentation enabled for observability
+2026-09-29T01:28:29 - mcpgateway.observability - INFO - Observability disabled via OTEL_ENABLE_OBSERVABILITY=false
+2026-09-29T01:28:29 - mcpgateway.cache.admin_stats_cache - INFO - AdminStatsCache initialized: enabled=True, system_ttl=60s, observability_ttl=30s, tags_ttl=120s
+2026-09-29T01:28:29 - mcpgateway.cache.auth_cache - INFO - AuthCache initialized: enabled=True, user_ttl=60s, revocation_ttl=30s, team_ttl=60s, role_ttl=60s, teams_list_enabled=True, teams_list_ttl=60s
+2026-09-29T01:28:30 - mcpgateway.services.argon2_service - INFO - Initialized Argon2PasswordService with time_cost=3, memory_cost=65536, parallelism=1
+2026-09-29T01:28:30 - mcpgateway.services.metrics_buffer_service - INFO - MetricsBufferService initialized: recording_enabled=True, buffer_enabled=True, flush_interval=60s, max_buffer_size=1000
+2026-09-29T01:28:30 - mcpgateway.translate - INFO - Starting multi-protocol server for command: npx -y @modelcontextprotocol/server-everything
+2026-09-29T01:28:30 - mcpgateway.translate - INFO - Protocols: SSE=True, StreamableHTTP=False
+2026-09-29T01:28:30 - mcpgateway.translate - INFO - Starting stdio subprocess: npx -y @modelcontextprotocol/server-everything
+2026-09-29T01:28:30 - mcpgateway.translate - INFO - Multi-protocol server ready → SSE: http://127.0.0.1:9000/sse
+INFO:     Started server process [2323]
+INFO:     Uvicorn running on http://127.0.0.1:9000 (Press CTRL+C to quit)
+Starting default (STDIO) server...
+INFO:     127.0.0.1:39998 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:40010 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:40024 - "POST /message?session_id=ab3e1ddd4dc345719255b0aad411eda3 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:39606 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39612 - "POST /message?session_id=cb43cfd5c5354032be4a2f77f11f03e8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:39612 - "POST /message?session_id=cb43cfd5c5354032be4a2f77f11f03e8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:39612 - "POST /message?session_id=cb43cfd5c5354032be4a2f77f11f03e8 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:39612 - "POST /message?session_id=cb43cfd5c5354032be4a2f77f11f03e8 HTTP/1.1" 202 Accepted
+2026-09-29T01:28:50 - mcpgateway.translate - INFO - Shutting down multi-protocol server...
+2026-09-29T01:28:50 - mcpgateway.translate - INFO - Stopping subprocess (pid=2333)
+INFO:     Shutting down
+INFO:     Finished server process [2323]
+Exception ignored in: <function BaseSubprocessTransport.__del__ at 0x7ff1f9e72840>
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/base_subprocess.py", line 126, in __del__
+    self.close()
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/base_subprocess.py", line 104, in close
+    proto.pipe.close()
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/unix_events.py", line 767, in close
+    self.write_eof()
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/unix_events.py", line 753, in write_eof
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/base_events.py", line 799, in call_soon
+    self._check_closed()
+  File "/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/asyncio/base_events.py", line 545, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed

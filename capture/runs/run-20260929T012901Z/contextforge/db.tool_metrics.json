@@ -1,0 +1,18 @@
+[
+ {
+  "id": 1,
+  "tool_id": "13e3b484d828437ba30783150147a11c",
+  "timestamp": "2026-09-29 01:28:44.895701",
+  "response_time": 0.02872285699999111,
+  "is_success": 1,
+  "error_message": null
+ },
+ {
+  "id": 2,
+  "tool_id": "13e3b484d828437ba30783150147a11c",
+  "timestamp": "2026-09-29 01:28:44.930601",
+  "response_time": 0.0030014649999827725,
+  "is_success": 0,
+  "error_message": null
+ }
+]

@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+content-type: text/event-stream
+cache-control: no-cache
+mcp-session-id: 3e6c9b73-2b07-467a-8208-c3eae16f3544
+transfer-encoding: chunked
+date: Tue, 29 Sep 2026 01:28:31 GMT
+

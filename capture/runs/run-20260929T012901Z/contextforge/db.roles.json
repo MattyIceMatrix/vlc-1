@@ -1,0 +1,67 @@
+[
+ {
+  "id": "6c56f286-cd9d-4f08-bdf5-01477d4a3572",
+  "name": "platform_viewer",
+  "description": "Read-only access to resources and admin UI",
+  "scope": "global",
+  "permissions": "[\"admin.dashboard\", \"gateways.read\", \"servers.read\", \"teams.join\", \"tools.read\", \"resources.read\", \"prompts.read\", \"a2a.read\", \"llm.read\", \"teams.read\", \"tokens.create\", \"tokens.read\", \"tokens.update\", \"tokens.revoke\", \"admin.overview\", \"servers.use\", \"metrics:read\"]",
+  "inherits_from": null,
+  "created_by": "admin@example.com",
+  "is_system_role": 1,
+  "is_active": 1,
+  "created_at": "2026-09-29 01:28:35.488158+00:00",
+  "updated_at": "2026-09-29 01:28:36.093413+00:00"
+ },
+ {
+  "id": "f84ed5b6-742a-47b0-9075-c6fc0d94e36f",
+  "name": "platform_admin",
+  "description": "Platform administrator with all permissions",
+  "scope": "global",
+  "permissions": "[\"*\"]",
+  "inherits_from": null,
+  "created_by": "admin@example.com",
+  "is_system_role": 1,
+  "is_active": 1,
+  "created_at": "2026-09-29 01:28:36.272716",
+  "updated_at": "2026-09-29 01:28:36.272717"
+ },
+ {
+  "id": "53c6c88c-af2f-432f-af8d-9cf014f04f2a",
+  "name": "team_admin",
+  "description": "Team administrator with team management permissions",
+  "scope": "team",
+  "permissions": "[\"admin.dashboard\", \"admin.overview\", \"gateways.read\", \"servers.read\", \"servers.use\", \"teams.read\", \"teams.update\", \"teams.join\", \"teams.delete\", \"teams.manage_members\", \"tools.read\", \"plugins.read\", \"tools.execute\", \"tools.preview\", \"resources.read\", \"prompts.read\", \"llm.read\", \"llm.invoke\", \"a2a.read\", \"gateways.create\", \"servers.create\", \"tools.create\", \"resources.create\", \"prompts.create\", \"a2a.create\", \"gateways.update\", \"servers.update\", \"tools.update\", \"resources.update\", \"prompts.update\", \"a2a.update\", \"gateways.delete\", \"servers.delete\", \"tools.delete\", \"resources.delete\", \"prompts.delete\", \"a2a.delete\", \"a2a.invoke\", \"tokens.create\", \"tokens.read\", \"tokens.update\", \"tokens.revoke\", \"tools.manage_plugins\"]",
+  "inherits_from": null,
+  "created_by": "admin@example.com",
+  "is_system_role": 1,
+  "is_active": 1,
+  "created_at": "2026-09-29 01:28:36.277832",
+  "updated_at": "2026-09-29 01:28:36.277834"
+ },
+ {
+  "id": "05c8650a-2082-4933-9c7f-ee97418a4645",
+  "name": "developer",
+  "description": "Developer with tool and resource access",
+  "scope": "team",
+  "permissions": "[\"admin.dashboard\", \"admin.overview\", \"gateways.read\", \"servers.read\", \"servers.use\", \"teams.read\", \"teams.join\", \"tools.read\", \"plugins.read\", \"tools.execute\", \"tools.preview\", \"resources.read\", \"prompts.read\", \"llm.read\", \"llm.invoke\", \"a2a.read\", \"gateways.create\", \"servers.create\", \"tools.create\", \"resources.create\", \"prompts.create\", \"a2a.create\", \"gateways.update\", \"servers.update\", \"tools.update\", \"resources.update\", \"prompts.update\", \"a2a.update\", \"gateways.delete\", \"servers.delete\", \"tools.delete\", \"resources.delete\", \"prompts.delete\", \"a2a.delete\", \"a2a.invoke\", \"tokens.create\", \"tokens.read\", \"tokens.update\", \"tokens.revoke\"]",
+  "inherits_from": null,
+  "created_by": "admin@example.com",
+  "is_system_role": 1,
+  "is_active": 1,
+  "created_at": "2026-09-29 01:28:36.281273",
+  "updated_at": "2026-09-29 01:28:36.281275"
+ },
+ {
+  "id": "4317925a-1e74-49ac-a8fd-e12ae2fef3aa",
+  "name": "viewer",
+  "description": "Read access and tool execution within team scope",
+  "scope": "team",
+  "permissions": "[\"admin.dashboard\", \"admin.overview\", \"gateways.read\", \"servers.read\", \"servers.use\", \"teams.read\", \"teams.join\", \"tools.read\", \"tools.execute\", \"tools.preview\", \"resources.read\", \"prompts.read\", \"llm.read\", \"a2a.read\", \"tokens.create\", \"tokens.read\", \"tokens.update\", \"tokens.revoke\"]",
+  "inherits_from": null,
+  "created_by": "admin@example.com",
+  "is_system_role": 1,
+  "is_active": 1,
+  "created_at": "2026-09-29 01:28:36.284116",
+  "updated_at": "2026-09-29 01:28:36.284118"
+ }
+]

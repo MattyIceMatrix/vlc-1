@@ -1,0 +1,21 @@
+[
+ {
+  "email": "admin@example.com",
+  "password_hash": "$argon2id$v=19$m=65536,t=3,p=1$9GOvdNlspm8gbeRT6M4LPA$1Zes770GuR74IY+7IEeQU/wZNT6U1faC8JqsZ3icnw4",
+  "full_name": "Platform Administrator",
+  "is_admin": 1,
+  "is_active": 1,
+  "email_verified_at": "2026-09-29 01:28:36.266815",
+  "auth_provider": "local",
+  "password_hash_type": "argon2id",
+  "failed_login_attempts": 0,
+  "locked_until": null,
+  "created_at": "2026-09-29 01:28:36.244808",
+  "updated_at": "2026-09-29 01:28:36.268532",
+  "last_login": null,
+  "password_change_required": 0,
+  "password_changed_at": "2026-09-29 01:28:36.266837",
+  "admin_origin": "api",
+  "id": "87b6e697-0b4b-400a-8891-b76b838b1dc8"
+ }
+]

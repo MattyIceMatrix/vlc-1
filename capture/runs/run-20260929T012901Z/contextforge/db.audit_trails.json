@@ -1,0 +1,30 @@
+[
+ {
+  "id": "463aef1bb55f4bcc99c08fbd1110aaf4",
+  "timestamp": "2026-09-29 01:28:39.232407",
+  "correlation_id": "8bcac7af500e438ab281d84d07514eac",
+  "request_id": null,
+  "action": "create_gateway",
+  "resource_type": "gateway",
+  "resource_id": "1289b283c9a2458ab63fcc1395fd3353",
+  "resource_name": "everything",
+  "user_id": "admin@example.com",
+  "user_email": "admin@example.com",
+  "team_id": null,
+  "client_ip": "127.0.0.1",
+  "user_agent": "curl/8.5.0",
+  "request_path": null,
+  "request_method": null,
+  "old_values": "null",
+  "new_values": "{\"name\": \"everything\", \"url\": \"http://localhost:9000/sse\", \"visibility\": \"public\", \"transport\": \"SSE\", \"tools_count\": 13, \"resources_count\": 9, \"prompts_count\": 4}",
+  "changes": "null",
+  "data_classification": null,
+  "requires_review": 0,
+  "success": 1,
+  "error_message": null,
+  "context": "{\"created_via\": \"api\"}",
+  "auth_method": null,
+  "acting_as": null,
+  "delegation_chain": "null"
+ }
+]

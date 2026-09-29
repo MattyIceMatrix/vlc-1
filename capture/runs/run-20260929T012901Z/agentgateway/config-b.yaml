@@ -1,0 +1,23 @@
+config:
+  logging:
+    format: json
+    level: info
+  adminAddr: "127.0.0.1:15000"
+binds:
+- port: 3000
+  listeners:
+  - routes:
+    - matches:
+      - path:
+          pathPrefix: /mcp
+      policies:
+        mcpAuthorization:
+            rules:
+            - 'mcp.tool.name == "echo"'
+      backends:
+      - mcp:
+          targets:
+          - name: everything
+            stdio:
+              cmd: npx
+              args: ["-y", "@modelcontextprotocol/server-everything"]

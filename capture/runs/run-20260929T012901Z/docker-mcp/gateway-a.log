@@ -1,0 +1,7 @@
+Note: dynamic-tools disabled when using --servers flag
+- Reading configuration...
+  - Reading catalog from [ci.yaml]
+- Configuration read in 103.059µs
+- Using images:
+  - mcp/time
+verifying docker image mcp/time: image must be referenced by digest; pin the MCP image to a sha256 digest or disable signature verification with --verify-signatures=false

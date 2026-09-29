@@ -1,0 +1,12 @@
+[
+ {
+  "id": "5dba180cabe746dc9bb826af2fbb4778",
+  "team_member_id": "cef324271dc542db8762e3c3600e5659",
+  "team_id": "3ab971ebdaf54941bdd379c2aefc1163",
+  "user_email": "admin@example.com",
+  "role": "owner",
+  "action": "added",
+  "action_by": "admin@example.com",
+  "action_timestamp": "2026-09-29 01:28:36.256241"
+ }
+]
