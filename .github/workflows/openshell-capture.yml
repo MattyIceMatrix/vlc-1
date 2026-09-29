@@ -8,7 +8,7 @@ name: openshell-capture
 on:
   push:
     branches: [capture/openshell-ocsf]
-    paths: ['.github/workflows/openshell-capture.yml', 'capture/REQUEST']
+    paths: ['.github/workflows/openshell-capture.yml']
 permissions:
   contents: write
 jobs:
@@ -34,20 +34,31 @@ jobs:
             note "----- openshell $c --help"; ( openshell $c --help ) >>"$O/help.txt" 2>&1; echo >>"$O/help.txt"
           done
           run docker --version
-          run openshell settings set --global --key ocsf_json_enabled --value true
-          run timeout 600 openshell sandbox create --name vlccap -- sh -c 'curl -s -m 10 https://api.github.com/zen; echo; curl -s -m 10 https://example.com >/dev/null; echo done; sleep 20'
-          sleep 15
+          run openshell settings set --global --key ocsf_json_enabled --value true --yes
+          curl -fsSL https://raw.githubusercontent.com/NVIDIA/OpenShell/main/examples/sandbox-policy-quickstart/policy.yaml -o "$O/policy.yaml" || note "policy download failed"
+          run openshell sandbox create --name vlccap --from docker.io/curlimages/curl:latest --detach --no-tty -- sleep 900
+          for i in $(seq 1 40); do openshell sandbox list 2>/dev/null | grep -q 'vlccap.*Ready' && break; sleep 3; done
           run openshell sandbox list
-          run openshell logs vlccap
-          openshell logs vlccap > "$O/openshell-logs.txt" 2>&1 || true
-          # Where is the OCSF file, and can a process inside the sandbox write to it?
-          for cmd in "ls -la /var/log/" "cat /var/log/openshell-ocsf.*.log" "sh -c 'echo probe >> /var/log/openshell-ocsf.$(date -u +%Y-%m-%d).log && echo WRITABLE || echo NOT_WRITABLE'"; do
-            run openshell sandbox exec vlccap -- sh -c "$cmd"
-          done
-          for id in $(docker ps -aq 2>/dev/null); do
-            note "----- container $id"; docker inspect --format '{{.Name}} {{.Config.Image}}' "$id" >>"$O/steps.txt" 2>&1
+          sleep 15
+          X() { run openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- "$@"; }
+          X sh -c 'id; ls -la /var/log/ 2>&1'
+          note "=== phase 1: default policy"
+          X sh -c 'curl -s -m 10 -o /dev/null -w "github %{http_code}\n" https://api.github.com/zen; curl -s -m 10 -o /dev/null -w "example %{http_code}\n" https://example.com'
+          note "=== phase 2: NVIDIA quickstart policy"
+          run openshell policy set vlccap --policy "$O/policy.yaml" --wait
+          sleep 5
+          X sh -c 'curl -s -m 10 -o /dev/null -w "github %{http_code}\n" https://api.github.com/zen; curl -s -m 10 -o /dev/null -w "example %{http_code}\n" https://example.com'
+          sleep 12
+          note "=== collect"
+          openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- sh -c 'cat /var/log/openshell-ocsf.*.log' > "$O/ocsf-from-inside.jsonl" 2>"$O/ocsf-from-inside.err"
+          note "ocsf-from-inside: $(wc -l < "$O/ocsf-from-inside.jsonl") lines"
+          for id in $(docker ps -q 2>/dev/null); do
+            nm=$(docker inspect --format '{{.Name}}' "$id"); note "----- container $id $nm"
+            docker exec "$id" sh -c 'find / -name "openshell-ocsf*" 2>/dev/null | head; ls -la /var/log 2>/dev/null' >>"$O/steps.txt" 2>&1
             docker cp "$id:/var/log/." "$O/varlog-$id" >>"$O/steps.txt" 2>&1 || true
           done
+          note "=== writability probe (after collection, so the capture is untouched)"
+          X sh -c 'f=$(ls /var/log/openshell-ocsf.*.log 2>/dev/null | head -1); echo "file=$f"; ls -la "$f"; if [ -n "$f" ] && echo "{\"probe\":\"vlc1\"}" >> "$f" 2>/dev/null; then echo APPEND=WRITABLE; else echo APPEND=NOT_WRITABLE; fi; if [ -n "$f" ] && cp "$f" /tmp/x 2>/dev/null && : > "$f" 2>/dev/null; then echo TRUNCATE=POSSIBLE; cat /tmp/x > "$f"; else echo TRUNCATE=NOT_POSSIBLE; fi'
           find "$O" -name 'openshell-ocsf*' -exec ls -la {} \; | tee -a "$O/steps.txt"
           run openshell sandbox delete vlccap
           git config user.name "openshell-capture"; git config user.email "actions@users.noreply.github.com"
