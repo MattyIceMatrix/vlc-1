@@ -36,7 +36,8 @@ export HOST=127.0.0.1 PORT=4444 DATABASE_URL=sqlite:///$W/mcp.db AUTH_REQUIRED=t
   AUDIT_TRAIL_ENABLED=true PERMISSION_AUDIT_ENABLED=true \
   SECURITY_LOGGING_ENABLED=true SECURITY_LOGGING_LEVEL=all \
   STRUCTURED_LOGGING_DATABASE_ENABLED=true OBSERVABILITY_ENABLED=true \
-  PLUGINS_ENABLED=true PLUGINS_CONFIG_FILE=$W/ci-plugins.yaml
+  PLUGINS_ENABLED=true PLUGINS_CONFIG_FILE=$W/ci-plugins.yaml \
+  SSRF_ALLOW_LOCALHOST=true   # run 2: the bridge on 127.0.0.1 was rejected by SSRF protection (422)
 mkdir -p logs
 ( python3 -m mcpgateway.translate --help ) > "$O/translate-help.txt" 2>&1
 python3 -m mcpgateway.translate --stdio "npx -y @modelcontextprotocol/server-everything" --expose-sse --port 9000 \
@@ -44,8 +45,8 @@ python3 -m mcpgateway.translate --stdio "npx -y @modelcontextprotocol/server-eve
 mcpgateway --host 127.0.0.1 --port 4444 > "$O/gateway-stdout.log" 2>&1 & PIDS+=($!)
 waitfor http://127.0.0.1:4444/health 60 || { note "gateway not answering"; tail -40 "$O/gateway-stdout.log" | tee -a "$O/steps.txt"; }
 waitfor http://127.0.0.1:9000/ 30 || note "translate bridge not answering"
-TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 60 --secret "$JWT_SECRET_KEY" 2>>"$O/steps.txt" | tail -1)
-LIMITED=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 60 --secret "$JWT_SECRET_KEY" \
+TOKEN=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 60 --secret "$JWT_SECRET_KEY" --admin 2>>"$O/steps.txt" | tail -1)
+LIMITED=$(python3 -m mcpgateway.utils.create_jwt_token --username admin@example.com --exp 60 --secret "$JWT_SECRET_KEY" --admin \
   --scopes '{"permissions":["tools.read"]}' 2>>"$O/steps.txt" | tail -1)
 note "token minted: ${TOKEN:+yes}; limited token: ${LIMITED:+yes}"
 B=http://127.0.0.1:4444; H="Authorization: Bearer $TOKEN"

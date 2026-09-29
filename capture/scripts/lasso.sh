@@ -53,11 +53,14 @@ try:
     print("tools:", names)
     def pick(*cands):
         return next((n for c in cands for n in names if n.endswith(c)), cands[0])
-    read = pick("read_text_file", "read_file")
+    # Run 2: the gateway re-declares read_text_file's optional head/tail as required, so
+    # a plain read fails validation. read_multiple_files has no optional parameters.
+    read = pick("read_multiple_files")
     calls = [(3, pick("list_directory"), {"path": f"{W}/root"}),
-             (4, read, {"path": f"{W}/root/plain.txt"}),
-             (5, read, {"path": f"{W}/root/tokens.txt"}),
-             (6, read, {"path": "/etc/hostname"})]
+             (4, read, {"paths": [f"{W}/root/plain.txt"]}),
+             (5, read, {"paths": [f"{W}/root/tokens.txt"]}),
+             (6, read, {"paths": ["/etc/hostname"]}),
+             (7, pick("read_text_file"), {"path": f"{W}/root/plain.txt"})]
     for i, name, args in calls:
         send({"jsonrpc": "2.0", "id": i, "method": "tools/call", "params": {"name": name, "arguments": args}})
         print(f"call {i} {name}:", json.dumps(recv(i))[:400])
