@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.1-draft"
+VERSION = "VLC-1 1.4.2-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
