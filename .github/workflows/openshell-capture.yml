@@ -57,6 +57,16 @@ jobs:
             docker exec "$id" sh -c 'find / -name "openshell-ocsf*" 2>/dev/null | head; ls -la /var/log 2>/dev/null' >>"$O/steps.txt" 2>&1
             docker cp "$id:/var/log/." "$O/varlog-$id" >>"$O/steps.txt" 2>&1 || true
           done
+          note "=== where does the OCSF file live?"
+          openshell logs vlccap > "$O/openshell-logs.txt" 2>&1; note "openshell logs: $(wc -l < "$O/openshell-logs.txt") lines, $(grep -c 'OCSF' "$O/openshell-logs.txt") OCSF"
+          sudo find / -xdev \( -name 'openshell-ocsf*' -o -name 'openshell.20*.log' \) 2>/dev/null | tee -a "$O/steps.txt" > "$O/host-find.txt"
+          while read -r f; do [ -n "$f" ] && sudo cp "$f" "$O/host-$(echo "$f" | tr '/' '_')" && note "copied $f"; done < "$O/host-find.txt"
+          for id in $(docker ps -q 2>/dev/null); do
+            nm=$(docker inspect --format '{{.Name}}' "$id")
+            docker export "$id" 2>/dev/null | tar -tv 2>/dev/null | grep -E 'openshell-ocsf|var/log/openshell' | sed "s#^#[$nm] #" | tee -a "$O/steps.txt"
+            docker inspect --format '{{json .Mounts}}' "$id" | sed "s#^#[$nm mounts] #" >> "$O/steps.txt"
+          done
+          ls -la ~/.local/state/openshell ~/.config/openshell ~/.openshell 2>&1 | head -40 >> "$O/steps.txt"
           note "=== writability probe (after collection, so the capture is untouched)"
           X sh -c 'f=$(ls /var/log/openshell-ocsf.*.log 2>/dev/null | head -1); echo "file=$f"; ls -la "$f"; if [ -n "$f" ] && echo "{\"probe\":\"vlc1\"}" >> "$f" 2>/dev/null; then echo APPEND=WRITABLE; else echo APPEND=NOT_WRITABLE; fi; if [ -n "$f" ] && cp "$f" /tmp/x 2>/dev/null && : > "$f" 2>/dev/null; then echo TRUNCATE=POSSIBLE; cat /tmp/x > "$f"; else echo TRUNCATE=NOT_POSSIBLE; fi'
           find "$O" -name 'openshell-ocsf*' -exec ls -la {} \; | tee -a "$O/steps.txt"
