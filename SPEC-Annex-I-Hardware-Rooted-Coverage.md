@@ -14,7 +14,8 @@ designs are all in scope, as is any future mechanism meeting I.3.
 
 ## I.1 What this annex is for
 
-Annex G.2 states the limit plainly: every conformance level assumes the recorder
+The limit, restated here because Annex G.2 (planned, not yet published) is not
+yet in `SPEC.md`: every conformance level assumes the recorder
 executed as intended, on a substrate that did not misreport to it, and an
 adversary at or beneath the observation layer is out of scope at every level.
 
@@ -42,9 +43,9 @@ a quote containing at minimum:
 | field | requirement |
 |---|---|
 | measurement | **SHALL** be computed over named, separately identified components — at minimum the recorder object and the identity of the execution substrate. A single opaque digest over an unstated set is **NOT** conformant: a verifier that cannot say *what* was measured cannot report coverage honestly. |
-| algorithm identifier | **SHALL** be a registered name per Annex H.2. |
+| algorithm identifier | **SHALL** be a registered name per Annex H.2 (planned, not yet published). |
 | root-of-trust identity | **SHALL** identify the device, not merely a key. A key alone does not distinguish two devices provisioned from one source. |
-| time | **SHALL** be recorded, so Annex H.5 applies if the quote suite is later deprecated. |
+| time | **SHALL** be recorded, so Annex H.5 (planned, not yet published) can apply if the quote suite is later deprecated. |
 | bound position | **SHALL** bind the quote to a specific position in the log — a chain head or equivalent. **Without this a valid quote can be lifted from one log and replayed into another**, and the resulting record is indistinguishable from a genuine one. |
 | signature | **SHALL** cover every field above. |
 
@@ -64,7 +65,7 @@ competent auditor will test for.
 Further:
 
 - A quote in an algorithm the verifier does not implement **SHALL** be reported
-  **unestablished**, not failed (Annex H.2).
+  **unestablished**, not failed (Annex H.2, planned, not yet published).
 - A quote whose bound position does not match the log position under
   examination **SHALL** be reported **failed**.
 - Where no expected measurement is available to compare against, the claim
@@ -76,21 +77,24 @@ Further:
 
 ## I.5 What this annex does not establish
 
-It narrows the gap in Annex G.2. It does not close it.
+It narrows the gap stated in I.1 (Annex G.2, planned, not yet published). It
+does not close it.
 
 - The root of trust is itself assumed sound. This annex moves the trust boundary
   down; it does not remove it.
 - A measurement establishes that named components matched expected values at the
   time of measurement. It establishes nothing about the interval between
   measurements, nor about components not named.
-- Nothing here bears on Annex G.3: a fully attested record of authorised conduct
+- Nothing here bears on the following limit (Annex G.3, planned, not yet
+  published): a fully attested record of authorised conduct
   remains a complete and correct record of that conduct, and this specification
   still provides no basis for judging it.
 
-## I.6 Relationship to Annex H
+## I.6 Relationship to Annex H (planned, not yet published)
 
 A quote is signed, and signatures age. A coverage attestation retained as
-long-term evidence is subject to Annex H.5 re-anchoring exactly as any other
+long-term evidence is intended to be subject to Annex H.5 (planned, not yet
+published) re-anchoring exactly as any other
 signed value in the chain. Implementations **SHOULD** ensure coverage
 attestations fall within the same head seal as the records they qualify, so that
 re-anchoring protects both together.
