@@ -1,0 +1,157 @@
+$ sh capture/run-20260929T002200Z/install.sh
+openshell: resolving latest version...
+openshell: downloading v0.1.2 release checksums...
+openshell: selected openshell_0.1.2-1_amd64.deb
+openshell: downloading openshell_0.1.2-1_amd64.deb...
+openshell: verifying checksum...
+openshell: installing openshell_0.1.2-1_amd64.deb...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  openshell
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+Need to get 0 B/74.5 MB of archives.
+After this operation, 0 B of additional disk space will be used.
+Get:1 /tmp/tmp.7HtHom1rvk/openshell_0.1.2-1_amd64.deb openshell amd64 0.1.2-1 [74.5 MB]
+Selecting previously unselected package openshell.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 202190 files and directories currently installed.)
+Preparing to unpack .../openshell_0.1.2-1_amd64.deb ...
+Unpacking openshell (0.1.2-1) ...
+Setting up openshell (0.1.2-1) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+openshell: installed openshell package from v0.1.2
+openshell: restarting openshell-gateway user service as runner...
+Created symlink /home/runner/.config/systemd/user/default.target.wants/openshell-gateway.service → /usr/lib/systemd/user/openshell-gateway.service.
+openshell: registering local gateway as runner...
+✓ Gateway 'openshell' added and set as active
+  Endpoint: https://127.0.0.1:17670
+  Type: local
+✓ TLS certificates present
+openshell: waiting for local gateway listener to become reachable...
+openshell: local gateway listener is reachable
+openshell: waiting for openshell status to report connected...
+openshell: openshell status reports connected
+[exit 0]
+$ openshell --version
+openshell 0.1.2
+[exit 0]
+----- openshell  --help
+----- openshell sandbox --help
+----- openshell sandbox create --help
+----- openshell sandbox exec --help
+----- openshell settings --help
+----- openshell logs --help
+----- openshell policy --help
+$ docker --version
+Docker version 28.0.4, build b8034c0
+[exit 0]
+$ openshell settings set --global --key ocsf_json_enabled --value true --yes
+✓ Set global setting ocsf_json_enabled=true (revision 1)
+[exit 0]
+$ openshell sandbox create --name vlccap --from docker.io/curlimages/curl:latest --detach --no-tty -- sleep 900
+
+Created sandbox: vlccap
+
+  [0.0s] Requesting compute...
+[0.0s] Sandbox allocated
+[0.0s] Pulling image docker.io/curlimages/curl:latest
+[0.0s] Pulling image docker.io/curlimages/curl:latest
+[0.8s] Pulling image Pulling from curlimages/curl latest
+[1.1s] Pulling image Pulling fs layer b18ba029a163
+[1.3s] Pulling image Downloading b18ba029a163 (111 KB/10 MB)
+[1.4s] Pulling image Verifying Checksum b18ba029a163
+[1.4s] Pulling image Download complete b18ba029a163
+[1.4s] Pulling image Extracting b18ba029a163 (128 KB/10 MB)
+[1.5s] Pulling image Extracting b18ba029a163 (4 MB/10 MB)
+[1.5s] Pulling image Extracting b18ba029a163 (10 MB/10 MB)
+[1.6s] Pulling image Pull complete b18ba029a163
+[1.6s] Pulling image Digest: sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777
+[1.6s] Pulling image Status: Downloaded newer image for curlimages/curl:latest
+[1.6s] Image pulled
+[1.6s] Starting sandbox Container created
+[exit 0]
+$ openshell sandbox list
+NAME    CREATED              PHASE
+vlccap  2026-09-29 00:22:13  Ready
+[exit 0]
+$ openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- sh -c id; ls -la /var/log/ 2>&1
+uid=100(curl_user) gid=101(curl_group) groups=101(curl_group)
+total 12
+drwxr-xr-x    2 root     root          4096 Sep  2 09:04 .
+drwxr-xr-x   11 root     root          4096 Jun 13 16:38 ..
+-rw-r--r--    1 root     root          1557 Sep  2 09:04 apk.log
+[exit 0]
+=== phase 1: default policy
+$ openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- sh -c curl -s -m 10 -o /dev/null -w "github %{http_code}\n" https://api.github.com/zen; curl -s -m 10 -o /dev/null -w "example %{http_code}\n" https://example.com
+github 000
+example 000
+[exit 7]
+=== phase 2: NVIDIA quickstart policy
+$ openshell policy set vlccap --policy capture/run-20260929T002200Z/policy.yaml --wait
+✓ Policy version 2 submitted (hash: 9ccf3c45400b)
+✓ Policy version 2 loaded (active version: 2)
+[exit 0]
+$ openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- sh -c curl -s -m 10 -o /dev/null -w "github %{http_code}\n" https://api.github.com/zen; curl -s -m 10 -o /dev/null -w "example %{http_code}\n" https://example.com
+github 200
+example 000
+[exit 7]
+=== collect
+ocsf-from-inside: 0 lines
+----- container b715c052c4ee /openshell-default--vlccap-ffb88451-c15a-439a-818a-b04f50765de5-supervisor
+OCI runtime exec failed: exec failed: unable to start container process: exec: "sh": executable file not found in $PATH
+----- container a5176186b6ef /openshell-default--vlccap-ffb88451-c15a-439a-818a-b04f50765de5
+total 12
+drwxr-xr-x    2 root     root          4096 Sep  2 09:04 .
+drwxr-xr-x   11 root     root          4096 Jun 13 16:38 ..
+-rw-r--r--    1 root     root          1557 Sep  2 09:04 apk.log
+=== where does the OCSF file live?
+openshell logs: 76 lines, 38 OCSF
+/home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-scrubbed.jsonl
+/home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-full.jsonl
+/home/runner/work/vlc-1/vlc-1/.git/refs/remotes/origin/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/refs/heads/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/logs/refs/remotes/origin/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/logs/refs/heads/capture/openshell-ocsf
+copied /home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-scrubbed.jsonl
+copied /home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-full.jsonl
+copied /home/runner/work/vlc-1/vlc-1/.git/refs/remotes/origin/capture/openshell-ocsf
+copied /home/runner/work/vlc-1/vlc-1/.git/refs/heads/capture/openshell-ocsf
+copied /home/runner/work/vlc-1/vlc-1/.git/logs/refs/remotes/origin/capture/openshell-ocsf
+copied /home/runner/work/vlc-1/vlc-1/.git/logs/refs/heads/capture/openshell-ocsf
+[/openshell-default--vlccap-ffb88451-c15a-439a-818a-b04f50765de5-supervisor mounts] [{"Type":"volume","Name":"openshell-channel-acbe74913039fad9f32eeaee2c28cb07","Source":"/var/lib/docker/volumes/openshell-channel-acbe74913039fad9f32eeaee2c28cb07/_data","Destination":"/.openshell/channel","Driver":"local","Mode":"z","RW":false,"Propagation":""},{"Type":"volume","Name":"openshell-supervisor-acbe74913039fad9f32eeaee2c28cb07","Source":"/var/lib/docker/volumes/openshell-supervisor-acbe74913039fad9f32eeaee2c28cb07/_data","Destination":"/.openshell/supervisor","Driver":"local","Mode":"z","RW":false,"Propagation":""}]
+[/openshell-default--vlccap-ffb88451-c15a-439a-818a-b04f50765de5 mounts] [{"Type":"volume","Name":"openshell-channel-acbe74913039fad9f32eeaee2c28cb07","Source":"/var/lib/docker/volumes/openshell-channel-acbe74913039fad9f32eeaee2c28cb07/_data","Destination":"/.openshell/channel","Driver":"local","Mode":"z","RW":true,"Propagation":""}]
+ls: cannot access '/home/runner/.openshell': No such file or directory
+/home/runner/.config/openshell:
+total 16
+drwx------ 3 runner runner 4096 Sep 29 00:22 .
+drwxr-xr-x 5 runner runner 4096 Sep 29 00:22 ..
+-rw-r--r-- 1 runner runner    9 Sep 29 00:22 active_gateway
+drwx------ 3 runner runner 4096 Sep 29 00:22 gateways
+
+/home/runner/.local/state/openshell:
+total 20
+drwxr-xr-x 5 runner runner 4096 Sep 29 00:22 .
+drwxr-xr-x 3 runner runner 4096 Sep 29 00:22 ..
+drwx------ 3 runner runner 4096 Sep 29 00:22 docker-sandbox-tokens
+drwx------ 3 runner runner 4096 Sep 29 00:22 gateway
+drwx------ 5 runner runner 4096 Sep 29 00:22 tls
+=== writability probe (after collection, so the capture is untouched)
+$ openshell sandbox exec -n vlccap --no-tty --no-login-shell --timeout 60 -- sh -c f=$(ls /var/log/openshell-ocsf.*.log 2>/dev/null | head -1); echo "file=$f"; ls -la "$f"; if [ -n "$f" ] && echo "{\"probe\":\"vlc1\"}" >> "$f" 2>/dev/null; then echo APPEND=WRITABLE; else echo APPEND=NOT_WRITABLE; fi; if [ -n "$f" ] && cp "$f" /tmp/x 2>/dev/null && : > "$f" 2>/dev/null; then echo TRUNCATE=POSSIBLE; cat /tmp/x > "$f"; else echo TRUNCATE=NOT_POSSIBLE; fi
+file=
+ls: : No such file or directory
+APPEND=NOT_WRITABLE
+TRUNCATE=NOT_POSSIBLE
+[exit 0]
+$ openshell sandbox delete vlccap
+✓ Sandbox vlccap deletion accepted; cleanup is pending
+[exit 0]

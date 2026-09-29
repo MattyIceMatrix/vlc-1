@@ -1,0 +1,6 @@
+/home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-scrubbed.jsonl
+/home/runner/work/vlc-1/vlc-1/examples/third-party/openshell-ocsf-full.jsonl
+/home/runner/work/vlc-1/vlc-1/.git/refs/remotes/origin/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/refs/heads/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/logs/refs/remotes/origin/capture/openshell-ocsf
+/home/runner/work/vlc-1/vlc-1/.git/logs/refs/heads/capture/openshell-ocsf
