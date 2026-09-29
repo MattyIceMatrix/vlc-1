@@ -1,6 +1,6 @@
 # The deck
 
-`VLC-1.pptx` — 15 slides, built by `build.js` (pptxgenjs), with speaker notes on
+`VLC-1.pptx` — 16 slides, built by `build.js` (pptxgenjs), with speaker notes on
 the slides that need them.
 
 Rebuild after editing:

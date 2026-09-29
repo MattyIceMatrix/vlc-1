@@ -201,7 +201,7 @@ footer p { margin: 0 0 0.875rem; }
   <p class="foot">Without the identity, the first and third logs are the same file. With it, the third cannot pass for the first.</p>
 </div>
 
-<p>That is one level of five. Each adds a property the one below cannot establish, and each is defined by the attack it refuses.</p>
+<p>That is one of six levels, L0–L5. Each adds a property the one below cannot establish, and each is defined by the attack it refuses.</p>
 
 <h2>The levels</h2>
 
@@ -278,10 +278,10 @@ footer p { margin: 0 0 0.875rem; }
 
 <ul class="plain">
   <li>It is not a certification, an audit, or a security review.</li>
-  <li>Four open log formats have been scored. That is not a survey of the market.</li>
+  <li>Eight log formats have been scored: six from public documentation, one (NVIDIA OpenShell) from a single live capture, and one by its own operator. That is not a survey of the market.</li>
   <li>The reference implementation&rsquo;s journals were re-recorded after EXT-003 on a GitHub-hosted machine, not its author&rsquo;s. The originals fail the corrected check and are kept unedited, because the count sits inside a hash chain and correcting it would break the binding.</li>
   <li>On a log alone, the lowest level establishes that the chain is consistent. Detecting a complete rewrite needs a root or head held independently of the log.</li>
-  <li>It has not yet been run against a log from a production system its author did not write.</li>
+  <li>Beyond its author&rsquo;s own captures, it has been run against one live log from a system its author did not write: a single NVIDIA OpenShell sandbox run on a GitHub-hosted runner, 2026-09-29. It has not yet been run against a production deployment.</li>
 </ul>
 
 <h2>Run it</h2>
@@ -298,7 +298,7 @@ python3 conformance.py --log your-log.jsonl \
 <ul class="plain">
   <li><a href="https://github.com/MattyIceMatrix/vlc-1">Source, specification and examples</a></li>
   <li><a href="https://doi.org/10.5281/zenodo.22728393">Citable release, DOI 10.5281/zenodo.22728393</a> &mdash; always the newest version</li>
-  <li><a href="https://doi.org/10.5281/zenodo.22903521">Version 1.3-draft, DOI 10.5281/zenodo.22903521</a> &mdash; to pin exactly what you read</li>
+  <li><a href="https://doi.org/10.5281/zenodo.23002582">Version 1.4-draft, DOI 10.5281/zenodo.23002582</a> &mdash; to pin exactly what you read</li>
   <li><a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/FINDINGS-EXTERNAL.md">Every external finding, with its reporter</a></li>
 </ul>
 
@@ -306,7 +306,7 @@ python3 conformance.py --log your-log.jsonl \
 
 <footer>
   <p>Matthew Moore, independent. No institutional affiliation. The specification is dedicated to the public domain under CC0 and the code is MIT: cite it, implement it, fork it, or lift its clauses into a standard without asking.</p>
-  <p>Comments on the draft have been submitted to the BSI enquiry on prEN 18229-3.</p>
+  <p>A comment on prEN 18229 is drafted in <a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/COMMENT-prEN-18229.md">COMMENT-prEN-18229.md</a>; filing status is confirmed with the national standards body.</p>
 </footer>
 
 </div>

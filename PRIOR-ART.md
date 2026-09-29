@@ -94,8 +94,8 @@ per-receipt versus set-completeness distinction, three months earlier. **No
 priority is claimed over either.** His §6 offers three mechanisms for
 set-completeness, each placing the burden on the log; this specification's L2
 places it on the producer instead. His §4.4 independently proposes log-integrated
-time over signer-asserted time to defeat backdating; Annex H reaches the same
-conclusion by another route.
+time over signer-asserted time to defeat backdating; Annex H (planned, not yet
+published) is intended to reach the same conclusion by another route.
 
 ## Runtime governance architectures
 
@@ -118,9 +118,9 @@ specification addresses from the other side.
 ## Long-term validity and hardware roots
 
 **Guardtime KSI** (~2007 onward): non-expiring hash-only signatures with
-periodic publication; Annex H's re-anchoring is the general construction for
-suites that depend on migratable assumptions, and hash-only schemes satisfy it
-trivially. **EQTY Lab Verifiable Compute** (December 2024, with Intel and
+periodic publication; the re-anchoring planned for Annex H (planned, not yet
+published) is intended as the general construction for suites that depend on
+migratable assumptions, which hash-only schemes would satisfy trivially. **EQTY Lab Verifiable Compute** (December 2024, with Intel and
 NVIDIA): TEE-attested, time-anchored certificates for AI operations; Annex I
 treats such certificates as a conformant root of trust.
 
