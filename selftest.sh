@@ -82,10 +82,19 @@ hr; echo "2b. MECHANISMS -- every chain mechanism and produced-count kind, not o
 # produced-count kinds no worked example reaches. Writing them found EXT-013.
 KW=examples/reference-impl/kernel-witness-L5.jsonl
 if [ -f "$KW" ]; then
-  kb=$(level "$KW" adapters/observer.json)
+  # EXT-022: the observer's end marker is not chained, so on the log alone the
+  # journal is L0 and every mutation would "lower" it trivially. The baseline is
+  # taken with the journal's own final head supplied as the independent anchor
+  # (standing in for a head published elsewhere), which puts it at L1, so each
+  # mutation has to be caught by the chain to count.
+  KH=$(tail -n 1 "$KW" | python3 -c 'import json,sys;print(json.load(sys.stdin)["h"])' | tr -d '\r')
+  kb=$($C --log "$KW" --adapter adapters/observer.json --expect-head "$KH" --json 2>/dev/null \
+       | python3 -c 'import json,sys;print(json.load(sys.stdin)["structural_level"])' | tr -d '\r')
+  [ "$kb" -ge 1 ] || bad "observer baseline with its head anchored is L$kb; the mutation controls below would be vacuous"
   for m in flip-byte drop-interior truncate-tail drop-coverage; do
-    got=$(level_m "$KW" adapters/observer.json $m)
-    if [ "$got" -lt "$kb" ] || [ "$got" = "0" ]; then ok "observer prefix chain: $m -> L$got (was L$kb)"
+    got=$($C --log "$KW" --adapter adapters/observer.json --expect-head "$KH" --mutate $m --json 2>/dev/null \
+          | python3 -c 'import json,sys;print(json.load(sys.stdin)["structural_level"])' | tr -d '\r')
+    if [ "$got" -lt "$kb" ]; then ok "observer prefix chain, head anchored: $m -> L$got (was L$kb)"
     else bad "observer prefix chain: $m -> L$got, not lowered from L$kb"; fi
   done
 fi
@@ -199,15 +208,23 @@ hr; echo "5. NOT RIGGED -- the author's own journals, judged by the same rules"
 # historical capture and cannot be regenerated, so it is re-pinned rather than
 # marked as an expected failure. What it was kept for is unchanged: VLC-L3-1d
 # must still FAIL on it. If that ever passes, the checker has been loosened.
+#
+# Corrigendum 6 (EXT-022) moves every journal below to L0 on the log alone. The
+# observer's HEAD record names the chain head but is not itself chained, so the
+# last records of a journal can be dropped and HEAD edited to match with no hash
+# recomputed -- the checker now refuses VLC-L1-3 without an independently held
+# head, and refuses the produced count (read from HEAD) in every case. These are
+# the levels the captures actually demonstrate. They are pinned, so a change
+# that restores the old numbers without binding the end marker turns this red.
 PRE=examples/reference-impl/pre-basis-L2.jsonl
 if [ -f "$PRE" ]; then
 	got=$(level "$PRE" adapters/observer.json)
-	l25=$(req "$PRE" adapters/observer.json VLC-L2-5)
+	l13=$(req "$PRE" adapters/observer.json VLC-L1-3)
 	l31d=$(req "$PRE" adapters/observer.json VLC-L3-1d)
-	if [ "$got" = "1" ] && [ "$l25" = "FAIL" ] && [ "$l31d" = "FAIL" ]; then
-		ok "pre-fix capture -> L1: identity fails (predates EXT-003), and VLC-L3-1d still fails (the gap it was kept to show)"
+	if [ "$got" = "0" ] && [ "$l13" = "FAIL" ] && [ "$l31d" = "FAIL" ]; then
+		ok "pre-fix capture -> L0: its end marker is unbound (EXT-022), and VLC-L3-1d still fails (the gap it was kept to show)"
 	else
-		bad "pre-fix capture -> L$got, VLC-L2-5 $l25, VLC-L3-1d $l31d; expected L1, FAIL, FAIL"
+		bad "pre-fix capture -> L$got, VLC-L1-3 $l13, VLC-L3-1d $l31d; expected L0, FAIL, FAIL"
 	fi
 else
 	bad "pre-fix capture missing: the not-rigged control cannot run"
@@ -216,16 +233,16 @@ for j in examples/reference-impl/kernel-witness-L5.jsonl examples/reference-impl
 	[ -f "$j" ] || continue
 	got=$(level  "$j" adapters/observer.json)
 	sgot=$(slevel "$j" adapters/observer.json)
-	# Re-captured 2026-09-21 by the corrected sensor on a GitHub-hosted runner;
-	# the 2026-09-12 captures are kept in pre-EXT-003/ (Corrigendum 2).
-	if [ "$got" = "5" ] && [ "$sgot" = "4" ]; then
-		ok "$(basename $j) -> structural L$sgot, attested L$got"
+	JH=$(tail -n 1 "$j" | python3 -c 'import json,sys;print(json.load(sys.stdin)["h"])' | tr -d '\r')
+	A=$($C --log "$j" --adapter adapters/observer.json --expect-head "$JH" --json 2>/dev/null | python3 -c \
+	  'import json,sys;r=json.load(sys.stdin);q=r["requirements"];print(r["structural_level"],r["attested_level"],q["VLC-L1-3"]["status"],q["VLC-L2-1"]["status"])' | tr -d '\r')
+	if [ "$sgot" = "0" ] && [ "$got" = "0" ] && [ "$A" = "1 1 PASS FAIL" ]; then
+		ok "$(basename $j) -> L0 on the log alone; L1 with its head anchored, blocked at VLC-L2-1 (count on an unbound marker)"
 	else
-		bad "$(basename $j) -> structural L$sgot, attested L$got; expected 4 and 5"
+		bad "$(basename $j) -> structural L$sgot, attested L$got, anchored [$A]; expected 0, 0, [1 1 PASS FAIL]"
 	fi
 done
-ok "the reference implementation's own L5 is ATTESTED, not structural, and says so"
-
+ok "the reference implementation is scored by the same rules: its journals' end marker is not chained, and the levels say so"
 
 hr; echo "6. THE WITNESS -- reconciling a self-report against an independent record"
 R="python3 witness/reconcile.py"
@@ -242,15 +259,47 @@ SIG=$($R --claims examples/reference-impl/agent-transcript-spoofed.jsonl \
 # a control that only checks the exit code would pass for the wrong reason.
 RT=$(mktemp -d); trap 'rm -rf "$RT"' EXIT
 python3 - "$RT" > "$RT/results.txt" <<'PYX'
-import json, subprocess, sys
+import copy, hashlib, json, subprocess, sys
 d = sys.argv[1]
 E = "examples/reference-impl"
 H, W = f"{E}/agent-transcript-honest.jsonl", f"{E}/kernel-witness-honest-session.jsonl"
+canon = lambda o: json.dumps(o, sort_keys=True, separators=(",", ":"))
+sha = lambda s: hashlib.sha256(s.encode()).hexdigest()
+
+# EXT-022. No captured journal qualifies as a witness any more: the observer's
+# end marker is not chained, so none demonstrates structural L1 on its own, let
+# alone L3. The reconciler's gates still need testing against a witness that
+# does qualify, so this section RE-SEALS the capture under a chain that binds its
+# end marker. The records are the sensor's, unchanged; the seal is this test's,
+# not the sensor's, and nothing here is presented as a capture.
+def seal(src, dst):
+    recs = [json.loads(l) for l in open(src) if l.strip()]
+    out, prev = [], None
+    for r in recs:
+        r = {k: v for k, v in r.items() if k != "h"}
+        if prev is None:                      # H0: the root, derived from the policy digest
+            prev = sha(r["policy_digest"]); r["hash"] = prev
+        else:
+            if r["class"] == "HEAD":
+                r["head"] = prev
+            r["hash"] = sha(prev + canon(r)); prev = r["hash"]
+        out.append(r)
+    open(dst, "w").write("\n".join(canon(r) for r in out) + "\n")
+SA = json.load(open("adapters/observer.json"))
+SA["name"] = "observer-resealed-for-test"
+SA["integrity"] = {"mechanism": "sha256-chain-canonical", "hash_field": "hash", "primitive": "SHA-256",
+                   "documented": True, "primitive_documented": True,
+                   "root": {"kind": "field_of_first_record", "field": "policy_digest", "transform": "sha256"},
+                   "end_marker": {"class": "HEAD", "head_field": "head", "self_bound": True}}
+json.dump(SA, open(f"{d}/sealed.json", "w"))
+SW = f"{d}/witness-sealed.jsonl"
+seal(W, SW)
+
 open(f"{d}/empty.jsonl", "w").close()
 open(f"{d}/badline.jsonl", "w").write(open(H).read() + "{not json\n")
-j = [json.loads(l) for l in open(W) if l.strip()]
+j = [json.loads(l) for l in open(SW) if l.strip()]
 for r in j:
-    if "h" in r: r["h"] = "00" * 32
+    if "hash" in r: r["hash"] = "00" * 32
 open(f"{d}/garbage.jsonl", "w").write("\n".join(json.dumps(r, separators=(",", ":")) for r in j) + "\n")
 c = [json.loads(l) for l in open(H) if l.strip()]
 for r in c:
@@ -269,46 +318,50 @@ def rec(claims, journal, adapter=None):
     return json.loads(p.stdout), q.returncode
 def say(ok, msg): print(("OK" if ok else "BAD") + "|" + msg)
 
-# the honest run: the records must agree AND the witness must qualify
-r, rc = rec(H, W)
-say(rc == 0, "honest run: the records agree and the witness qualifies"
+SAP = f"{d}/sealed.json"
+# the honest run, re-sealed witness: the records must agree AND the witness must qualify
+r, rc = rec(H, SW, SAP)
+say(rc == 0, "honest run (witness re-sealed for the test): the records agree and the witness qualifies"
     if rc == 0 else "honest run refused: " + "; ".join(r["evidence_problems"])
     + f" / agreement {r['agreement']}")
 
-def refused_for(claims, journal, needle, label, where="problems", adapter=None):
+def refused_for(claims, journal, needle, label, where="problems", adapter=SAP):
     r, rc = rec(claims, journal, adapter)
     hay = r["evidence_problems"] if where == "problems" else \
           [f["severity"] + " " + f["what"] for f in r["findings"]]
     say(rc != 0 and any(needle in h for h in hay), label)
 
+# EXT-022: the same honest run against the capture as recorded, whose end marker
+# is not chained, is refused -- and for that reason
+refused_for(H, W, "VLC-L1-3", "the captured journal, end marker unchained, is refused as a witness (EXT-022)",
+            adapter=None)
 refused_for(f"{d}/empty.jsonl", f"{d}/empty.jsonl", "claim record is empty",
             "two empty inputs are refused as empty, not reported as agreement")
-refused_for(f"{d}/badline.jsonl", W, "unparseable line(s) in the claim record",
+refused_for(f"{d}/badline.jsonl", SW, "unparseable line(s) in the claim record",
             "an unparseable claim line blocks the strong result")
 refused_for(H, f"{d}/garbage.jsonl", "VLC-L1-1",
             "a witness journal whose chain does not verify is refused for its chain")
-refused_for(f"{d}/otherpath.jsonl", W, "UNCORROBORATED CLAIM /safe/bin/id",
+refused_for(f"{d}/otherpath.jsonl", SW, "UNCORROBORATED CLAIM /safe/bin/id",
             "a claimed /safe/bin/id is not corroborated by a witnessed /usr/bin/id", where="findings")
-refused_for(f"{d}/unmapped.jsonl", W, "have no mapping",
+refused_for(f"{d}/unmapped.jsonl", SW, "have no mapping",
             "a claimed tool with no mapping blocks the strong result (EXT-016)")
-# A genuinely weak witness: the pre-EXT-003 capture of the same session, which
-# scores structural L1 under the corrected identity. Kept for this purpose.
+# A genuinely weak witness: the pre-EXT-003 capture of the same session, re-sealed
+# the same way, which scores structural L1 under the corrected identity.
 P3 = f"{E}/pre-EXT-003"
-refused_for(f"{P3}/agent-transcript-honest.jsonl", f"{P3}/kernel-witness-honest-session.jsonl",
+seal(f"{P3}/kernel-witness-honest-session.jsonl", f"{d}/pre3-sealed.jsonl")
+refused_for(f"{P3}/agent-transcript-honest.jsonl", f"{d}/pre3-sealed.jsonl",
             "VLC-L5-4 requires L3",
             "a witness below structural L3 cannot corroborate (EXT-015)")
 # VLC-L5-6 (1.4-draft), the sibling of the case above. The SAME honest witness,
-# its structural level held fixed at L4, with only the exhaustiveness basis
-# taken away: the adapter's basis_field points at a field that does not exist.
-# Structural L3 is still met, so a reconciler gating on structure alone lets it
-# corroborate. It must be refused, and for this reason, not another.
-a = json.load(open("adapters/observer.json"))
+# its structural level held fixed, with only the exhaustiveness basis taken
+# away: the adapter's basis_field points at a field that does not exist.
+a = copy.deepcopy(SA)
 a["coverage"]["basis_field"] = "no_such_field"
 json.dump(a, open(f"{d}/nobasis.json", "w"))
-s_lvl = json.loads(subprocess.run(["python3", "conformance.py", "--log", W, "--adapter", f"{d}/nobasis.json",
+s_lvl = json.loads(subprocess.run(["python3", "conformance.py", "--log", SW, "--adapter", f"{d}/nobasis.json",
                                    "--json"], capture_output=True, text=True).stdout)["structural_level"]
 say(s_lvl >= 3, f"control precondition: removing the basis leaves the witness at structural L{s_lvl}, not below L3")
-refused_for(H, W, "VLC-L5-6",
+refused_for(H, SW, "VLC-L5-6",
             "a witness at structural L3+ with no exhaustiveness basis cannot corroborate an absence (VLC-L5-6)",
             adapter=f"{d}/nobasis.json")
 PYX
@@ -751,12 +804,15 @@ echo "16. CITED ARTEFACTS -- a reference to a file that is not here is a claim"
 CIT=$(python3 - <<'PYC'
 import os, re, glob
 cited = {}
-for p in glob.glob("*.md") + glob.glob("*.py") + glob.glob("examples/*.py"):
+for p in (glob.glob("*.md") + glob.glob("*.py") + glob.glob("examples/*.py")
+          + glob.glob("proofs/*.v") + glob.glob("adapters/*.json")):
     try:
         s = open(p, encoding="utf-8", errors="replace").read()
     except OSError:
         continue
-    for m in re.findall(r"proofs/([A-Za-z0-9_]+\.v)", s):
+    for m in re.findall(r"(?:proofs/)?([A-Za-z0-9_]+\.v)\b(?! \(not in this repository)", s):
+        if p.endswith(".v") and m == os.path.basename(p):
+            continue
         cited.setdefault(m, set()).add(p)
 for f in sorted(cited):
     state = "present" if os.path.exists(os.path.join("proofs", f)) else "ABSENT"
@@ -775,6 +831,264 @@ done
 # The xfail above runs in a subshell, so count it here.
 MISSING=$(printf '%s\n' "$CIT" | grep -c '^ABSENT|' || true)
 XFAIL=$((XFAIL + MISSING))
+
+hr
+echo "17. UNBOUND END MARKER -- a tail cut with the marker rewritten, and no hash recomputed (EXT-022)"
+# The observer's HEAD record names the chain head but is not chained itself, and
+# the produced count was read from it. Dropping the last records and copying the
+# new last hash into HEAD, with the counts lowered to match, passed VLC-L1-3 and
+# the L2 identity -- structural L4, attested L5 on the reference journal -- with
+# no hash computed at all. Every case below is built from the shipped capture.
+U17=$(python3 - <<'PYU'
+import json, os, subprocess, tempfile
+d = tempfile.mkdtemp()
+KW = "examples/reference-impl/kernel-witness-L5.jsonl"
+src = [l.rstrip("\n") for l in open(KW) if l.strip()]
+head = json.loads(src[-1]); H = head["h"]
+k = 5
+cut = json.loads(src[-1]); cut["h"] = json.loads(src[-2 - k])["h"]
+cut["records"] -= k; cut["chained"] -= k
+T = os.path.join(d, "truncated.jsonl")
+open(T, "w").write("\n".join(src[:-1 - k] + [json.dumps(cut, separators=(",", ":"))]) + "\n")
+def run(log, ad="adapters/observer.json", *extra):
+    p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", ad, "--json", *extra],
+                       capture_output=True, text=True)
+    return json.loads(p.stdout)
+def st(r, rid): return r["requirements"].get(rid, {}).get("status", "ABSENT")
+def emit(msg, cond): print(("OK" if cond else "BAD") + "|" + msg)
+r = run(T)
+emit("5 records cut from the reference journal's tail, HEAD rewritten: VLC-L1-3 FAIL, structural L0 "
+     "(was structural L4, attested L5)", st(r, "VLC-L1-3") == "FAIL" and r["structural_level"] == 0)
+r = run(T, "adapters/observer.json", "--expect-head", H)
+emit("the same cut against the journal's independently held head: VLC-L1-1 FAIL", st(r, "VLC-L1-1") == "FAIL")
+r = run(KW, "adapters/observer.json", "--expect-head", H)
+emit("the untouched journal with its head anchored: VLC-L1-3 PASS -- the anchor establishes the tail",
+     st(r, "VLC-L1-3") == "PASS" and st(r, "VLC-L1-1") == "PASS")
+emit("...and VLC-L2-1 still FAIL: an anchored head does not bind the counts on an unchained marker",
+     st(r, "VLC-L2-1") == "FAIL")
+r = run("examples/L1-hashchain.jsonl", "adapters/generic-appjsonl.json")
+emit("positive control: a chained end marker still establishes VLC-L1-3 on the log alone", st(r, "VLC-L1-3") == "PASS")
+# self_bound defaults to true, and a marker declared bound that carries no hash
+# used to be skipped silently rather than refused
+L = [l for l in open("examples/L1-hashchain.jsonl") if l.strip()]
+e = json.loads(L[-1]); e.pop("hash")
+N = os.path.join(d, "nohash.jsonl"); open(N, "w").write("".join(L[:-1]) + json.dumps(e) + "\n")
+r = run(N, "adapters/generic-appjsonl.json")
+emit("an end marker declared self-bound that carries no binding: VLC-L1-3 FAIL", st(r, "VLC-L1-3") == "FAIL")
+print("DONE|")
+PYU
+) || true
+U17F=$(mktemp); printf '%s\n' "$U17" | tr -d '\r' > "$U17F"
+# a crash inside the block must not read as a pass
+grep -q '^DONE|' "$U17F" || bad "section block U17 did not run to completion (a crash, or an API the checker lacks)"
+while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U17F"; rm -f "$U17F"
+
+hr
+echo "18. THE ADAPTER CANNOT RAISE THE STRUCTURAL LEVEL -- VLC-V-3, by attack (EXT-025)"
+# The attack from the 2026-09-29 review, verbatim: the log is L2-looks-complete,
+# unchanged; only the adapter moves. It relabels the epoch record as a coverage
+# declaration and points the per-record policy digest at the chain's own hash
+# field. The 1.4-draft checker scored it structural L4.
+U18=$(python3 - <<'PYU'
+import copy, hashlib, json, os, subprocess, tempfile
+d = tempfile.mkdtemp()
+canon = lambda o: json.dumps(o, sort_keys=True, separators=(",", ":"))
+sha = lambda s: hashlib.sha256(s.encode()).hexdigest()
+def run(log, adobj, *extra):
+    ap = os.path.join(d, "ad.json"); json.dump(adobj, open(ap, "w"))
+    p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", ap, "--json", *extra],
+                       capture_output=True, text=True)
+    return json.loads(p.stdout)
+def st(r, rid): return r["requirements"].get(rid, {}).get("status", "ABSENT")
+def emit(msg, cond, xfail=None):
+    if xfail is not None and not cond:
+        print("XFAIL|" + xfail); return
+    print(("OK" if cond else "BAD") + "|" + msg)
+def reseal(recs, root="00" * 32, first_is_root=False):
+    prev, out = root, []
+    for i, r in enumerate(recs):
+        r = {k: v for k, v in r.items() if k != "hash"}
+        if i == 0 and first_is_root:
+            r["hash"] = prev
+        else:
+            if r["class"] == "END": r["head"] = prev
+            r["hash"] = sha(prev + canon(r)); prev = r["hash"]
+        out.append(r)
+    return out
+def write(name, recs):
+    p = os.path.join(d, name); open(p, "w").write("\n".join(canon(r) for r in recs) + "\n"); return p
+base = json.load(open("adapters/generic-appjsonl.json"))
+LC = "examples/L2-looks-complete.jsonl"
+
+atk = copy.deepcopy(base)
+atk["coverage"].update({"declaration_class": "EPOCH_START", "attached_field": "producer",
+                        "unattached_field": "buffer", "by_design_field": "on_full", "basis_field": "producer"})
+atk["policy"] = {"mode": "per_record", "digest_field": "hash", "change_class": "NOPE",
+                 "replay": {"deterministic": True, "reference": "x"}}
+r = run(LC, atk)
+emit("the review's attack adapter on L2-looks-complete, log unchanged: structural L2 (1.4-draft: L4)",
+     r["structural_level"] == 2)
+emit("...refused where it lies: VLC-L3-1a (a relabelled record) and VLC-L4-1 (the chain's hash is no policy digest)",
+     st(r, "VLC-L3-1a") == "FAIL" and st(r, "VLC-L4-1") == "FAIL")
+# the residual, disclosed: the same relabelling with the epoch class also taken
+# out of marker_classes. The bytes of a relabelled record whose class claims no
+# other role are the bytes of a genuine declaration; only the mapping differs,
+# and the report pins the mapping with adapter_sha256. Expected to fail.
+atk2 = copy.deepcopy(atk); atk2["marker_classes"] = ["END"]
+r = run(LC, atk2)
+emit("residual closed?! relabelling with marker_classes also edited stays at structural L2 -- remove the xfail marker",
+     r["structural_level"] == 2,
+     xfail=f"relabelling a record no other role claims still reaches structural L{r['structural_level']} "
+           f"(not L4: the policy half is refused) -- a mapping, pinned by adapter_sha256; disclosed in EXT-025")
+emit("every report pins the mapping its levels are relative to (adapter_sha256)",
+     isinstance(r.get("adapter_sha256"), str) and len(r["adapter_sha256"]) == 64)
+
+# per_record: a constant field that is not a digest, on an honest L3 log
+pr = copy.deepcopy(base)
+pr["policy"] = {"mode": "per_record", "digest_field": "model", "change_class": "POLICY",
+                "replay": {"deterministic": True, "reference": "x"}}
+r = run("examples/L3-coverage.jsonl", pr)
+emit("per_record pointed at a constant non-digest field (model): VLC-L4-1 FAIL, structural L3 (1.4-draft: L4)",
+     st(r, "VLC-L4-1") == "FAIL" and r["structural_level"] == 3)
+# per_record: digests that change with no change record between them
+recs = [json.loads(l) for l in open("examples/L3-coverage.jsonl") if l.strip()]
+k = 0
+for x in recs:
+    if x["class"] == "inference":
+        x["policy_digest"] = ("aa" if k < 30 else "bb") * 32; k += 1
+pd = copy.deepcopy(pr); pd["policy"]["digest_field"] = "policy_digest"
+r = run(write("switch.jsonl", reseal(recs)), pd)
+emit("per_record digests that switch mid-log with no policy change record: VLC-L4-2 FAIL",
+     st(r, "VLC-L4-2") == "FAIL")
+
+# chain_root: rooted at a field that is not a digest
+recs = [json.loads(l) for l in open("examples/L3-coverage.jsonl") if l.strip()]
+root = sha(recs[0]["producer"])
+cr = copy.deepcopy(base)
+cr["integrity"]["root"] = {"kind": "field_of_first_record", "field": "producer", "transform": "sha256"}
+cr["policy"] = {"mode": "chain_root", "digest_field": "producer", "change_class": "POLICY",
+                "replay": {"deterministic": True, "reference": "x"}}
+r = run(write("producer-rooted.jsonl", reseal(recs, root, first_is_root=True)), cr)
+emit("chain_root on a field that is not a digest (producer name): VLC-L4-1 FAIL (1.4-draft: PASS, structural L4)",
+     st(r, "VLC-L4-1") == "FAIL" and st(r, "VLC-L1-1") == "PASS")
+r = run("examples/L4-policybound.jsonl", json.load(open("adapters/generic-appjsonl-policy.json")))
+emit("positive control: the policy-rooted example still passes VLC-L4-1 and scores structural L4",
+     st(r, "VLC-L4-1") == "PASS" and r["structural_level"] == 4)
+
+oo = copy.deepcopy(base); oo["policy"] = {"mode": "observation_only"}
+r = run("examples/L3-coverage.jsonl", oo)
+emit("observation_only no longer passes the structural VLC-L4-1 on the adapter's word", st(r, "VLC-L4-1") == "FAIL")
+ne = json.load(open("adapters/aws-cloudtrail-digest.json"))
+r = run("examples/third-party/cloudtrail-digests.jsonl", ne)
+emit("non_enumerable no longer passes the structural VLC-L3-6 on the adapter's word", st(r, "VLC-L3-6") == "FAIL")
+r = run("examples/L3-coverage.jsonl", base)
+emit("VLC-L3-5 reads only the adapter's non-event list and is reported attested",
+     r["requirements"]["VLC-L3-5"]["class"] == "attested")
+recs = [json.loads(l) for l in open("examples/L3-coverage.jsonl") if l.strip()]
+next(x for x in recs if x["class"] == "COVERAGE")["unattached_here"] = "/v1/chat"
+r = run(write("twocats.jsonl", reseal(recs)), base)
+emit("a source declared both attached and unattached: VLC-L3-1a FAIL", st(r, "VLC-L3-1a") == "FAIL" and st(r, "VLC-L1-1") == "PASS")
+print("DONE|")
+PYU
+) || true
+U18F=$(mktemp); printf '%s\n' "$U18" | tr -d '\r' > "$U18F"
+# a crash inside the block must not read as a pass
+grep -q '^DONE|' "$U18F" || bad "section block U18 did not run to completion (a crash, or an API the checker lacks)"
+while IFS='|' read -r V M; do
+  case "$V" in DONE) ;; OK) ok "$M" ;; XFAIL) xfail "$M" ;; *) bad "$M" ;; esac
+done < "$U18F"; rm -f "$U18F"
+
+hr
+echo "19. VERDICTS, NOT CRASHES -- and exit codes that mean one thing each (EXT-023, EXT-024)"
+# 0: a report was produced (and every --expect was met); 1: an --expect was not
+# met; 2: no verdict was possible (usage or adapter error). A log that is empty,
+# not UTF-8 or not JSON is a verdict -- L0, with the reason -- not a crash.
+U19=$(python3 - <<'PYU'
+import hashlib, json, os, subprocess, sys, tempfile
+d = tempfile.mkdtemp()
+canon = lambda o: json.dumps(o, sort_keys=True, separators=(",", ":"))
+sha = lambda s: hashlib.sha256(s.encode()).hexdigest()
+G = "adapters/generic-appjsonl.json"
+def run(log, ad=G, *extra):
+    p = subprocess.run(["python3", "conformance.py", "--log", log, "--adapter", ad, "--json", *extra],
+                       capture_output=True, text=True)
+    try: return p.returncode, json.loads(p.stdout)
+    except Exception: return p.returncode, None
+def st(r, rid): return (r or {}).get("requirements", {}).get(rid, {}).get("status", "ABSENT")
+def emit(msg, cond): print(("OK" if cond else "BAD") + "|" + msg)
+def reseal(recs):
+    prev, out = "00" * 32, []
+    for r in recs:
+        r = {k: v for k, v in r.items() if k != "hash"}
+        if r["class"] == "END": r["head"] = prev
+        r["hash"] = sha(prev + canon(r)); prev = r["hash"]; out.append(r)
+    return out
+def write(name, text):
+    p = os.path.join(d, name); open(p, "wb").write(text if isinstance(text, bytes) else text.encode()); return p
+
+rc, r = run(write("empty.jsonl", ""))
+emit("an empty log is a verdict: L0, VLC-L1-1 FAIL, exit 0 (1.4-draft: IndexError)",
+     rc == 0 and r and r["structural_level"] == 0 and st(r, "VLC-L1-1") == "FAIL")
+recs = [json.loads(l) for l in open("examples/L2-accounted.jsonl") if l.strip()]
+recs[-1]["records"] = 40.0
+rc, r = run(write("float.jsonl", "\n".join(canon(x) for x in reseal(recs)) + "\n"))
+emit("a produced count of 40.0 is not an integer: VLC-L2-1 FAIL, identity not computed (1.4-draft: read as 40, L2 PASS)",
+     rc == 0 and st(r, "VLC-L2-1") == "FAIL" and st(r, "VLC-L2-5") == "FAIL")
+recs[-1]["records"] = "forty"
+rc, r = run(write("str.jsonl", "\n".join(canon(x) for x in reseal(recs)) + "\n"))
+emit("a produced count of \"forty\": VLC-L2-1 FAIL and a report, exit 0 (1.4-draft: ValueError)",
+     rc == 0 and st(r, "VLC-L2-1") == "FAIL")
+# EXT-024: two logs differing only in an invalid byte used to hash identically,
+# because both bytes decoded to U+FFFD. The chain below is sealed over U+FFFD.
+L1 = [json.loads(l) for l in open("examples/L1-hashchain.jsonl") if l.strip()]
+L1[3]["model"] = "acme-�"
+body = "\n".join(canon(x) for x in reseal(L1)) + "\n"
+raw = body.encode().replace("acme-\\ufffd".encode(), b"acme-\xff")
+rc, r = run(write("badutf8.jsonl", raw))
+emit("an undecodable byte is not replaced and hashed: L0, VLC-L1-1 FAIL naming UTF-8 (1.4-draft: L1 PASS)",
+     rc == 0 and st(r, "VLC-L1-1") == "FAIL" and "UTF-8" in r["requirements"]["VLC-L1-1"]["note"])
+rc, r = run("examples/L1-hashchain.jsonl", write("bad.json", "{"))
+emit("an adapter that is not JSON: exit 2, JSON error object (1.4-draft: traceback, exit 1)",
+     rc == 2 and r and r.get("error") == "adapter")
+a = json.load(open(G)); a["integrity"]["mechanism"] = "sha512-imaginary"
+rc, r = run("examples/L1-hashchain.jsonl", write("mech.json", json.dumps(a)))
+emit("an unknown integrity mechanism: exit 2 (1.4-draft: exit 1)", rc == 2 and r and r.get("error") == "adapter")
+a = json.load(open(G)); a["loss"]["produced"] = {"kind": "sum_of_end_marker_fields"}
+rc, r = run("examples/L2-accounted.jsonl", write("nofields.json", json.dumps(a)))
+emit("a produced kind with no fields: exit 2 (1.4-draft: KeyError)", rc == 2)
+rc, r = run(os.path.join(d, "no-such-log.jsonl"))
+emit("a log file that does not exist: exit 2 (1.4-draft: scored L0, exit 0)", rc == 2 and r and r.get("error") == "usage")
+rc, r = run("examples/L1-hashchain.jsonl", G, "--expect-head", "not-hex")
+emit("an anchor that is not 64 hex characters: exit 2", rc == 2)
+rc, r = run("examples/L1-hashchain.jsonl", G, "--expect", "3")
+emit("an --expect that is not met: exit 1, report still printed", rc == 1 and r and r["attested_level"] == 1)
+rc, r = run("examples/L1-hashchain.jsonl", G, "--expect", "1")
+emit("an --expect that is met: exit 0", rc == 0)
+before = set(os.listdir("examples"))
+run("examples/L4-policybound.jsonl", "adapters/generic-appjsonl-policy.json", "--mutate", "flip-byte")
+emit("--mutate writes nothing beside the log", set(os.listdir("examples")) == before)
+# the programmatic entry point: same dict as --json, no state between calls
+sys.path.insert(0, ".")
+import conformance as C
+H = json.loads(open("examples/L4-policybound.jsonl").read().splitlines()[-1])["hash"]
+a1 = C.check("examples/L4-policybound.jsonl", "adapters/generic-appjsonl-policy.json", expect_head="ab" * 32)
+a2 = C.check("examples/L4-policybound.jsonl", "adapters/generic-appjsonl-policy.json")
+rc, cli = run("examples/L4-policybound.jsonl", "adapters/generic-appjsonl-policy.json")
+emit("check() returns the object --json prints", a2 == cli)
+emit("check() keeps no state between calls: a wrong anchor fails one call and not the next",
+     a1["structural_level"] == 0 and a2["structural_level"] == 4)
+try:
+    C.check("examples/L1-hashchain.jsonl", os.path.join(d, "bad.json")); raised = False
+except C.AdapterError:
+    raised = True
+emit("check() raises AdapterError for a malformed adapter", raised)
+print("DONE|")
+PYU
+) || true
+U19F=$(mktemp); printf '%s\n' "$U19" | tr -d '\r' > "$U19F"
+# a crash inside the block must not read as a pass
+grep -q '^DONE|' "$U19F" || bad "section block U19 did not run to completion (a crash, or an API the checker lacks)"
+while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U19F"; rm -f "$U19F"
 
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"

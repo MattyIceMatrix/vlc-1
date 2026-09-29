@@ -190,7 +190,12 @@ def main(out):
     chain_em = cf_chain([{}] * 6)
     chain_em.append({"kind": "END", "head": chain_em[-1]["hash"]})
     case("canonical-fields-end-marker-head-unhashed", chain_em, ema, "VLC-L1-1", "PASS")
-    case("canonical-fields-end-marker-head-ok", chain_em, ema, "VLC-L1-3", "PASS")
+    # EXT-022 (2026-09-29) reverses the next expectation, which EXT-020 set to PASS. The head
+    # comparison anchors the head against the chain, but the chain does not bind the marker: drop
+    # the tail, copy the new last hash into the marker, and the comparison still holds (the
+    # "resealed" case below, which passed VLC-L1-3 before the fix). On the log alone, an
+    # unbound end marker cannot establish VLC-L1-3; --expect-head can (selftest section 17).
+    case("canonical-fields-end-marker-head-ok", chain_em, ema, "VLC-L1-3", "FAIL")
     bad_head = copy.deepcopy(chain_em)
     bad_head[-1]["head"] = "ab" * 32
     case("canonical-fields-end-marker-head-edited", bad_head, ema, "VLC-L1-3", "FAIL")
@@ -206,6 +211,8 @@ def main(out):
     case("canonical-fields-end-marker-head-earlier", early_head, ema, "VLC-L1-3", "FAIL")
     tail_cut = copy.deepcopy(chain_em[:-2]) + [copy.deepcopy(chain_em[-1])]   # last event dropped, marker kept
     case("canonical-fields-end-marker-tail-dropped", tail_cut, ema, "VLC-L1-3", "FAIL")
+    resealed = copy.deepcopy(chain_em[:-3]) + [dict(chain_em[-1], head=chain_em[-4]["hash"])]
+    case("canonical-fields-end-marker-tail-dropped-resealed", resealed, ema, "VLC-L1-3", "FAIL")
     emc = copy.deepcopy(em)
     emc["loss"] = dict(emc.get("loss", {}), produced={"kind": "field_of_end_marker", "field": "produced"})
     emca = os.path.join(out, "canonical-fields-end-marker-count.adapter.json")
