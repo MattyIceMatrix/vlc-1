@@ -45,7 +45,8 @@ jobs:
                    mcp-toolcall:mcp-toolcall:0:0 mcp-toolcall:mcp-toolcall-partial-host:0:0 \
                    fab-equipment-secsgem:fab-equipment-full:0:0 \
                    fab-equipment-secsgem:fab-equipment-sampled:0:0 \
-                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:0:0 \
+                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1 \
+                   jidec-ledger-chained-unbound:jidec-ledger-chained-unbound:0:0 \
                    nvidia-openshell-live:openshell-live-full:0:0 \
                    nvidia-openshell-live:openshell-live-scrubbed:0:0 \
                    agentgateway-live:agentgateway-live-full:0:0 agentgateway-live:agentgateway-live-scrubbed:0:0 \
@@ -60,15 +61,22 @@ jobs:
             if [ "$got" = "$ws $wa" ]; then echo "ok    $n / $f: structural/attested $got"
             else echo "FAIL  $n / $f: got $got, expected $ws $wa"; bad=1; fi
           done
-          # EXT-022: the JIDEC chained ledger's end marker is not itself chained,
-          # so it is L0 on the log alone and L1 only against the head its
-          # operator stamped to Bitcoin in the daily batch (held outside the log).
-          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained.jsonl \
-                  --adapter adapters/jidec-ledger-chained.json --json \
+          # EXT-022. The unbound JIDEC capture (control) is L0 on the log alone and L1 only against the head
+          # its operator stamped to Bitcoin in the daily batch (held outside the log).
+          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained-unbound.jsonl \
+                  --adapter adapters/jidec-ledger-chained-unbound.json --json \
                   --expect-head 87613590ae46fe98c85925be2bbf8aafe4262634ffa69a45f94081502f8cc7d4 \
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
-          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with its stamped head: structural/attested $got"
-          else echo "FAIL  jidec-ledger-chained with its stamped head: got $got, expected 1 1"; bad=1; fi
+          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained-unbound with its stamped head: structural/attested $got"
+          else echo "FAIL  jidec-ledger-chained-unbound with its stamped head: got $got, expected 1 1"; bad=1; fi
+          # The bound capture is L1 on the log alone (asserted above) and also against the marker hash a
+          # verifier derives from a stamped (n, head): sha256(canon({n, schema, prev_entry_sha256: head, head})).
+          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained.jsonl \
+                  --adapter adapters/jidec-ledger-chained.json --json \
+                  --expect-head 1dce7a79c4dd26fee7ae4dd007e232483360efa82669056d3c485ad722fbdd2d \
+                | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
+          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with the head derived from its stamp: structural/attested $got"
+          else echo "FAIL  jidec-ledger-chained with the head derived from its stamp: got $got, expected 1 1"; bad=1; fi
           # The claim THIRD-PARTY.md makes about each live capture: removing the
           # refused calls' records changes no requirement result at all.
           for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
