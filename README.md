@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
 
-*Current version **1.4.1-draft** ([10.5281/zenodo.23027758](https://doi.org/10.5281/zenodo.23027758)). The badge is the concept DOI and always resolves to
+*Current version **1.4.2-draft** ([10.5281/zenodo.23028240](https://doi.org/10.5281/zenodo.23028240)). The badge is the concept DOI and always resolves to
 the newest; [`SPEC.md` Annex F](SPEC.md) is the revision history, with a version DOI
 for each published version.*
 
