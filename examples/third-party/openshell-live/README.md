@@ -16,3 +16,7 @@ GitHub-hosted runner: OpenShell 0.1.2, Docker driver, one sandbox from
 policy, phase 2 under NVIDIA's quickstart policy. The same branch holds the
 two earlier discovery runs, including the one showing that the process inside
 the sandbox could not see any OpenShell log file.
+
+Reported upstream on 2026-09-29, with a proposed design (per-event sequence
+numbers, chaining, drop records, per-decision policy hash):
+https://github.com/NVIDIA/OpenShell/issues/3817
