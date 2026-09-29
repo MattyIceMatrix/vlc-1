@@ -20,6 +20,7 @@ jobs:
       - name: capture
         shell: bash
         run: |
+          set +e +o pipefail
           set -u
           O=capture/run-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$O"
           note() { echo "$*" | tee -a "$O/steps.txt"; }
