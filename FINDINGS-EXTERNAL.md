@@ -722,3 +722,40 @@ because it cannot see what it is meant to check.
 
 This is the fifth contribution to VLC-1 from babyblueviper1.
 
+
+---
+
+## EXT-022 — a tail cut past an unbound end marker scored L4 / L5
+
+*Internal review, 2026-09-29. Fixed in 1.4.1-draft, Corrigendum 6.*
+
+`adapters/observer.json` declares its end marker `self_bound: false`, yet the
+checker read both the final head (VLC-L1-3) and the produced count (VLC-L2-5)
+from it. Removing the last five events, copying the previous record's hash into
+the marker and lowering its counts by five kept structural L4 / attested L5. No
+hash was recomputed. The reference journals now score L0 (L1 with
+`--expect-head`) until the sensor binds its end marker. Control: `selftest.sh`
+§17.
+
+## EXT-023 — crashes where there should be verdicts
+
+*Internal review, 2026-09-29.* An empty log (IndexError), a non-integer count
+(ValueError, or `int(3.7)` read as 3) and a malformed adapter produced
+tracebacks with exit 1, the same code as a missed expectation. Fixed: reports,
+and exit codes 0, 1 and 2 as documented. Control: §19.
+
+## EXT-024 — two different byte strings hashed the same
+
+*Internal review, 2026-09-29.* `load()` decoded with `errors="replace"`, so
+every undecodable sequence became U+FFFD before hashing. Fixed: strict
+decoding; an undecodable line fails VLC-L1-1. Control: §19.
+
+## EXT-025 — a more generous adapter raised the structural level
+
+*Internal review, 2026-09-29.* With the log unchanged, an adapter pointing
+coverage at an existing record class and the policy digest at the chain's own
+hash moved `L2-looks-complete.jsonl` from structural L2 to L4. This violated
+VLC-V-3. Fixed for L3-1a, L3-6 and L4-1. One residual case is disclosed as an
+expected failure in §18: a relabelled record that no other role claims still
+reaches structural L3. It is bounded by `adapter_sha256` in every report.
+Control: §18.

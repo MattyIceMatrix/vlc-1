@@ -49,7 +49,7 @@ excludes everything reconciles trivially and says so.
 """
 import argparse, json, os, posixpath, re, sys
 
-VERSION = "witness/reconcile 1.3"
+VERSION = "witness/reconcile 1.4"
 
 
 # --------------------------------------------------------------------------
@@ -89,7 +89,7 @@ def load_jsonl(path, strip_chain=True):
     return out, bad
 
 
-def journal_chain_status(journal_path, adapter_path):
+def journal_chain_status(journal_path, adapter_path, expect_head=None):
     """True when the witness journal is one VLC-L5-4 allows to corroborate.
 
     That is: its chain and end marker verify (VLC-L1-1, VLC-L1-3), AND it
@@ -97,19 +97,23 @@ def journal_chain_status(journal_path, adapter_path):
     log below L3 must not be presented as corroboration -- a witness with an
     undeclared coverage gap agrees with a lie honestly. Checking the chain alone
     let a structural-L1 witness produce the strong result (EXT-015, reported by
-    pipavlo82). Reuses conformance.py so there is one definition of each.
+    pipavlo82). Reuses conformance.check() so there is one definition of each;
+    it used to shell out to conformance.py and parse its stdout.
+
+    expect_head: a head for the journal obtained independently of it. A journal
+    whose end marker the chain does not bind cannot establish VLC-L1-3 without
+    one (EXT-022).
     Returns True or a reason string."""
-    import subprocess
     here = os.path.dirname(os.path.abspath(__file__))
-    checker = os.path.join(here, "..", "conformance.py")
+    root = os.path.join(here, "..")
+    if root not in sys.path:
+        sys.path.insert(0, root)
     try:
-        out = subprocess.run([sys.executable, checker, "--log", journal_path,
-                              "--adapter", adapter_path, "--json"],
-                             capture_output=True, text=True, timeout=120).stdout
-        rep = json.loads(out)
+        from conformance import check
+        rep = check(journal_path, adapter_path, expect_head=expect_head)
         req, lvl = rep["requirements"], rep["structural_level"]
     except Exception as e:
-        return f"could not be checked ({type(e).__name__})"
+        return f"could not be checked ({type(e).__name__}: {e})"
     bad = [r for r in ("VLC-L1-1", "VLC-L1-3") if req.get(r, {}).get("status") != "PASS"]
     if bad:
         return f"{', '.join(bad)} failed"
@@ -225,6 +229,9 @@ def main():
     ap.add_argument("--require-agreement", action="store_true",
                     help="exit 0 only if both records are valid evidence AND they agree "
                          "non-vacuously over the declared scope")
+    ap.add_argument("--journal-expect-head",
+                    help="the witness journal's final head, obtained independently of the journal; "
+                         "needed when its end marker is not bound by its chain (EXT-022)")
     ap.add_argument("--journal-adapter",
                     default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                          "..", "adapters", "observer.json"),
@@ -278,7 +285,7 @@ def main():
         problems.append(f"{bad_c} unparseable line(s) in the claim record")
     if bad_j:
         problems.append(f"{bad_j} unparseable line(s) in the witness journal")
-    chain = journal_chain_status(a.journal, a.journal_adapter)
+    chain = journal_chain_status(a.journal, a.journal_adapter, a.journal_expect_head)
     if chain is not True:
         problems.append(f"witness journal does not qualify: {chain}")
     # EXT-016. An unmapped tool's claims are dropped, but whatever it actually

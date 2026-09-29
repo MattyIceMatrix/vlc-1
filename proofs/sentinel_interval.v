@@ -30,8 +30,12 @@ Inductive Rec : Set :=
 
 Definition Log := list Rec.
 
-(* The L2 completeness identity, exactly as the checker computes it: observed
-   counters and declared intervals must be gapless from the expected start. *)
+(* A model of the L2 completeness identity over ordinals: observed counters and
+   declared intervals must be gapless from the expected start. This is the
+   ordinal form. conformance.py also, and by default, checks a count identity
+   (delivered + declared lost == produced), which this development does not
+   model; the two are related, not identical. (Corrected 1.4.1-draft,
+   Corrigendum 6: an earlier comment said "exactly as the checker computes it".) *)
 Fixpoint closes (expect : nat) (l : Log) : bool :=
   match l with
   | [] => true

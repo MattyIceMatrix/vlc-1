@@ -266,11 +266,11 @@ def _dig(rec, path):
 
 
 def _int(v):
+    """A JSON integer, or None. EXT-023: this used to call int() on anything,
+    so a tick index of 3.7 read as 3 and "4" read as 4 -- a tick the attestor
+    never numbered could fill a gap in the window."""
     if isinstance(v, bool) or not isinstance(v, int):
-        try:
-            return int(v)
-        except (TypeError, ValueError):
-            return None
+        return None
     return v
 
 

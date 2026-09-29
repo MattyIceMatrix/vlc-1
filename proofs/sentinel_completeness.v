@@ -27,7 +27,8 @@
          the records at all.
 
    The shape of (a) and (b) is deliberately the same as
-   `the_oracle_is_blind_to_substitution` in sentinel_object.v: the interesting
+   `the_oracle_is_blind_to_substitution` in sentinel_object.v (not in this
+   repository; see Corrigendum 6): the interesting
    security claims in this tree are the ones that need no assumption about the
    attacker, because they are about what the evidence cannot say.
    ========================================================================== *)

@@ -2,7 +2,9 @@
 """
 VLC-1 conformance checker -- vendor-neutral.
 
-    ./conformance.py --log <file> --adapter <adapter.json> [--json] [--mutate M]
+    ./conformance.py --log <file> --adapter <adapter.json> [--json]
+                     [--expect N] [--expect-structural N]
+                     [--expect-root HEX] [--expect-head HEX] [--mutate M]
 
 Reads ANY log, in any field naming, given a small declarative adapter that maps
 the producer's field names onto the abstract quantities of VLC-1 clauses 4-7.
@@ -14,12 +16,29 @@ Design constraints, from SPEC.md Annex C:
   * no requirement check is hard-coded to one vendor's mechanism;
   * every level must be reachable by an application-layer producer.
 
-Exit codes:  0 = the log demonstrated the level requested with --expect (or, with
-no --expect, the check ran).  1 = expectation not met.  2 = usage/adapter error.
-"""
-import argparse, hashlib, json, os, re, sys
+Programmatic use (standard library only, no global state):
 
-VERSION = "VLC-1 1.4-draft"
+    from conformance import check, AdapterError, UsageError
+    report = check("log.jsonl", "adapters/x.json", expect_head=None)
+    report["structural_level"], report["attested_level"]
+
+check() returns exactly the object --json prints. A log that is empty, not
+UTF-8, not JSON or otherwise not a log is a VERDICT (L0, reason under
+VLC-L1-1), not an error.
+
+Exit codes (EXT-023):
+  0  the run completed and a report was printed (whatever level it shows),
+     and every --expect / --expect-structural given was met;
+  1  the run completed but a level given with --expect or
+     --expect-structural was not the level demonstrated;
+  2  no verdict was possible: a usage error (bad arguments, a log file that
+     cannot be opened, an anchor that is not 64 hex characters, an unknown
+     mutation) or an adapter error (unreadable, not JSON, or malformed).
+     With --json, stdout carries {"error": "usage"|"adapter", "message": ...}.
+"""
+import argparse, hashlib, json, os, re, shutil, sys, tempfile
+
+VERSION = "VLC-1 1.4.1-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -27,6 +46,16 @@ PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 class LogError(Exception):
     """The delivered set is not readable as a log. Not an adapter fault, and
     not a crash: it is exactly what a verifier should report as L0."""
+
+
+class AdapterError(ValueError):
+    """The adapter is unreadable or malformed. No verdict is possible: the
+    checker does not know how to read the log. Exit status 2 (EXT-023)."""
+
+
+class UsageError(ValueError):
+    """A request the checker cannot act on: a missing log file, an anchor that
+    is not 64 hex characters, an unknown mutation. Exit status 2 (EXT-023)."""
 
 
 # ===========================================================================
@@ -90,10 +119,29 @@ def _reject_nonfinite(tok):
 
 
 def load(path, ad):
-    if not os.path.exists(path):
-        raise LogError(f"log not found: {path}")
-    lines = [l.rstrip("\n") for l in open(path, encoding="utf-8", errors="replace")
-             if l.strip()]
+    """Read the delivered set. Raises UsageError when the file cannot be read at
+    all (no verdict is possible) and LogError when it can be read but is not a
+    log (the verdict is L0, with the reason)."""
+    try:
+        with open(path, "rb") as f:
+            data = f.read()
+    except OSError as e:
+        raise UsageError(f"log not readable: {path}: {e.strerror or e}")
+    # EXT-024. Decoded with errors="replace", every undecodable byte sequence
+    # became U+FFFD before hashing, so two logs differing only in which invalid
+    # bytes they carried hashed identically under the canonical-JSON mechanisms.
+    # An undecodable line is not a record; the delivered set is unreadable.
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as e:
+        line = data.count(b"\n", 0, e.start) + 1
+        raise LogError(f"line {line} is not valid UTF-8 (byte offset {e.start}); "
+                       f"an undecodable record cannot be hashed as delivered")
+    # universal newlines, as text-mode open() gave the checker before
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    lines = [l for l in text.split("\n") if l.strip()]
+    if not lines:
+        raise LogError("the delivered set is empty: no record to verify")
     hf = ad["integrity"].get("hash_field")
     cf = ad.get("record_class_field")
     out = []
@@ -107,7 +155,10 @@ def load(path, ad):
             raise LogError(f"record {i} is not parseable as JSON")
         if not isinstance(o, dict):
             raise LogError(f"record {i} is not a JSON object")
-        out.append(Rec(i, l, o, str(dig(o, cf)) if cf else "?", dig(o, hf)))
+        h = dig(o, hf)
+        # a hash that is not a string is no binding; it used to reach re.escape
+        # and dict keys and crash the checker (EXT-023)
+        out.append(Rec(i, l, o, str(dig(o, cf)) if cf else "?", h if isinstance(h, str) else None))
     return out
 
 
@@ -131,7 +182,7 @@ def chain_root(recs, ad):
             return bytes.fromhex(str(v))
         except ValueError:
             raise LogError("chain root field is not hex")
-    raise SystemExit(f"adapter: unknown integrity.root.kind {k!r}")
+    raise AdapterError(f"unknown integrity.root.kind {k!r}")
 
 
 def strip_hash_suffix(raw, hexhash):
@@ -174,7 +225,7 @@ def rec_hash(prev, r, ad, prev_raw=b""):
         # ASCII-only names and values canon() equals RFC 8785 JCS.
         body = {f: r.obj[f] for f in ad["integrity"]["hash_fields"] if f in r.obj}
         return sha256_hex(canon(body).encode())
-    raise SystemExit(f"adapter: unknown integrity.mechanism {mech!r}")
+    raise AdapterError(f"unknown integrity.mechanism {mech!r}")
 
 
 def _read_fields(ad):
@@ -249,12 +300,23 @@ except ImportError:                                    # pragma: no cover
         return None
 
 
-# Values the verifier obtained independently of the log (EXT-008: "a root or head the
-# verifier obtained independently"). Set from --expect-root / --expect-head.
-EXPECT = {"root": None, "head": None}
+class Ctx:
+    """Per-run state shared between the level checks. Replaces the module-level
+    EXPECT dict, so the checker can be imported and called more than once in
+    one process without one call's anchors leaking into the next.
+
+    expect_root / expect_head: values the verifier obtained independently of
+    the log (EXT-008), from --expect-root / --expect-head or check().
+    end_bound: set by check_l1. True only when the end marker's own binding was
+    recomputed and verified, so the values L2 reads from it are anchored."""
+
+    def __init__(self, expect_root=None, expect_head=None):
+        self.expect_root = expect_root.lower() if expect_root else None
+        self.expect_head = expect_head.lower() if expect_head else None
+        self.end_bound = False
 
 
-def check_l1(recs, ad, res):
+def check_l1(recs, ad, res, ctx):
     mech = ad["integrity"]["mechanism"]
     if mech == "none":
         res.fail("VLC-L1-1", "adapter declares no integrity binding")
@@ -273,9 +335,9 @@ def check_l1(recs, ad, res):
         res.fail("VLC-L1-1", "chain root not derivable from the delivered set")
         return None
 
-    if EXPECT["root"] and prev.hex() != EXPECT["root"].lower():
+    if ctx.expect_root and prev.hex() != ctx.expect_root:
         res.fail("VLC-L1-1", f"chain root {prev.hex()[:16]}... does not equal the independently "
-                             f"supplied root {EXPECT['root'][:16]}...: the log was re-rooted or is a different log")
+                             f"supplied root {ctx.expect_root[:16]}...: the log was re-rooted or is a different log")
         return None
 
     skip_first = ad["integrity"].get("root", {}).get("kind") == "field_of_first_record"
@@ -320,24 +382,44 @@ def check_l1(recs, ad, res):
 
     if end is not None:
         claimed = dig(end.obj, em.get("head_field", "head"))
-        if claimed is None:
-            res.fail("VLC-L1-3", "end marker carries no head value")
-        elif str(claimed) != prev.hex():
-            res.fail("VLC-L1-3", "end marker head does not match the recomputed binding")
-        else:
-            res.ok("VLC-L1-3")
-        # Some designs chain the end marker; others make it commit to the head as
-        # it stood before itself. The adapter says which.
-        if end.hash and em.get("self_bound", True):
+        head_ok = claimed is not None and str(claimed) == prev.hex()
+        # EXT-022. The head comparison alone does not detect truncation when the
+        # end marker is not itself bound by the chain. The marker names the head
+        # of whatever precedes it, so an editor who drops the last k records and
+        # copies the new last record's hash into the marker -- no hash computed
+        # -- passes the comparison. The marker counts as bound only when its own
+        # binding is recomputed here and verifies.
+        end_bound = False
+        if em.get("self_bound", True):
             if link_field is not None and str(dig(end.obj, link_field) or "") != prev.hex():
                 res.fail("VLC-L1-1", "end marker does not link to its predecessor")
                 return None
-            h = rec_hash(prev, end, ad)
+            h = rec_hash(prev, end, ad, prev_raw) if end.hash else None
             if h is not None and h != end.hash:
                 res.fail("VLC-L1-1", "end marker binding broken")
                 return None
-            if h is not None:
+            if h:
+                end_bound = True
                 prev = bytes.fromhex(h)
+        ctx.end_bound = end_bound
+        if claimed is None:
+            res.fail("VLC-L1-3", "end marker carries no head value")
+        elif not head_ok:
+            res.fail("VLC-L1-3", "end marker head does not match the recomputed binding")
+        elif end_bound:
+            res.ok("VLC-L1-3", "end marker is bound by the chain and names the recomputed head")
+        elif ctx.expect_head:
+            # the final head is compared with the independent value below; a
+            # mismatch there fails VLC-L1-1 and the level with it
+            res.ok("VLC-L1-3", "end marker is not bound by the chain; the tail is anchored "
+                               "by the head supplied independently of the log")
+        else:
+            why = ("the adapter declares it not self-bound" if not em.get("self_bound", True)
+                   else "it carries no recomputable binding of its own")
+            res.fail("VLC-L1-3", f"not established: the end marker names the recomputed head, but "
+                                 f"{why}, so records dropped from the tail with the marker's head "
+                                 f"rewritten are undetectable on the log alone; supply --expect-head "
+                                 f"(a head obtained independently of the log)")
     elif not em:
         res.fail("VLC-L1-3", "adapter declares no end marker: truncation undetectable")
     # else: the adapter declares one and the log lost it; that was already reported above
@@ -349,11 +431,11 @@ def check_l1(recs, ad, res):
     # record and re-derive every later link and the end marker. That needs a
     # root or head the verifier obtained independently of the log (VLC-L1-1's
     # "published root"), and the report says so rather than implying more.
-    if EXPECT["head"] and prev.hex() != EXPECT["head"].lower():
+    if ctx.expect_head and prev.hex() != ctx.expect_head:
         res.fail("VLC-L1-1", f"final head {prev.hex()[:16]}... does not equal the independently "
-                             f"supplied head {EXPECT['head'][:16]}...")
+                             f"supplied head {ctx.expect_head[:16]}...")
         return None
-    anchored = [k for k in ("root", "head") if EXPECT[k]]
+    anchored = [k for k, v in (("root", ctx.expect_root), ("head", ctx.expect_head)) if v]
     if anchored:
         res.ok("VLC-L1-1", "chain consistent AND its " + " and ".join(anchored) +
                            " equal the value(s) supplied independently of the log")
@@ -389,13 +471,17 @@ def check_l1(recs, ad, res):
 # ===========================================================================
 # LEVEL 2 -- loss accounting
 # ===========================================================================
-def check_l2(recs, ad, res):
+def check_l2(recs, ad, res, ctx):
     lo = ad.get("loss")
     if not lo or lo.get("mode") == "none":
         res.fail("VLC-L2-1", "adapter declares no production count or ordinal")
         res.fail("VLC-L2-5", "no completeness identity is computable")
         return None
     mode = lo.get("mode", "declaration")
+    if ad["integrity"]["mechanism"] == "none":
+        # stated before the produced count is read, so an unbound count below
+        # cannot leave this unreported
+        res.fail("VLC-L2-3", "no integrity binding, so declarations are removable")
 
     non_event = set(ad.get("non_event_classes", []))
     markers = set(ad.get("marker_classes", []))
@@ -413,15 +499,38 @@ def check_l2(recs, ad, res):
     delivered = [r for r in recs if r.cls not in markers and r.cls not in non_event]
 
     # --- produced ---------------------------------------------------------
+    # EXT-022. The produced count is the producer's independent figure, and the
+    # identity is only as good as that figure's anchoring. Read from an end
+    # marker the chain does not bind, it can be lowered after the fact to hide
+    # exactly the records the identity exists to count. So a count read from
+    # the end marker is established only when check_l1 verified the marker's
+    # own binding. An independently supplied head (--expect-head) anchors the
+    # chain, not the marker's other fields, and does not change this.
+    # EXT-023. A count must be a JSON integer. int() used to accept "40" and
+    # turn 3.7 into 3, and raised on "forty", crashing the checker.
     p = lo.get("produced", {})
     kind = p.get("kind")
     produced = None
+    em = ad["integrity"].get("end_marker") or {}
+    last = recs[-1]
+    at_end = last.cls == em.get("class") if em else False
+    unbound_end = ("the end marker is not bound by the chain, so a count read from it "
+                   "can be rewritten to hide a drop; the produced count is not established")
+    bad = []
+
+    def count(v, where):
+        if type(v) is int and v >= 0:
+            return v
+        bad.append(f"{where} is {v!r}, not a non-negative JSON integer")
+        return None
+
     if kind == "field_of_end_marker":
-        em = ad["integrity"].get("end_marker", {})
-        last = recs[-1]
-        if last.cls == em.get("class"):
+        if at_end:
+            if not ctx.end_bound:
+                res.fail("VLC-L2-1", unbound_end)
+                return None
             v = dig(last.obj, p["field"])
-            produced = int(v) if v is not None else None
+            produced = count(v, f"end marker {p['field']!r}") if v is not None else None
     elif kind == "max_ordinal":
         # EXT-014. The high-water mark is a quantity the PRODUCER declares, as
         # VLC-L2-5 says. It was computed as max - min + 1 over the ordinals that
@@ -429,38 +538,52 @@ def check_l2(recs, ad, res):
         # moved both bounds with them and the identity still closed. Now the
         # end marker must carry the producer's final ordinal, and the adapter
         # must state where the sequence starts; neither is inferred.
-        em = ad["integrity"].get("end_marker", {})
         hwf, start = p.get("high_water_field"), p.get("start")
-        last = recs[-1]
         if hwf is None or type(start) is not int:
             res.fail("VLC-L2-1", "max_ordinal needs produced.high_water_field (on the end "
                                  "marker) and an integer produced.start; the bounds of the "
                                  "sequence are not inferred from what arrived")
             return None
-        if last.cls == em.get("class"):
+        if at_end:
+            if not ctx.end_bound:
+                res.fail("VLC-L2-1", unbound_end)
+                return None
             hw = dig(last.obj, hwf)
+            if hw is not None and type(hw) is not int:
+                bad.append(f"end marker {hwf!r} is {hw!r}, not a JSON integer")
             produced = hw - start + 1 if type(hw) is int and hw >= start - 1 else None
     elif kind == "sum_of_end_marker_fields":
-        em = ad["integrity"].get("end_marker", {})
-        last = recs[-1]
-        if last.cls == em.get("class"):
+        if at_end:
+            if not ctx.end_bound:
+                res.fail("VLC-L2-1", unbound_end)
+                return None
             vs = [dig(last.obj, f) for f in p["fields"]]
             if all(v is not None for v in vs):
-                produced = sum(int(v) for v in vs)
+                cs = [count(v, f"end marker {f!r}") for f, v in zip(p["fields"], vs)]
+                if all(c is not None for c in cs):
+                    produced = sum(cs)
     elif kind == "field_of_any":
         for r in reversed(recs):
             v = dig(r.obj, p["field"])
             if v is not None:
-                produced = int(v)
+                if r is last and at_end and not ctx.end_bound:
+                    res.fail("VLC-L2-1", unbound_end)
+                    return None
+                produced = count(v, f"record {r.i} {p['field']!r}")
                 break
     else:
-        res.fail("VLC-L2-1", f"adapter: unknown loss.produced.kind {kind!r}")
-        return None
+        raise AdapterError(f"unknown loss.produced.kind {kind!r}")
 
-    if produced is None:
+    if bad:
+        # a malformed count is reported and the declarations are still read,
+        # so each defect is named where it lies; the identity is not computable
+        res.fail("VLC-L2-1", "; ".join(bad))
+        produced = None
+    if produced is None and not bad:
         res.fail("VLC-L2-1", "produced count not derivable from the delivered set")
         return None
-    res.ok("VLC-L2-1", f"produced = {produced}")
+    if produced is not None:
+        res.ok("VLC-L2-1", f"produced = {produced}")
 
     # --- declared loss ----------------------------------------------------
     declared = 0
@@ -528,8 +651,7 @@ def check_l2(recs, ad, res):
         else:
             res.ok("VLC-L2-2", f"{n_decls} declaration(s), {declared} record(s) declared lost")
     else:
-        res.fail("VLC-L2-2", f"adapter: unknown loss.mode {mode!r}")
-        return None
+        raise AdapterError(f"unknown loss.mode {mode!r}")
 
     # --- L2-3: is the declaration integrity-bound? ------------------------
     if ad["integrity"]["mechanism"] == "none":
@@ -550,7 +672,10 @@ def check_l2(recs, ad, res):
 
     # --- L2-5/6: the identity --------------------------------------------
     lhs = len(delivered) + declared
-    if lhs == produced:
+    if produced is None:
+        res.fail("VLC-L2-5", "no well-formed produced count: the identity is not computable")
+        res.fail("VLC-L2-6", "completeness not established")
+    elif lhs == produced:
         res.ok("VLC-L2-5", f"{len(delivered)} delivered + {declared} declared lost == {produced} produced")
         res.ok("VLC-L2-6")
     else:
@@ -564,6 +689,21 @@ def check_l2(recs, ad, res):
 # ===========================================================================
 # LEVEL 3 -- coverage declaration
 # ===========================================================================
+def _roles(ad):
+    """Record classes the adapter gives a role other than coverage declaration."""
+    em = ad["integrity"].get("end_marker") or {}
+    iv = ad.get("interval") or {}
+    named = [em.get("class"), (ad.get("loss") or {}).get("declaration_class"),
+             (ad.get("policy") or {}).get("change_class"),
+             iv.get("declaration_class"), iv.get("tick_class")]
+    out = {c: "a declared role" for c in ad.get("marker_classes", [])}
+    for c, what in zip(named, ("the end marker", "the loss declaration", "the policy change record",
+                               "the interval declaration", "the interval tick")):
+        if c is not None:
+            out[c] = what
+    return out
+
+
 def check_l3(recs, ad, res):
     cv = ad.get("coverage")
     if not cv or cv.get("mode") == "none":
@@ -571,15 +711,23 @@ def check_l3(recs, ad, res):
         res.fail("VLC-L3-6", "observation surface is not enumerable and is not declared as such")
         return None
     if cv.get("mode") == "non_enumerable":
+        # EXT-025. This used to PASS VLC-L3-6, a structural requirement, on the
+        # adapter's word alone. The declaration is honest and is relayed as
+        # such; it demonstrates nothing from the log, and L3 is not claimable
+        # either way.
         res.fail("VLC-L3-1a", "observation surface declared non-enumerable")
-        res.ok("VLC-L3-6", "declared non-enumerable honestly; L3 correctly not claimable")
+        res.fail("VLC-L3-6", "declared non-enumerable (the producer's statement, relayed): "
+                             "honest, and L3 correctly not claimable; nothing enumerated in the log")
         return None
+    if cv.get("mode") != "enumerated":
+        raise AdapterError(f"unknown coverage.mode {cv.get('mode')!r}")
 
     dc = cv.get("declaration_class")
     decls = [r for r in recs if r.cls == dc]
     if not decls:
         res.fail("VLC-L3-1a", f"no {dc!r} record in the delivered set: silence about a "
                              f"source is indistinguishable from absence of the source")
+        res.fail("VLC-L3-6", "no enumeration of the observation surface in the log")
         return None
 
     d0 = decls[0]
@@ -594,6 +742,28 @@ def check_l3(recs, ad, res):
     # Every declaration is checked, and each category field must be PRESENT
     # (it may be empty; it may not be missing).
     malformed = []
+    # EXT-025. Which record is the coverage declaration is the adapter's
+    # mapping, and a mapping could relabel a record that exists for another
+    # purpose -- the epoch record, say -- and its fields as the three categories.
+    # That raised a log with no coverage declaration to structural L3 with the
+    # log unchanged. What the log can refute is checked: the declaration is a
+    # record of its own (no class the adapter maps to another role, not the
+    # record the chain root is derived from), its three categories are three
+    # different fields, and no source is named in two categories. A relabelled
+    # record whose class no other role claims is indistinguishable from a
+    # genuine declaration in the bytes; that residual is disclosed in EXT-025
+    # and the report carries adapter_sha256 so the mapping is pinned.
+    roles = _roles(ad)
+    if dc in roles:
+        malformed.append(f"class {dc!r} is also {roles[dc]}: a coverage declaration is a "
+                         f"record of its own, not another record relabelled")
+    root = ad["integrity"].get("root", {})
+    if root.get("kind") == "field_of_first_record" and decls[0].i == 0:
+        malformed.append("the chain root is derived from the coverage declaration's record: "
+                         "a coverage declaration is a record of its own")
+    cats = [cv.get(k) for k in ("attached_field", "unattached_field", "by_design_field")]
+    if None in cats or len(set(cats)) != 3:
+        malformed.append(f"the three coverage categories must be three different fields, got {cats!r}")
     for d in decls:
         for key in ("attached_field", "unattached_field", "by_design_field"):
             fld = cv.get(key)
@@ -601,6 +771,12 @@ def check_l3(recs, ad, res):
                 malformed.append(f"record {d.i} omits {fld!r}")
         if not as_list(dig(d.obj, cv.get("attached_field"))):
             malformed.append(f"record {d.i} names no attached sources")
+        seen = {}
+        for c in cats:
+            for s in as_list(dig(d.obj, c)) if c else []:
+                if s in seen and seen[s] != c:
+                    malformed.append(f"record {d.i} names {s!r} under both {seen[s]!r} and {c!r}")
+                seen.setdefault(s, c)
     no_basis = [d.i for d in decls
                 if cv.get("basis_field") and not dig(d.obj, cv.get("basis_field"))]
     if cv.get("basis_field") is None:
@@ -609,6 +785,7 @@ def check_l3(recs, ad, res):
     if malformed:
         res.fail("VLC-L3-1a", "; ".join(malformed[:3]) +
                  (f" (+{len(malformed) - 3} more)" if len(malformed) > 3 else ""))
+        res.fail("VLC-L3-6", "no well-formed enumeration of the observation surface in the log")
     else:
         # L3-1a: the declaration is present and well-formed — recomputed.
         # L3-1b: it describes the surface actually observed — relayed. A
@@ -618,6 +795,8 @@ def check_l3(recs, ad, res):
                             "producer; not recomputable from the log")
         res.ok("VLC-L3-1a", f"{len(att)} attached, {len(una)} unattached-here, "
                            f"{len(des)} excluded by design")
+        # EXT-025: recomputed from the log, not from the adapter's mode
+        res.ok("VLC-L3-6", "surface enumerated in the log, in a well-formed declaration")
     if basis and not no_basis:
         res.ok("VLC-L3-1d", f"exhaustiveness criterion: {basis}")
     elif basis and no_basis:
@@ -651,48 +830,90 @@ def check_l3(recs, ad, res):
     else:
         res.fail("VLC-L3-4", "no bidirectional coverage test declared")
 
+    # EXT-025. Attested: this reads only the adapter's list of non-event
+    # classes. The structural consequence -- an identity inflated by counting
+    # declarations -- is already decided from the log at VLC-L2-5.
     if dc in non_event:
-        res.ok("VLC-L3-5")
+        res.ok("VLC-L3-5", "the adapter excludes coverage declarations from the event count")
     else:
         res.fail("VLC-L3-5", "coverage declarations are counted as events: identity inflated")
 
-    res.ok("VLC-L3-6", "surface enumerated")
     return {"attached": att, "unattached": una, "by_design": des}
 
 
 # ===========================================================================
 # LEVEL 4 -- policy binding
 # ===========================================================================
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+
 def check_l4(recs, ad, res):
     po = ad.get("policy")
     if not po or po.get("mode") == "none":
         res.fail("VLC-L4-1", "adapter declares no policy binding")
         return None
     if po.get("mode") == "observation_only":
-        res.ok("VLC-L4-1", "log records no verdicts; L3 is the terminal level and is declared")
+        # EXT-025: this was a structural PASS on the adapter's word. The log
+        # records no verdicts, so there is nothing to bind and L4 is not
+        # claimable; L3 is the terminal level, which the producer declares.
+        res.fail("VLC-L4-1", "log records no verdicts (the producer's statement, relayed); "
+                             "L3 is the terminal level and L4 is not claimable")
         return {"terminal": 3}
 
     mode = po.get("mode")
-    if mode == "chain_root":
-        r = ad["integrity"].get("root", {})
-        if r.get("kind") == "field_of_first_record" and r.get("field") == po.get("digest_field"):
-            res.ok("VLC-L4-1", "the policy digest roots the binding: re-rooting is detectable")
-        else:
+    df = po.get("digest_field")
+    integ = ad["integrity"]
+    ne = set(ad.get("non_event_classes", []))
+    events = [r for r in recs if r.cls not in ne]
+    if not df:
+        raise AdapterError("policy.digest_field is required for policy.mode " + repr(mode))
+    # EXT-025. The chain's own output is not a policy digest. Pointing
+    # digest_field at the hash field satisfied "every event carries a digest"
+    # on any chained log.
+    if df in (integ.get("hash_field"), integ.get("prev_field")):
+        res.fail("VLC-L4-1", f"digest_field {df!r} is the integrity binding's own field, "
+                             f"not a digest of a policy")
+        initial = None
+    elif mode == "chain_root":
+        # EXT-025. This compared two adapter settings and never read the log.
+        # Now: the root record carries a well-formed digest, and the root the
+        # chain was verified from is derived from that digest.
+        r = integ.get("root", {})
+        v = dig(recs[0].obj, df)
+        initial = v if isinstance(v, str) else None
+        if r.get("kind") != "field_of_first_record" or r.get("field") != df:
             res.fail("VLC-L4-1", "policy digest does not root the binding")
+        elif not (isinstance(v, str) and HEX64.match(v)):
+            res.fail("VLC-L4-1", f"the root record's {df!r} is {v!r}, not a digest "
+                                 f"(64 lowercase hex characters)")
+        else:
+            try:
+                derived = chain_root(recs, ad)
+            except LogError:
+                derived = None
+            if derived is None or recs[0].hash != derived.hex():
+                res.fail("VLC-L4-1", "the root record does not commit to the root derived "
+                                     "from its policy digest")
+            else:
+                res.ok("VLC-L4-1", "the root record's policy digest roots the binding: "
+                                   "re-rooting is detectable")
     elif mode == "per_record":
         # EXT-006. Counted digests across ALL records and compared the total
         # to the number of events, so a non-event carrying a digest could stand
         # in for an event missing one. Each event is now checked on its own.
-        ne = set(ad.get("non_event_classes", []))
-        missing = [r.i for r in recs if r.cls not in ne
-                   and not isinstance(dig(r.obj, po.get("digest_field")), str)]
+        # EXT-025: and a digest is a digest -- a constant string such as a
+        # model name on every event satisfied "carries the digest"
+        missing = [r.i for r in events
+                   if not (isinstance(dig(r.obj, df), str) and HEX64.match(dig(r.obj, df)))]
+        v0 = dig(events[0].obj, df) if events else None
+        initial = v0 if isinstance(v0, str) else None
         if not missing:
             res.ok("VLC-L4-1", "every event record carries the policy digest")
         else:
-            res.fail("VLC-L4-1", f"{len(missing)} event record(s) carry no policy digest, "
-                                 f"first at record {missing[0]}")
+            res.fail("VLC-L4-1", f"{len(missing)} event record(s) carry no policy digest "
+                                 f"(64 lowercase hex characters), first at record {missing[0]}")
     else:
-        res.fail("VLC-L4-1", f"adapter: unknown policy.mode {mode!r}")
+        raise AdapterError(f"unknown policy.mode {mode!r}")
 
     cc = po.get("change_class")
     changes = [r for r in recs if cc and r.cls == cc]
@@ -702,13 +923,35 @@ def check_l4(recs, ad, res):
     incomplete = [r.i for r in changes
                   if not isinstance(dig(r.obj, bf), str) or not dig(r.obj, bf)
                   or not isinstance(dig(r.obj, af), str) or not dig(r.obj, af)]
+    # EXT-025. The digests must also form one history, recomputed from the log:
+    # each change starts from the digest in force, and under per_record every
+    # event carries the digest in force at its position. A field that differs
+    # from record to record -- a hash, a timestamp -- is not a policy digest.
+    broken = []
+    if not incomplete and initial is not None:
+        cur = initial
+        for r in recs:
+            if r.cls == cc:
+                if dig(r.obj, bf) != cur:
+                    broken.append(f"change at record {r.i} starts from {str(dig(r.obj, bf))[:12]!r}, "
+                                  f"not the digest in force {cur[:12]!r}")
+                cur = dig(r.obj, af)
+            elif mode == "per_record" and r.cls not in ne:
+                v = dig(r.obj, df)
+                if isinstance(v, str) and v != cur:
+                    broken.append(f"event at record {r.i} carries {v[:12]!r}, not the digest in "
+                                  f"force {cur[:12]!r}, with no policy change record between")
     if cc is None:
         res.fail("VLC-L4-2", "adapter names no policy-change record class")
     elif incomplete:
         res.fail("VLC-L4-2", f"policy change record(s) {incomplete} do not carry both the "
                              f"{bf!r} and {af!r} digests")
+    elif broken:
+        res.fail("VLC-L4-2", "; ".join(broken[:2]) + (f" (+{len(broken) - 2} more)" if len(broken) > 2 else ""))
+        if mode == "per_record":
+            res.fail("VLC-L4-1", "the per-record digests do not form one policy history (see VLC-L4-2)")
     else:
-        res.ok("VLC-L4-2", f"{len(changes)} in-log policy change(s)")
+        res.ok("VLC-L4-2", f"{len(changes)} in-log policy change(s), digests consistent")
 
     rp = po.get("replay", {})
     # EXT-006. Determinism was accepted whenever a reference existed, even with
@@ -864,7 +1107,8 @@ EVIDENCE_CLASS = {
     "VLC-L3-1a": "structural", "VLC-L3-1b": "attested",
     "VLC-L3-1d": "attested",
     "VLC-L3-2": "structural", "VLC-L3-3": "structural",
-    "VLC-L3-4": "attested",   "VLC-L3-5": "structural",
+    # EXT-025: VLC-L3-5 reads only the adapter's non-event list; attested.
+    "VLC-L3-4": "attested",   "VLC-L3-5": "attested",
     "VLC-L3-6": "structural",
     "VLC-L4-1": "structural", "VLC-L4-2": "structural",
     "VLC-L4-3": "attested",   "VLC-L4-4": "attested",
@@ -988,10 +1232,12 @@ class Results:
 # ===========================================================================
 def mutate(lines, how, ad):
     ls = list(lines)
+    if not ls:
+        raise UsageError("cannot apply a mutation to an empty log")
     if how == "flip-byte":
         i = len(ls) // 2
         s = ls[i]
-        j = max(1, len(s) // 2)
+        j = min(max(1, len(s) // 2), len(s) - 1)
         ls[i] = s[:j] + ("0" if s[j] != "0" else "1") + s[j + 1:]
     elif how == "drop-interior":
         del ls[len(ls) // 2]
@@ -1002,7 +1248,7 @@ def mutate(lines, how, ad):
         key = "loss" if how == "drop-loss-decl" else "coverage"
         cls = (ad.get(key) or {}).get("declaration_class")
         if cls is None:
-            raise SystemExit(f"adapter names no {key} declaration class to remove")
+            raise UsageError(f"adapter names no {key} declaration class to remove")
         keep = []
         for l in ls:
             try:
@@ -1016,14 +1262,252 @@ def mutate(lines, how, ad):
         ls[0] = re.sub(r'("policy_digest"\s*:\s*")([0-9a-f]{4})',
                        lambda m: m.group(1) + ("dead" if m.group(2) != "dead" else "beef"), ls[0])
         if ls[0] == lines[0]:
-            raise SystemExit("no policy digest in the root record to re-base")
+            raise UsageError("no policy digest in the root record to re-base")
     else:
-        raise SystemExit(f"unknown mutation {how!r}")
+        raise UsageError(f"unknown mutation {how!r}")
     return ls
 
 
 # ===========================================================================
-def main():
+# adapter validation -- a malformed adapter is an error, not a verdict
+# ===========================================================================
+MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-prev-raw",
+              "sha256-prev-field", "sha256-canonical-fields")
+ROOT_KINDS = ("zero", "constant", "field_of_first_record")
+LOSS_MODES = ("none", "declaration", "ordinal")
+PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
+COVERAGE_MODES = ("none", "non_enumerable", "enumerated")
+POLICY_MODES = ("none", "observation_only", "chain_root", "per_record")
+
+
+def load_adapter(path):
+    """Read and validate an adapter. Returns (adapter dict, sha256 of its bytes).
+    Raises AdapterError for anything the checker could not act on (EXT-023):
+    it used to crash with a traceback, or exit 1 -- the status that means an
+    expectation was not met."""
+    try:
+        with open(path, "rb") as f:
+            raw = f.read()
+    except OSError as e:
+        raise AdapterError(f"adapter not readable: {path}: {e.strerror or e}")
+    try:
+        ad = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as e:
+        raise AdapterError(f"adapter is not valid JSON: {path}: {e}")
+    validate_adapter(ad)
+    return ad, hashlib.sha256(raw).hexdigest()
+
+
+def validate_adapter(ad):
+    def need(cond, msg):
+        if not cond:
+            raise AdapterError(msg)
+
+    def obj(v):
+        return v is None or isinstance(v, dict)
+
+    need(isinstance(ad, dict), "adapter is not a JSON object")
+    need(isinstance(ad.get("name"), str), "adapter missing required key 'name' (a string)")
+    integ = ad.get("integrity")
+    need(isinstance(integ, dict), "adapter missing required key 'integrity' (an object)")
+    need(integ.get("mechanism") in MECHANISMS,
+         f"unknown integrity.mechanism {integ.get('mechanism')!r}; one of {MECHANISMS}")
+    for k in ("record_class_field",):
+        need(ad.get(k) is None or isinstance(ad.get(k), str), f"{k} must be a string")
+    for k in ("marker_classes", "non_event_classes"):
+        v = ad.get(k, [])
+        need(isinstance(v, list) and all(isinstance(x, str) for x in v), f"{k} must be a list of strings")
+    for k in ("loss", "coverage", "policy", "independence", "interval", "evidence"):
+        need(obj(ad.get(k)), f"{k} must be an object")
+    if integ["mechanism"] != "none":
+        need(isinstance(integ.get("hash_field"), str), "integrity.hash_field (a string) is required")
+        root = integ.get("root", {})
+        need(isinstance(root, dict) and root.get("kind", "zero") in ROOT_KINDS,
+             f"integrity.root.kind must be one of {ROOT_KINDS}")
+        if root.get("kind") == "constant":
+            v = root.get("value")
+            need(isinstance(v, str) and HEX64.match(v.lower()), "integrity.root.value must be 64 hex characters")
+        if root.get("kind") == "field_of_first_record":
+            need(isinstance(root.get("field"), str), "integrity.root.field (a string) is required")
+        if integ["mechanism"] in ("sha256-prev-field", "sha256-canonical-fields"):
+            need(isinstance(integ.get("prev_field"), str), "integrity.prev_field (a string) is required")
+        em = integ.get("end_marker")
+        need(obj(em), "integrity.end_marker must be an object")
+        if em:
+            need(isinstance(em.get("class"), str), "integrity.end_marker.class (a string) is required")
+            need(isinstance(em.get("self_bound", True), bool), "integrity.end_marker.self_bound must be true or false")
+    lo = ad.get("loss") or {}
+    if lo:
+        need(lo.get("mode", "declaration") in LOSS_MODES, f"unknown loss.mode {lo.get('mode')!r}")
+        if lo.get("mode", "declaration") != "none":
+            p = lo.get("produced")
+            need(isinstance(p, dict) and p.get("kind") in PRODUCED_KINDS,
+                 f"loss.produced.kind must be one of {PRODUCED_KINDS}")
+            if p["kind"] in ("field_of_end_marker", "field_of_any"):
+                need(isinstance(p.get("field"), str), f"loss.produced.field is required for {p['kind']}")
+            if p["kind"] == "sum_of_end_marker_fields":
+                need(isinstance(p.get("fields"), list) and p["fields"]
+                     and all(isinstance(x, str) for x in p["fields"]),
+                     "loss.produced.fields must be a non-empty list of strings")
+            iv = lo.get("interval_fields")
+            need(iv is None or (isinstance(iv, list) and len(iv) == 2 and all(isinstance(x, str) for x in iv)),
+                 "loss.interval_fields must be [from_field, to_field]")
+    cv = ad.get("coverage") or {}
+    if cv:
+        need(cv.get("mode") in COVERAGE_MODES, f"unknown coverage.mode {cv.get('mode')!r}")
+        if cv.get("mode") == "enumerated":
+            need(isinstance(cv.get("declaration_class"), str), "coverage.declaration_class is required")
+    po = ad.get("policy") or {}
+    if po:
+        need(po.get("mode") in POLICY_MODES, f"unknown policy.mode {po.get('mode')!r}")
+        if po.get("mode") in ("chain_root", "per_record"):
+            need(isinstance(po.get("digest_field"), str), "policy.digest_field is required")
+            need(obj(po.get("replay")), "policy.replay must be an object")
+    ind = ad.get("independence") or {}
+    need(obj(ind.get("reconciliation")), "independence.reconciliation must be an object")
+
+
+# ===========================================================================
+# the programmatic entry point
+# ===========================================================================
+def _check(log_path, ad, adapter_sha256, expect_root=None, expect_head=None, mutation=None):
+    for name, v in (("expect_root", expect_root), ("expect_head", expect_head)):
+        if v is not None and not (isinstance(v, str) and HEX64.match(v.lower())):
+            raise UsageError(f"{name} must be 64 hex characters")
+    ctx = Ctx(expect_root, expect_head)
+    path, tmpdir = log_path, None
+    if mutation:
+        try:
+            with open(log_path, "rb") as f:
+                text = f.read().decode("utf-8", errors="strict")
+        except OSError as e:
+            raise UsageError(f"log not readable: {log_path}: {e.strerror or e}")
+        except UnicodeDecodeError:
+            raise UsageError("cannot apply a mutation to a log that is not valid UTF-8")
+        lines = [l for l in text.replace("\r\n", "\n").split("\n") if l.strip()]
+        lines = mutate(lines, mutation, ad)
+        # written to a private temporary directory, never beside the log
+        tmpdir = tempfile.mkdtemp(prefix="vlc1-mutated-")
+        path = os.path.join(tmpdir, "log.jsonl")
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write("\n".join(lines) + "\n")
+
+    res = Results()
+    head = None
+    try:
+        try:
+            recs = load(path, ad)
+            head = check_l1(recs, ad, res, ctx)
+            check_l2(recs, ad, res, ctx)
+            check_l3(recs, ad, res)
+            check_l3i(recs, ad, res)        # qualifier; not in LEVEL_REQS
+            check_l4(recs, ad, res)
+            check_l5(recs, ad, res, LEVEL_REQS)
+        except LogError as e:
+            res.fail("VLC-L1-1", f"delivered set unreadable: {e}")
+        except (KeyError, TypeError, AttributeError, IndexError) as e:
+            # an adapter shape validate_adapter did not anticipate; a verdict
+            # computed from a half-read adapter would be worse than none
+            raise AdapterError(f"adapter could not be applied to this log "
+                               f"({type(e).__name__}: {e})")
+    finally:
+        if tmpdir:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+    res.attach_evidence(ad)
+    lv = res.attested_level()
+    slv = res.structural_level()
+    cited, n_attested = res.evidence_tally()
+    return {
+        "spec": VERSION, "adapter": ad["name"], "adapter_sha256": adapter_sha256,
+        "log": log_path, "mutation": mutation,
+        "level_demonstrated": lv,            # attested; kept for compatibility
+        "structural_level": slv,
+        "attested_level": lv,
+        "attested_requirements_with_evidence": cited,
+        "attested_requirements_total": n_attested,
+        "anchors": {"root": ctx.expect_root, "head": ctx.expect_head},
+        "head": head,
+        "requirements": {
+            k: {"status": v[0], "note": v[1],
+                "class": EVIDENCE_CLASS.get(k, "?"),
+                "evidence": (res.ev.get(k, (None, ""))[1] or None),
+                "evidence_cited": res.ev.get(k, (False,))[0] is True}
+            for k, v in sorted(res.r.items())},
+    }
+
+
+def check(log_path, adapter_path, expect_root=None, expect_head=None):
+    """Score one JSONL log against one adapter and return the report.
+
+    The return value is exactly the object `conformance.py --json` prints:
+    structural_level and attested_level (ints 0-5), level_demonstrated (the
+    attested level, kept for compatibility), adapter_sha256 (the mapping the
+    levels are relative to), anchors, head, and requirements -- a dict from
+    requirement ID to {status: "PASS"|"FAIL", note, class:
+    "structural"|"attested", evidence, evidence_cited}.
+
+    expect_root / expect_head: 64-hex values obtained independently of the
+    log. Without expect_head, a log whose end marker the chain does not bind
+    cannot establish VLC-L1-3.
+
+    A log that is empty, not UTF-8, not JSON or otherwise unreadable is a
+    verdict, not an error: the report comes back at L0 with the reason under
+    VLC-L1-1. Raises AdapterError (a ValueError) for an unreadable or malformed
+    adapter, and UsageError (a ValueError) for a log file that cannot be opened
+    or an anchor that is not 64 hex characters. Standard library only; no
+    global state, so it may be called repeatedly in one process.
+    """
+    ad, digest = load_adapter(adapter_path)
+    return _check(log_path, ad, digest, expect_root, expect_head)
+
+
+def render_text(rep, ad):
+    out = [f"{VERSION} — conformance report",
+           f"  log      : {rep['log']}" + (f"  [mutated: {rep['mutation']}]" if rep["mutation"] else ""),
+           f"  adapter  : {ad['name']} — {ad.get('description', '')}",
+           f"  adapter sha256: {rep['adapter_sha256']}",
+           f"  producer : {ad.get('producer', '(unstated)')}", "",
+           "  [S] structural — recomputed from the delivered evidence",
+           "  [A] attested   — asserted by the producer through the adapter",
+           "  [A+]           — attested AND carrying a reproducible evidence artefact", ""]
+    req = rep["requirements"]
+
+    def st(rid):
+        return req.get(rid, {}).get("status", FAIL)
+    for n in (1, 2, 3, 4, 5):
+        for rid in LEVEL_REQS[n]:
+            r = req.get(rid, {"status": FAIL, "note": "not evaluated", "evidence": None,
+                              "evidence_cited": False})
+            cls = EVIDENCE_CLASS.get(rid, "?")
+            tag = "[S] " if cls == "structural" else ("[A+]" if r.get("evidence_cited") else "[A] ")
+            note = r["note"]
+            if r.get("evidence") and r.get("evidence_cited"):
+                note = (note + "  |  " + r["evidence"]) if note else r["evidence"]
+            out.append(f"{'  ok  ' if r['status'] == PASS else '  FAIL'} {tag} {rid:<12} {note}")
+        out.append("")
+    slv, lv = rep["structural_level"], rep["attested_level"]
+    out += ["  LEVEL DEMONSTRATED",
+            f"    structural : L{slv}   recomputed from the log under this adapter's mapping;",
+            f"                        no adapter assertion can raise this number",
+            f"    attested   : L{lv}   the above, plus what the producer asserts",
+            f"                        {rep['attested_requirements_with_evidence']} of "
+            f"{rep['attested_requirements_total']} attested requirements carry a "
+            f"reproducible evidence artefact"]
+    if slv < 5:
+        nxt = [r for r in LEVEL_REQS[slv + 1] if EVIDENCE_CLASS.get(r) == "structural"]
+        bad = [r for r in nxt if st(r) != PASS]
+        if bad:
+            out.append(f"    structural blocked from L{slv+1} by: {', '.join(bad)}")
+        elif slv == 4:
+            out += ["    structural cannot exceed L4: independence is a fact about who",
+                    "    holds the pen, not a property of the bytes"]
+    if lv < 5:
+        bad = [r for r in LEVEL_REQS[lv + 1] if st(r) != PASS]
+        out.append(f"    attested blocked from L{lv+1} by: {', '.join(bad)}")
+    return "\n".join(out)
+
+
+def main(argv=None):
     ap = argparse.ArgumentParser(description=f"{VERSION} conformance checker")
     ap.add_argument("--log", required=True)
     ap.add_argument("--adapter", required=True)
@@ -1034,111 +1518,33 @@ def main():
     ap.add_argument("--expect-root", help="hex chain root obtained independently of the log; "
                     "VLC-L1-1 fails if the log's derived root differs (detects a re-rooted, re-sealed log)")
     ap.add_argument("--expect-head", help="hex final head obtained independently of the log; "
-                    "VLC-L1-1 fails if the recomputed head differs (detects a rewritten, re-sealed log)")
+                    "VLC-L1-1 fails if the recomputed head differs (detects a rewritten, re-sealed log); "
+                    "also anchors the tail when the end marker is not bound by the chain (VLC-L1-3)")
     ap.add_argument("--mutate", help="apply an Annex A mutation before checking")
     ap.add_argument("--json", action="store_true")
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
 
-    ad = json.load(open(a.adapter))
-    for k in ("name", "integrity"):
-        if k not in ad:
-            raise SystemExit(f"adapter missing required key {k!r}")
-
-    EXPECT["root"], EXPECT["head"] = a.expect_root, a.expect_head
-    path = a.log
-    tmp = None
-    if a.mutate:
-        lines = [l.rstrip("\n") for l in open(path) if l.strip()]
-        lines = mutate(lines, a.mutate, ad)
-        tmp = path + f".mutated.{a.mutate}"
-        open(tmp, "w").write("\n".join(lines) + "\n")
-        path = tmp
-
-    res = Results()
-    head = None
     try:
-        recs = load(path, ad)
-        head = check_l1(recs, ad, res)
-        check_l2(recs, ad, res)
-        check_l3(recs, ad, res)
-        check_l3i(recs, ad, res)        # qualifier; not in LEVEL_REQS
-        check_l4(recs, ad, res)
-        check_l5(recs, ad, res, LEVEL_REQS)
-    except LogError as e:
-        res.fail("VLC-L1-1", f"delivered set unreadable: {e}")
-    res.attach_evidence(ad)
-    lv = res.attested_level()
-    slv = res.structural_level()
-    cited, n_attested = res.evidence_tally()
-
-    if tmp:
-        os.unlink(tmp)
+        ad, digest = load_adapter(a.adapter)
+        rep = _check(a.log, ad, digest, a.expect_root, a.expect_head, a.mutate)
+    except (AdapterError, UsageError) as e:
+        kind = "adapter" if isinstance(e, AdapterError) else "usage"
+        print(f"conformance.py: {kind} error: {e}", file=sys.stderr)
+        if a.json:
+            print(json.dumps({"spec": VERSION, "error": kind, "message": str(e)}, indent=2))
+        return 2
 
     if a.json:
-        print(json.dumps({
-            "spec": VERSION, "adapter": ad["name"], "log": a.log,
-            "mutation": a.mutate,
-            "level_demonstrated": lv,            # attested; kept for compatibility
-            "structural_level": slv,
-            "attested_level": lv,
-            "attested_requirements_with_evidence": cited,
-            "attested_requirements_total": n_attested,
-            "head": head,
-            "requirements": {
-                k: {"status": v[0], "note": v[1],
-                    "class": EVIDENCE_CLASS.get(k, "?"),
-                    "evidence": (res.ev.get(k, (None, ""))[1] or None)}
-                for k, v in sorted(res.r.items())},
-        }, indent=2))
+        print(json.dumps(rep, indent=2))
     else:
-        print(f"{VERSION} — conformance report")
-        print(f"  log      : {a.log}" + (f"  [mutated: {a.mutate}]" if a.mutate else ""))
-        print(f"  adapter  : {ad['name']} — {ad.get('description','')}")
-        print(f"  producer : {ad.get('producer','(unstated)')}")
-        print()
-        print("  [S] structural — recomputed from the delivered evidence")
-        print("  [A] attested   — asserted by the producer through the adapter")
-        print("  [A+]           — attested AND carrying a reproducible evidence artefact")
-        print()
-        for n in (1, 2, 3, 4, 5):
-            for rid in LEVEL_REQS[n]:
-                st, note = res.r.get(rid, (FAIL, "not evaluated"))
-                cls = EVIDENCE_CLASS.get(rid, "?")
-                if cls == "structural":
-                    tag = "[S] "
-                else:
-                    tag = "[A+]" if res.ev.get(rid, (False,))[0] is True else "[A] "
-                mark = "  ok  " if st == PASS else "  FAIL"
-                ev = res.ev.get(rid, (None, ""))[1]
-                if ev and res.ev.get(rid, (False,))[0] is True:
-                    note = (note + "  |  " + ev) if note else ev
-                print(f"{mark} {tag} {rid:<12} {note}")
-            print()
-        print(f"  LEVEL DEMONSTRATED")
-        print(f"    structural : L{slv}   recomputed from the log alone; a more generous")
-        print(f"                        adapter cannot raise this number")
-        print(f"    attested   : L{lv}   the above, plus what the producer asserts")
-        print(f"                        {cited} of {n_attested} attested requirements carry a "
-              f"reproducible evidence artefact")
-        if slv < 5:
-            nxt = [r for r in LEVEL_REQS[slv + 1] if EVIDENCE_CLASS.get(r) == "structural"]
-            bad = [r for r in nxt if res.r.get(r, (FAIL, ""))[0] != PASS]
-            if bad:
-                print(f"    structural blocked from L{slv+1} by: {', '.join(bad)}")
-            elif slv == 4:
-                print(f"    structural cannot exceed L4: independence is a fact about who")
-                print(f"    holds the pen, not a property of the bytes")
-        if lv < 5:
-            nxt = LEVEL_REQS[lv + 1]
-            bad = [r for r in nxt if res.r.get(r, (FAIL, ""))[0] != PASS]
-            print(f"    attested blocked from L{lv+1} by: {', '.join(bad)}")
+        print(render_text(rep, ad))
 
     rc = 0
-    if a.expect is not None and lv != a.expect:
-        print(f"\nEXPECTED attested L{a.expect}, DEMONSTRATED L{lv}", file=sys.stderr)
+    if a.expect is not None and rep["attested_level"] != a.expect:
+        print(f"\nEXPECTED attested L{a.expect}, DEMONSTRATED L{rep['attested_level']}", file=sys.stderr)
         rc = 1
-    if a.expect_structural is not None and slv != a.expect_structural:
-        print(f"\nEXPECTED structural L{a.expect_structural}, DEMONSTRATED L{slv}",
+    if a.expect_structural is not None and rep["structural_level"] != a.expect_structural:
+        print(f"\nEXPECTED structural L{a.expect_structural}, DEMONSTRATED L{rep['structural_level']}",
               file=sys.stderr)
         rc = 1
     return rc
