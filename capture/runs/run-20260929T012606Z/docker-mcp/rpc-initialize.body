@@ -1,0 +1,3 @@
+event: message
+data: {"jsonrpc":"2.0","id":1,"result":{"capabilities":{"logging":{},"prompts":{"listChanged":true},"resources":{"listChanged":true,"subscribe":true},"tools":{"listChanged":true}},"protocolVersion":"2025-06-18","serverInfo":{"name":"Docker AI MCP Gateway","version":"2.0.1"}}}
+

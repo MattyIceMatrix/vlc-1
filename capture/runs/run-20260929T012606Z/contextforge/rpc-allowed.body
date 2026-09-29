@@ -1,0 +1,2 @@
+{"jsonrpc":"2.0","error":{"code":-32602,"message":"Missing tool name in parameters","data":{"name":"","arguments":{"message":"vlc1 allowed"}}},"id":1}
+HTTP 200

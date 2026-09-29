@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-transform
+Connection: keep-alive
+Content-Type: text/event-stream
+Date: Tue, 29 Sep 2026 01:25:14 GMT
+Transfer-Encoding: chunked
+

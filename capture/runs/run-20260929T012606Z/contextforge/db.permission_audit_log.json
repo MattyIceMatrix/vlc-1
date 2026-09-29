@@ -1,0 +1,80 @@
+[
+ {
+  "id": 1,
+  "timestamp": "2026-09-29 01:25:47.563088",
+  "user_email": "admin@example.com",
+  "permission": "tools.read",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ },
+ {
+  "id": 2,
+  "timestamp": "2026-09-29 01:25:48.162618",
+  "user_email": "admin@example.com",
+  "permission": "tools.execute",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ },
+ {
+  "id": 3,
+  "timestamp": "2026-09-29 01:25:48.197338",
+  "user_email": "admin@example.com",
+  "permission": "tools.execute",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ },
+ {
+  "id": 4,
+  "timestamp": "2026-09-29 01:25:53.297950",
+  "user_email": "admin@example.com",
+  "permission": "audit:read",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ },
+ {
+  "id": 5,
+  "timestamp": "2026-09-29 01:25:53.322762",
+  "user_email": "admin@example.com",
+  "permission": "security:read",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ },
+ {
+  "id": 6,
+  "timestamp": "2026-09-29 01:25:53.346891",
+  "user_email": "admin@example.com",
+  "permission": "logs:read",
+  "resource_type": null,
+  "resource_id": null,
+  "team_id": null,
+  "granted": 1,
+  "roles_checked": "{\"roles\": []}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "curl/8.5.0"
+ }
+]

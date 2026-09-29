@@ -1,0 +1,3 @@
+{"is_bifrost_error":false,"error":{"error":"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)","message":"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)"},"extra_fields":{"routing_info":{},"request_type":"chat_completion","mcp_request_type":"chat_tool_call"}}
+
+HTTP 400

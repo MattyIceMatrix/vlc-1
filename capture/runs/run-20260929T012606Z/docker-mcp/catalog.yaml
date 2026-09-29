@@ -1,0 +1,6 @@
+registry:
+  time:
+    description: Time and timezone conversion
+    title: Time
+    type: server
+    image: mcp/time

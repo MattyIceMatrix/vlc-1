@@ -1,0 +1,26 @@
+[
+ {
+  "revision": "ba202ac1665f",
+  "key": "default_admin_role",
+  "value": "platform_admin",
+  "created_at": "2026-09-29 01:25:38.867237+00:00"
+ },
+ {
+  "revision": "ba202ac1665f",
+  "key": "default_user_role",
+  "value": "platform_viewer",
+  "created_at": "2026-09-29 01:25:38.867561+00:00"
+ },
+ {
+  "revision": "ba202ac1665f",
+  "key": "default_team_owner_role",
+  "value": "team_admin",
+  "created_at": "2026-09-29 01:25:38.867664+00:00"
+ },
+ {
+  "revision": "ba202ac1665f",
+  "key": "default_team_member_role",
+  "value": "viewer",
+  "created_at": "2026-09-29 01:25:38.867748+00:00"
+ }
+]

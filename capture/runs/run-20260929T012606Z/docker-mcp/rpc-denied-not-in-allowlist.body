@@ -1,0 +1,3 @@
+event: message
+data: {"jsonrpc":"2.0","id":4,"error":{"code":-32602,"message":"unknown tool \"convert_time\""}}
+

@@ -1,0 +1,15 @@
+[
+ {
+  "id": "e477d903-2195-46ab-b771-6ce806e1ae92",
+  "user_email": "admin@example.com",
+  "role_id": "a9521f6e-6116-41fa-bb1a-0407e36953f2",
+  "scope": "global",
+  "scope_id": null,
+  "granted_by": "admin@example.com",
+  "granted_at": "2026-09-29 01:25:39.951482",
+  "expires_at": null,
+  "is_active": 1,
+  "migration_source": null,
+  "grant_source": null
+ }
+]

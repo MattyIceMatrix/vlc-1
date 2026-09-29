@@ -1,0 +1,72 @@
+$ gh api repos/docker/mcp-gateway/releases?per_page=5 -q .[] | "\(.tag_name) prerelease=\(.prerelease) \(.published_at) \([.assets[].name]|join(","))"
+v0.44.1 prerelease=true 2026-09-23T16:47:37Z docker-mcp-darwin-amd64.tar.gz,docker-mcp-darwin-arm64.tar.gz,docker-mcp-linux-amd64.tar.gz,docker-mcp-linux-arm64.tar.gz,docker-mcp-windows-amd64.tar.gz,docker-mcp-windows-arm64.tar.gz
+v0.43.3 prerelease=true 2026-07-16T18:17:41Z docker-mcp-darwin-amd64.tar.gz,docker-mcp-darwin-arm64.tar.gz,docker-mcp-linux-amd64.tar.gz,docker-mcp-linux-arm64.tar.gz,docker-mcp-windows-amd64.tar.gz,docker-mcp-windows-arm64.tar.gz
+v0.43.1 prerelease=true 2026-06-25T22:28:34Z docker-mcp-darwin-amd64.tar.gz,docker-mcp-darwin-arm64.tar.gz,docker-mcp-linux-amd64.tar.gz,docker-mcp-linux-arm64.tar.gz,docker-mcp-windows-amd64.tar.gz,docker-mcp-windows-arm64.tar.gz
+v0.42.3 prerelease=true 2026-06-12T17:54:35Z docker-mcp-darwin-amd64.tar.gz,docker-mcp-darwin-arm64.tar.gz,docker-mcp-linux-amd64.tar.gz,docker-mcp-linux-arm64.tar.gz,docker-mcp-windows-amd64.tar.gz,docker-mcp-windows-arm64.tar.gz
+v0.42.2 prerelease=true 2026-05-28T20:52:08Z docker-mcp-darwin-amd64.tar.gz,docker-mcp-darwin-arm64.tar.gz,docker-mcp-linux-amd64.tar.gz,docker-mcp-linux-arm64.tar.gz,docker-mcp-windows-amd64.tar.gz,docker-mcp-windows-arm64.tar.gz
+[exit 0]
+tag=v0.44.1
+$ gh release download v0.44.1 -R docker/mcp-gateway -p docker-mcp-linux-amd64.tar.gz -D /tmp/tmp.BmHCQ93x5F
+[exit 0]
+$ docker mcp version
+v0.44.1
+[exit 0]
+$ docker pull mcp/time
+Using default tag: latest
+latest: Pulling from mcp/time
+dad67da3f26b: Pulling fs layer
+25244d620b74: Pulling fs layer
+ebb07cd170cc: Pulling fs layer
+d6413c75b31d: Pulling fs layer
+548fdd178e51: Pulling fs layer
+5192e4241b72: Pulling fs layer
+53073b8e396f: Pulling fs layer
+d6413c75b31d: Waiting
+5192e4241b72: Waiting
+548fdd178e51: Waiting
+53073b8e396f: Waiting
+25244d620b74: Verifying Checksum
+25244d620b74: Download complete
+d6413c75b31d: Download complete
+548fdd178e51: Verifying Checksum
+548fdd178e51: Download complete
+dad67da3f26b: Verifying Checksum
+dad67da3f26b: Download complete
+ebb07cd170cc: Verifying Checksum
+ebb07cd170cc: Download complete
+53073b8e396f: Verifying Checksum
+53073b8e396f: Download complete
+5192e4241b72: Verifying Checksum
+5192e4241b72: Download complete
+dad67da3f26b: Pull complete
+25244d620b74: Pull complete
+ebb07cd170cc: Pull complete
+d6413c75b31d: Pull complete
+548fdd178e51: Pull complete
+5192e4241b72: Pull complete
+53073b8e396f: Pull complete
+Digest: sha256:9c46a918633fb474bf8035e3ee90ebac6bcf2b18ccb00679ac4c179cba0ebfcf
+Status: Downloaded newer image for mcp/time:latest
+docker.io/mcp/time:latest
+[exit 0]
+$ docker mcp gateway run --catalog=ci.yaml --servers=time --tools=time:get_current_time --secrets=/nonexistent.env (attempt a)
+gateway exited (a):
+Note: dynamic-tools disabled when using --servers flag
+- Reading configuration...
+  - Reading catalog from [ci.yaml]
+- Configuration read in 131.126µs
+- Using images:
+  - mcp/time
+verifying docker image mcp/time: image must be referenced by digest; pin the MCP image to a sha256 digest or disable signature verification with --verify-signatures=false
+$ docker mcp gateway run --catalog=ci.yaml --servers=time --tools=time:get_current_time --secrets=/nonexistent.env --verify-signatures=false (attempt b)
+gateway up (b, pid 2494)
+rpc initialize -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":1,"result":{"capabilities":{"logging":{},"prompts":{"listChanged":true},"resources":{"listChanged":true,"subscribe":true},"tools":{"listChanged":true}},"protocolVersion":"2025-06-18","serverInfo":{"name":"Docker AI MCP Gateway","version":"2.0.1"}}}  
+session id: NBSMVKVCZHBNFKEDPN2KQEDYK7
+rpc initialized -> HTTP 202: 
+rpc tools-list -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"description":"Get current time in a specific timezones","inputSchema":{"properties":{"timezone":{"description":"IANA timezone name (e.g., 'America/New_York', 'Europe/London'). Use 'UTC' as local timezone if no timezone provided by the user.","type":"string"}},"required":["timezone"],"type":"object"},"name":"get_current_time"}]}}  
+rpc allowed-time -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"{\n  \"timezone\": \"UTC\",\n  \"datetime\": \"2026-09-29T01:25:14+00:00\",\n  \"is_dst\": false\n}"}]}}  
+rpc denied-not-in-allowlist -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":4,"error":{"code":-32602,"message":"unknown tool \"convert_time\""}}  
+rpc blocked-secret -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":5,"error":{"code":0,"message":"a secret is being passed to tool get_current_time"}}  
+rpc nonexistent -> HTTP 200: event: message data: {"jsonrpc":"2.0","id":6,"error":{"code":-32602,"message":"unknown tool \"no_such_tool\""}}  
+gateway.log: 45 lines (attempt b)
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:25:19Z

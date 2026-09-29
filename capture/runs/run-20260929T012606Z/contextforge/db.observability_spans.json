@@ -1,0 +1,53 @@
+[
+ {
+  "span_id": "a0890047-8785-4358-9965-6eab995eafb5",
+  "trace_id": "932c81f2-34f1-4e79-b94f-9d915c13977b",
+  "parent_span_id": null,
+  "name": "http.request",
+  "kind": "server",
+  "start_time": "2026-09-29 01:25:47.606478",
+  "end_time": "2026-09-29 01:25:48.167286",
+  "duration_ms": 560.808,
+  "status": "ok",
+  "status_message": null,
+  "attributes": "{\"http.method\": \"POST\", \"http.url\": \"http://127.0.0.1:4444/rpc\", \"http.status_code\": 200, \"http.response_size\": \"150\"}",
+  "resource_name": null,
+  "resource_type": null,
+  "resource_id": null,
+  "created_at": "2026-09-29 01:25:47.606480"
+ },
+ {
+  "span_id": "8fbf902f-116b-4dcc-9b19-0c39ad0d3a23",
+  "trace_id": "c22c8fa0-799b-4709-848a-7f803fef79f4",
+  "parent_span_id": null,
+  "name": "http.request",
+  "kind": "server",
+  "start_time": "2026-09-29 01:25:48.182786",
+  "end_time": "2026-09-29 01:25:48.200281",
+  "duration_ms": 17.495,
+  "status": "ok",
+  "status_message": null,
+  "attributes": "{\"http.method\": \"POST\", \"http.url\": \"http://127.0.0.1:4444/rpc\", \"http.status_code\": 200, \"http.response_size\": \"159\"}",
+  "resource_name": null,
+  "resource_type": null,
+  "resource_id": null,
+  "created_at": "2026-09-29 01:25:48.182788"
+ },
+ {
+  "span_id": "09da7085-8522-4367-9d5d-41e585d99410",
+  "trace_id": "329a12b7-074b-466e-bd0b-f5dbf8040bae",
+  "parent_span_id": null,
+  "name": "http.request",
+  "kind": "server",
+  "start_time": "2026-09-29 01:25:48.212415",
+  "end_time": "2026-09-29 01:25:48.227382",
+  "duration_ms": 14.966999999999999,
+  "status": "ok",
+  "status_message": null,
+  "attributes": "{\"http.method\": \"POST\", \"http.url\": \"http://127.0.0.1:4444/rpc\", \"http.status_code\": 200, \"http.response_size\": \"105\"}",
+  "resource_name": null,
+  "resource_type": null,
+  "resource_id": null,
+  "created_at": "2026-09-29 01:25:48.212416"
+ }
+]

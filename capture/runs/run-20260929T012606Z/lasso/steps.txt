@@ -1,0 +1,26 @@
+$ pip install -q mcp-gateway[xetrack] mcp<2
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+$ pip show mcp-gateway
+Name: mcp-gateway
+Version: 1.2.1
+Summary: A gateway for MCP servers
+Home-page: 
+Author: 
+Author-email: 
+License-Expression: MIT
+Location: /tmp/tmp.D72DoEYQLt/.venv/lib/python3.12/site-packages
+Requires: beautifulsoup4, mcp, requests
+Required-by: 
+[exit 0]
+initialize: {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-03-26", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listChanged": false}}, "serverInfo": {"name": "MCP Gateway", "version": "1.30.0"}}}
+tools: ['get_metadata', 'filesystem_read_file', 'filesystem_read_text_file', 'filesystem_read_media_file', 'filesystem_read_multiple_files', 'filesystem_write_file', 'filesystem_edit_file', 'filesystem_create_directory', 'filesystem_list_directory', 'filesystem_list_directory_with_sizes', 'filesystem_directory_tree', 'filesystem_move_file', 'filesystem_search_files', 'filesystem_get_file_info', 'filesystem_list_allowed_directories']
+call 3 filesystem_list_directory: {"jsonrpc": "2.0", "id": 3, "result": {"content": [{"type": "text", "text": "[FILE] plain.txt\n[FILE] tokens.txt"}], "structuredContent": {"content": "[FILE] plain.txt\n[FILE] tokens.txt"}, "isError": false}}
+call 4 filesystem_read_text_file: {"jsonrpc": "2.0", "id": 4, "result": {"content": [{"type": "text", "text": "Error executing tool filesystem_read_text_file: 2 validation errors for filesystem_read_text_fileArguments\ntail\n  Field required [type=missing, input_value={'path': '/tmp/tmp.D72DoEYQLt/root/plain.txt'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nhead\n  Field require
+call 5 filesystem_read_text_file: {"jsonrpc": "2.0", "id": 5, "result": {"content": [{"type": "text", "text": "Error executing tool filesystem_read_text_file: 2 validation errors for filesystem_read_text_fileArguments\ntail\n  Field required [type=missing, input_value={'path': '/tmp/tmp.D72DoEYQLt/root/tokens.txt'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nhead\n  Field requir
+call 6 filesystem_read_text_file: {"jsonrpc": "2.0", "id": 6, "result": {"content": [{"type": "text", "text": "Error executing tool filesystem_read_text_file: 2 validation errors for filesystem_read_text_fileArguments\ntail\n  Field required [type=missing, input_value={'path': '/etc/hostname'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nhead\n  Field required [type=missing, inpu
+table default 1
+done
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-29T01:25:35Z
