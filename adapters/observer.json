@@ -67,7 +67,7 @@
     "change_class": "POLICY",
     "replay": {
       "deterministic": true,
-      "reference": "proofs/govern_concrete.v extracted to OCaml; conformance/ tables agree with include/classify.h over the entire domain"
+      "reference": "proofs/govern_concrete.v (not in this repository; available under NDA, see ACCESS.md)"
     }
   },
   "independence": {
