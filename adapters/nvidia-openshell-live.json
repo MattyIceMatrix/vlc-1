@@ -1,0 +1,43 @@
+{
+  "name": "nvidia-openshell-live",
+  "producer": "NVIDIA OpenShell 0.1.2 (Docker driver), the sandbox's event stream as held by the OpenShell gateway and read with `openshell logs <sandbox>`; OCSF and tracing lines, converted line for line to JSONL by examples/third-party/openshell-live/convert.py",
+  "description": "A live capture, 2026-09-29, on a GitHub-hosted runner: one sandbox from docker.io/curlimages/curl:latest, first under OpenShell's default policy (GitHub API and example.com both denied), then under NVIDIA's quickstart policy (GitHub API allowed, example.com still denied). Enforcement behaved as documented. The record it leaves carries no integrity field, no sequence number and no drop accounting, and its lines are not in timestamp order. It is held outside the agent, by the gateway. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/openshell-capture.yml on branch capture/openshell-ocsf, run capture/run-20260929T002200Z. The raw output, the policy file applied and the SHA-256 of the install script used are committed beside the converted log in examples/third-party/openshell-live/. Enabling ocsf_json_enabled produced no OCSF JSON file on this driver: none inside the agent's filesystem, none in the supervisor container, none on the host. The stream scored here is the record that exists.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [
+    "trace"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "note": "No hash, signature or chaining on any line, OCSF or tracing. A line removed from the stream leaves every other line exactly as it was: openshell-live-scrubbed.jsonl is this capture with its six DENIED lines removed and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No sequence number and no record of events dropped between supervisor and gateway. Timestamps cannot stand in for one: in this capture 7 of 75 adjacent pairs run backwards in time, because gateway and sandbox lines are interleaved as they arrive."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The supervisor logs what passes through its proxy and policy engine, and each denial carries a reason (policy_dns_ineligible, transparent_tcp_policy_denied). Nothing states which paths it was able to observe, so activity that did not pass through it leaves no line and no gap."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Stronger than most agent logs, and stronger than the documentation said: policy load and reload events carry the policy version and its full SHA-256 (CONFIG:LOADED ... [hash:9ccf3c45...]), and each allow names the rule that decided it ([policy:github_api engine:opa]). What is missing is the binding: a decision line does not carry the hash of the policy it was decided under, so it is tied to the policy only by position in a stream that is neither ordered nor chained."
+  },
+  "independence": {
+    "mode": "external_proxy",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "Observed, not assumed: the process inside the sandbox ran as an unprivileged user (uid 100) and its /var/log held only the base image's apk.log; the event stream is produced by OpenShell's supervisor, a separate container, and held by the gateway on the host. The agent did not have write access to this record in the capture. The gateway belongs to whoever operates OpenShell, so the record is independent of the agent, not of the operator.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/NVIDIA/openshell",
+    "https://docs.nvidia.com/openshell/observability/logging",
+    "https://docs.nvidia.com/openshell/observability/ocsf-json-export",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/openshell-ocsf/capture"
+  ]
+}

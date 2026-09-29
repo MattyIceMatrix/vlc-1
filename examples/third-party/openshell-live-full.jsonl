@@ -1,0 +1,76 @@
+{"class":"trace","level":"INFO","msg":"CreateSandbox request completed successfully","source":"gateway","t":"1790641333.458","target":"openshell_server::grpc::sandbox"}
+{"class":"trace","level":"INFO","msg":"Starting sandbox supervision command=[\"sleep\", \"900\"]","source":"sandbox","t":"1790641335.306","target":"openshell_supervisor"}
+{"class":"trace","level":"INFO","msg":"UpdateConfig: backfilled spec.policy from sandbox-discovered policy","source":"gateway","t":"1790641335.397","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"GetSandboxProviderEnvironment request completed successfully","source":"gateway","t":"1790641335.401","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"supervisor session: accepted","source":"gateway","t":"1790641335.442","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"ReportPolicyStatus: sandbox reported policy load result","source":"gateway","t":"1790641335.445","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"Fetching sandbox policy via gRPC endpoint=https://127.0.0.1:17670 sandbox=vlccap sandbox_id=ffb88451-c15a-439a-818a-b04f50765de5","source":"sandbox","t":"1790641335.384","target":"openshell_supervisor"}
+{"class":"CONFIG:DISCOVERY","level":"OCSF","msg":"CONFIG:DISCOVERY [INFO] Server returned no policy; attempting local discovery","source":"sandbox","t":"1790641335.393","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"Configured OPA runtime binary identity mode require_binary_identity=true source=proto","source":"sandbox","t":"1790641335.401","target":"openshell_supervisor_network::opa"}
+{"class":"CONFIG:CONFIGURED","level":"OCSF","msg":"CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]","source":"sandbox","t":"1790641335.401","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"Isolation boundary attached backend=openshell-sandbox","source":"sandbox","t":"1790641335.419","target":"openshell_supervisor"}
+{"class":"trace","level":"INFO","msg":"Isolation boundary enforcement confirmed backend=openshell-sandbox","source":"sandbox","t":"1790641335.420","target":"openshell_supervisor"}
+{"class":"CONFIG:ENABLED","level":"OCSF","msg":"CONFIG:ENABLED [INFO] TLS termination enabled: ephemeral CA generated","source":"sandbox","t":"1790641335.422","target":"ocsf"}
+{"class":"CONFIG:READY","level":"OCSF","msg":"CONFIG:READY [INFO] Policy DNS connected to isolation boundary","source":"sandbox","t":"1790641335.422","target":"ocsf"}
+{"class":"NET:LISTEN","level":"OCSF","msg":"NET:LISTEN [INFO] 127.0.0.1:3128","source":"sandbox","t":"1790641335.422","target":"ocsf"}
+{"class":"trace","level":"WARN","msg":"host.openshell.internal maps to a non-link-local IP; trusted-gateway SSRF exemption disabled ip=127.0.0.1","source":"sandbox","t":"1790641335.422","target":"openshell_supervisor_network::proxy"}
+{"class":"trace","level":"INFO","msg":"Isolation boundary agent started backend=openshell-sandbox","source":"sandbox","t":"1790641335.437","target":"openshell_supervisor"}
+{"class":"SSH:LISTEN","level":"OCSF","msg":"SSH:LISTEN [INFO]","source":"sandbox","t":"1790641335.438","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"OCSF JSONL logging toggled ocsf_json_enabled=true","source":"sandbox","t":"1790641335.441","target":"openshell_supervisor"}
+{"class":"CONFIG:LOADED","level":"OCSF","msg":"CONFIG:LOADED [INFO] Acknowledged initial policy revision as loaded [version:1] [hash:a45a8ff3564f00ae26cbd66f1131f37eedd8b54a66fbfec103d65a204c19c6e8]","source":"sandbox","t":"1790641335.446","target":"ocsf"}
+{"class":"NET:OPEN","level":"OCSF","msg":"NET:OPEN [INFO] 127.0.0.1:17670","source":"sandbox","t":"1790641335.447","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"Control-mode access plane started backend=openshell-sandbox","source":"sandbox","t":"1790641335.447","target":"openshell_supervisor"}
+{"class":"trace","level":"INFO","msg":"GetSandboxProviderEnvironment request completed successfully","source":"gateway","t":"1790641345.448","target":"openshell_server::grpc::policy"}
+{"class":"CONFIG:DETECTED","level":"OCSF","msg":"CONFIG:DETECTED [INFO] Settings poll: config change detected [old_revision:16453114336299277897 new_revision:16453114336299277897 policy_changed:false provider_env_changed:true]","source":"sandbox","t":"1790641345.445","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"Configured OPA runtime binary identity mode require_binary_identity=true source=proto","source":"sandbox","t":"1790641345.448","target":"openshell_supervisor_network::opa"}
+{"class":"CONFIG:CONFIGURED","level":"OCSF","msg":"CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]","source":"sandbox","t":"1790641345.448","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"supervisor session: relay opened successfully","source":"gateway","t":"1790641350.598","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"relay stream: claimed pending relay, bridging","source":"gateway","t":"1790641350.598","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"ExecSandbox (relay): command started","source":"gateway","t":"1790641350.598","target":"openshell_server::grpc::sandbox"}
+{"class":"trace","level":"INFO","msg":"supervisor session: relay opened successfully","source":"gateway","t":"1790641350.663","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"relay stream: claimed pending relay, bridging","source":"gateway","t":"1790641350.663","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"ExecSandbox (relay): command started","source":"gateway","t":"1790641350.663","target":"openshell_server::grpc::sandbox"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay open (channel_id=ec588d5b-ce76-40d9-b4c0-27e5a3363ac0, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641350.598","target":"ocsf"}
+{"class":"SSH:OPEN","level":"OCSF","msg":"SSH:OPEN [INFO] ALLOWED","source":"sandbox","t":"1790641350.598","target":"ocsf"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay closed (channel_id=ec588d5b-ce76-40d9-b4c0-27e5a3363ac0, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641350.608","target":"ocsf"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay open (channel_id=563aa729-7e13-4841-9b37-4c9f059ca41d, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641350.662","target":"ocsf"}
+{"class":"SSH:OPEN","level":"OCSF","msg":"SSH:OPEN [INFO] ALLOWED","source":"sandbox","t":"1790641350.663","target":"ocsf"}
+{"class":"NET:REFUSE","level":"OCSF","msg":"NET:REFUSE [MED] DENIED api.github.com [reason:policy_dns_ineligible]","source":"sandbox","t":"1790641350.681","target":"ocsf"}
+{"class":"CONFIG:OBSERVATION","level":"OCSF","msg":"CONFIG:OBSERVATION [INFO] Policy DNS staged unapproved name api.github.com synthetic=198.18.0.2 for TCP policy review","source":"sandbox","t":"1790641350.681","target":"ocsf"}
+{"class":"trace","level":"WARN","msg":"Denied staged transparent connection destination=198.18.0.2:443 reason=network connections not allowed by policy","source":"sandbox","t":"1790641350.683","target":"openshell_supervisor_network::proxy"}
+{"class":"NET:OPEN","level":"OCSF","msg":"NET:OPEN [MED] DENIED /usr/bin/curl(0) -> api.github.com:443 [reason:transparent_tcp_policy_denied]","source":"sandbox","t":"1790641350.683","target":"ocsf"}
+{"class":"NET:REFUSE","level":"OCSF","msg":"NET:REFUSE [MED] DENIED example.com [reason:policy_dns_ineligible]","source":"sandbox","t":"1790641350.690","target":"ocsf"}
+{"class":"CONFIG:OBSERVATION","level":"OCSF","msg":"CONFIG:OBSERVATION [INFO] Policy DNS staged unapproved name example.com synthetic=198.18.0.3 for TCP policy review","source":"sandbox","t":"1790641350.690","target":"ocsf"}
+{"class":"trace","level":"WARN","msg":"Denied staged transparent connection destination=198.18.0.3:443 reason=network connections not allowed by policy","source":"sandbox","t":"1790641350.691","target":"openshell_supervisor_network::proxy"}
+{"class":"NET:OPEN","level":"OCSF","msg":"NET:OPEN [MED] DENIED /usr/bin/curl(0) -> example.com:443 [reason:transparent_tcp_policy_denied]","source":"sandbox","t":"1790641350.691","target":"ocsf"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay closed (channel_id=563aa729-7e13-4841-9b37-4c9f059ca41d, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641350.693","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"SubmitPolicyAnalysis: persisted draft chunks","source":"gateway","t":"1790641355.439","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"GetSandboxProviderEnvironment request completed successfully","source":"gateway","t":"1790641355.463","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"ReportPolicyStatus: sandbox reported policy load result","source":"gateway","t":"1790641355.471","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"Flushed denial analysis to gateway proposals=2 sandbox_name=vlccap summaries=2","source":"sandbox","t":"1790641355.424","target":"openshell_supervisor"}
+{"class":"CONFIG:DETECTED","level":"OCSF","msg":"CONFIG:DETECTED [INFO] Settings poll: config change detected [old_revision:16453114336299277897 new_revision:9591682591951308871 policy_changed:true provider_env_changed:true]","source":"sandbox","t":"1790641355.461","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"Configured OPA runtime binary identity mode require_binary_identity=true source=proto","source":"sandbox","t":"1790641355.464","target":"openshell_supervisor_network::opa"}
+{"class":"CONFIG:CONFIGURED","level":"OCSF","msg":"CONFIG:CONFIGURED [INFO] OPA runtime binary identity mode configured [source:proto require_binary_identity:true] [source:proto]","source":"sandbox","t":"1790641355.464","target":"ocsf"}
+{"class":"CONFIG:LOADED","level":"OCSF","msg":"CONFIG:LOADED [INFO] Policy reloaded successfully [policy_hash:9ccf3c45400b5c26a7e450f6482e62c7da3711cb0f3e18da33a28d197165ee74] [hash:9ccf3c45400b5c26a7e450f6482e62c7da3711cb0f3e18da33a28d197165ee74]","source":"sandbox","t":"1790641355.467","target":"ocsf"}
+{"class":"trace","level":"WARN","msg":"Endpoint status report failed transiently; retaining immutable snapshot attempt=1 error=code: 'The system is not in a state required for the operation's execution', message: \"tool server endpoint status revisions do not match the current sandbox configuration\"","source":"sandbox","t":"1790641355.469","target":"openshell_supervisor::endpoint_status"}
+{"class":"trace","level":"INFO","msg":"supervisor session: relay opened successfully","source":"gateway","t":"1790641360.812","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"relay stream: claimed pending relay, bridging","source":"gateway","t":"1790641360.813","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"ExecSandbox (relay): command started","source":"gateway","t":"1790641360.813","target":"openshell_server::grpc::sandbox"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay open (channel_id=67522c0c-16ea-498c-993a-ffc88b661274, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641360.812","target":"ocsf"}
+{"class":"SSH:OPEN","level":"OCSF","msg":"SSH:OPEN [INFO] ALLOWED","source":"sandbox","t":"1790641360.812","target":"ocsf"}
+{"class":"CONFIG:PUBLISHED","level":"OCSF","msg":"CONFIG:PUBLISHED [INFO] Policy DNS mapped api.github.com resolved=172.182.252.137 synthetic=198.18.0.4 ports=443 mapping_id=0459ca10-a632-43a8-9416-358c575a1daf","source":"sandbox","t":"1790641360.829","target":"ocsf"}
+{"class":"NET:OPEN","level":"OCSF","msg":"NET:OPEN [INFO] ALLOWED /usr/bin/curl(0) -> api.github.com:443 [policy:github_api engine:opa]","source":"sandbox","t":"1790641360.847","target":"ocsf"}
+{"class":"HTTP:GET","level":"OCSF","msg":"HTTP:GET [INFO] ALLOWED GET http://api.github.com:443/zen [policy:github_api engine:l7]","source":"sandbox","t":"1790641360.866","target":"ocsf"}
+{"class":"NET:REFUSE","level":"OCSF","msg":"NET:REFUSE [MED] DENIED example.com [reason:policy_dns_ineligible]","source":"sandbox","t":"1790641360.903","target":"ocsf"}
+{"class":"CONFIG:OBSERVATION","level":"OCSF","msg":"CONFIG:OBSERVATION [INFO] Policy DNS staged unapproved name example.com synthetic=198.18.0.3 for TCP policy review","source":"sandbox","t":"1790641360.903","target":"ocsf"}
+{"class":"trace","level":"WARN","msg":"Denied staged transparent connection destination=198.18.0.3:443 reason=endpoint example.com:443 is not allowed by any policy","source":"sandbox","t":"1790641360.904","target":"openshell_supervisor_network::proxy"}
+{"class":"NET:OPEN","level":"OCSF","msg":"NET:OPEN [MED] DENIED /usr/bin/curl(0) -> example.com:443 [reason:transparent_tcp_policy_denied]","source":"sandbox","t":"1790641360.904","target":"ocsf"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay closed (channel_id=67522c0c-16ea-498c-993a-ffc88b661274, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641360.908","target":"ocsf"}
+{"class":"trace","level":"INFO","msg":"SubmitPolicyAnalysis: persisted draft chunks","source":"gateway","t":"1790641365.430","target":"openshell_server::grpc::policy"}
+{"class":"trace","level":"INFO","msg":"Flushed denial analysis to gateway proposals=1 sandbox_name=vlccap summaries=1","source":"sandbox","t":"1790641365.425","target":"openshell_supervisor"}
+{"class":"trace","level":"INFO","msg":"supervisor session: relay opened successfully","source":"gateway","t":"1790641372.962","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"relay stream: claimed pending relay, bridging","source":"gateway","t":"1790641372.962","target":"openshell_server::supervisor_session"}
+{"class":"trace","level":"INFO","msg":"ExecSandbox (relay): command started","source":"gateway","t":"1790641372.962","target":"openshell_server::grpc::sandbox"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay open (channel_id=b8fc52a6-a40b-4ed8-b0e9-da127364146e, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641372.961","target":"ocsf"}
+{"class":"SSH:OPEN","level":"OCSF","msg":"SSH:OPEN [INFO] ALLOWED","source":"sandbox","t":"1790641372.962","target":"ocsf"}
+{"class":"EVENT","level":"OCSF","msg":"EVENT [INFO] ssh relay closed (channel_id=b8fc52a6-a40b-4ed8-b0e9-da127364146e, target=unix:/run/openshell/ssh.sock)","source":"sandbox","t":"1790641372.971","target":"ocsf"}

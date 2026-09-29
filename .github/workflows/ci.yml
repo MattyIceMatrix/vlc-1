@@ -46,8 +46,8 @@ jobs:
                    fab-equipment-secsgem:fab-equipment-full:0:0 \
                    fab-equipment-secsgem:fab-equipment-sampled:0:0 \
                    jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1 \
-                   nvidia-openshell-ocsf:openshell-ocsf-full:0:0 \
-                   nvidia-openshell-ocsf:openshell-ocsf-scrubbed:0:0; do
+                   nvidia-openshell-live:openshell-live-full:0:0 \
+                   nvidia-openshell-live:openshell-live-scrubbed:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
