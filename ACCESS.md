@@ -18,38 +18,34 @@ and are not rewritten.
 
 ### 1. OCTA Observer — governs what an agent **does**
 
-A Linux syscall-boundary sensor. It records, and can deny, what a governed AI
-workload actually does — files opened, processes executed, network destinations
-reached — with the record produced by a probe the workload cannot write to.
+A runtime sensor that keeps an independent record of what a governed AI workload
+does.
 
 | | |
 |---|---|
 | **PUBLIC** | the VLC-1 specification · the conformance checker and its adapters · the completeness lattice proof and the two impossibility results (for counts, see `proofs/` and the CI audit) · the witness reconciler · real captured journals at L2 and L5 |
 | **ASK FOR** | the proof estate · `verify.sh`, the one-command re-verification you run from source on your own hardware · the live demonstration suite · the conformity pack, auditor runbook, ISO 42001 gap assessment and EU AI Act evidence mapping · the evidence verifier that recomputes each control rather than asserting it |
-| **PRIVATE** | the eBPF sensor, the policy engine, the classifier, and the pinning and object tiers |
+| **PRIVATE** | sensor source |
 
 ### 2. OCTA Gateway — governs what an agent **asks for**
 
-Deny-by-default tool authorisation, signed single-use approval capabilities,
-streaming enforcement, compliance packs. The layer above the sensor.
+Tool authorisation for AI agents, the layer above the sensor.
 
 | | |
 |---|---|
 | **PUBLIC** | the requirement that a gateway declare which endpoints it terminates, so *"no record"* is distinguishable from *"not routed through us"* (clause **VLC-L5-2**) · the reconciler format, which is adapter-driven so a gateway's own decision record can be checked against an independent one |
-| **ASK FOR** | the decision-function conformance pack (proof versus implementation, over the domain, with mutation controls) · the gate composition proof, including the result that reordering the gates does not change the verdict · the written security review of the HTTP/JSON layer sitting in front of the policy engine, with its reproductions and its fix |
+| **ASK FOR** | the decision-function conformance pack · the gate composition proof · the written security review, with its reproductions and its fix |
 | **PRIVATE** | gateway source |
 
 ### 3. MooreOS — the same decision function on **bare metal**
 
-`govern()` running in a kernel, with W^X, post-quantum attestation and Coq-proved
-subsystems — where the evidence sink is a kernel object the workload cannot
-reach at all.
+The same governance function in a bare-metal environment.
 
 | | |
 |---|---|
 | **PUBLIC** | why an attested coverage declaration is qualitatively different evidence from one a userspace daemon wrote (clause **VLC-L5-1**, and §7A.1 on the several unrelated architectures that satisfy independence) |
-| **ASK FOR** | the integer inference core — `no_std`, no floating point, because **no floating point is what makes an inference result attestable** — and the proof it is bound to · the bare-metal versus hosted equivalence review of the two `govern()` implementations |
-| **PRIVATE** | kernel source |
+| **ASK FOR** | the inference core and the proof it is bound to · the bare-metal versus hosted equivalence review |
+| **PRIVATE** | source |
 
 **How to check an item before you are given it.** Each "ask for" item that
 backs a VLC-1 attested requirement has an entry in `adapters/observer.json`
@@ -125,11 +121,11 @@ a tested property, not a promise.
 
 - **No SOC 2, no ISO 27001, no E&O insurance yet.** Level 4 is what we offer
   instead, and it is stronger on the specific question it answers.
-- **It is not a guardrail.** It records, and can deny at the syscall boundary. It
-  does not understand intent.
+- **It is not a guardrail.** It records, and can deny. It does not understand
+  intent.
 - **It does not see inside TLS**, does not stop rendered-URL exfiltration, and
-  does not catch a tool description that lies. Those produce syntactically normal
-  syscalls. `docs/OUTREACH.md` lists the limits in full.
+  does not catch a tool description that lies. Those look like normal activity
+  to the sensor. `docs/OUTREACH.md` lists the limits in full.
 - **Response time is a person, not a queue.** Expect a real answer within a few
   days, and expect it to include what we cannot do.
 

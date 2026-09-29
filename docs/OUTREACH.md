@@ -32,19 +32,15 @@ need us.
 
 ## What we do
 
-We build **kernel-level evidence for AI systems**: a record of what a governed
-AI workload actually did — files opened, processes executed, network
-destinations reached — produced by a probe the workload cannot write to,
-hash-chained, with its losses declared in-chain and its instrumentation surface
-declared alongside them.
+We build **independent evidence for AI systems**: a record of what a governed
+AI workload actually did, which the workload cannot write to, with its losses
+and its coverage declared in the record.
 
 Three properties, in the order buyers ask about them:
 
 1. **It is complete, checkably.** Records the sensor could not deliver are
-   declared in the chain with a count. Syscalls the sensor is not attached to
-   are declared too — which matters because an uninstrumented syscall produces
-   no decision, so no gap record could ever reveal it. That second blind spot
-   is one we found in our own product and fixed; the pre-fix capture is kept in
+   declared with a count, and what it was not watching is declared too. That
+   second blind spot is one we found in our own product and fixed; the pre-fix capture is kept in
    this repository as a control.
 
 2. **It is independent.** The audited process does not write it, cannot edit
@@ -55,10 +51,8 @@ Three properties, in the order buyers ask about them:
    different author does, and `witness/reconcile.py` in this repository is how
    the two are checked against each other.
 
-3. **It is provable.** The decision logic is machine-checked in Coq and the
-   proved function is shown to agree with the C that ships, over its **entire**
-   input domain, with pinned digests and mutation controls. Not sampled. Not
-   fuzzed. Enumerated.
+3. **It is provable.** The decision logic is backed by machine-checked proof;
+   the material is available under evaluation access (see `ACCESS.md`).
 
 ---
 
@@ -113,14 +107,14 @@ The sensor runs on your hardware, on your workload, from week one.
 Stated up front, because a vendor whose limits you have to discover is a vendor
 you will discover them from at the worst moment.
 
-- **It is not a guardrail.** It records and can deny at the syscall boundary; it
-  does not understand intent, and it will not stop a well-formed action that
+- **It is not a guardrail.** It records and can deny; it does not understand
+  intent, and it will not stop a well-formed action that
   should not have been taken.
 - **It does not see inside TLS.** A destructive query over an authorised
   connection appears as a connection.
 - **It does not help against prompt injection that exfiltrates through a
   rendered URL**, or against a tool description that lies. Those failures
-  produce syntactically normal syscalls. We will say so rather than sell you
+  look like normal activity to the sensor. We will say so rather than sell you
   coverage we do not have.
 - **It requires a governed tree the workload cannot write.** Where that is
   impossible we will tell you the record says `unverified` and why, rather than
