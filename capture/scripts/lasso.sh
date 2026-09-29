@@ -5,7 +5,9 @@
 GW=lasso; . "$(dirname "$0")/lib.sh"
 W=$(mktemp -d); cd "$W" || exit 0
 python3 -m venv .venv && . .venv/bin/activate
-run pip install -q 'mcp-gateway[xetrack]'
+# Run 1 (2026-09-29T01:23Z): with the current mcp SDK (2.x) the gateway does not start
+# (ModuleNotFoundError: mcp.server.fastmcp). Pin the SDK major it was written against.
+run pip install -q 'mcp-gateway[xetrack]' 'mcp<2'
 run pip show mcp-gateway
 pip freeze > "$O/pip-freeze.txt"
 mkdir -p root logs

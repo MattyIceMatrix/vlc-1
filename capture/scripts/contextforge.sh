@@ -9,6 +9,8 @@ run pip install -q 'mcp-contextforge-gateway[plugins]'
 run pip show mcp-contextforge-gateway
 pip freeze > "$O/pip-freeze.txt"
 run python3 -m mcpgateway.scripts.init_secrets
+note "generated secret names: $(cut -d= -f1 .env.secrets 2>/dev/null | grep -v '^#' | tr '\n' ' ')"
+set -a; . ./.env.secrets 2>/dev/null; set +a
 JWT_SECRET_KEY=$(grep '^JWT_SECRET_KEY=' .env.secrets 2>/dev/null | cut -d= -f2-)
 AUTH_ENCRYPTION_SECRET=$(grep '^AUTH_ENCRYPTION_SECRET=' .env.secrets 2>/dev/null | cut -d= -f2-)
 [ -n "$JWT_SECRET_KEY" ] || JWT_SECRET_KEY=$(openssl rand -hex 32)
@@ -28,8 +30,8 @@ EOF
 cp ci-plugins.yaml "$O/plugins.yaml"
 export HOST=127.0.0.1 PORT=4444 DATABASE_URL=sqlite:///$W/mcp.db AUTH_REQUIRED=true \
   MCPGATEWAY_UI_ENABLED=false MCPGATEWAY_ADMIN_API_ENABLED=true \
-  PLATFORM_ADMIN_EMAIL=admin@example.com PLATFORM_ADMIN_PASSWORD='Ci-Pass-123!x' \
-  BASIC_AUTH_USER=admin BASIC_AUTH_PASSWORD='Ci-Basic-123!x' \
+  PLATFORM_ADMIN_EMAIL=admin@example.com PLATFORM_ADMIN_PASSWORD="${PLATFORM_ADMIN_PASSWORD:-Ci-Admin-Pass-$(openssl rand -hex 8)}" DEFAULT_USER_PASSWORD="${DEFAULT_USER_PASSWORD:-Ci-User-Pass-$(openssl rand -hex 8)}" \
+  BASIC_AUTH_USER=admin BASIC_AUTH_PASSWORD="${BASIC_AUTH_PASSWORD:-Ci-Basic-Pass-$(openssl rand -hex 8)}" \
   LOG_LEVEL=INFO LOG_FORMAT=json LOG_TO_FILE=true LOG_FOLDER=$W/logs LOG_FILE=mcpgateway.log \
   AUDIT_TRAIL_ENABLED=true PERMISSION_AUDIT_ENABLED=true \
   SECURITY_LOGGING_ENABLED=true SECURITY_LOGGING_LEVEL=all \

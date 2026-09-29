@@ -4,7 +4,8 @@
 # BLAST RADIUS: GitHub-hosted runner only; writes $OUT/docker-mcp, ~/.docker on the runner.
 GW=docker-mcp; . "$(dirname "$0")/lib.sh"
 R=docker/mcp-gateway
-TAG=$(gh release view -R $R --json tagName -q .tagName); note "tag=$TAG"
+run gh api "repos/$R/releases?per_page=5" -q '.[] | "\(.tag_name) prerelease=\(.prerelease) \(.published_at) \([.assets[].name]|join(","))"'
+TAG=$(gh api "repos/$R/releases?per_page=10" -q '[.[] | select(any(.assets[]; .name=="docker-mcp-linux-amd64.tar.gz"))][0].tag_name'); note "tag=$TAG"
 W=$(mktemp -d)
 run gh release download "$TAG" -R $R -p 'docker-mcp-linux-amd64.tar.gz' -D "$W"
 mkdir -p ~/.docker/cli-plugins
