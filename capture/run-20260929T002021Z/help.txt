@@ -1,0 +1,594 @@
+OpenShell CLI tool
+
+USAGE
+  openshell <command> <subcommand> [flags]
+
+SANDBOX COMMANDS
+  sandbox:     Manage sandboxes
+  service:     Expose sandbox services
+  forward:     Manage port forwarding to a sandbox
+  logs:        View sandbox logs
+  policy:      Manage sandbox policy
+  settings:    Manage sandbox and global settings
+  provider:    Manage provider configuration
+  profile:     Browse and manage profiles
+
+GATEWAY COMMANDS
+  gateway:     Manage gateways
+  status:      Show gateway status and information
+  whoami:      Show the authenticated user identity
+  doctor:      Diagnose gateway issues
+
+ADDITIONAL COMMANDS
+  term:        Launch the OpenShell interactive TUI
+  completions: Generate shell completions
+  ssh-proxy:   SSH proxy (used by ProxyCommand)
+  help:        Print this message or the help of the given subcommand(s)
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+EXAMPLES
+  $ openshell sandbox create
+  $ openshell gateway add http://127.0.0.1:8080 --local
+  $ openshell logs my-sandbox
+
+LEARN MORE
+  Use `openshell <command> --help` for more information about a command.
+
+Manage sandboxes
+
+USAGE
+  openshell sandbox [OPTIONS] [COMMAND]
+
+COMMANDS
+  create      Create a sandbox
+  get         Fetch a sandbox by name
+  list        List sandboxes
+  delete      Delete a sandbox by name
+  stop        Stop a sandbox while preserving its workspace
+  start       Start a stopped sandbox
+  exec        Execute a command in a running sandbox
+  connect     Connect to a sandbox
+  upload      Upload local files to a sandbox
+  download    Download files from a sandbox
+  ssh-config  Print an SSH config entry for a sandbox
+  provider    Manage providers attached to a sandbox
+  template    Manage reusable sandbox workload templates
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+
+ALIAS
+  sb
+
+EXAMPLES
+  $ openshell sandbox create
+  $ openshell sandbox create --from registry.example.com/agents/python:latest
+  $ openshell sandbox connect my-sandbox
+  $ openshell sandbox list
+  $ openshell sandbox delete my-sandbox
+
+Create a sandbox
+
+USAGE
+  openshell sandbox create [OPTIONS] [-- <COMMAND>...]
+
+FLAGS:
+      --name <NAME>
+          Optional sandbox name (auto-generated when omitted)
+
+      --template <TEMPLATE>
+          Create the sandbox from a named sandbox template
+
+      --from <FROM>
+          Sandbox source: a rootfs tar archive (`.tar`, `.tar.gz`, or `.tgz`) or a container image reference (e.g., `myregistry.com/img:tag`).
+          
+          To use a local Dockerfile, build and tag it with the container engine used by your local gateway, then pass the resulting image reference here. A rootfs tar is staged for the VM compute driver.
+
+      --no-keep
+          Delete the sandbox after the initial command or shell exits
+
+      --editor <EDITOR>
+          Launch a remote editor after the sandbox is ready. Keeps the sandbox alive and installs OpenShell-managed SSH config
+          
+          [possible values: vscode, cursor]
+
+      --gpu [<COUNT>]
+          Request GPU resources for the sandbox.
+          
+          Omit COUNT for the driver's default GPU selection, or pass COUNT to request a specific number of GPUs.
+
+      --cpu <CPU>
+          CPU limit for the sandbox (for example: 500m, 1, 2.5)
+
+      --memory <MEMORY>
+          Memory limit for the sandbox (for example: 512Mi, 4Gi, 8G)
+
+      --driver-config-json <JSON>
+          Driver-keyed JSON object for driver-specific sandbox settings. Disabled unless the gateway administrator enables `allow_driver_config`. External resource attachments still require approval labels.
+          
+          For Kubernetes, pass a value such as `{"kubernetes":{"pod":{"node_selector":{"pool":"gpu"}}}}`.
+
+      --provider <PROVIDERS>
+          Attach a configured credential provider to the sandbox. Use providers for API keys, tokens, and other secrets so commands in the sandbox do not receive the real credential values. Repeatable
+
+      --policy <POLICY>
+          Path to a custom sandbox policy YAML file. Overrides the built-in default and the `OPENSHELL_SANDBOX_POLICY` env var
+
+      --forward <FORWARD>
+          Forward a local port to the sandbox before the initial command or shell starts. Accepts [`bind_address`:]port (e.g. 8080, 0.0.0.0:8080). Keeps the sandbox alive
+
+      --expose <PORT>
+          Expose a loopback HTTP or WebSocket service after the sandbox is ready. Keeps the sandbox alive. Use `openshell service expose` to add a named service
+
+      --tty
+          Allocate a pseudo-terminal for the remote command. Defaults to auto-detection (on when stdin and stdout are terminals). Use --tty to force a PTY even when auto-detection fails, or --no-tty to disable
+
+      --no-tty
+          Disable pseudo-terminal allocation
+
+      --detach
+          Start the canonical main process without attaching to it
+
+      --auto-providers
+          Auto-create missing providers from local credentials.
+          
+          Without this flag, an interactive prompt asks per-provider; in non-interactive mode the command errors.
+
+      --no-auto-providers
+          Never auto-create providers; error if required providers are missing
+
+      --label <LABELS>
+          Attach labels to the sandbox (key=value format, repeatable)
+
+      --env <KEY=VALUE>
+          Set a non-secret environment variable in the sandbox. Do not use this option for API keys, tokens, or other secrets; create a provider and attach it with `--provider` instead. Repeatable
+
+      --no-credential-warnings
+          Suppress warnings when --env values look like credentials
+
+      --approval-mode <APPROVAL_MODE>
+          Approval mode for agent-authored policy proposals.
+          
+          `manual` (default): every proposal lands in the draft inbox for human review, regardless of the prover verdict.
+          
+          `auto`: proposals whose prover delta is empty are approved automatically; proposals with findings still require human approval. Auto mode is an explicit opt-in — `OpenShell`'s default-deny posture is preserved unless you choose otherwise.
+          
+          [default: manual]
+          [possible values: manual, auto]
+
+  -o, --output <OUTPUT>
+          Output format
+          
+          [default: table]
+          [possible values: table, yaml, json]
+
+  [COMMAND]...
+          Command to run after "--" (defaults to an interactive shell)
+
+UPLOAD FLAGS:
+      --upload <UPLOAD>
+          Upload local files into the sandbox before running.
+          
+          Format: `<LOCAL_PATH>[:<SANDBOX_PATH>]`. When `SANDBOX_PATH` is omitted, files are uploaded to the container's working directory. `.gitignore` rules are applied by default; use `--no-git-ignore` to upload everything.
+
+      --no-git-ignore
+          Disable `.gitignore` filtering for `--upload`
+
+GATEWAY FLAGS:
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+GLOBAL FLAGS:
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+Execute a command in a running sandbox.
+
+Runs a command inside an existing sandbox using the gRPC exec endpoint. Output is streamed to the terminal in real-time. The CLI exits with the remote command's exit code.
+
+For interactive shell sessions, use `sandbox connect` instead.
+
+Examples: openshell sandbox exec --name my-sandbox -- ls -la /workspace openshell sandbox exec -n my-sandbox --workdir /app -- python script.py echo "hello" | openshell sandbox exec -n my-sandbox -- cat
+
+USAGE
+  openshell sandbox exec [OPTIONS] <COMMAND>...
+
+FLAGS:
+  -n, --name <NAME>
+          Sandbox name (defaults to last-used sandbox)
+
+      --workdir <WORKDIR>
+          Working directory inside the sandbox
+
+      --timeout <TIMEOUT>
+          Timeout in seconds (0 = no timeout)
+          
+          [default: 0]
+
+      --tty
+          Allocate a pseudo-terminal for the remote command. Defaults to auto-detection (on when stdin and stdout are terminals). Use --tty to force a PTY even when auto-detection fails, or --no-tty to disable
+
+      --no-tty
+          Disable pseudo-terminal allocation
+
+      --no-login-shell
+          Run the command without sourcing shell login/profile startup files.
+          
+          Default sources them so tool-specific env (`VIRTUAL_ENV`, etc.) is available. Use this for automation and managed checks that need predictable startup behavior — sandbox-user startup files cannot run before the requested command.
+
+      --env <KEY=VALUE>
+          Set a non-secret environment variable for the command. Do not use this option for API keys, tokens, or other secrets; attach a provider to the sandbox instead. Repeatable
+
+  <COMMAND>...
+          Command and arguments to execute
+
+GATEWAY FLAGS:
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+GLOBAL FLAGS:
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+Manage sandbox and gateway settings
+
+USAGE
+  openshell settings [OPTIONS] [COMMAND]
+
+COMMANDS
+  get     Show effective settings for a sandbox or gateway-global scope
+  set     Set a single setting key
+  delete  Delete a setting key (sandbox-scoped or gateway-global)
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+
+EXAMPLES
+  $ openshell settings get my-sandbox
+  $ openshell settings get --global
+  $ openshell settings set my-sandbox --key ocsf_json_enabled --value true
+  $ openshell settings set --global --key ocsf_json_enabled --value true
+  $ openshell settings delete --global --key ocsf_json_enabled
+
+View sandbox logs
+
+USAGE
+  openshell logs [OPTIONS] [NAME]
+
+FLAGS:
+  -n <N>
+          Number of log lines to return
+          
+          [default: 200]
+
+      --tail
+          Stream live logs
+
+      --since <SINCE>
+          Only show logs from this duration ago (e.g. 5m, 1h, 30s)
+
+      --source <SOURCE>
+          Filter by log source: "gateway", "sandbox", or "all" (default). Can be specified multiple times: --source gateway --source sandbox
+          
+          [default: all]
+
+      --level <LEVEL>
+          Minimum log level to display: error, warn, info (default), debug, trace
+          
+          [default: ""]
+
+  [NAME]
+          Sandbox name (defaults to last-used sandbox)
+
+GATEWAY FLAGS:
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+GLOBAL FLAGS:
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+
+ALIAS
+  lg
+
+EXAMPLES
+  $ openshell logs my-sandbox
+  $ openshell logs my-sandbox --tail
+  $ openshell logs --since 5m
+  $ openshell logs --source sandbox --level debug
+
+Manage sandbox policy
+
+USAGE
+  openshell policy [OPTIONS] [COMMAND]
+
+COMMANDS
+  set     Update policy on a live sandbox
+  update  Incrementally update policy on a live sandbox
+  get     Show current effective policy for a sandbox or a stored global policy
+  list    List policy history for a sandbox or the global policy
+  delete  Delete the gateway-global policy lock, restoring sandbox-level policy control
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+          
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+          
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+      --gateway-insecure
+          Skip TLS certificate verification for gateway connections
+          
+          [env: OPENSHELL_GATEWAY_INSECURE=]
+
+      --workspace <WORKSPACE>
+          Workspace scope for resource operations
+          
+          [env: OPENSHELL_WORKSPACE=]
+          [default: default]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+      --color <WHEN>
+          When to colorize output. `auto` colorizes only when stdout is a terminal
+
+          Possible values:
+          - auto:   Colorize a stream only when that stream is a terminal and no environment override applies
+          - always: Always colorize, even when output is redirected
+          - never:  Never colorize
+          
+          [env: OPENSHELL_COLOR=]
+          [default: auto]
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+
+ALIAS
+  pol
+
+EXAMPLES
+  $ openshell policy get my-sandbox
+  $ openshell policy set my-sandbox --policy policy.yaml
+  $ openshell policy update my-sandbox --add-endpoint api.github.com:443:read-only:rest:enforce
+  $ openshell policy update my-sandbox --add-endpoint realtime.example.com:443:read-write:websocket:enforce:websocket-credential-rewrite,allowed-ip=10.0.0.0/8
+  $ openshell policy update my-sandbox --rule-name github --binary /usr/bin/gh --add-allow 'api.github.com:443:GET:/repos/**'
+  $ openshell policy set --global --policy policy.yaml
+  $ openshell policy delete --global
+  $ openshell policy list my-sandbox
+
