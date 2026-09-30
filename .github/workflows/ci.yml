@@ -86,6 +86,18 @@ jobs:
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
           if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with the head derived from its stamp: structural/attested $got"
           else echo "FAIL  jidec-ledger-chained with the head derived from its stamp: got $got, expected 1 1"; bad=1; fi
+          # sha256-hex-join: the invinoveritas ledger's head event is signed but not a
+          # chain link, so it is L0 on the log alone and L1 only against a head held
+          # outside the log (here, the value its signed Nostr head event states).
+          IH=04467b72e3231f1deb61e1e15741674e226e3aece0892800d7fc7ace2e7a108d
+          for t in full:"1 1" truncated:"0 0"; do
+            f=${t%%:*}; want=${t#*:}; want=${want//\"/}
+            got=$(python3 conformance.py --log "examples/third-party/invinoveritas-ledger-live-$f.jsonl" \
+                    --adapter adapters/invinoveritas-ledger-live.json --json --expect-head $IH \
+                  | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
+            if [ "$got" = "$want" ]; then echo "ok    invinoveritas-ledger-live / $f with its signed head: structural/attested $got"
+            else echo "FAIL  invinoveritas-ledger-live / $f with its signed head: got $got, expected $want"; bad=1; fi
+          done
           # The claim THIRD-PARTY.md makes about each live capture: removing the
           # refused calls' records changes no requirement result at all. (Tessera
           # left this list in 1.4.3-draft: its scrubbed file now scores lower; below.)
@@ -139,11 +151,12 @@ jobs:
           if python3 $t/verify_tlog.py jsonl examples/third-party/tessera-live-scrubbed.jsonl $t/log.vkey > /dev/null; then
             echo "FAIL  tessera-live: scrubbed JSONL verified"; bad=1
           else echo "ok    tessera-live: scrubbed JSONL rejected outside the checker"; fi
-          # The invinoveritas ledger chain (head = sha256(content_hash|prev_head)) is checked
-          # outside conformance.py, which has no mechanism for it: the full file verifies
-          # against its signed Nostr head, the file with the newest entry dropped -- which
-          # the checker scores as the full one -- must fail, and every mutation must be
-          # caught once the signed head is present.
+          # The invinoveritas ledger chain (head = sha256(content_hash|prev_head)) is also
+          # checked outside conformance.py, which recomputes it (sha256-hex-join) but does not
+          # verify the head event's signature: the full file verifies against its signed
+          # Nostr head, the file with the newest entry dropped -- which the checker scores as
+          # the full one on the log alone -- must fail, and every mutation must be caught
+          # once the signed head is present.
           t=examples/third-party/invinoveritas-ledger-live
           if python3 $t/verify_ledger.py jsonl examples/third-party/invinoveritas-ledger-live-full.jsonl > /dev/null; then
             echo "ok    invinoveritas-ledger-live: chain and signed head verify outside the checker"

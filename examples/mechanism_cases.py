@@ -223,6 +223,61 @@ def main(out):
 
     merkle_cases(out, case)
 
+    # --- sha256-hex-join: head = sha256(content_digest + sep + hex(prev)) -----
+    # A chain over per-record digests the log carries (the invinoveritas verdict
+    # ledger's shape). The end marker is a signed head event with the head inside
+    # a JSON string member; it is not a chain link, so VLC-L1-3 needs --expect-head.
+    hj = {"name": "hex-join-case", "record_class_field": "class", "marker_classes": [],
+          "non_event_classes": ["HEAD"],
+          "integrity": {"mechanism": "sha256-hex-join", "hash_field": "head", "content_field": "content",
+                        "prev_field": "prev", "separator": "|", "link_class": "entry",
+                        "root": {"kind": "constant", "value": sha(b"genesis")},
+                        "end_marker": {"class": "HEAD", "self_bound": False,
+                                       "content_json_field": "content", "head_field": "head"},
+                        "primitive": "SHA-256", "documented": True, "primitive_documented": True}}
+    hja = os.path.join(out, "hex-join.adapter.json")
+    json.dump(hj, open(hja, "w"))
+
+    def hj_chain(n=6):
+        prev, outr = sha(b"genesis"), []
+        for i in range(n):
+            c = sha(f"record-{i}".encode())
+            h = sha((c + "|" + prev).encode())
+            outr.append({"class": "entry", "n": i, "content": c, "prev": prev, "head": h})
+            prev = h
+        return outr, prev
+
+    def hj_head(head):
+        return {"class": "HEAD", "content": json.dumps({"head": head}), "sig": "not-checked"}
+
+    good, gh = hj_chain()
+    case("hex-join-honest", good + [hj_head(gh)], hja, "VLC-L1-1", "PASS")
+    case("hex-join-honest-head-matches", good + [hj_head(gh)], hja, "VLC-L1-3", "FAIL")  # not bound: needs --expect-head
+    edited = copy.deepcopy(good)
+    edited[2]["content"] = sha(b"edited")
+    case("hex-join-content-edited", edited + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    case("hex-join-interior-deleted", [r for r in good if r["n"] != 3] + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    sw = copy.deepcopy(good)
+    sw[1], sw[2] = sw[2], sw[1]
+    case("hex-join-reordered", sw + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    relinked = copy.deepcopy(good)
+    relinked[4]["prev"] = sha(b"genesis")           # a valid-looking root in the wrong place
+    case("hex-join-prev-substituted", relinked + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    bad_digest = copy.deepcopy(good)
+    bad_digest[0]["content"] = "not-a-digest"
+    case("hex-join-content-not-hex", bad_digest + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    # The class is outside the binding (vlc-1#17 review): an interior entry relabelled to the
+    # end-marker class, or to any other class, changes no hash and must still fail.
+    as_head = copy.deepcopy(good)
+    as_head[2]["class"] = "HEAD"
+    case("hex-join-interior-relabelled-end-class", as_head + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    as_other = copy.deepcopy(good)
+    as_other[2]["class"] = "gap-notice"
+    case("hex-join-interior-relabelled-unknown-class", as_other + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    # the embedded head JSON is read with load()'s I-JSON hooks: a duplicate name is refused, not last-wins
+    dup_head = {"class": "HEAD", "content": '{"head": "%s", "head": "%s"}' % ("0" * 64, gh), "sig": "not-checked"}
+    case("hex-join-end-marker-duplicate-head-name", good + [dup_head], hja, "VLC-L1-1", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 

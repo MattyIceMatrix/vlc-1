@@ -225,6 +225,17 @@ def rec_hash(prev, r, ad, prev_raw=b""):
         # ASCII-only names and values canon() equals RFC 8785 JCS.
         body = {f: r.obj[f] for f in ad["integrity"]["hash_fields"] if f in r.obj}
         return sha256_hex(canon(body).encode())
+    if mech == "sha256-hex-join":
+        # A chain over per-record digests the log already carries, joined to the
+        # predecessor as text: head = SHA-256(record[content_field] + separator +
+        # hex(prev)), lower-case hex strings, UTF-8. The shape of a ledger that
+        # hashes each full record once (content hash) and chains only the digests.
+        # The checker recomputes the chain over the delivered digests; whether each
+        # digest matches its full record is a separate check the adapter states.
+        v = dig(r.obj, ad["integrity"]["content_field"])
+        if not isinstance(v, str) or not HEX64.match(v):
+            return None
+        return sha256_hex((v + ad["integrity"].get("separator", "|") + prev.hex()).encode())
     raise AdapterError(f"unknown integrity.mechanism {mech!r}")
 
 
@@ -704,12 +715,26 @@ def check_l1(recs, ad, res, ctx):
             end = last
             body = body[:-1]
 
+    # Under sha256-hex-join the hash covers content_field only, so the record class
+    # is outside the binding: relabelling an interior entry (to the end-marker class,
+    # or to anything else) changes no hash. Classes drive coverage and loss, so every
+    # interior record must be a chain link of the adapter's declared link_class; only
+    # the final record may carry the end-marker class.
+    if mech == "sha256-hex-join" and ad.get("record_class_field"):
+        lc = ad["integrity"].get("link_class")
+        for r in body:
+            if r.cls != lc:
+                res.fail("VLC-L1-1", f"record {r.i} has class {r.cls!r}: under sha256-hex-join the class is "
+                                     f"not bound, so every interior record must be a {lc!r} chain link")
+                return None
+
     prev_raw = b""
     # EXT-013. Under sha256-prev-field each record's hash covers its OWN prev
     # field, so a record is self-consistent whatever that field says. Nothing
     # compared it with the hash of the record actually before it, so deleting
     # or reordering records left every hash valid. The link is checked here.
-    link_field = ad["integrity"].get("prev_field") if mech in ("sha256-prev-field", "sha256-canonical-fields") else None
+    link_field = (ad["integrity"].get("prev_field")
+                  if mech in ("sha256-prev-field", "sha256-canonical-fields", "sha256-hex-join") else None)
     for r in body:
         if link_field is not None and str(dig(r.obj, link_field) or "") != prev.hex():
             res.fail("VLC-L1-1", f"record {r.i} does not link to its predecessor")
@@ -726,7 +751,19 @@ def check_l1(recs, ad, res, ctx):
             prev = bytes.fromhex(h)
 
     if end is not None:
-        claimed = dig(end.obj, em.get("head_field", "head"))
+        head_src = end.obj
+        if em.get("content_json_field"):
+            # The head sits inside a string member holding JSON (a Nostr event's
+            # `content`, for one). Parse that member and read head_field from it.
+            # Same I-JSON hooks as load(): a duplicate member name or a non-finite
+            # number in the embedded JSON is a LogError, not a last-wins read.
+            inner = dig(end.obj, em["content_json_field"])
+            try:
+                head_src = json.loads(inner, object_pairs_hook=_no_duplicate_names,
+                                      parse_constant=_reject_nonfinite) if isinstance(inner, str) else None
+            except json.JSONDecodeError:
+                head_src = None
+        claimed = dig(head_src, em.get("head_field", "head"))
         head_ok = claimed is not None and str(claimed) == prev.hex()
         # EXT-022. The head comparison alone does not detect truncation when the
         # end marker is not itself bound by the chain. The marker names the head
@@ -1621,7 +1658,7 @@ def mutate(lines, how, ad):
 # adapter validation -- a malformed adapter is an error, not a verdict
 # ===========================================================================
 MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-prev-raw",
-              "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog")
+              "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join")
 ROOT_KINDS = ("zero", "constant", "field_of_first_record")
 LOSS_MODES = ("none", "declaration", "ordinal")
 PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
@@ -1708,11 +1745,21 @@ def validate_adapter(ad):
             need(isinstance(root.get("field"), str), "integrity.root.field (a string) is required")
         if integ["mechanism"] in ("sha256-prev-field", "sha256-canonical-fields"):
             need(isinstance(integ.get("prev_field"), str), "integrity.prev_field (a string) is required")
+        if integ["mechanism"] == "sha256-hex-join":
+            need(isinstance(integ.get("content_field"), str), "integrity.content_field (a string) is required")
+            need(isinstance(integ.get("separator", "|"), str), "integrity.separator must be a string")
+            need(integ.get("prev_field") is None or isinstance(integ.get("prev_field"), str),
+                 "integrity.prev_field must be a string")
+            need(not ad.get("record_class_field") or isinstance(integ.get("link_class"), str),
+                 "integrity.link_class (a string) is required with record_class_field: the class is not "
+                 "under the hash, so interior records are pinned to one chain-link class")
         em = integ.get("end_marker")
         need(obj(em), "integrity.end_marker must be an object")
         if em:
             need(isinstance(em.get("class"), str), "integrity.end_marker.class (a string) is required")
             need(isinstance(em.get("self_bound", True), bool), "integrity.end_marker.self_bound must be true or false")
+            need(em.get("content_json_field") is None or isinstance(em.get("content_json_field"), str),
+                 "integrity.end_marker.content_json_field must be a string")
     lo = ad.get("loss") or {}
     if lo:
         need(lo.get("mode", "declaration") in LOSS_MODES, f"unknown loss.mode {lo.get('mode')!r}")
