@@ -221,6 +221,50 @@ def main(out):
     counted[-1]["produced"] = 6
     case("canonical-fields-end-marker-count-unhashed", counted, emca, "VLC-L1-1", "FAIL")
 
+    # --- sha256-hex-join: head = sha256(content_digest + sep + hex(prev)) -----
+    # A chain over per-record digests the log carries (the invinoveritas verdict
+    # ledger's shape). The end marker is a signed head event with the head inside
+    # a JSON string member; it is not a chain link, so VLC-L1-3 needs --expect-head.
+    hj = {"name": "hex-join-case", "record_class_field": "class", "marker_classes": [],
+          "non_event_classes": ["HEAD"],
+          "integrity": {"mechanism": "sha256-hex-join", "hash_field": "head", "content_field": "content",
+                        "prev_field": "prev", "separator": "|",
+                        "root": {"kind": "constant", "value": sha(b"genesis")},
+                        "end_marker": {"class": "HEAD", "self_bound": False,
+                                       "content_json_field": "content", "head_field": "head"},
+                        "primitive": "SHA-256", "documented": True, "primitive_documented": True}}
+    hja = os.path.join(out, "hex-join.adapter.json")
+    json.dump(hj, open(hja, "w"))
+
+    def hj_chain(n=6):
+        prev, outr = sha(b"genesis"), []
+        for i in range(n):
+            c = sha(f"record-{i}".encode())
+            h = sha((c + "|" + prev).encode())
+            outr.append({"class": "entry", "n": i, "content": c, "prev": prev, "head": h})
+            prev = h
+        return outr, prev
+
+    def hj_head(head):
+        return {"class": "HEAD", "content": json.dumps({"head": head}), "sig": "not-checked"}
+
+    good, gh = hj_chain()
+    case("hex-join-honest", good + [hj_head(gh)], hja, "VLC-L1-1", "PASS")
+    case("hex-join-honest-head-matches", good + [hj_head(gh)], hja, "VLC-L1-3", "FAIL")  # not bound: needs --expect-head
+    edited = copy.deepcopy(good)
+    edited[2]["content"] = sha(b"edited")
+    case("hex-join-content-edited", edited + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    case("hex-join-interior-deleted", [r for r in good if r["n"] != 3] + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    sw = copy.deepcopy(good)
+    sw[1], sw[2] = sw[2], sw[1]
+    case("hex-join-reordered", sw + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    relinked = copy.deepcopy(good)
+    relinked[4]["prev"] = sha(b"genesis")           # a valid-looking root in the wrong place
+    case("hex-join-prev-substituted", relinked + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+    bad_digest = copy.deepcopy(good)
+    bad_digest[0]["content"] = "not-a-digest"
+    case("hex-join-content-not-hex", bad_digest + [hj_head(gh)], hja, "VLC-L1-1", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 

@@ -2,16 +2,36 @@
   "name": "invinoveritas-ledger-live",
   "producer": "invinoveritas verdict ledger (babyblueviper), as served at GET https://api.babyblueviper.com/ledger and GET /ledger/{n}, schema_version 2; chain heads as signed Nostr events (kind 30078, schema invinoveritas.ledger_chain_head.v1) on public relays",
   "_basis": "Captured from public data, not supplied by the operator: workflow .github/workflows/ledger-capture.yml, capture/scripts/ledger_capture.py on branch capture/invinoveritas-ledger, runs run-20260930T135456Z, run-20260930T140743Z and run-20260930T142032Z (2026-09-30), which produced byte-identical chain files. The runner fetched /ledger and every chained entry, recomputed each content_hash from the entry's full record by the published canonicalization, and took the head events from wss://nos.lol and wss://relay.primal.net. The full records were hashed on the runner and not copied here; examples/third-party/invinoveritas-ledger-live-full.jsonl holds each entry's served chain block plus the newest head event verbatim, with only a class field added. The operator offered the ledger for scoring on vlc-1 PR #3 (2026-09-30) and supplied no score.",
-  "description": "A live capture, 2026-09-30: 230 chained entries, 40 to 269. Every content_hash recomputed from its full record, every head_hash recomputed from content_hash and the recomputed predecessor head, zero link breaks; the newest head event on the relays, signed by the key /ledger publishes (NIP-01 id and BIP-340 signature verified), states entry 269 and the same head the recomputation reaches. examples/third-party/invinoveritas-ledger-live/verify_ledger.py, standard library only and written from the published chain_spec, reaches the same result. Removing, editing or reordering an entry breaks the chain; dropping the newest entry, or rewriting the whole chain consistently, passes the chain alone and is caught only against the signed head (invinoveritas-ledger-live-truncated.jsonl). Scored L0 by the checker, because conformance.py has no mechanism for head = sha256(content_hash + '|' + prev_head): a limit of the checker, stated here rather than worked around.",
+  "description": "A live capture, 2026-09-30: 230 chained entries, 40 to 269. Every content_hash recomputed from its full record, every head_hash recomputed from content_hash and the recomputed predecessor head, zero link breaks; the newest head event on the relays, signed by the key /ledger publishes (NIP-01 id and BIP-340 signature verified), states entry 269 and the same head the recomputation reaches. examples/third-party/invinoveritas-ledger-live/verify_ledger.py, standard library only and written from the published chain_spec, reaches the same result. Removing, editing or reordering an entry breaks the chain; dropping the newest entry, or rewriting the whole chain consistently, passes the chain alone and is caught only against the signed head (invinoveritas-ledger-live-truncated.jsonl). The checker recomputes the chain under sha256-hex-join; the tail is anchored only with --expect-head.",
   "record_class_field": "class",
   "marker_classes": [],
   "non_event_classes": [
     "chain-head"
   ],
   "integrity": {
-    "mechanism": "none",
+    "mechanism": "sha256-hex-join",
+    "hash_field": "head_hash",
+    "content_field": "content_hash",
+    "prev_field": "prev_head_hash",
+    "separator": "|",
+    "root": {
+      "kind": "constant",
+      "value": "09c790b34b51e22a0d4a0bd9c393d7e0c5891129038f83676a85e2b45f0316d2",
+      "note": "sha256('invinoveritas-ledger-genesis:before-entry-40'), as chain_spec states"
+    },
+    "end_marker": {
+      "class": "chain-head",
+      "self_bound": false,
+      "content_json_field": "content",
+      "head_field": "head_hash",
+      "note": "The newest signed head event (kind 30078, schema invinoveritas.ledger_chain_head.v1). Its head is inside the event's JSON content. The event's BIP-340 signature is not verified by the checker, and the event is not a chain link, so VLC-L1-3 needs --expect-head: a head held independently of this file."
+    },
+    "documented": true,
+    "documentation": "chain_spec served in the GET /ledger index; recompute_ledger.py in the operator's public repo",
+    "primitive": "SHA-256",
+    "primitive_documented": true,
     "actual_mechanism": "Hash chain from entry 40: content_hash = sha256(json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(',', ':'))) over the record served at GET /ledger/{n}; head_hash = sha256(content_hash + '|' + prev_head_hash) over the hex strings; entry 40 links to sha256('invinoveritas-ledger-genesis:before-entry-40'). Each head is broadcast as a NIP-01 event of kind 30078 with a distinct d tag, signed with BIP-340 by the key served as verifier_pubkey.",
-    "note": "Declared none because the checker cannot recompute this binding: its chain mechanisms hash the predecessor with a canonical object, not a content hash joined to the predecessor with '|', and a row reshaped to fit one of them would manufacture a pass. Outside the checker, verify_ledger.py establishes on this file what VLC-L1-1 asks for, and with the signed head event what VLC-L1-3 and --expect-head ask for. The full-record content_hash recomputation is in the capture run (recompute.jsonl), not in this file. Entries 1 to 39 predate the chain and are not in it (chain_spec)."
+    "note": "The checker recomputes head_hash from each entry's content_hash and the recomputed predecessor head, and checks each prev_head_hash link. It does not recompute content_hash from the full record, because the full records are not in this file; the capture run did that (recompute.jsonl). Entries 1 to 39 predate the chain and are not in it (chain_spec)."
   },
   "loss": {
     "mode": "none",
