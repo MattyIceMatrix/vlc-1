@@ -34,8 +34,12 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import verify_ledger as V  # noqa: E402
 
 API = "https://api.babyblueviper.com"
+# The six relays of the first capture (2026-09-30 13:43Z), plus the four the operator
+# added on PR #3 the same day (offchain.pub, relay.nostr.net, nostr.mom; snort was
+# already queried). nostr.wine serves authenticated readers only, per the operator.
 RELAYS = ["wss://relay.damus.io", "wss://nos.lol", "wss://relay.primal.net",
-          "wss://relay.nostr.band", "wss://nostr.wine", "wss://relay.snort.social"]
+          "wss://relay.nostr.band", "wss://nostr.wine", "wss://relay.snort.social",
+          "wss://offchain.pub", "wss://relay.nostr.net", "wss://nostr.mom"]
 OUT = os.path.join(os.environ["OUT"], "ledger")
 os.makedirs(OUT, exist_ok=True)
 UA = {"User-Agent": "vlc-1-conformance-capture (github.com/MattyIceMatrix/vlc-1)"}
