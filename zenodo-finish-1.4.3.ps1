@@ -1,26 +1,15 @@
-# zenodo-new-version-1.4.3.ps1
-# Run AFTER the v1.4.3-draft GitHub release is published.
-# Adds VLC-1 1.4.3-draft as a NEW VERSION of the existing Zenodo record, so it
-# keeps the concept DOI 10.5281/zenodo.22728393 (same as 1.0 .. 1.4.2).
-#
-# Needs a Zenodo personal access token with scopes deposit:write and
-# deposit:actions  (zenodo.org -> Applications -> Personal access tokens -> New).
-# The token is typed at a hidden prompt; it is never written to disk.
-#
-# Run from PowerShell:   powershell -ExecutionPolicy Bypass -File .\zenodo-new-version-1.4.3.ps1
-# It stops and asks before publishing, because a published version is permanent.
+# zenodo-finish-1.4.3.ps1
+# Resumes the open 1.4.3-draft Zenodo draft (id 23063984): sets the metadata and
+# publishes on an explicit yes. The file was already uploaded by the first run.
+# Fix over the first script: Content-Type is exactly 'application/json'.
 
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$Api      = 'https://zenodo.org/api'
-$Prev     = 23028240                     # the 1.4.2-draft record
-$Tag      = 'v1.4.3-draft'
-$Version  = '1.4.3-draft'
-$Title    = 'VLC-1: Verifiable Completeness for AI System Logs 1.4.3-draft'
-$PubDate  = '2026-09-30'
-$ZipUrl   = "https://github.com/MattyIceMatrix/vlc-1/archive/refs/tags/$Tag.zip"
-$ZipName  = "vlc-1-$Version.zip"
+$Draft   = 'https://zenodo.org/api/deposit/depositions/23063984'
+$Version = '1.4.3-draft'
+$Title   = 'VLC-1: Verifiable Completeness for AI System Logs 1.4.3-draft'
+$PubDate = '2026-09-30'
 
 $Desc = @'
 <p>VLC-1: Verifiable Completeness for AI System Logs 1.4.3-draft.</p>
@@ -34,59 +23,51 @@ $Desc = @'
 <p>Licensing: the specification text is CC0-1.0; the reference implementation and code in this archive are MIT. Zenodo records a single licence field, so the repository is authoritative on the split.</p>
 '@
 
-# --- token, hidden ---------------------------------------------------------
 $sec = Read-Host 'Zenodo token (hidden)' -AsSecureString
 $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
 try   { $Token = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr) }
 finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr) }
 $H = @{ Authorization = "Bearer $Token" }
 
-# --- 1. download the release archive under a unique name -------------------
-$Tmp = Join-Path $env:TEMP ("vlc143-" + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-New-Item -ItemType Directory -Path $Tmp | Out-Null
-$ZipPath = Join-Path $Tmp $ZipName
-Write-Host "Downloading $ZipUrl"
-Invoke-WebRequest -Uri $ZipUrl -OutFile $ZipPath -UseBasicParsing
-$sha = (Get-FileHash $ZipPath -Algorithm SHA256).Hash.ToLower()
-Write-Host "  $ZipName  $((Get-Item $ZipPath).Length) bytes  sha256 $sha"
+$d = Invoke-RestMethod -Uri $Draft -Headers $H
+if ($d.submitted) { Write-Host "Draft $($d.id) is already published: DOI $($d.doi)"; exit 0 }
 
-# --- 2. new version of the 1.4.2 record (returns the existing draft if one is open)
-Write-Host "Opening new version of record $Prev"
-$nv    = Invoke-RestMethod -Method Post -Uri "$Api/deposit/depositions/$Prev/actions/newversion" -Headers $H
-$Draft = $nv.links.latest_draft
-$d     = Invoke-RestMethod -Uri $Draft -Headers $H
-Write-Host "  draft id $($d.id)"
-
-# --- 3. drop the files copied over from 1.4.2, upload the 1.4.3 archive --------
-foreach ($f in (Invoke-RestMethod -Uri "$Draft/files" -Headers $H)) {
-    Write-Host "  removing carried-over file $($f.filename)"
-    Invoke-RestMethod -Method Delete -Uri $f.links.self -Headers $H | Out-Null
+# Files: expect exactly the 1.4.3 zip. Show its checksum against the local copy.
+$files = @(Invoke-RestMethod -Uri "$Draft/files" -Headers $H)
+if ($files.Count -ne 1 -or $files[0].filename -notlike '*1.4.3-draft*.zip') {
+    Write-Host "Unexpected files on the draft: $(($files | ForEach-Object { $_.filename }) -join ', ')"
+    Write-Host "Stopping without changes. Send this output to Claude."; exit 1
 }
-Write-Host "  uploading $ZipName"
-Invoke-RestMethod -Method Put -Uri "$($d.links.bucket)/$ZipName" -Headers $H `
-    -InFile $ZipPath -ContentType 'application/octet-stream' | Out-Null
+$local = Get-ChildItem "$env:TEMP\vlc143-*\vlc-1-1.4.3-draft.zip" -ErrorAction SilentlyContinue |
+         Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$remoteMd5 = $files[0].checksum
+if ($local) {
+    $localMd5 = (Get-FileHash $local.FullName -Algorithm MD5).Hash.ToLower()
+    if ($localMd5 -ne $remoteMd5) { Write-Host "Checksum mismatch: local $localMd5, Zenodo $remoteMd5. Stopping."; exit 1 }
+    Write-Host "File on Zenodo matches the downloaded archive (md5 $remoteMd5)"
+} else {
+    Write-Host "File on Zenodo: $($files[0].filename)  md5 $remoteMd5  (local copy not found to compare)"
+}
 
-# --- 4. metadata: change only version, title, date, description ------------
+# Metadata: change only version, title, date, description.
 $m = $d.metadata
 foreach ($p in 'doi','prereserve_doi') { $m.PSObject.Properties.Remove($p) }
 $set = @{ version = $Version; title = $Title; publication_date = $PubDate; description = $Desc }
 foreach ($k in $set.Keys) { $m | Add-Member -NotePropertyName $k -NotePropertyValue $set[$k] -Force }
 $body = @{ metadata = $m } | ConvertTo-Json -Depth 30
-$d = Invoke-RestMethod -Method Put -Uri $Draft -Headers $H -Body ([Text.Encoding]::UTF8.GetBytes($body)) `
-    -ContentType 'application/json'
+$d = Invoke-RestMethod -Method Put -Uri $Draft -Headers $H `
+     -Body ([Text.Encoding]::UTF8.GetBytes($body)) -ContentType 'application/json'
 
-$files = Invoke-RestMethod -Uri "$Draft/files" -Headers $H
 Write-Host ""
 Write-Host "Draft ready -- check before publishing:"
 Write-Host "  title    $($d.metadata.title)"
 Write-Host "  version  $($d.metadata.version)"
 Write-Host "  date     $($d.metadata.publication_date)"
-Write-Host "  files    $(($files | ForEach-Object { $_.filename }) -join ', ')"
+Write-Host "  file     $($files[0].filename)"
 Write-Host "  DOI to be minted: $($d.metadata.prereserve_doi.doi)"
 Write-Host "  preview  $($d.links.html)"
 Write-Host ""
 
-# --- 5. publish, only on an explicit yes ------------------------------------
 $ok = Read-Host "Publish now? This is permanent. Type PUBLISH to confirm"
 if ($ok -ne 'PUBLISH') { Write-Host "Not published. The draft stays open at the preview link."; exit 0 }
 $pub = Invoke-RestMethod -Method Post -Uri "$Draft/actions/publish" -Headers $H
