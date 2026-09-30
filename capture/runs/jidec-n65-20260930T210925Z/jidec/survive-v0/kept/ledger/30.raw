@@ -1,0 +1,32 @@
+{
+ "bytes_written": false,
+ "chain": "test",
+ "checkpoints": {},
+ "courier": "bitcoin p2p getheaders",
+ "disagreement": {
+  "common_headers_before": 12,
+  "hash_a": "00018351cef26ed0f846d1d0bfce7bcea0163af2ce1cb142679645ee5ba2a371",
+  "hash_b": "0001ea441405948b1361460320f0db2f617ac2a4807ea112336b324fcaf99c52",
+  "height": 12,
+  "peer_a": "127.0.0.1:28901",
+  "peer_b": "127.0.0.1:28902"
+ },
+ "height": 12,
+ "min_peers": 2,
+ "mode": "window from manifest",
+ "network": "test network (magic 0b11fa09, params test): not the real chain",
+ "note": "a refusal is evidence. no header bytes were written; this record was. a contradiction between sources is exposed here by name and height so that anyone can query it, not only read about it.",
+ "peers_failed": {},
+ "peers_finished": {
+  "127.0.0.1:28901": {
+   "headers": 32,
+   "tip_height": 31
+  }
+ },
+ "peers_wanted": 2,
+ "reason": "peers disagree over the common window: 127.0.0.1:28901 vs 127.0.0.1:28902 at height 12.",
+ "reason_code": "peers_disagree",
+ "refused_at": 1700100000,
+ "schema": "nenrin-localheaders-refusal-1",
+ "start_height": 0
+}

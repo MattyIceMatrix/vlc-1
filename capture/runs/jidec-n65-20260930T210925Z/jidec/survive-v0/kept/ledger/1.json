@@ -1,0 +1,11 @@
+{
+  "n": 1,
+  "work": "外壁塗装 30坪 一式（シリコン）",
+  "claim_sha256": "9a40b9811ac816421a3a4a819136f48d3377c55c1b982f433f760b4b7595f88d",
+  "record_canonical": "{\"work\":\"外壁塗装 30坪 一式（シリコン）\",\"unit\":\"一式\",\"fair_min\":700000,\"fair_avg\":900000,\"fair_max\":1150000,\"source\":\"HORIZON SHIELD souba-db\",\"issued_at\":\"2026-07-22T07:03:17.095Z\"}",
+  "created_at": "2026-07-22T07:27:53.063Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 959118,
+  "block_time": "2026-07-22 10:01 UTC",
+  "stamped_at": "2026-07-22T14:26:18.750Z"
+}

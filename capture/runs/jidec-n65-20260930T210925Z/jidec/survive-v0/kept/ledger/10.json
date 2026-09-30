@@ -1,0 +1,12 @@
+{
+  "n": 10,
+  "work": "ai-council 3AI協議 (decision)",
+  "claim_sha256": "e480537bb9e925b2ab8aa7201fb0283a03e41ae534fdb63b3e463ae7358e6375",
+  "record_canonical": "{\"detected_type\":\"decision\",\"final_decision_sha256\":\"47249773c8be132f617d3b05e6af344cc0540c25b5ce37345c10739cfa24d06c\",\"final_judge\":\"gemini\",\"kind\":\"scp-council-v1\",\"panel\":[{\"model\":\"claude\",\"model_id\":\"claude-sonnet-4-5\",\"ok\":true,\"position\":\"賛成\",\"raw_sha256\":\"3b373a2d9a0da9d9f353e3cc17dd9d2edc10f1445f09005ee75fe341815af3f6\"},{\"model\":\"gemini\",\"ok\":false},{\"model\":\"grok\",\"ok\":false}],\"question_sha256\":\"a37bf138c2b1f6d11aa99cb8b661dccf6c7de301c4485e9bb5bb756c925a6926\",\"template_version\":\"scp@1.0.0\",\"vote\":{\"中立\":0,\"反対\":0,\"賛成\":1}}",
+  "schema": "v0",
+  "created_at": "2026-07-28T14:30:44.502Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 959991,
+  "block_time": "2026-07-28 15:51 UTC",
+  "stamped_at": "2026-07-28T16:52:47.465Z"
+}

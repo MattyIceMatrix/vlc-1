@@ -86,6 +86,20 @@ jobs:
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
           if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with the head derived from its stamp: structural/attested $got"
           else echo "FAIL  jidec-ledger-chained with the head derived from its stamp: got $got, expected 1 1"; bad=1; fi
+          # The n 65 checkpoint (ledger entry 66, claim 0c3bebf7..., OpenTimestamps proof confirmed in
+          # Bitcoin blocks 969240 and 969244, checked against blockstream.info and mempool.space in capture run
+          # capture/runs/jidec-n65-20260930T210925Z): the export cut at n 65 with its bound marker is L1 against
+          # the stamped marker hash, and the same export cut at n 64 and re-sealed consistently -- L1 on the log
+          # alone -- fails against it.
+          S65=13d1a8dad24d5b70a5e5b05fc3b7359b14fcfe1f56a1424d8454c371811f36b4
+          for t in n65:"1 1" n65-resealed-64:"0 0"; do
+            f=${t%%:*}; want=${t#*:}; want=${want//\"/}
+            got=$(python3 conformance.py --log "examples/third-party/jidec-ledger-chained-$f.jsonl" \
+                    --adapter adapters/jidec-ledger-chained.json --json --expect-head $S65 \
+                  | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
+            if [ "$got" = "$want" ]; then echo "ok    jidec-ledger-chained-$f against the n 65 Bitcoin stamp: structural/attested $got"
+            else echo "FAIL  jidec-ledger-chained-$f against the n 65 Bitcoin stamp: got $got, expected $want"; bad=1; fi
+          done
           # sha256-hex-join: the invinoveritas ledger's head event is signed but not a
           # chain link, so it is L0 on the log alone and L1 only against a head held
           # outside the log (here, the value its signed Nostr head event states).

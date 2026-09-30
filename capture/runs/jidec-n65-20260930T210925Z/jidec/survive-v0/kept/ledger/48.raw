@@ -1,0 +1,1 @@
+{"schema":"nenrin-agreement-batch-v1","anchored_at":"2026-09-18T00:30:27.431Z","count":1,"records":[{"canonical_sha256":"7a0f05933383744e3acd48ba3555c7e54a7022fe7bb55f65f88c102d08e2c92a","record_schema":"a2a-agreement-v1.1","verdict":"accepted","verifier_version":"0.2.0"}]}

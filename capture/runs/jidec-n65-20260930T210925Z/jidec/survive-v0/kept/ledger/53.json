@@ -1,0 +1,13 @@
+{
+  "n": 53,
+  "work": "NENRIN witness batch (1 records)",
+  "claim_sha256": "9c625252f2ea765e45768bd49ee65c397436088713c34b34a44906bf443ce923",
+  "record_canonical": "{\"schema\":\"nenrin-witness-batch-v1\",\"anchored_at\":\"2026-09-24T00:30:25.021Z\",\"count\":1,\"records\":[{\"sha\":\"5adfde2c42ca1d7cf700d5729804f44ef6a8f3e6aaab55f705bdd21294a125c0\",\"purpose\":\"a2a-conduct-walk-v1: https://api.babyblueviper.com/a2a\",\"witness_name\":\"HORIZON SHIELD\",\"vantage\":\"your-network\",\"signed\":false}]}",
+  "schema": "v0-plain",
+  "created_at": "2026-09-24T00:30:25.084Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 968359,
+  "block_time": "2026-09-24 05:24 UTC",
+  "stamped_at": "2026-09-24T10:05:41.707Z",
+  "anchored_by": "schedule"
+}

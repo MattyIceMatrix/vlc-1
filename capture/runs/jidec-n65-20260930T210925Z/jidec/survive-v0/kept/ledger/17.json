@@ -1,0 +1,12 @@
+{
+  "n": 17,
+  "work": "外壁塗装工事 御見積",
+  "claim_sha256": "400c31c627625076f3c057f1e841716d656918c77e15188e426d34f46685182a",
+  "record_canonical": "{\"algorithm_commit\":\"cf0b0d56ecbf851388f4cfb16d6ecf5fda782824\",\"algorithm_url\":\"https://github.com/ogasurfproject-jpg/horizon-shield/tree/cf0b0d56ecbf851388f4cfb16d6ecf5fda782824/workers/hs-pdf-gen\",\"input_sha256\":\"89f0f97556b110ba96b108fd2a3e4d208b1bc53fd6b65e4a2272fd4300e3b856\",\"issued_at\":\"2026-08-06T21:31:45.430Z\",\"pdf_sha256\":\"ed99e7f57f5dbc0df8973938307c6330b8fd666bb2bf4fb60e54051d7611095c\",\"reference_bundle_sha256\":\"1b014a546a43bdffde9f1d5c3443c7dff9b277bee82e0ea844d682c7ec7159d4\",\"reference_bundle_version\":\"meisai-bench@meisai-layer v0.3\",\"result_sha256\":\"aeafc7752e7476e0f0d666b0e57969a6496310a6ad68ec033ff2ea564287ea1f\",\"schema\":\"jidec-claim-v1\",\"thresholds_sha256\":\"a70d1afcd2a1c250585fbd705668b6d4b2135992da142c6ced5cdc556d53b187\",\"verifier_recipe_url\":\"https://hs-ledger.oga-surf-project.workers.dev/verify/{n}\",\"work_id\":\"外壁塗装工事 御見積\"}",
+  "schema": "v1",
+  "created_at": "2026-08-06T21:31:46.244Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 961353,
+  "block_time": "2026-08-07 00:45 UTC",
+  "stamped_at": "2026-08-07T04:04:07.990Z"
+}

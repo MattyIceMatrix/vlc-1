@@ -1,0 +1,12 @@
+{
+  "n": 14,
+  "work": "gateway:construction",
+  "claim_sha256": "1c9433f8c82a71e662e04bf0b209d3537df1d840c7c6add6a5f71ab6c7f081b0",
+  "record_canonical": "{\"receipt\":{\"balance_after\":9,\"balance_before\":10,\"input_sha256\":\"0b88c25d86ce089ec4096395371d7197383c8b1af86dbe8b6a4e282ac5a3b688\",\"limits\":\"この録は入力・結果・消費が刻時以前に存在し改竄されていないことを証明する。結果の妥当性は該当業種の検証能力に依る。\",\"op\":\"call:construction\",\"output_sha256\":\"c4b29aeb35c35a49d97786226336593c2d1be259bc489b1193137b82517c9bda\",\"request_id\":\"gw_mserjo4n_gcna6g2i\",\"schema\":\"hs-gateway-receipt-v0\",\"tickets_spent\":1,\"timestamp\":\"2026-08-04T14:38:30.310Z\",\"verifiable\":true,\"vertical\":\"construction\"},\"receipt_sha256\":\"e9725a3cce7b09e069b0200d34356c70eab7f765873a967d65e8998411812a8b\"}",
+  "schema": "v0",
+  "created_at": "2026-08-04T14:38:31.062Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 961039,
+  "block_time": "2026-08-04 16:07 UTC",
+  "stamped_at": "2026-08-04T18:05:26.418Z"
+}

@@ -1,0 +1,13 @@
+{
+  "n": 54,
+  "work": "NENRIN witness batch (2 records)",
+  "claim_sha256": "474c246cc6397d3a0afb88869015f0147931287a477079d36b3bbbde5e830eae",
+  "record_canonical": "{\"schema\":\"nenrin-witness-batch-v1\",\"anchored_at\":\"2026-09-25T00:30:30.723Z\",\"count\":2,\"records\":[{\"sha\":\"a1dd790f6bf238f2918dd98b1022ad5130f716519edb3d7bdf9971ecbe475331\",\"purpose\":\"nenrin-instant-commitment-v1: w2961\",\"witness_name\":\"gate.horizonshield.dev\",\"vantage\":\"cloudflare-worker\",\"signed\":false,\"mode\":\"commitment\"},{\"sha\":\"db73e0ceaf180c502bb324c67fa10bf87f343a5d2b980dead330d5f6b9e7a1c8\",\"purpose\":\"a2a-conduct-walk-v1: https://api.babyblueviper.com/a2a\",\"witness_name\":\"HORIZON SHIELD (The HORIZ音s株式会社)\",\"vantage\":\"operator workstation, Japan, residential network\",\"signed\":false}]}",
+  "schema": "v0-plain",
+  "created_at": "2026-09-25T00:30:31.237Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 968487,
+  "block_time": "2026-09-25 03:20 UTC",
+  "stamped_at": "2026-09-25T07:53:57.538Z",
+  "anchored_by": "schedule"
+}

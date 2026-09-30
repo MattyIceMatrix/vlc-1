@@ -1,0 +1,79 @@
+{
+  "anchors": {
+    "confirmed": 66,
+    "explorers": [
+      "blockstream.info",
+      "mempool.space"
+    ],
+    "failed": [],
+    "first_block": 959118,
+    "last_block": 969240,
+    "pending": []
+  },
+  "chain": {
+    "broken_at": null,
+    "head": "955780842e368df7232cc27ad1d47e224c5b9264ad9092c40ed234f4ba21011e",
+    "rebuilt_through": 66,
+    "stamped_heads": [
+      {
+        "carried_by": 58,
+        "head_n": 57,
+        "result": "match"
+      },
+      {
+        "carried_by": 61,
+        "head_n": 60,
+        "result": "match"
+      },
+      {
+        "carried_by": 65,
+        "head_n": 64,
+        "result": "match"
+      },
+      {
+        "carried_by": 66,
+        "head_n": 65,
+        "result": "match"
+      }
+    ],
+    "stamped_heads_matched": 4
+  },
+  "digests": {
+    "failed": [],
+    "ok": 66
+  },
+  "does_not_establish": [
+    "that any claim in the ledger is true",
+    "that the copy is complete past its highest entry; the newest entries may not have reached the custodian yet",
+    "that two explorers agreeing is Bitcoin consensus; check headers against your own node for that",
+    "anything about entries whose proofs are still pending; they are listed, not counted"
+  ],
+  "drill_at": "2026-09-30T10:07:11Z",
+  "entries": 66,
+  "establishes": [
+    "these ledger bytes were rebuilt from the named custodian without connecting to any operator host",
+    "every digest, the jidec-chain-v1 head, the stamped heads and the Bitcoin anchors were recomputed from the copy and two public explorers"
+  ],
+  "fence": {
+    "host": "ledger.horizonshield.dev",
+    "reachable": false,
+    "why": "sinkholed:0.0.0.0"
+  },
+  "outcome": "rebuilt",
+  "range": [
+    1,
+    66
+  ],
+  "report_sha256": "a5fd5d2414295b948beee6edc2725afb5f8f0d117cb07d399bb66282af4f654c",
+  "schema": "nenrin-survive-drill-v0",
+  "source": {
+    "archive_sha256": "94ba2851f718f97ae299e9157903bd9a619e11cd5e19b744cd6f61911e7e70a4",
+    "custodian": "software-heritage",
+    "directory": "swh:1:dir:fc4d01a6b3fa3a6626446725c96396b86b4fe48d",
+    "operator_controlled": false,
+    "revision": "9bf1024a66ac96cb81b5579398290b8b43383172",
+    "snapshot": "900a1acc832333b4d9db24ff872de6280a6e7735",
+    "visit_date": "2026-09-30T10:06:40.582000+00:00"
+  },
+  "version": "0.1.0"
+}

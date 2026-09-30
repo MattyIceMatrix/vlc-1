@@ -1,0 +1,1 @@
+{"schema":"nenrin-witness-batch-v1","anchored_at":"2026-09-11T00:30:32.040Z","count":1,"records":[{"sha":"36f206cadb498e23ed360560b48ae1ac0925f46ec0ce4c95d4e92d0033935b55","purpose":"nenrin-instant-commitment-v1: w2959","witness_name":"gate.horizonshield.dev","vantage":"cloudflare-worker","signed":false,"mode":"commitment"}]}

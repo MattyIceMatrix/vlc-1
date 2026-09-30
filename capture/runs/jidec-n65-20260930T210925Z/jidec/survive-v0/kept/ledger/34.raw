@@ -1,0 +1,30 @@
+schema: nenrin-ring-reimpl-match-v1
+date: 2026-09-05
+claim: a second, independent implementation of NENRIN Layer 3 (ring builder), written from the spec alone in a different language by a different person, reproduces all eight August 2026 rings byte for byte from the same history exports
+spec: NENRIN_SPEC_v1.md sha256 9ccba2e325fd2a555fcdb2dec519b8c6bf7a669064674846aea98ecfff824e3d (Layer 3)
+implementation_1: python, make_ring.py sha256 69719fed5ae6387bc9b363914e61ab70c8bfee320710fcd028191b90e41aa2c4, author Toshikatsu Oga, horizon-shield workers/hs-ledger/nenrin/ring-v1
+implementation_2: node.js, make_ring.js sha256 5167188aeefb4852ca941a96856724f8831abd46be331cd9544898ba038e82a8, 7955 bytes, author Federico Blanco Sanchez-Llanos, github.com/babyblueviper1/invinoveritas scripts/nenrin_ring_reimpl/make_ring.js commit 917dd97ff8e30107810d9a059e9091077f5171d0 (2026-09-05T13:08:01Z)
+implementation_2_source_seen: none of implementation_1 (implementer's statement)
+inputs: history exports as committed in github.com/ogasurfproject-jpg/mcp-conduct-register
+  history femtech-horizonshield-dev-mcp.json sha256 9e5098fc8825c8870031d666180ce86b562ce39ab32043ede45dfefb5e79ed64
+  history gate-horizonshield-dev-mcp.json sha256 dafef6a0d6e7d93df7183e9809c7e228fca41f3784d43d2409a4cabd7c7e0841
+  history hearing-horizonshield-dev-mcp.json sha256 d6584dc3671a65509af95e7949294636d11668e23af6a4ad6f9816ef9f566759
+  history intel-twzrd-xyz-mcp.json sha256 7919c0bf674300cc80ed5bf167fc6fdc9d06673ef2fd27203cca7392a31b1051
+  history jidec-horizonshield-dev-mcp.json sha256 18b6a8b128a0248d92be3109237ade5e894906162a853e8dddc7128614a02761
+  history mcp-horizonshield-dev-mcp.json sha256 21420f279a3ac9183fa701ac16ad86e7d1e40bbe2027439304bf7fea9b1758bd
+  history p001-horizonshield-dev-mcp.json sha256 28495507bc5c3c9d4dfe6c3d172221e28b0586922fb171e2b455f3199591454c
+  history p002-horizonshield-dev-mcp.json sha256 c92271834ee9a04fd6fca9978aa52f00062deac5e66f3687d3986deafb5ea335
+  history web-horizonshield-dev-mcp.json sha256 513fea9029699ad9111a61db88fb8b79555584c6aa394f3f0fe0a0513528bf79
+outputs_expected: rings/2026-08.sha256 (JIDEC entry 32)
+  7a310f5dd1eed7b2bbf8a9a82226539db6b33bad43bfae645742018e566f8376  rings/femtech-horizonshield-dev-mcp/2026-08.json
+  e473f71705e5e440ba2c0197545df04f88926314208c2dfc915c1b40b5dd440b  rings/gate-horizonshield-dev-mcp/2026-08.json
+  ceb47d3366ca9174db8f7536c26f9d5b8d19f027a8ee258d6e22a1fefea77436  rings/hearing-horizonshield-dev-mcp/2026-08.json
+  3a215b6ceb4cae71b7d44b29927ba49d19293d74f84369ea9269f05c57a0a075  rings/jidec-horizonshield-dev-mcp/2026-08.json
+  9ca61125dcb3e566a34e4542641324987b1fa2a3f1f5f8c5086126f45aa4b953  rings/mcp-horizonshield-dev-mcp/2026-08.json
+  00155986d417310807c3da85f3b0d7f4640c899b298db89a27a6e82af2f4d1b4  rings/p001-horizonshield-dev-mcp/2026-08.json
+  1f8d4f452dd3c4c95d4c24e63bb4fb603f272b13ce04b9348b1d0f0040bb7602  rings/p002-horizonshield-dev-mcp/2026-08.json
+  06d1f77bdd96b1b8d3fb0496c1fc1ff307aae94cd75f148d3037c98b1b1086e8  rings/web-horizonshield-dev-mcp/2026-08.json
+result: 8 of 8 byte-identical (implementer's run, 2026-09-05; the eight sha256 values he reported equal the eight above)
+implementation_note: python json.dumps(sort_keys=True) sorts object keys at every nesting level; JSON.stringify sorts none, so implementation_2 applies a recursive key sort (array order preserved) before serialising with 2-space indent and a trailing newline
+limits: validates determinism of Layer 3 only; says nothing about the truth of the measurements inside history; n=2 implementations; August rings carry one witness; the witness-record path (witnesses >= 2) is first exercised by the September rings and is not covered by this record
+supersedes: the sentence in mcp-conduct-register README 'a from-scratch reimplementation in another language ... has not yet been done' (2026-09-05, earlier the same day)

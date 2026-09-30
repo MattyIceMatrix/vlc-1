@@ -1,0 +1,12 @@
+{
+  "n": 13,
+  "work": "gateway:construction",
+  "claim_sha256": "b2c46a464774cf6123133f07706421a22b9eff8bc27d6a43a9d6feaedb5f55bf",
+  "record_canonical": "{\"receipt\":{\"balance_after\":1,\"balance_before\":1,\"input_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"limits\":\"x\",\"op\":\"call:construction\",\"output_sha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"request_id\":\"gw_probe\",\"schema\":\"hs-gateway-receipt-v0\",\"tickets_spent\":0,\"timestamp\":\"2026-08-04T14:00:00.000Z\",\"verifiable\":true,\"vertical\":\"construction\"},\"receipt_sha256\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"}",
+  "schema": "v0",
+  "created_at": "2026-08-04T14:20:07.930Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 961038,
+  "block_time": "2026-08-04 16:06 UTC",
+  "stamped_at": "2026-08-04T18:05:23.303Z"
+}
