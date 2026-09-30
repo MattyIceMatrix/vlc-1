@@ -1,0 +1,70 @@
+go version go1.27.1 linux/amd64
+$ go install github.com/transparency-dev/tessera/cmd/examples/posix-oneshot@latest
+go: downloading github.com/transparency-dev/tessera v1.0.4
+go: downloading golang.org/x/mod v0.33.0
+go: downloading k8s.io/klog/v2 v2.130.1
+go: downloading github.com/cenkalti/backoff/v5 v5.0.3
+go: downloading github.com/hashicorp/golang-lru/v2 v2.0.7
+go: downloading github.com/transparency-dev/formats v0.0.0-20251017110053-404c0d5b696c
+go: downloading github.com/transparency-dev/merkle v0.0.2
+go: downloading go.opentelemetry.io/otel v1.40.0
+go: downloading go.opentelemetry.io/otel/metric v1.40.0
+go: downloading golang.org/x/crypto v0.48.0
+go: downloading golang.org/x/sync v0.19.0
+go: downloading github.com/go-logr/logr v1.4.3
+go: downloading go.opentelemetry.io/otel/trace v1.40.0
+go: downloading golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
+go: downloading github.com/go-logr/stdr v1.2.2
+go: downloading go.opentelemetry.io/auto/sdk v1.2.1
+go: downloading github.com/cespare/xxhash/v2 v2.3.0
+[exit 0]
+tessera module version: v1.0.4
+go: downloading golang.org/x/mod v0.41.0
+go: downloading github.com/transparency-dev/formats v0.1.1
+go: downloading golang.org/x/crypto v0.52.0
+go: downloading filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e
+go: added filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e
+go: added github.com/cenkalti/backoff/v5 v5.0.3
+go: added github.com/cespare/xxhash/v2 v2.3.0
+go: added github.com/go-logr/logr v1.4.3
+go: added github.com/go-logr/stdr v1.2.2
+go: added github.com/hashicorp/golang-lru/v2 v2.0.7
+go: added github.com/transparency-dev/formats v0.1.1
+go: added github.com/transparency-dev/merkle v0.0.2
+go: added github.com/transparency-dev/tessera v1.0.4
+go: added go.opentelemetry.io/auto/sdk v1.2.1
+go: added go.opentelemetry.io/otel v1.40.0
+go: added go.opentelemetry.io/otel/metric v1.40.0
+go: added go.opentelemetry.io/otel/trace v1.40.0
+go: added golang.org/x/crypto v0.52.0
+go: added golang.org/x/mod v0.41.0
+go: added golang.org/x/sync v0.19.0
+go: added k8s.io/klog/v2 v2.130.1
+go: downloading github.com/google/go-cmp v0.7.0
+go: downloading github.com/stretchr/testify v1.11.1
+go: downloading github.com/pmezard/go-difflib v1.0.0
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading github.com/davecgh/go-spew v1.1.1
+[tlogcap build exit 0]
+verifier key: vlc-1.capture/tessera-live+ff8737c2+AQgPtuJa3fW7nOe7/DRDbfdZ+Xbzq/O5MAklAjejnJN/ (the signing key is not kept)
+$ posix-oneshot round 1
+[exit 0]
+$ posix-oneshot round 2
+[exit 0]
+checkpoint.round1:
+vlc-1.capture/tessera-live
+3
+0dLtFXS3DvyC8z8BZ4ER0R4Ih9GARjJR61Lzh6mDZRk=
+
+— vlc-1.capture/tessera-live /4c3wlBXGmUpuuv7laZvPZeqcAtF6Hx5YOhLWk/q1aoIlVRtPufmk4UE0npeg2H+MwEGKV/OMNdCTzu4dMvNwHyRfwo=
+checkpoint:
+vlc-1.capture/tessera-live
+6
+gIKgUgaQqyh+IphN5iHjc5JQVFBW1xXBXg5tdzunMY4=
+
+— vlc-1.capture/tessera-live /4c3wpBQnZQY3Bu3O8CuWSNGWxpaizfpPpUwxEqDijzttQhesofpjKiSSeE4e6/T0h4X+Y74jCZWTGvSzGkBcZCiag0=
+$ tlogcap verify
+[exit 0]
+$ tlogcap verify (tampered copy: tile/entries/000.p/6)
+[exit 1]
+runner: Linux 6.17.0-1022-azure x86_64; Ubuntu 24.04.5 LTS; docker 28.0.4; 2026-09-30T11:26:58Z
