@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Document | VLC-1 |
-| Version | 1.4.2-draft |
+| Version | 1.4.3-draft |
 | Date | 2026-09-12 |
 | Revision history | Annex F |
 | Status | Draft for public comment. Free to implement, free to cite, no licence required. |
@@ -242,6 +242,55 @@ The reference checker accepts that independently held value directly:
 either, a re-rooted or rewritten log that is internally consistent fails
 VLC-L1-1, and the report records that the anchor was supplied from outside the
 log. *(Added with EXT-017.)*
+
+### 4.1 Integrity mechanisms the reference checker recomputes
+
+*Draft text, added in 1.4.3-draft. It adds no requirement to VLC-L1-1..4; it
+states how a verifier decides them for the mechanisms listed.*
+
+Clause 4 is mechanism-neutral. The reference checker recomputes the binding
+only for the mechanisms an adapter can name in `integrity.mechanism`; a log
+whose binding is none of them scores as `none`, which is a limit of the
+checker, not a finding about the log.
+
+- **Hash chains**: `sha256-chain-prefix`, `sha256-chain-canonical`,
+  `sha256-prev-raw`, `sha256-prev-field`, `sha256-canonical-fields`. Each
+  record's hash covers its predecessor's; the end marker names the final head.
+- **`merkle-tlog`** *(added in 1.4.3-draft, Corrigendum 7, EXT-026; draft)*: an
+  RFC 6962 (RFC 9162 §2.1) Merkle tree over the entries, closed by a checkpoint
+  in the shape of C2SP `tlog-checkpoint`, as Trillian Tessera and Sigstore's
+  Rekor v2 publish over C2SP `tlog-tiles`. In log order, the leaf hash of each
+  entry is SHA-256(0x00 ‖ entry bytes, as the adapter defines them) and each
+  interior node SHA-256(0x01 ‖ left ‖ right), the split at the largest power
+  of two smaller than the number of leaves (RFC 6962 §2.1). The checkpoint is
+  the last record and is the VLC-L1-3 end marker: the verifier SHALL recompute
+  the root over every delivered entry and SHALL reject unless the checkpoint's
+  tree size equals the number of entries and its root equals the recomputed
+  root; every record before it SHALL be an entry, and where the adapter maps an
+  index field, each entry's index SHALL equal its leaf position. Removing,
+  altering, inserting, reordering or truncating any entry therefore fails
+  VLC-L1-1 structurally. A field that a later requirement reads SHALL be one
+  the tree or the checkpoint binds, or VLC-L1-1 fails as unanchored.
+
+  *Anchors.* `--expect-head` is the root of a checkpoint held independently of
+  the log for the delivered tree size: the recomputed root SHALL equal it.
+  `--expect-root` is the root of a checkpoint held for an earlier tree size:
+  some prefix of the delivered entries SHALL produce it, so the log was
+  extended, not rewritten or truncated below that size, since the checkpoint
+  was taken. This is the role a consistency proof plays; the checker recomputes
+  the prefix root instead of reading a proof.
+
+  *Signature.* Where the checkpoint is a C2SP `signed-note` and the adapter
+  supplies the log's verifier key, the verifier SHALL verify the note's Ed25519
+  signature (RFC 8032) over the note text and SHALL reject when it does not
+  verify, when no signature line is by that key, or when the checkpoint's
+  fields differ from the note's. Where the adapter supplies no key, the report
+  SHALL state that signature verification was not performed, and nothing is
+  credited for it. A key that is not an Ed25519 signed-note verifier key is an
+  adapter error, not a verdict. A verified signature binds the checkpoint to the key, not
+  to anyone independent of the log's operator: a rewrite by the key holder is
+  detectable only against a checkpoint held by someone else, exactly as for a
+  chain (and independence remains a VLC-L5-1 question).
 
 L1 also says nothing about records that were never delivered.
 A hash chain over 800 records is equally valid whether 800 or 8,000 were
@@ -825,7 +874,8 @@ resolves to the newest; the version DOI below pins a particular text.
 | 1.3-draft | 2026-09-22 | [10.5281/zenodo.22903521](https://doi.org/10.5281/zenodo.22903521) | Annex K added: a committed findings ledger for evaluations. A tester records a hash commitment to a finding when it is found — binding its text, severity class and disclosure date, and revealing only the class and the date — so the date of discovery cannot move, the class cannot be lowered at disclosure, and a finding that was committed and not disclosed is visible as overdue to anyone holding the ledger. Six requirements (`VLC-K-1`..`VLC-K-6`), a reference producer and checker (`findings.py`, standard library only), and a worked example regenerable byte-for-byte (`examples/findings/`). Nothing in the body of this specification changed: no requirement was altered, no level arithmetic touched, and every 1.2-draft result is unchanged. The mechanism is not novel and K.8 says so, citing hash-and-salt commitments, arXiv:1106.4184 and OpenTimestamps. `selftest.sh`: 94 checks under both `sh` and `bash`, no expected failures. |
 | 1.4-draft | 2026-09-27 | [10.5281/zenodo.23002582](https://doi.org/10.5281/zenodo.23002582) | **One normative addition: VLC-L5-6**, attested — a log presented as a witness shall state the basis on which its coverage is exhaustive, and one that does not shall not corroborate an absence. Closes the question EXT-004 left open: VLC-L5-4 was correctly made structural-only, which left `witness/reconcile.py` gating a witness on structural L3 alone, so a witness with no stated basis could vouch that nothing happened outside what it saw. Redundant for the level arithmetic (VLC-L3-1d already gates attested L3) and stated as such; what it closes is how a witness's standing is used. **No published result changes** — every log that reached attested L5 under 1.3-draft still does. Repairs in the same version, moving no result: EXT-018 (L3i had never executed; three attacks passed it) and EXT-019 (six requirements with no negative control; a cited proof absent from the tree, recovered). See `CORRIGENDUM-2026-09-27-05.md`. `selftest.sh`: 120 checks, no expected failures. |
 | 1.4.1-draft | 2026-09-29 | [10.5281/zenodo.23027758](https://doi.org/10.5281/zenodo.23027758) | **Corrective; published results move.** Corrigendum 6, EXT-022 to EXT-025, from an internal review. (1) An end marker the chain does not bind can no longer carry a structural L1-3 or an L2 produced count: a tail cut with the marker rewritten and no hash recomputed had scored structural L4 / attested L5. Such logs now need `--expect-head` for L1-3, and a bound end marker for L2. The reference-implementation journals fall from L4/L5 to L0 (L1 with an independently held head) until the sensor binds its end marker. (2) VLC-V-3 is enforced by attack: requirements that only read adapter text (L3-6 on a non-enumerable declaration, L4-1 on observation-only or a non-digest field) no longer pass structurally; one residual mapping case is disclosed as an expected failure (EXT-025). (3) Crashes are verdicts; exit codes are 0, 1 and 2 as documented; UTF-8 is decoded strictly; `check()` is importable. `selftest.sh` extended with sections 17–19. |
-| **1.4.2-draft** | 2026-09-29 | [10.5281/zenodo.23028240](https://doi.org/10.5281/zenodo.23028240) | **No normative change; results recover.** EXT-022 closed in the sensor: the reference sensor now chains its HEAD record (octa-sentinel `269b176`). The four reference journals were re-captured on live eBPF tracepoints and score structural L4 / attested L5 on the log alone; the loss capture declares 1,832 lost events in-chain. The pre-fix captures are kept byte-for-byte in `examples/reference-impl/pre-EXT-022/` and still score L0 under `adapters/observer-legacy.json`. `adapters/observer.json` declares the end marker bound (`head_field: "head"`). `selftest.sh` runs the EXT-022 attack against both. Also in this version (#10): five MCP/agent gateways scored from live captures in `THIRD-PARTY.md` (agentgateway 1.5.0, Docker MCP Gateway v0.44.1, IBM ContextForge 1.0.11, Lasso MCP Gateway 1.2.1, Bifrost 2.2.3), all L0, with CI asserting that removing the refused call leaves each score unchanged. CI corrected: the JIDEC chained ledger scores L0 on the log alone under the 1.4.1 checker (its end marker is not chained) and L1 against its Bitcoin-stamped head; the CI expectation had not been updated with Corrigendum 6. |
+| 1.4.2-draft | 2026-09-29 | [10.5281/zenodo.23028240](https://doi.org/10.5281/zenodo.23028240) | **No normative change; results recover.** EXT-022 closed in the sensor: the reference sensor now chains its HEAD record (octa-sentinel `269b176`). The four reference journals were re-captured on live eBPF tracepoints and score structural L4 / attested L5 on the log alone; the loss capture declares 1,832 lost events in-chain. The pre-fix captures are kept byte-for-byte in `examples/reference-impl/pre-EXT-022/` and still score L0 under `adapters/observer-legacy.json`. `adapters/observer.json` declares the end marker bound (`head_field: "head"`). `selftest.sh` runs the EXT-022 attack against both. Also in this version (#10): five MCP/agent gateways scored from live captures in `THIRD-PARTY.md` (agentgateway 1.5.0, Docker MCP Gateway v0.44.1, IBM ContextForge 1.0.11, Lasso MCP Gateway 1.2.1, Bifrost 2.2.3), all L0, with CI asserting that removing the refused call leaves each score unchanged. CI corrected: the JIDEC chained ledger scores L0 on the log alone under the 1.4.1 checker (its end marker is not chained) and L1 against its Bitcoin-stamped head; the CI expectation had not been updated with Corrigendum 6. |
+| **1.4.3-draft** | 2026-09-30 | to be minted | **No normative requirement changed; one mechanism added to the reference checker; one published result moves.** Corrigendum 7, EXT-026, from the Trillian Tessera live capture: an RFC 6962 Merkle transparency log (C2SP tlog-tiles, signed checkpoint) scored integrity L0, the scrubbed file identically to the full one, because every mechanism the checker could recompute was a hash chain. Added §4.1 and the `merkle-tlog` mechanism: the tree is recomputed over the entries, the checkpoint's size and root must equal it (the checkpoint is the VLC-L1-3 end marker), `--expect-root` / `--expect-head` take held checkpoint roots, and a C2SP signed-note Ed25519 signature is verified only when the adapter supplies the key, otherwise reported as not performed. Tessera full file L0 → **L1**; scrubbed file stays L0 and now fails VLC-L1-1. No existing mechanism's result moves. |
 
 The 1.1.1 entry is kept in the normative document rather than in a release note
 on purpose. `VLC-E-2` says an incomplete citation is worse than none; a

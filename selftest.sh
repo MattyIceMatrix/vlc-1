@@ -76,7 +76,7 @@ for m in flip-byte drop-interior truncate-tail drop-loss-decl drop-coverage reba
 	else bad "A.x $m -> L$got: the checker did not notice"; fi
 done
 
-hr; echo "2b. MECHANISMS -- every chain mechanism and produced-count kind, not only the one the examples use"
+hr; echo "2b. MECHANISMS -- every integrity mechanism and produced-count kind, not only the one the examples use"
 # Section 2 runs its mutations against one adapter. These run the ones that
 # apply against the observer prefix chain, and exercise the chain mechanism and
 # produced-count kinds no worked example reaches. Writing them found EXT-013.
@@ -100,11 +100,12 @@ if [ -f "$KW" ]; then
 fi
 MC=$(mktemp -d)
 python3 examples/mechanism_cases.py "$MC" | tr -d '\r' > "$MC/cases.txt"
-while read -r LOG AD REQ EXPECT MODE; do
-  GOT=$($C --log "$LOG" --adapter "$AD" --json 2>/dev/null \
+while read -r LOG AD REQ EXPECT MODE ANCHOR; do
+  # ANCHOR (optional): an independently held value, --expect-head=HEX or --expect-root=HEX
+  GOT=$($C --log "$LOG" --adapter "$AD" $ANCHOR --json 2>/dev/null \
         | python3 -c "import json,sys;print(json.load(sys.stdin)['requirements']['$REQ']['status'])" \
         | tr -d '\r')
-  N=$(basename "$LOG" .jsonl)
+  N=$(basename "$LOG" .jsonl)${ANCHOR:+ (${ANCHOR%%=*})}
   if [ "$MODE" = "xfail" ]; then
     if [ "$GOT" = "$EXPECT" ]; then bad "$N: now detected ($REQ $GOT); remove its expected-failure marker"
     else xfail "$N: $REQ $GOT, should be $EXPECT -- disclosed in FINDINGS-EXTERNAL.md"; fi
@@ -1120,6 +1121,52 @@ U19F=$(mktemp); printf '%s\n' "$U19" | tr -d '\r' > "$U19F"
 # a crash inside the block must not read as a pass
 grep -q '^DONE|' "$U19F" || bad "section block U19 did not run to completion (a crash, or an API the checker lacks)"
 while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U19F"; rm -f "$U19F"
+
+hr
+echo "20. MERKLE TRANSPARENCY LOG -- merkle-tlog (1.4.3-draft, EXT-026)"
+# The mechanism's test vectors (valid, entry removed, altered, reordered, tail cut
+# against a held checkpoint, wrong root, signature) run with the other mechanisms in section
+# 2b (examples/mechanism_cases.py). Here: the checker's Ed25519 verifier against
+# RFC 8032 known answers and against signatures Go's note package made (the
+# Tessera capture), and the Annex A mutations on the live Tessera log.
+U20=$(python3 - <<'PYU'
+import json, subprocess, sys
+sys.path.insert(0, ".")
+import conformance as C
+def emit(msg, cond): print(("OK" if cond else "BAD") + "|" + msg)
+# RFC 8032 section 7.1, TEST 1 (empty message) and TEST 2 (one byte)
+for n, pub, msg, sig in (
+    (1, "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a", "",
+     "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"),
+    (2, "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c", "72",
+     "92a009a9f0d4cab8720e820b5f642540a2b27b5416503f8fb3762223ebdb69da085ac1e43e15996e458f3613d0f11d8c387b2eaeb4302aeeb00d291612bb0c00")):
+    p, m, s = bytes.fromhex(pub), bytes.fromhex(msg), bytes.fromhex(sig)
+    emit(f"Ed25519 verifies RFC 8032 test {n}", C.ed25519_verify(p, m, s))
+    emit(f"Ed25519 refuses RFC 8032 test {n} with one signature bit flipped",
+         not C.ed25519_verify(p, m, s[:40] + bytes([s[40] ^ 1]) + s[41:]))
+    emit(f"Ed25519 refuses RFC 8032 test {n} with S + L (non-canonical S)",
+         not C.ed25519_verify(p, m, s[:32] + (int.from_bytes(s[32:], "little") + C._ED_L).to_bytes(32, "little")))
+t = "examples/third-party/tessera-live"
+vk = open(f"{t}/log.vkey").read().strip()
+note = open(f"{t}/log/checkpoint").read()
+emit("the Tessera checkpoint's signature (Go, golang.org/x/mod/sumdb/note) verifies", C.open_signed_note(note, vk)[1] is None)
+emit("the Tessera checkpoint with its size edited does not", C.open_signed_note(note.replace("\n6\n", "\n7\n"), vk)[1] is not None)
+emit("the size-3 Tessera checkpoint verifies under the same key", C.open_signed_note(open(f"{t}/checkpoint.round1").read(), vk)[1] is None)
+def lvl(*extra):
+    p = subprocess.run(["python3", "conformance.py", "--log", "examples/third-party/tessera-live-full.jsonl",
+                        "--adapter", "adapters/tessera-live.json", "--json", *extra], capture_output=True, text=True)
+    return json.loads(p.stdout)["structural_level"]
+base = lvl()
+emit(f"the live Tessera log is structural L{base} under merkle-tlog (L1 expected; L0 under 1.4.2-draft)", base == 1)
+for m in ("flip-byte", "drop-interior", "truncate-tail"):
+    got = lvl("--mutate", m)
+    emit(f"Tessera log, {m}: L{got} (was L{base})", got < base)
+print("DONE|")
+PYU
+) || true
+U20F=$(mktemp); printf '%s\n' "$U20" | tr -d '\r' > "$U20F"
+grep -q '^DONE|' "$U20F" || bad "section block U20 did not run to completion"
+while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U20F"; rm -f "$U20F"
 
 hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"

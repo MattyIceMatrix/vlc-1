@@ -780,3 +780,26 @@ now declares the end marker `self_bound: true`, `head_field: "head"`.
 `selftest.sh` §17 now runs the EXT-022 attack against both: the old capture
 needs an independently held head to be caught, the sealed capture is caught on
 the log alone.
+
+## EXT-026 — a Merkle transparency log scored integrity L0, like logs with no binding
+
+*Source: the Trillian Tessera v1.0.4 live capture, 2026-09-30
+(`examples/third-party/tessera-live/`, capture run `run-20260930T112902Z`), scored
+as a positive control in #14. Fixed in 1.4.3-draft, Corrigendum 7.*
+
+Every integrity mechanism `conformance.py` could recompute was a hash chain. The
+Tessera log -- an RFC 6962 Merkle tree over the entries, published as C2SP
+tlog-tiles with an Ed25519-signed checkpoint, the shape Sigstore's Rekor v2 also
+writes -- had to be declared `none`, so it scored L0 with the agent logs in
+`THIRD-PARTY.md`, and the file with the refused `delete_file` entry removed
+scored exactly as the full one, although `verify_tlog.py` rejects it. The capture
+showed the gap by being the strongest log on integrity in the repository and
+scoring with the weakest. Fixed: `integrity.mechanism: "merkle-tlog"` recomputes
+the tree and requires the checkpoint's size and root to equal it (SPEC.md §4.1);
+`--expect-head` / `--expect-root` take held checkpoint roots; the checkpoint's
+signed-note Ed25519 signature is verified only when the adapter supplies the key,
+and otherwise reported as not performed and not credited. Tessera full L0 → L1;
+scrubbed L0 with VLC-L1-1 failed. The key that signed the capture's checkpoints was
+held by the job that wrote the entries, so the signature establishes nothing about
+independence (VLC-L5-1 still fails). Control: `selftest.sh` §2b (26 vectors) and
+§20; CI asserts the Tessera levels and scrubbed < full.

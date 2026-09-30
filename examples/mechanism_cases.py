@@ -62,10 +62,10 @@ def main(out):
                                             if k not in ("prev", "hash")}).encode())
     honest = recs + [end]
 
-    def case(name, log_recs, adapter, req, expect, mode="check"):
+    def case(name, log_recs, adapter, req, expect, mode="check", anchor=None):
         p = os.path.join(out, name + ".jsonl")
         write(p, log_recs)
-        cases.append((p, adapter, req, expect, mode))
+        cases.append((p, adapter, req, expect, mode) + ((anchor,) if anchor else ()))
 
     case("prev-field-honest", honest, pfa, "VLC-L1-1", "PASS")
     case("prev-field-interior-deleted",
@@ -221,8 +221,190 @@ def main(out):
     counted[-1]["produced"] = 6
     case("canonical-fields-end-marker-count-unhashed", counted, emca, "VLC-L1-1", "FAIL")
 
+    merkle_cases(out, case)
+
     for c in cases:
         print(" ".join(c))
+
+
+# --- merkle-tlog (1.4.3-draft, EXT-026) -------------------------------------
+# An RFC 6962 Merkle tree over the entries, closed by a C2SP checkpoint (origin,
+# size, root) in a signed note with an Ed25519 signature -- the shape Trillian
+# Tessera / Rekor v2 write (examples/third-party/tessera-live). Seven entries, so
+# the tree is not a power of two. The signing below is RFC 8032 section 5.1.6 on
+# the checker's own curve arithmetic; the verifier it exercises is checked
+# separately against RFC 8032's test vector 1 and against a signature made by Go's
+# note package (the Tessera capture), in selftest.sh.
+def _ed_sign(seed, msg):
+    sys.path.insert(0, os.path.join(HERE, ".."))
+    import conformance as c
+
+    def enc(pt):
+        zi = pow(pt[2], c._ED_P - 2, c._ED_P)
+        x, y = pt[0] * zi % c._ED_P, pt[1] * zi % c._ED_P
+        return (y | ((x & 1) << 255)).to_bytes(32, "little")
+
+    h = hashlib.sha512(seed).digest()
+    a = int.from_bytes(h[:32], "little")
+    a &= (1 << 254) - 8
+    a |= 1 << 254
+    pub = enc(c._ed_mul(a, c._ED_B))
+    r = int.from_bytes(hashlib.sha512(h[32:] + msg).digest(), "little") % c._ED_L
+    R = enc(c._ed_mul(r, c._ED_B))
+    k = int.from_bytes(hashlib.sha512(R + pub + msg).digest(), "little") % c._ED_L
+    return pub, R + ((r + k * a) % c._ED_L).to_bytes(32, "little")
+
+
+def merkle_cases(out, case):
+    import base64
+    b64 = lambda b: base64.b64encode(b).decode()
+    origin = "vlc-1.selftest/merkle"
+    seed, other = hashlib.sha256(b"vlc-1 merkle case key").digest(), hashlib.sha256(b"another key").digest()
+
+    def vkey(sd):
+        pub, _ = _ed_sign(sd, b"")
+        raw = b"\x01" + pub
+        kh = hashlib.sha256(origin.encode() + b"\n" + raw).digest()[:4].hex()
+        return f"{origin}+{kh}+{b64(raw)}"
+
+    def leaf(d):
+        return hashlib.sha256(b"\x00" + d.encode()).digest()
+
+    def mth(ls):
+        if len(ls) == 1:
+            return ls[0]
+        k = 1
+        while k * 2 < len(ls):
+            k *= 2
+        return hashlib.sha256(b"\x01" + mth(ls[:k]) + mth(ls[k:])).digest()
+
+    def checkpoint(datas, sd=seed):
+        root = mth([leaf(d) for d in datas])
+        body = f"{origin}\n{len(datas)}\n{b64(root)}\n"
+        _, sig = _ed_sign(sd, body.encode())
+        kh = bytes.fromhex(vkey(sd).split("+")[1])
+        note = body + "\n— " + origin + " " + b64(kh + sig) + "\n"
+        return {"class": "checkpoint", "origin": origin, "size": len(datas),
+                "root_hash": b64(root), "note": note}, root
+
+    def log(datas, sd=seed):
+        cp, root = checkpoint(datas, sd)
+        return [{"class": "entry", "index": i, "data": d} for i, d in enumerate(datas)] + [cp], root
+
+    base = {"name": "merkle-tlog-case", "record_class_field": "class", "marker_classes": [],
+            "non_event_classes": ["checkpoint"],
+            "integrity": {"mechanism": "merkle-tlog", "leaf_field": "data", "leaf_encoding": "utf-8",
+                          "index_field": "index", "entry_class": "entry",
+                          "end_marker": {"class": "checkpoint", "head_field": "root_hash",
+                                         "head_encoding": "base64", "size_field": "size",
+                                         "note_field": "note"},
+                          "verifier_key": vkey(seed), "documented": True,
+                          "primitive": "SHA-256, Ed25519", "primitive_documented": True},
+            "loss": {"mode": "ordinal", "ordinal_field": "index",
+                     "produced": {"kind": "field_of_end_marker", "field": "size"}},
+            "coverage": {"mode": "none"}, "policy": {"mode": "none"},
+            "independence": {"mode": "self_reported", "audited_process_can_write_records": True,
+                             "boundary_statement": "test vector"}}
+
+    def adapter(name, mod=None):
+        a = copy.deepcopy(base)
+        if mod:
+            mod(a)
+        p = os.path.join(out, f"merkle-{name}.adapter.json")
+        json.dump(a, open(p, "w"))
+        return p
+
+    sa = adapter("signed")
+    datas = ['{"event":"tool_call","tool":"t%d","decision":"%s"}\n' % (i, "deny" if i == 3 else "allow")
+             for i in range(7)]
+    honest, root7 = log(datas)
+    root3 = mth([leaf(d) for d in datas[:3]])
+
+    case("merkle-valid", honest, sa, "VLC-L1-1", "PASS")
+    case("merkle-valid-end", honest, sa, "VLC-L1-3", "PASS")
+    case("merkle-valid-produced", honest, sa, "VLC-L2-5", "PASS")
+    # removing any entry fails VLC-L1-1: with indices left as delivered (a gap) ...
+    case("merkle-entry-removed", [r for r in honest if r.get("index") != 3], sa, "VLC-L1-1", "FAIL")
+    # ... and with the survivors renumbered, so only the size and root can catch it
+    kept = [r for r in honest if r.get("index") != 3]
+    renum = [dict(r, index=i) if r["class"] == "entry" else r for i, r in enumerate(kept)]
+    case("merkle-entry-removed-renumbered", renum, sa, "VLC-L1-1", "FAIL")
+    alt = copy.deepcopy(honest)
+    alt[3]["data"] = alt[3]["data"].replace("deny", "allow")
+    case("merkle-entry-altered", alt, sa, "VLC-L1-1", "FAIL")
+    swp = copy.deepcopy(honest)
+    swp[2]["data"], swp[5]["data"] = swp[5]["data"], swp[2]["data"]
+    case("merkle-reordered", swp, sa, "VLC-L1-1", "FAIL")
+    case("merkle-tail-cut-checkpoint-kept", honest[:5] + [honest[-1]], sa, "VLC-L1-1", "FAIL")
+    case("merkle-tail-cut-checkpoint-dropped", honest[:5], sa, "VLC-L1-3", "FAIL")
+    # a tail cut resealed BY THE KEY HOLDER verifies on the log alone (as a
+    # rewritten chain does); a verifier holding the size-7 checkpoint refuses it
+    resealed, _ = log(datas[:5])
+    case("merkle-tail-cut-resealed", resealed, sa, "VLC-L1-1", "PASS")
+    case("merkle-tail-cut-resealed-vs-held-head", resealed, sa, "VLC-L1-1", "FAIL",
+         anchor="--expect-head=" + root7.hex())
+    case("merkle-tail-cut-resealed-vs-held-root", resealed, sa, "VLC-L1-1", "FAIL",
+         anchor="--expect-root=" + root7.hex())
+    case("merkle-valid-vs-held-head", honest, sa, "VLC-L1-1", "PASS", anchor="--expect-head=" + root7.hex())
+    # an earlier checkpoint held as --expect-root: the log must extend it
+    case("merkle-valid-extends-held-root", honest, sa, "VLC-L1-1", "PASS",
+         anchor="--expect-root=" + root3.hex())
+    rw = datas[:]
+    rw[1] = rw[1].replace("allow", "deny")
+    rewritten, _ = log(rw)
+    case("merkle-prefix-rewritten-resealed", rewritten, sa, "VLC-L1-1", "PASS")
+    case("merkle-prefix-rewritten-vs-held-root", rewritten, sa, "VLC-L1-1", "FAIL",
+         anchor="--expect-root=" + root3.hex())
+    # the signature: a changed signature, another key, and the checkpoint's fields
+    # recomputed for altered entries while the signed note is left as it was
+    bad_sig = copy.deepcopy(honest)
+    n = bad_sig[-1]["note"]
+    i = len(n) - 12                      # inside the signature, past the key hash
+    bad_sig[-1]["note"] = n[:i] + ("A" if n[i] != "A" else "B") + n[i + 1:]
+    case("merkle-signature-altered", bad_sig, sa, "VLC-L1-1", "FAIL")
+    other_key = adapter("other-key", lambda a: a["integrity"].__setitem__("verifier_key", vkey(other)))
+    case("merkle-wrong-verifier-key", honest, other_key, "VLC-L1-1", "FAIL")
+    forged = copy.deepcopy(alt)
+    forged[-1]["root_hash"] = b64(mth([leaf(r["data"]) for r in alt[:-1]]))
+    case("merkle-altered-fields-recomputed-note-kept", forged, sa, "VLC-L1-1", "FAIL")
+
+    # a wrong root: a checkpoint whose size is right and whose root is not the
+    # tree's, signed by the key holder (fields and note agree), and unsigned
+    wrong = hashlib.sha256(b"not the root").digest()
+    wr = copy.deepcopy(honest)
+    wbody = f"{origin}\n{len(datas)}\n{b64(wrong)}\n"
+    _, wsig = _ed_sign(seed, wbody.encode())
+    wr[-1].update(root_hash=b64(wrong), note=wbody + "\n— " + origin + " " +
+                  b64(bytes.fromhex(vkey(seed).split("+")[1]) + wsig) + "\n")
+    case("merkle-wrong-root-signed", wr, sa, "VLC-L1-1", "FAIL")
+
+    # without a verifier key the same forgery (note dropped) passes on the log
+    # alone -- an unsigned checkpoint is no stronger than a keyless chain -- and
+    # fails against the held head
+    def unsigned(a):
+        del a["integrity"]["verifier_key"]
+        del a["integrity"]["end_marker"]["note_field"]
+    ua = adapter("unsigned", unsigned)
+    forged_u = [dict(r) for r in forged]
+    del forged_u[-1]["note"]
+    case("merkle-unsigned-altered-resealed", forged_u, ua, "VLC-L1-1", "PASS")
+    case("merkle-unsigned-altered-resealed-vs-held-head", forged_u, ua, "VLC-L1-1", "FAIL",
+         anchor="--expect-head=" + root7.hex())
+    wu = [dict(r) for r in honest]
+    wu[-1] = {k: v for k, v in wu[-1].items() if k != "note"}
+    wu[-1]["root_hash"] = b64(wrong)
+    case("merkle-wrong-root-unsigned", wu, ua, "VLC-L1-1", "FAIL")
+    # a signed note with no verifier key: the tree is checked, the signature is
+    # not verified and not credited (the report says so)
+    na = adapter("note-no-key", lambda a: a["integrity"].pop("verifier_key"))
+    case("merkle-valid-note-unverified", honest, na, "VLC-L1-1", "PASS")
+    # mapping preconditions: a field a later requirement reads must be bound, and
+    # every record before the checkpoint must be a leaf
+    un = adapter("unanchored", lambda a: a["loss"].__setitem__("ordinal_field", "seq"))
+    case("merkle-unanchored-read-field", honest, un, "VLC-L1-1", "FAIL")
+    stray = copy.deepcopy(honest)
+    stray[4]["class"] = "checkpoint"
+    case("merkle-interior-record-relabelled", stray, sa, "VLC-L1-1", "FAIL")
 
 
 if __name__ == "__main__":
