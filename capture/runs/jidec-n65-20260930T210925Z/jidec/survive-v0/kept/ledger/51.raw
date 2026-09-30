@@ -1,0 +1,23 @@
+# tsugi-external-attestation-v1: Agenstry's published observation of gate.horizonshield.dev (agent card, JWS, A2A liveness), fetched 2026-09-20T14:53:53.537Z
+
+**Status:** a citation of a third party's published observation, anchored so its state at this time cannot later be disputed by anyone, the operator included. The third party neither wrote nor signed this record; the bytes at the URL are theirs, this record is the operator's SHA-256 of those bytes and a verbatim copy of the fields named below. It is not a witness observation under conduct-v1.1 section 11.4 (unsigned, not drawn) and is never counted toward a quorum.
+
+**Source:** https://agenstry.com/api/agents/gate.horizonshield.dev
+**Fetched at:** 2026-09-20T14:53:53.537Z
+**Bytes sha256:** 97db182a353fa03162ec54766eb617e61ceacfa757e599a51b5c97cb4cdcfe6d (4940 bytes)
+**Parsed as:** JSON
+
+**Fields read from the bytes (as served, copied, not judged):**
+- version: "0.4.7"
+- signed: true
+- signature_valid: null
+- stats.last_checked: "2026-09-19T23:01:24.136901"
+- stats.checks_ok: 43
+- stats.checks_total: 43
+- stats.uptime_pct: 100
+
+**Refers to:** TSUGI incident chain sha256 6d259ba9bfe2869fdc0830fb8d894ed52503da7d7e06454897cccc9f5c2d0efa (JIDEC entry 50)
+
+**Establishes:** that bytes with the sha256 above were served at the source URL at the fetched time, and that they carried exactly the field values listed; and, once anchored, that this was so no later than the Bitcoin block of the anchoring entry.
+
+**Does not establish:** the third party's method, or that its fields are true of the subject; that the third party observed the deployment current at the fetched time (its own timestamps inside the bytes say what it saw and when); the meaning of a null or absent field beyond that it was null or absent; anything not inside the bytes.

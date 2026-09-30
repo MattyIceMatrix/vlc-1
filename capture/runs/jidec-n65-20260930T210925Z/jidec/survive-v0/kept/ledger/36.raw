@@ -1,0 +1,13 @@
+schema: nenrin-ring-reimpl-match-v1-correction
+date: 2026-09-06
+corrects: JIDEC entry 34, claim sha256 fad6d00a25281102711573b151b321bc13b28c625fe65807c5eb3a12a04e393c, schema nenrin-ring-reimpl-match-v1, Bitcoin block 965627
+method: the corrected entry is not edited; this record is appended and cites it, and both stay readable
+phrase_1: "written from the spec alone" (the claim line of entry 34)
+narrowed_1: the specification's Layer 3 sketch names 11 of a ring's 20 fields and does not state the canonical form; the remaining fields (first_instant, last_instant, instants_by_status, instants_by_consent_source, record_sha256_first, record_sha256_last, witness_identities, prev_ring, recompute) and the byte rules were taken by the implementer from the published ring files in mcp-conduct-register, read before the reimplementation was written
+phrase_2: "implementation_2_source_seen: none of implementation_1 (implementer's statement)"
+narrowed_2: in a recompute earlier the same day (reported 17:49 JST), the implementer cloned mcp-conduct-register, executed scripts/make_ring.py --verify against the eight rings as a black box, and read its docstring header for the specification hash it cites; the body of make_ring.py, the logic that turns history entries into ring fields, was not read before or during the reimplementation (implementer's statement)
+what_was_blind: the byte comparison; the rebuilt bytes were not checked against the eight published rings until the verify run reported match or mismatch
+what_stays: the eight byte-identical rings, their eight sha256 values, the specification and implementation hashes, and the nested key-order seam; none of these depends on the two phrases
+source_of_narrowing: the implementer's own account in Section 4.2 of papers/nenrin-reproducibility/manuscript_v0.1.md, github.com/ogasurfproject-jpg/horizon-shield, his commit 7dc5bff8, on main by merge e51feb96, written after the operator's review found the two phrases broader than the record supports
+also_appended: mcp-conduct-register README, 2026-09-06 correction line under the 2026-09-05 update
+limits: this record narrows two statements of provenance; it changes no hash and no result

@@ -1,0 +1,13 @@
+{
+  "n": 41,
+  "work": "NENRIN witness batch (1 records)",
+  "claim_sha256": "5c52a8a546b1ae7b830d492a7248eea3f2ae16be70105d9c1f6cb97657808fc3",
+  "record_canonical": "{\"schema\":\"nenrin-witness-batch-v1\",\"anchored_at\":\"2026-09-12T00:30:46.283Z\",\"count\":1,\"records\":[{\"sha\":\"9e058efa16789bb1911eb237a160f7c3bcebc520ba3ee4d74f6d469d02648eb8\",\"purpose\":\"a2a-conduct-walk-v1: https://api.babyblueviper.com/a2a\",\"witness_name\":\"HORIZON SHIELD (The HORIZ音s株式会社)\",\"vantage\":\"operator workstation, Japan, residential network\",\"signed\":false}]}",
+  "schema": "v0-plain",
+  "created_at": "2026-09-12T00:30:46.776Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 966587,
+  "block_time": "2026-09-12 01:02 UTC",
+  "stamped_at": "2026-09-12T01:43:39.753Z",
+  "anchored_by": "schedule"
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "jidec-head-v1",
+  "n": 66,
+  "head": "955780842e368df7232cc27ad1d47e224c5b9264ad9092c40ed234f4ba21011e",
+  "root": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain": "jidec-chain-v1",
+  "prev_entry_sha256": "955780842e368df7232cc27ad1d47e224c5b9264ad9092c40ed234f4ba21011e",
+  "entry_sha256": "a3fe6a49f37dbc2d74957ce6bdcea79aa66039384fc19b87934b251309799c6f",
+  "recipe": "entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})); canon = keys sorted, separators , and : without spaces, non-ASCII escaped (json.dumps sort_keys=True, separators=(',',':'), ensure_ascii=True); an absent schema or created_at is omitted, never null; entry 1 links to 64 zeros",
+  "fields": [
+    "n",
+    "schema",
+    "claim_sha256",
+    "created_at",
+    "prev_entry_sha256"
+  ],
+  "marker_recipe": "marker entry_sha256 = sha256(canon({n, schema: \"jidec-head-v1\", prev_entry_sha256: head, head})), the same canon as entries; prev_entry_sha256 and head are both the last entry_sha256",
+  "marker_fields": [
+    "n",
+    "schema",
+    "prev_entry_sha256",
+    "head"
+  ],
+  "export": "https://ledger.horizonshield.dev/ledger/export.jsonl",
+  "anchored_in": "the head as it stood is written into each daily nenrin-witness-batch-v1 entry (ledger_head) and, at the end of any daily run that added entries, into a nenrin-head-checkpoint-v1 entry with the end marker hash; their claim_sha256 are stamped to Bitcoin; compare a head you hold with the one a stamped entry carries",
+  "does_not_establish": [
+    "that every submission the ledger received was appended; the chain covers what was appended",
+    "that the head served now equals a head you did not obtain independently; hold one, or read one from a stamped batch"
+  ]
+}

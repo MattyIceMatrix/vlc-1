@@ -1,0 +1,9 @@
+# HORIZON SHIELD commitment 0001, 2026-09-25: a decision rule fixed before the offer it will be applied to (hs-commitment-v0)
+
+**Commits to:** record sha256 c92bf8868a5793e86a93c3351bed00eed7f853eff54437dbcc2e4242576b75c3 (SHA-256 of a one-line context and the canonical JSON bytes of a signed rule record, signatures excluded, so signing does not change it).
+
+**Held by:** The HORIZONs Co., Ltd. (horizonshield.dev). The bytes are disclosed to the counterparty when the decision made under the rule is verified; anyone given them recomputes this sha.
+
+**Establishes:** that a rule record with exactly this sha existed no later than the Bitcoin block this entry is anchored to, so a later decision can show its rule was fixed before the offer it decides on.
+
+**Does not establish:** what the rule says until it is disclosed; that the rule is fair; that any decision followed it (a later decision record proves or fails that on its own).

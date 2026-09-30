@@ -1,0 +1,13 @@
+{
+  "n": 40,
+  "work": "NENRIN witness batch (1 records)",
+  "claim_sha256": "2abaf342ddfbc9704647199e599e4a5222e3afc05a04df41d7647fe148f03b8b",
+  "record_canonical": "{\"schema\":\"nenrin-witness-batch-v1\",\"anchored_at\":\"2026-09-11T00:30:32.040Z\",\"count\":1,\"records\":[{\"sha\":\"36f206cadb498e23ed360560b48ae1ac0925f46ec0ce4c95d4e92d0033935b55\",\"purpose\":\"nenrin-instant-commitment-v1: w2959\",\"witness_name\":\"gate.horizonshield.dev\",\"vantage\":\"cloudflare-worker\",\"signed\":false,\"mode\":\"commitment\"}]}",
+  "schema": "v0-plain",
+  "created_at": "2026-09-11T00:30:32.476Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 966431,
+  "block_time": "2026-09-11 01:17 UTC",
+  "stamped_at": "2026-09-11T02:28:43.246Z",
+  "anchored_by": "schedule"
+}

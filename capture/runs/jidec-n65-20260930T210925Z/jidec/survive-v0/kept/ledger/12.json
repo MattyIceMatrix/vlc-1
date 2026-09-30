@@ -1,0 +1,12 @@
+{
+  "n": 12,
+  "work": "外壁塗装 カナリア固定入力",
+  "claim_sha256": "ea965b42519c4a5ce74ce5de65a5933098a0e2b2bbf415e991777ed8240e502f",
+  "record_canonical": "{\"algorithm_commit\":\"cf0b0d56ecbf851388f4cfb16d6ecf5fda782824\",\"algorithm_url\":\"https://github.com/ogasurfproject-jpg/horizon-shield/tree/cf0b0d56ecbf851388f4cfb16d6ecf5fda782824/workers/hs-pdf-gen\",\"input_sha256\":\"efcabaaf4f659c8265cf6e930e4ac7a88152da723778b42ad79ffdf85ea3b26c\",\"issued_at\":\"2026-08-02T06:25:02.776Z\",\"pdf_sha256\":\"2bc3ae6e5ae0b6a0ee2b27edbf4d052dba04e418abfb5bf96f66a63f85438380\",\"reference_bundle_sha256\":\"1b014a546a43bdffde9f1d5c3443c7dff9b277bee82e0ea844d682c7ec7159d4\",\"reference_bundle_version\":\"meisai-bench@meisai-layer v0.3\",\"result_sha256\":\"0962ed61806da6cc344b7dc733fb1aac1ed2fbc7e8571a6434b77392bea5052c\",\"schema\":\"jidec-claim-v1\",\"thresholds_sha256\":\"a70d1afcd2a1c250585fbd705668b6d4b2135992da142c6ced5cdc556d53b187\",\"verifier_recipe_url\":\"https://hs-ledger.oga-surf-project.workers.dev/verify/{n}\",\"work_id\":\"外壁塗装 カナリア固定入力\"}",
+  "schema": "v1",
+  "created_at": "2026-08-02T06:25:03.053Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 960689,
+  "block_time": "2026-08-02 06:53 UTC",
+  "stamped_at": "2026-08-02T09:24:26.959Z"
+}

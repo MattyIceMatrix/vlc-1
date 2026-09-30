@@ -1,0 +1,136 @@
+# Correction to Notice #7: Two Statements About JIDEC Were Published Without Verification
+
+**Issued:** 2026-07-26 (JST) by Toshikatsu Oga (大賀俊勝), The HORIZONs Inc., ORCID 0009-0000-9180-903X.
+**Corrects:** JIDEC ledger entry #7, SHA-256
+`47e938b41c31d4828cd0dad9f4e189c097348dfb366464913f4943048c13da1f`.
+**Anchor target:** the SHA-256 of this document is appended to the JIDEC ledger and timestamped to the
+Bitcoin blockchain via OpenTimestamps.
+
+Notice #7 corrected statements in four working papers. Two of its items were themselves wrong. They are
+withdrawn here, and the passage that item C4 withdrew is reinstated.
+
+This is not a stylistic revision. Notice #7 asserted facts about the constitution and operation of an
+organisation, and those facts were not checked with the organisation before publication. They were
+inferred from technical evidence that does not support them.
+
+---
+
+## W1. Withdrawal of item U1 of Notice #7
+
+**Notice #7 stated:** "P2 §4 — JIDEC is operational as of 2026-07-26 ... As of 2026-07-26 it is
+operational."
+
+**This is withdrawn.** It conflates two distinct things.
+
+The general incorporated association (一般社団法人) JIDEC **has not been established.** Its formation was
+originally planned for June 2026 and has been delayed. As at the date of this notice it operates nothing.
+
+What became operational on 2026-07-26 is a **ledger service** running at
+`hs-ledger.oga-surf-project.workers.dev`, whose `/health` response identifies itself as
+`"ledger": "JIDEC"`. The measurements reported in Notice #7 — seven entries, six confirmed in the
+Bitcoin blockchain, the discovery routes, the read-only protocol interface — are measurements of that
+service and remain accurate as such. They are not evidence that the association exists.
+
+Readers should not take Notice #7 as establishing that a JIDEC organisation exists, is constituted, or
+operates anything.
+
+## W2. Withdrawal of item C4 of Notice #7, and reinstatement of the passage it withdrew
+
+**Notice #7 stated:** "C4. P2 §4 — 'institutionally independent body' is withdrawn ... JIDEC is
+operated by The HORIZONs Inc., the same company that operates the commercial assessment service. It is
+not institutionally independent, and the phrase is withdrawn."
+
+**This is withdrawn in its entirety, and the withdrawal it announced is reversed.**
+
+The assertion that JIDEC is operated by The HORIZONs Inc. was not verified with any party and is not
+correct. The author of Notice #7 is not a director of the association and does not manage it.
+
+The passage in P2 §4 that item C4 purported to withdraw reads: "The certifying function is assigned to
+JIDEC, an institutionally independent body planned for operation from June 2026, whose role is
+record-keeping neutrality rather than commercial gain." That passage describes a body **planned for**
+operation, and P2's own revision note states that JIDEC "is not yet operational as of this writing."
+Both statements were accurate when published and remain accurate now, save that the planned date has
+passed and formation is delayed. **P2 §4 required no correction. It stands as published.**
+
+## Why this happened
+
+Notice #7's two erroneous items were produced by inference, not by inquiry. The reasoning ran: the
+ledger service runs on the same cloud account as the commercial service's other components, and the
+security contact published for it is the author's own address; therefore the same company operates
+JIDEC.
+
+That inference does not hold. Shared hosting, a shared account, and a shared contact address are facts
+about infrastructure. They are not facts about legal constitution, control, or governance, and the one
+cannot be derived from the other. No party was asked before the claim was published.
+
+The general form of the failure is worth stating because it is not confined to this case: **facts about
+organisations, contracts, and appointments cannot be measured from a system.** They can only be obtained
+from the people concerned. Every other item in Notice #7 was derived from bytes that a reader can fetch
+and hash. These two were not, and they are the two that were wrong.
+
+## What in Notice #7 is unaffected
+
+The following items of Notice #7 were derived from measurement of published artifacts and are not
+altered by this notice:
+
+- C1 and C2, concerning §3.7 and §5.3 of P1. Both are readings of that paper's own published text.
+- C3, the declared scope of the audit hash input.
+- The corrected dataset statistics: mean overcharge ¥1,009,500, minimum ¥350,000, maximum ¥2,800,000,
+  sixteen prefectures, twenty cases, maximum rate 84.9%. These were recomputed from the anchored bytes
+  of the twenty published receipts and can be recomputed by anyone.
+- The withdrawal of the "145x" return-on-fee figure, which could not be derived from the quantities
+  published alongside it.
+- The correction concerning the PTKA declaration's OpenTimestamps proof, which contained only pending
+  calendar attestations until 2026-07-26.
+- U2, concerning published source code, and U3, concerning P3.
+- The note on the naming conflict between the `audit_hash` field in the published receipts and the
+  audit hash defined in P1.
+- S1, concerning the scope of "reproducible and auditable" in P4.
+
+## What this notice does not claim
+
+It does not claim that the JIDEC association will be established, or when. No item here is a statement
+of future intent; this document is anchored to a public ledger and cannot be amended.
+
+It does not state who operates the ledger service described in W1. That question is not answered here
+and should not be inferred from this notice, from the service's hosting, or from its published contact
+address.
+
+It does not claim that Notice #7's remaining items are exhaustive, and it does not claim that this
+notice is exhaustive either.
+
+---
+
+## 日本語要約
+
+本通知は、台帳エントリ#7（sha256 `47e938b4…`）に含まれていた**2つの事実誤認を撤回する**ものである。
+
+**W1。**#7 は「JIDEC は 2026-07-26 に稼働した」と書いた。**撤回する。**
+**一般社団法人 JIDEC は設立されていない。**設立は当初 2026年6月の予定で、遅れている。本通知の時点で
+何も運営していない。2026-07-26 に稼働したのは `hs-ledger.oga-surf-project.workers.dev` で動く
+**台帳サービス**であって、法人ではない。#7 が挙げた実測値（7件、うち6件 Bitcoin 確定、等）は
+そのサービスの実測として正しいが、**法人が存在することの証拠ではない。**
+
+**W2。**#7 は「論文 P2 §4 の "institutionally independent body" を撤回する。JIDEC は同じ会社が
+運営しているので独立していない」と書いた。**これを全部撤回し、撤回そのものを取り消す。**
+**同じ会社が運営しているという記述は、どこにも確認せずに書かれたもので、正しくない。**
+#7 の筆者は当該法人の理事ではなく、経営もしていない。
+P2 §4 は「**planned for** operation from June 2026」と書いており、改訂注記も「まだ稼働していない」と
+明記している。**発表時も現在も正確である。設立予定日を過ぎて遅れているという点を除き、P2 §4 に
+訂正は要らない。そのままで正しい。**
+
+**なぜ間違えたか。**台帳サービスが商用サービスと同じクラウドアカウントで動いていること、公開されている
+連絡先が筆者のアドレスであることから、「同じ会社が運営している」と**推論した**。
+**この推論は成り立たない。**ホスティングやアカウントや連絡先はインフラの事実であって、
+法人の設立・支配・統治の事実ではない。**そして、誰にも確認しなかった。**
+
+**一般化して書いておく。組織・契約・人事の事実は、システムからは測れない。関係者に聞くしかない。**
+#7 の他の項目は、読者が取得してハッシュできるバイト列から導いたものである。**この2つだけが
+そうではなかった。そして、間違っていたのはその2つだった。**
+
+**#7 のうち影響を受けない項目**：P1 §3.7 と §5.3 の指摘、監査ハッシュの範囲、データセット統計の訂正
+（平均 ¥1,009,500・最小 ¥350,000・最大 ¥2,800,000・16県）、「145倍」の撤回、PTKA の証明に関する訂正、
+公開ソースに関する更新、`audit_hash` の名前の衝突、P4 の範囲に関する記述。**いずれもそのまま有効である。**
+
+**本通知が主張しないこと**：法人が設立されるかどうか、いつかは述べない。将来の意思表明は含まない。
+**そして、台帳サービスの運用主体が誰であるかは述べない。**ホスティングからも連絡先からも推論するな。

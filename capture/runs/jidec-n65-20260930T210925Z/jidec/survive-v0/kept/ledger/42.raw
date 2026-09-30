@@ -1,0 +1,47 @@
+# souba-db dataset release, content-anchored (souba-dataset-v1)
+
+**Status:** a dataset release declaration, anchored to the JIDEC ledger the same way the NENRIN records are, and cited, never edited, once anchored. This record carries the SHA-256 of the exact bytes of the fair-price dataset that HORIZON SHIELD's price tools read, and fixes the time at which those bytes were live, on an anchor the issuer does not own.
+
+## 1. What this binds
+
+HORIZON SHIELD's `audit_estimate` returns, with every verdict, a claim carrying `dataset_sha256`: the SHA-256 of the `souba-db.json` bytes used for that verdict. Until this record, that hash pointed only at bytes the issuer serves from its own domain, and the issuer could replace them silently and claim the new bytes were always the ones in force. This record moves the time coordinate of the dataset off the issuer's domain and onto Bitcoin. After it is appended and stamped, the issuer cannot backdate a change to the dataset, and cannot claim a later dataset is the one that was live at this block. Time forgery is bounded by block height. Physics, not policy.
+
+## 2. The fields
+
+    version        2.2.0
+    updated_at     2026-08-17
+    updated_by     大賀俊勝（建設実務経験30年）監修 / 2026年6月 玄関ドア カバー工法 松竹梅追加(公開相場複数ソース照合) / 2026年8月 面格子5項目・建具パネル交換1項目を追加(公開相場3ソース照合、加盟店実案件1件で検算)。total_itemsの実数不一致(176→実183)も同時に是正。
+    dataset_url    https://shield.the-horizons-innovation.com/data/souba-db.json
+    dataset_sha256 85418e4af9d3d727af2eb1c95566aa56f21d8ae1046601bc259baa302515680d
+
+Public sources the dataset is cross-checked against:
+
+    ヌリカエ 2025年12月施工データ2,655件
+    リショップナビ 2026年2〜3月集計
+    テイガク 2026年屋根リフォーム単価表
+    リフォームガイド 2026年最新版
+    タカラスタンダード リフォーム実例集
+    SHUKEN Re 2026年時点実績
+    シロアリ駆除業者人気ランキング 2026年4月205社調査
+    経済調査会『積算資料ポケット版 リフォーム編 2026』
+    ミツモア 面格子取り付け費用 2026年版(本体・工事費の分離データ)
+    リフォマ 面格子の取付・修理の費用相場 2026年版
+    創建リフォーム監修 面格子後付け費用 2026年版
+
+## 3. Fetch the bytes yourself
+
+The verification needs no trust in HORIZON SHIELD. Fetch the dataset, hash it, and confirm it equals the field above:
+
+    curl -s https://shield.the-horizons-innovation.com/data/souba-db.json | shasum -a 256
+
+The result must equal `dataset_sha256`. Then find that same hash in this anchored record and read the Bitcoin block height the ledger entry is stamped to. The issuer touches none of those three steps: the bytes are fetched from the wire, the hash is recomputed by the reader, and the block is written by Bitcoin. A verdict whose `claim.dataset_sha256` does not equal an anchored release is a coordinate the prover chose, and is not the dataset being served here.
+
+## 4. The honest boundary
+
+This record anchors the dataset's content and its time. It does not certify that the prices in the dataset are correct. Correctness rests on the named public sources and on member-store cases, which a reader checks independently. The anchor makes the dataset non-repudiable, not true. A later dataset is a later entry that cites this one, never an edit of it.
+
+## 5. Self-application
+
+The issuer is bound by the same rule as every subject on this ledger. The fair-price adjudication is checked against the dataset whose SHA-256 is anchored here, and the join guard (`nenrin-join-v1`) derives the cost category from the estimate's own line items, so neither the price bytes nor the coordinate they are read at is chosen by the party being verified. The operator is a subject, not an exception.
+
+**The SHA-256 of this document is anchored to the JIDEC ledger and stamped to Bitcoin. After anchoring, this record cannot be altered. Corrections are later entries that cite this one.**

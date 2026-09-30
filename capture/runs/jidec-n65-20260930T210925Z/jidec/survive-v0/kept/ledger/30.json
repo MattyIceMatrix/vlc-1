@@ -1,0 +1,12 @@
+{
+  "n": 30,
+  "work": "NENRIN localheaders refusal: peers_disagree at height 12, 127.0.0.1:28901 vs 127.0.0.1:28902, hashes 00018351cef26ed0.. and 0001ea441405948b... network: test network (magic 0b11fa09, params test): not the real chain. mode: window from manifest. peers finished 1, dropped 0. no header bytes were written; this record was. schema nenrin-localheaders-refusal-1. a contradiction between sources is evidence and is published, not chosen away.",
+  "claim_sha256": "07830db2cf32aaee74b77c3cc563318515d276a505288ae574a3666f7defcf26",
+  "record_canonical": "{\n \"bytes_written\": false,\n \"chain\": \"test\",\n \"checkpoints\": {},\n \"courier\": \"bitcoin p2p getheaders\",\n \"disagreement\": {\n  \"common_headers_before\": 12,\n  \"hash_a\": \"00018351cef26ed0f846d1d0bfce7bcea0163af2ce1cb142679645ee5ba2a371\",\n  \"hash_b\": \"0001ea441405948b1361460320f0db2f617ac2a4807ea112336b324fcaf99c52\",\n  \"height\": 12,\n  \"peer_a\": \"127.0.0.1:28901\",\n  \"peer_b\": \"127.0.0.1:28902\"\n },\n \"height\": 12,\n \"min_peers\": 2,\n \"mode\": \"window from manifest\",\n \"network\": \"test network (magic 0b11fa09, params test): not the real chain\",\n \"note\": \"a refusal is evidence. no header bytes were written; this record was. a contradiction between sources is exposed here by name and height so that anyone can query it, not only read about it.\",\n \"peers_failed\": {},\n \"peers_finished\": {\n  \"127.0.0.1:28901\": {\n   \"headers\": 32,\n   \"tip_height\": 31\n  }\n },\n \"peers_wanted\": 2,\n \"reason\": \"peers disagree over the common window: 127.0.0.1:28901 vs 127.0.0.1:28902 at height 12.\",\n \"reason_code\": \"peers_disagree\",\n \"refused_at\": 1700100000,\n \"schema\": \"nenrin-localheaders-refusal-1\",\n \"start_height\": 0\n}",
+  "schema": "v0",
+  "created_at": "2026-09-04T10:11:49.548Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 965464,
+  "block_time": "2026-09-04 10:38 UTC",
+  "stamped_at": "2026-09-04T11:23:35.507Z"
+}

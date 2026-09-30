@@ -1,0 +1,13 @@
+{
+  "n": 58,
+  "work": "NENRIN witness batch (2 records)",
+  "claim_sha256": "bae0ba767b2079ef5a923cf2089edee993f2be669b105d34ed69546fae61c0a8",
+  "record_canonical": "{\"schema\":\"nenrin-witness-batch-v1\",\"anchored_at\":\"2026-09-28T00:30:18.840Z\",\"count\":2,\"ledger_head\":{\"chain\":\"jidec-chain-v1\",\"n\":57,\"entry_sha256\":\"87613590ae46fe98c85925be2bbf8aafe4262634ffa69a45f94081502f8cc7d4\"},\"records\":[{\"sha\":\"8cde797444d329971b91c924a57df1171a31e5cf81ba51d61724122d71ed6a3e\",\"purpose\":\"a2a-conduct-walk-v1: https://gate.horizonshield.dev/a2a\",\"witness_name\":\"pipavlo82\",\"vantage\":\"Pavlo-controlled Windows PC; Codex-assisted; Python urllib\",\"signed\":false,\"counted\":false},{\"sha\":\"eea3be5b34f46e4fb6c6eee89b9f5f1019e2b8b19c6106f2b660705550cbd2b4\",\"purpose\":\"a2a-conduct-walk-v1: https://gate.horizonshield.dev/a2a\",\"witness_name\":\"pipavlo82\",\"vantage\":\"Pavlo-controlled Windows PC; Codex-assisted; Python urllib\",\"signed\":false}]}",
+  "schema": "v0-plain",
+  "created_at": "2026-09-28T00:30:18.887Z",
+  "ots_status": "confirmed",
+  "bitcoin_block": 968914,
+  "block_time": "2026-09-28 01:22 UTC",
+  "stamped_at": "2026-09-28T01:54:16.636Z",
+  "anchored_by": "schedule"
+}
