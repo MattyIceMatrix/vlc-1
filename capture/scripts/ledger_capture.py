@@ -132,10 +132,14 @@ def main():
                        content_hash_matches_index=ch == claimed.get("content_hash"),
                        content_hash_matches_entry_doc=ch == served.get("content_hash"),
                        index_and_doc_chain_agree=served == claimed,
+                       chain_block_differences=None if served == claimed else {
+                           k: {"index": claimed.get(k), "entry_doc": served.get(k)}
+                           for k in sorted(set(claimed) | set(served)) if claimed.get(k) != served.get(k)},
+                       chain_backfilled_at=doc.get("chain_backfilled_at"),
+                       chain_note=doc.get("chain_note"),
                        prev_head_matches_recomputed_predecessor=claimed.get("prev_head_hash") == prev,
                        head_recomputes=V.link(ch, prev) == claimed.get("head_hash"),
-                       backfilled=any("backfill" in str(v).lower() for v in (doc.get("label"), e.get("label"),
-                                                                            e.get("title"), claimed.get("note"))))
+                       )
             prev = V.link(ch, prev)
         except Exception as ex:  # noqa: BLE001
             row.update(error=str(ex))

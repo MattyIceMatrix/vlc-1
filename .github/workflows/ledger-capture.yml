@@ -30,9 +30,11 @@ jobs:
       - name: cross-check with invinoveritas's own recompute script
         continue-on-error: true
         run: |
+          set +e
           git clone -q --depth 1 https://github.com/babyblueviper1/invinoveritas /tmp/inv
           echo "invinoveritas commit $(git -C /tmp/inv rev-parse HEAD)" > out/ledger/their-recompute.txt
-          timeout 600 python /tmp/inv/integrations/verify-proof/python/recompute_ledger.py --json > /tmp/theirs.json; echo "exit $?" >> out/ledger/their-recompute.txt
+          timeout 600 python /tmp/inv/integrations/verify-proof/python/recompute_ledger.py --json > /tmp/theirs.json 2> /tmp/theirs.err; echo "exit $? (0 = all verified, 1 = a failure, 124 = timed out)" >> out/ledger/their-recompute.txt
+          tail -5 /tmp/theirs.err >> out/ledger/their-recompute.txt
           python - <<'PY' >> out/ledger/their-recompute.txt
           import json
           d = json.load(open('/tmp/theirs.json'))
