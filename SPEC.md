@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Document | VLC-1 |
-| Version | 1.4.3-draft |
+| Version | 1.4.4-draft |
 | Date | 2026-09-12 |
 | Revision history | Annex F |
 | Status | Draft for public comment. Free to implement, free to cite, no licence required. |
@@ -291,6 +291,27 @@ checker, not a finding about the log.
   to anyone independent of the log's operator: a rewrite by the key holder is
   detectable only against a checkpoint held by someone else, exactly as for a
   chain (and independence remains a VLC-L5-1 question).
+
+- **`sha256-hex-join`** *(added in 1.4.4-draft, Corrigendum 8, EXT-027; draft;
+  contributed in #17)*: a chain over a per-record digest the log already carries.
+  Each record's hash is SHA-256 of the record's `content_field` value, the
+  adapter's `separator`, and the lower-case hex of the previous head, as UTF-8
+  text; the root is the adapter's constant. A `content_field` value that is not
+  64 lower-case hex characters SHALL make the record unrecomputable. Where the
+  adapter maps `prev_field`, it SHALL equal the recomputed predecessor head.
+  Because the hash covers the digest only, the record class is outside the
+  binding: with a class field mapped, every record before the end marker SHALL
+  carry the adapter's `link_class`, and only the final record MAY carry the
+  end-marker class, or VLC-L1-1 fails. The verifier recomputes the chain over
+  the delivered digests; whether each digest equals the hash of its full record
+  is outside this check unless the records are delivered.
+
+  *End marker in a JSON string.* Where `end_marker.content_json_field` is set,
+  the marker's head is read from that member parsed as JSON, under the same
+  rules as the log itself: a duplicate member name or a non-finite number makes
+  the delivered set unreadable. The checker does not verify a signature over
+  such a marker (a Nostr event, for one), so it is not self-bound and VLC-L1-3
+  needs a head held outside the log (`--expect-head`).
 
 L1 also says nothing about records that were never delivered.
 A hash chain over 800 records is equally valid whether 800 or 8,000 were
@@ -876,6 +897,7 @@ resolves to the newest; the version DOI below pins a particular text.
 | 1.4.1-draft | 2026-09-29 | [10.5281/zenodo.23027758](https://doi.org/10.5281/zenodo.23027758) | **Corrective; published results move.** Corrigendum 6, EXT-022 to EXT-025, from an internal review. (1) An end marker the chain does not bind can no longer carry a structural L1-3 or an L2 produced count: a tail cut with the marker rewritten and no hash recomputed had scored structural L4 / attested L5. Such logs now need `--expect-head` for L1-3, and a bound end marker for L2. The reference-implementation journals fall from L4/L5 to L0 (L1 with an independently held head) until the sensor binds its end marker. (2) VLC-V-3 is enforced by attack: requirements that only read adapter text (L3-6 on a non-enumerable declaration, L4-1 on observation-only or a non-digest field) no longer pass structurally; one residual mapping case is disclosed as an expected failure (EXT-025). (3) Crashes are verdicts; exit codes are 0, 1 and 2 as documented; UTF-8 is decoded strictly; `check()` is importable. `selftest.sh` extended with sections 17–19. |
 | 1.4.2-draft | 2026-09-29 | [10.5281/zenodo.23028240](https://doi.org/10.5281/zenodo.23028240) | **No normative change; results recover.** EXT-022 closed in the sensor: the reference sensor now chains its HEAD record (octa-sentinel `269b176`). The four reference journals were re-captured on live eBPF tracepoints and score structural L4 / attested L5 on the log alone; the loss capture declares 1,832 lost events in-chain. The pre-fix captures are kept byte-for-byte in `examples/reference-impl/pre-EXT-022/` and still score L0 under `adapters/observer-legacy.json`. `adapters/observer.json` declares the end marker bound (`head_field: "head"`). `selftest.sh` runs the EXT-022 attack against both. Also in this version (#10): five MCP/agent gateways scored from live captures in `THIRD-PARTY.md` (agentgateway 1.5.0, Docker MCP Gateway v0.44.1, IBM ContextForge 1.0.11, Lasso MCP Gateway 1.2.1, Bifrost 2.2.3), all L0, with CI asserting that removing the refused call leaves each score unchanged. CI corrected: the JIDEC chained ledger scores L0 on the log alone under the 1.4.1 checker (its end marker is not chained) and L1 against its Bitcoin-stamped head; the CI expectation had not been updated with Corrigendum 6. |
 | 1.4.3-draft | 2026-09-30 | [10.5281/zenodo.23063984](https://doi.org/10.5281/zenodo.23063984) | **No normative requirement changed; one mechanism added to the reference checker; one published result moves.** Corrigendum 7, EXT-026, from the Trillian Tessera live capture: an RFC 6962 Merkle transparency log (C2SP tlog-tiles, signed checkpoint) scored integrity L0, the scrubbed file identically to the full one, because every mechanism the checker could recompute was a hash chain. Added §4.1 and the `merkle-tlog` mechanism: the tree is recomputed over the entries, the checkpoint's size and root must equal it (the checkpoint is the VLC-L1-3 end marker), `--expect-root` / `--expect-head` take held checkpoint roots, and a C2SP signed-note Ed25519 signature is verified only when the adapter supplies the key, otherwise reported as not performed. Tessera full file L0 → **L1**; scrubbed file stays L0 and now fails VLC-L1-1. No existing mechanism's result moves. |
+| **1.4.4-draft** | 2026-09-30 | to be minted | **No normative requirement changed; one mechanism added to the reference checker, contributed from outside; two published results move.** Corrigendum 8, EXT-027, from the invinoveritas verdict-ledger capture: a chain over carried per-record digests (`head = SHA-256(content_hash + "\|" + prev_head)`, head broadcast as a signed Nostr event) had to be declared `none`. Added `sha256-hex-join` (#17, by the ledger's operator) with interior records pinned to `link_class`, since the class is outside the hash, and `end_marker.content_json_field`. The ledger scores L0 on the log alone and **L1** with its signed head; the truncated file now fails VLC-L1-1. Also in this version: the JIDEC ledger bound its end marker (#12), and its new capture scores **L1 on the log alone**; the older capture is kept as a control. |
 
 The 1.1.1 entry is kept in the normative document rather than in a release note
 on purpose. `VLC-E-2` says an incomplete citation is worse than none; a
