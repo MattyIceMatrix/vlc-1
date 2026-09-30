@@ -1,0 +1,62 @@
+name: falco-rekor-capture
+# Live captures of two more record formats, scored against VLC-1 the way the gateways
+# and agent SDKs were (branches capture/gateways, capture/agent-sdks). Runs ONLY on
+# branch capture/falco-rekor and ONLY on GitHub-hosted runners.
+#   falco    Falco with the modern_ebpf driver in a privileged container: rule hits,
+#            forced syscall drops, JSON alert stream (capture/scripts/falco.sh)
+#   tessera  a tile-based transparency log from Trillian Tessera's POSIX example, the
+#            library Sigstore's Rekor v2 is built on: entries, signed checkpoints,
+#            inclusion and consistency proofs (capture/scripts/tessera.sh)
+# The collect job commits the results to capture/runs/ on this branch, because job logs
+# and artifacts are not readable from the maintainer's tooling.
+on:
+  push:
+    branches: [capture/falco-rekor]
+    paths: ['.github/workflows/falco-rekor-capture.yml', 'capture/scripts/falco.sh',
+            'capture/scripts/tessera.sh', 'capture/scripts/tlogcap.go']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [falco, tessera]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        if: matrix.target == 'tessera'
+        with: { go-version: 'stable', cache: false }
+      - name: capture ${{ matrix.target }}
+        env:
+          OUT: ${{ github.workspace }}/out
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$OUT"
+          timeout 900 bash capture/scripts/${{ matrix.target }}.sh || echo "script exit $?" >> "$OUT/${{ matrix.target }}/steps.txt"
+          echo "runner: $(uname -srm); $(lsb_release -ds 2>/dev/null); docker $(docker version --format '{{.Server.Version}}' 2>/dev/null); $(date -u +%FT%TZ)" >> "$OUT/${{ matrix.target }}/steps.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cap-${{ matrix.target }}
+          path: out/
+          if-no-files-found: warn
+  collect:
+    needs: capture
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: capture/falco-rekor }
+      - uses: actions/download-artifact@v4
+        with: { path: dl, pattern: cap-*, merge-multiple: true }
+      - name: commit results
+        run: |
+          D=capture/runs/run-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"
+          cp -r dl/. "$D/" 2>/dev/null || true
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "falco-rekor-capture"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: falco-rekor run $(basename "$D")" && git push -q origin HEAD:capture/falco-rekor
