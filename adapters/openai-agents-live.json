@@ -1,0 +1,40 @@
+{
+  "name": "openai-agents-live",
+  "producer": "OpenAI Agents SDK 0.22.3 (PyPI openai-agents, with openai 3.22.1), tracing through the SDK's own BatchTraceProcessor with its exporter replaced by a file exporter that writes each exported item's export() dict -- the payload the default exporter sends to OpenAI's trace backend -- one per line; no API key, the model is the SDK's OpenAIChatCompletionsModel pointed at a local mock endpoint",
+  "description": "A live capture, 2026-09-30: one agent run in which the model asked for read_file (allowed) and delete_file, which carries a tool input guardrail that rejects every call, then a burst of 20 custom spans in the same trace. The refused call is recorded as an ordinary `function` span named delete_file, `error: null`, whose `output` is the guardrail's rejection text; no span names the guardrail or records its decision. With the default queue the file holds all 29 items (one trace, 28 spans) that a second, witness processor registered beside it recorded. With max_queue_size=4 the file holds 4 of those 29: 25 spans -- five of the agent run's own, including the agent span and the second model call, and all 20 burst spans -- were dropped; the SDK wrote `Queue is full, dropping span.` 25 times to stderr and nothing to the trace. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/agent-sdk-capture.yml and capture/scripts/ on branch capture/agent-sdks, run run-20260930T102830Z, on a GitHub-hosted runner (Python 3.12). The raw records, the witness file, stderr and the mock endpoint's request log are committed there and copied to examples/third-party/agent-sdks-live/openai-agents/; examples/third-party/agent-sdks-live/convert.py turns the records into this JSONL without adding any field except `class`. The drop is in the SDK source, agents/tracing/processors.py of openai-agents 0.22.3 (sha256 d61bb30a91241a5ab983af4ae4365effe250566ddac585818c16d5d57b634518; the runner's copy is committed beside the run): line 560 `max_queue_size: int = 8192`; line 575 `queue.Queue(maxsize=max_queue_size)`; lines 627-630, in on_span_end, `self._queue.put_nowait(span)` / `except queue.Full:` / `logger.warning(\"Queue is full, dropping span.\")` (lines 610-613 do the same for a trace); line 769, default_processor() builds `BatchTraceProcessor(exporter)` with those defaults. The logger is `logging.getLogger(\"openai.agents.tracing\")` (agents/tracing/logger.py). No counter of dropped items was found in BatchTraceProcessor, and none appears in the exported records. max_queue_size=4 is far below the default; at the default the same run dropped nothing, and the load at which the default overflows was not measured.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "Trace and span ids are random hex; no hash, signature or chaining. openai-agents-live-scrubbed.jsonl removes the delete_file span and scores identically; openai-agents-live-overflow.jsonl, the capture with 25 drops, also scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "drop_newest",
+    "note": "When the queue is full the incoming span or trace is discarded (put_nowait, processors.py 627-630) and a WARNING is logged; nothing is written to the trace and no count is kept in it. In the overflow capture the three surviving spans name a parent_id that is absent from the file; nothing in the file says the parent was dropped rather than never sent. Ids are random, so there is no gap to see."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The agent span lists the agent's tools, which is configuration, not a statement of what the record covers; in the overflow capture that span was one of those dropped."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The tool input guardrail is not named in the record and its decision (reject_content, output_info {\"rule\": \"no-delete\"}, visible in the run result) is not recorded; the refused call's span differs from an executed call's only in its output string."
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "Trace processors run inside the agent's own Python process. set_trace_processors, which the capture itself used, replaces every registered processor (agents/tracing/__init__.py: 'This will replace the current list of processors'); code in the process can therefore choose what is exported, and the exporter writes wherever it is told.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://pypi.org/project/openai-agents/0.22.3/",
+    "https://github.com/openai/openai-agents-python/blob/main/src/agents/tracing/processors.py",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/agent-sdks/capture/runs/run-20260930T102830Z"
+  ]
+}

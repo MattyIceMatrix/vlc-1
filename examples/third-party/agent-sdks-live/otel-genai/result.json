@@ -1,0 +1,15 @@
+{
+ "tool_calls": [
+  {
+   "id": "call_allowed",
+   "name": "read_file",
+   "result": "contents of notes.txt: hello from vlc1"
+  },
+  {
+   "id": "call_refused",
+   "name": "delete_file",
+   "result": "delete_file refused by policy: deletion is not permitted"
+  }
+ ],
+ "final": "Read notes.txt; the delete was refused."
+}
