@@ -1,0 +1,4 @@
+invinoveritas commit a3527263379ca627d4746055f48504cfd2668ae4
+exit 0 (0 = all verified, 1 = a failure, 124 = timed out)
+{"total": 270, "verified": 237, "failed": 0, "relay_unavailable": 33, "ots_confirmed_of_unavailable": 33}
+{"chain_total": 231, "chain_verified": 231, "chain_failed": 0, "chain_fetch_failed": [], "chain_failed_entries": []}
