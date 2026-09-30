@@ -49,8 +49,10 @@ then only if the token bucket has a token (line 109). The `log` action logs at D
 (line 147), below the image default `log_level: info` (`falco.default.yaml` line
 1029), so neither run printed a drop line to stderr. In the default run the worst
 second in the side file dropped 3.9% of its events (7414 of 191251), under the 10%
-threshold. So 11694 dropped syscalls left no trace in the alert stream, in Falco's log
-or in Falco's own count. The image's `falco.yaml` says the drop alert is enabled by
+threshold (the side file's one-second intervals are not aligned with Falco's own
+one-second windows; the exit summary's 0, counted inside the threshold test, is the
+direct evidence that no window crossed it). So 11694 dropped syscalls left no trace in
+the alert stream, in Falco's log or in Falco's own occurrence count. The image's `falco.yaml` says the drop alert is enabled by
 default (lines 1120-1121) and the defaults are at lines 1134-1152.
 
 ## Score
@@ -86,7 +88,7 @@ One run of each configuration, one kernel, one runner. The storm dropped under 4
 of events in any second; a load heavy enough to cross the 10% default threshold was
 not tried, so this capture does not show whether the default configuration reports
 drops at that level. Whether dropped syscalls cost any rule hit was not
-demonstrated: every trigger here alerted. At start-up libbpf failed to attach the
-TOCTOU-mitigation programs for connect, creat, open, openat and openat2 (stderr:
+demonstrated: every trigger here alerted. At start-up, in both runs, Falco's libs (libpman) reported
+failures to attach the TOCTOU-mitigation programs for connect, creat, open, openat and openat2 (stderr:
 "Detection will continue to work, but TOCTOU mitigation may not properly work").
 Not confirmed by the Falco maintainers.

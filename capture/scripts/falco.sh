@@ -8,7 +8,8 @@
 #   default  json_output only; syscall_event_drops and metrics.output_rule left as the
 #            image's falco.yaml has them
 # Both runs also write metrics to a side file (metrics.output_file, not in the alert
-# stream) every second, as a witness of the true drop totals.
+# stream) as a witness of the true drop totals: every second in the default run, every
+# 5s in the tuned run (its metrics.interval also drives the snapshot alerts).
 # BLAST RADIUS: GitHub-hosted runner only; writes $OUT/falco and mktemp dirs; removes
 # only the containers it names (vlc-falco, vlc-victim, vlc-load*).
 GW=falco; . "$(dirname "$0")/lib.sh"
