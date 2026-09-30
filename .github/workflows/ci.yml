@@ -59,7 +59,9 @@ jobs:
                    otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0 \
                    falco-live:falco-live-full:0:0 falco-live:falco-live-scrubbed:0:0 \
                    falco-live:falco-live-default:0:0 \
-                   tessera-live:tessera-live-full:0:0 tessera-live:tessera-live-scrubbed:0:0; do
+                   tessera-live:tessera-live-full:0:0 tessera-live:tessera-live-scrubbed:0:0 \
+                   invinoveritas-ledger-live:invinoveritas-ledger-live-full:0:0 \
+                   invinoveritas-ledger-live:invinoveritas-ledger-live-truncated:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
@@ -111,6 +113,26 @@ jobs:
           if python3 $t/verify_tlog.py jsonl examples/third-party/tessera-live-scrubbed.jsonl $t/log.vkey > /dev/null; then
             echo "FAIL  tessera-live: scrubbed JSONL verified"; bad=1
           else echo "ok    tessera-live: scrubbed JSONL rejected outside the checker"; fi
+          # The invinoveritas ledger chain (head = sha256(content_hash|prev_head)) is checked
+          # outside conformance.py, which has no mechanism for it: the full file verifies
+          # against its signed Nostr head, the file with the newest entry dropped -- which
+          # the checker scores as the full one -- must fail, and every mutation must be
+          # caught once the signed head is present.
+          t=examples/third-party/invinoveritas-ledger-live
+          if python3 $t/verify_ledger.py jsonl examples/third-party/invinoveritas-ledger-live-full.jsonl > /dev/null; then
+            echo "ok    invinoveritas-ledger-live: chain and signed head verify outside the checker"
+          else echo "FAIL  invinoveritas-ledger-live: full JSONL does not verify"; bad=1; fi
+          if python3 $t/verify_ledger.py jsonl examples/third-party/invinoveritas-ledger-live-truncated.jsonl > /dev/null; then
+            echo "FAIL  invinoveritas-ledger-live: truncated JSONL verified"; bad=1
+          else echo "ok    invinoveritas-ledger-live: truncated JSONL rejected outside the checker"; fi
+          if python3 $t/verify_ledger.py jsonl examples/third-party/invinoveritas-ledger-live-full.jsonl --mutations --json \
+             | python3 -c "import json,sys;m=json.load(sys.stdin)['mutations'];sys.exit(0 if all(v['detected'] for k,v in m.items() if 'with the Nostr head' in k) else 1)"; then
+            echo "ok    invinoveritas-ledger-live: every mutation caught with the signed head"
+          else echo "FAIL  invinoveritas-ledger-live: a mutation passed with the signed head"; bad=1; fi
+          r() { python3 conformance.py --log "examples/third-party/invinoveritas-ledger-live-$1.jsonl" --adapter adapters/invinoveritas-ledger-live.json --json \
+                | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
+          if [ "$(r full)" = "$(r truncated)" ]; then echo "ok    invinoveritas-ledger-live: truncated scores identically to full in the checker"
+          else echo "FAIL  invinoveritas-ledger-live: truncated and full differ in the checker"; bad=1; fi
           exit $bad
 
   proof:
