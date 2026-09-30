@@ -1,0 +1,5 @@
+/ledger: 269 entries, verifier_pubkey pinned-match=True
+chained entries: 230 (40..269); recompute failures: []
+nostr: 6 distinct head events, 6 valid
+verify: ok=True findings=[]
+runner: Linux 6.17.0-1022-azure x86_64; 2026-09-30T14:20:32Z

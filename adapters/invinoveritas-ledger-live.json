@@ -1,0 +1,43 @@
+{
+  "name": "invinoveritas-ledger-live",
+  "producer": "invinoveritas verdict ledger (babyblueviper), as served at GET https://api.babyblueviper.com/ledger and GET /ledger/{n}, schema_version 2; chain heads as signed Nostr events (kind 30078, schema invinoveritas.ledger_chain_head.v1) on public relays",
+  "_basis": "Captured from public data, not supplied by the operator: workflow .github/workflows/ledger-capture.yml, capture/scripts/ledger_capture.py on branch capture/invinoveritas-ledger, runs run-20260930T135456Z, run-20260930T140743Z and run-20260930T142032Z (2026-09-30), which produced byte-identical chain files. The runner fetched /ledger and every chained entry, recomputed each content_hash from the entry's full record by the published canonicalization, and took the head events from wss://nos.lol and wss://relay.primal.net. The full records were hashed on the runner and not copied here; examples/third-party/invinoveritas-ledger-live-full.jsonl holds each entry's served chain block plus the newest head event verbatim, with only a class field added. The operator offered the ledger for scoring on vlc-1 PR #3 (2026-09-30) and supplied no score.",
+  "description": "A live capture, 2026-09-30: 230 chained entries, 40 to 269. Every content_hash recomputed from its full record, every head_hash recomputed from content_hash and the recomputed predecessor head, zero link breaks; the newest head event on the relays, signed by the key /ledger publishes (NIP-01 id and BIP-340 signature verified), states entry 269 and the same head the recomputation reaches. examples/third-party/invinoveritas-ledger-live/verify_ledger.py, standard library only and written from the published chain_spec, reaches the same result. Removing, editing or reordering an entry breaks the chain; dropping the newest entry, or rewriting the whole chain consistently, passes the chain alone and is caught only against the signed head (invinoveritas-ledger-live-truncated.jsonl). Scored L0 by the checker, because conformance.py has no mechanism for head = sha256(content_hash + '|' + prev_head): a limit of the checker, stated here rather than worked around.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [
+    "chain-head"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "actual_mechanism": "Hash chain from entry 40: content_hash = sha256(json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(',', ':'))) over the record served at GET /ledger/{n}; head_hash = sha256(content_hash + '|' + prev_head_hash) over the hex strings; entry 40 links to sha256('invinoveritas-ledger-genesis:before-entry-40'). Each head is broadcast as a NIP-01 event of kind 30078 with a distinct d tag, signed with BIP-340 by the key served as verifier_pubkey.",
+    "note": "Declared none because the checker cannot recompute this binding: its chain mechanisms hash the predecessor with a canonical object, not a content hash joined to the predecessor with '|', and a row reshaped to fit one of them would manufacture a pass. Outside the checker, verify_ledger.py establishes on this file what VLC-L1-1 asks for, and with the signed head event what VLC-L1-3 and --expect-head ask for. The full-record content_hash recomputation is in the capture run (recompute.jsonl), not in this file. Entries 1 to 39 predate the chain and are not in it (chain_spec)."
+  },
+  "loss": {
+    "mode": "none",
+    "note": "Entry numbers are sequential and the signed head states the last entry number, so a missing or truncated entry is detected by verify_ledger.py; the checker cannot read the head, which is inside the event's JSON content. No record states how many verdicts were issued against how many were written. The index's completeness block gives aggregate counts (raw_source_tape_lines, raw_governed_real_decisions, published_pre_action_verdicts) and says itself that they are 'still short of a hard completeness proof (the tapes themselves are still ours to write or not write)'; they are prose on the index, not bound into the chain, so the L2 identity has nothing to close over. Entries 264 to 269 were written outside the chain and chained late on 2026-09-30 (each entry's chain_note and chain_backfilled_at), which the operator disclosed on PR #3."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The ledger records the verdicts the operator writes to it. The index's population_spec says which entry types are mandatory at issuance (pre_action_verdict) and which are opt-in, and states what remains open: 'a decision that was never issued and never entered a review-gate tape in the first place'. That is a declared scope, not a per-record enumeration the checker can close over; it is recorded in the capture (index-summary.json), not scored."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Rules for what enters the ledger live in the operator's service code and the index prose, not in the entries; no entry binds the rule set that admitted it."
+  },
+  "independence": {
+    "mode": "self_reported",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third parties and each head event has its own d tag, so a published head is not replaced by a later one: a rewritten chain needs a new head, and two different heads for one entry number on the relays is a visible fork (chain_spec). A reader must still keep or fetch an earlier head to notice; the operator can sign any head. In this capture head events were found only for entries 264 to 269, on 2 of 6 relays queried.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://api.babyblueviper.com/ledger",
+    "https://github.com/babyblueviper1/invinoveritas/blob/main/integrations/verify-proof/python/recompute_ledger.py",
+    "https://github.com/MattyIceMatrix/vlc-1/pull/3",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/invinoveritas-ledger/capture/runs/run-20260930T140743Z/ledger"
+  ]
+}

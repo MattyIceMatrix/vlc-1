@@ -1,0 +1,58 @@
+{
+  "wss://relay.damus.io": {
+    "events": 0,
+    "error": null,
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://nos.lol": {
+    "events": 47,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 12
+  },
+  "wss://relay.primal.net": {
+    "events": 20,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 12
+  },
+  "wss://relay.nostr.band": {
+    "events": 0,
+    "error": "TimeoutError: timed out during opening handshake",
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://nostr.wine": {
+    "events": 0,
+    "error": null,
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://relay.snort.social": {
+    "events": 3,
+    "error": null,
+    "kinds": [
+      1
+    ],
+    "head_events": 0
+  },
+  "_distinct_head_events": 6,
+  "_valid_head_events": 6,
+  "_d_tags": [
+    "invinoveritas-proof-proof-1790773127-4d22145d",
+    "invinoveritas-proof-proof-1790773129-77e0e5db",
+    "invinoveritas-proof-proof-1790773131-80e5b0d0",
+    "invinoveritas-proof-proof-1790773133-ff8c984c",
+    "invinoveritas-proof-proof-1790773135-f07627cb",
+    "invinoveritas-proof-proof-1790773137-a8375732"
+  ]
+}
