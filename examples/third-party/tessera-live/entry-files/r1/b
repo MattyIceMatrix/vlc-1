@@ -1,0 +1,1 @@
+{"event":"tool_call","tool":"read_file","args":{"path":"notes.txt"},"decision":"allow","rule":"allow-read"}

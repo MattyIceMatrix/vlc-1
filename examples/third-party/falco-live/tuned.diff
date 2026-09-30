@@ -1,0 +1,112 @@
+184d183
+< 
+194d192
+< 
+243c241
+< 
+---
+>   - /vlc/vlc_rules.yaml
+450,451c448,449
+<     cpus_for_each_buffer: 2
+<     buf_size_preset: 4
+---
+>     cpus_for_each_buffer: 0
+>     buf_size_preset: 1
+458d455
+< 
+551d547
+< 
+589d584
+< 
+623d617
+< 
+634d627
+< 
+641d633
+< 
+651d642
+< 
+657,658c648
+< json_output: false
+< 
+---
+> json_output: true
+667d656
+< 
+676d664
+< 
+683d670
+< 
+692d678
+< 
+704d689
+< 
+727d711
+< 
+749d732
+< 
+800d782
+< 
+829d810
+< 
+836d816
+< 
+846c826
+<   enabled: false
+---
+>   enabled: true
+849c829
+<   keep_alive: false
+---
+>   keep_alive: true
+851,852c831
+<   filename: ./events.txt
+< 
+---
+>   filename: /out/events.json
+889d867
+< 
+912d889
+< 
+966d942
+< 
+995d970
+< 
+1011d985
+< 
+1019d992
+< 
+1030d1002
+< 
+1050d1021
+< 
+1080d1050
+< 
+1099d1068
+< 
+1138c1107
+<   threshold: .1
+---
+>   threshold: 0
+1147c1116
+<   rate: .03333
+---
+>   rate: 1
+1153d1121
+< 
+1203c1171
+<   enabled: false
+---
+>   enabled: true
+1217c1185
+<   interval: 1h
+---
+>   interval: 5s
+1228c1196
+<   output_file: ""
+---
+>   output_file: "/out/metrics.jsonl"
+1289d1256
+< 
+1392d1358
+< 

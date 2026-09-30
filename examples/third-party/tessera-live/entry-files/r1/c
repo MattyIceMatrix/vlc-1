@@ -1,0 +1,1 @@
+{"event":"tool_call","tool":"delete_file","args":{"path":"notes.txt"},"decision":"deny","rule":"no-delete"}

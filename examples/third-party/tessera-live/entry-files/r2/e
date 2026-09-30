@@ -1,0 +1,1 @@
+{"event":"tool_call","tool":"http_post","args":{"url":"https://example.com"},"decision":"deny","rule":"no-egress"}

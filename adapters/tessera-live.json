@@ -1,0 +1,57 @@
+{
+  "name": "tessera-live",
+  "producer": "Trillian Tessera v1.0.4 (github.com/transparency-dev/tessera), its POSIX example cmd/examples/posix-oneshot built with go1.27.1 on a GitHub-hosted ubuntu-24.04 runner; a C2SP tlog-tiles log -- entry bundles, hash tiles and an Ed25519-signed checkpoint (C2SP signed note). Tessera is the library Sigstore's Rekor v2 (sigstore/rekor-tiles) is built on; its go.mod on main requires tessera v1.0.4. This is not a Rekor deployment",
+  "description": "A live capture, 2026-09-30, and the positive control for integrity: six audit statements appended in two rounds (3 + 3), with the signed checkpoint kept after each. Tessera's own client built an inclusion proof for every entry and a consistency proof from the size-3 checkpoint to the size-6 checkpoint, and all verified (verify.jsonl); examples/third-party/tessera-live/verify_tlog.py, standard library only, reaches the same result independently: signature, RFC 6962 root over the entries equal to the signed root, level-0 tile equal to the leaf hashes, every proof. Flipping one byte of one entry made that entry's inclusion proof fail (verify-tampered.jsonl). tessera-live-scrubbed.jsonl removes the refused delete_file entry: verify_tlog.py rejects it (size 6 signed, 5 entries, root mismatch, index gap), and conformance.py scores it exactly as the full file. Scored L0 by the checker, because conformance.py (VLC-1 1.4.2-draft) has no Merkle-tree mechanism: its integrity mechanisms are all hash chains. That is a limit of the checker, stated here rather than worked around.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/falco-rekor-capture.yml, capture/scripts/tessera.sh and capture/scripts/tlogcap.go on branch capture/falco-rekor, run run-20260930T112902Z; the log directory, both checkpoints, the verifier key, the proof files and posix-oneshot's output are copied to examples/third-party/tessera-live/ (the log's .state/ directory was not uploaded by the capture job, which skips hidden files; it is Tessera's internal state, not part of the tlog-tiles read API). The signing key was generated on the runner and not kept. The version is from `go version -m` on the binary (posix-oneshot.buildinfo.txt). conformance.py MECHANISMS: none, sha256-chain-prefix, sha256-chain-canonical, sha256-prev-raw, sha256-prev-field, sha256-canonical-fields.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [
+    "checkpoint"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "end_marker": {
+      "class": "checkpoint",
+      "head_field": "root_hash",
+      "self_bound": false
+    },
+    "actual_mechanism": "RFC 6962 Merkle tree over the entries (leaf = SHA-256(0x00 || entry), node = SHA-256(0x01 || left || right)), published as a C2SP tlog-tiles checkpoint -- origin, tree size, root hash -- in a C2SP signed note with an Ed25519 signature; inclusion and consistency proofs per RFC 9162 section 2.1.",
+    "note": "Declared `none` because the checker cannot recompute this binding, and declaring a hash-chain mechanism it does not have would be a fake pass. Outside the checker, verify_tlog.py establishes on this log what VLC-L1-1 and VLC-L1-3 ask for: any change, removal, reordering or truncation of the entries changes the root or the size the checkpoint signs, and a consistency proof from an earlier checkpoint held by someone else detects a rewrite (the role --expect-head plays for a chain). The end marker is declared so that the checker reads the checkpoint as the log's end and reports its size as unanchored; `self_bound: false` because the checker does not verify its signature. Neither is a claim the checker establishes."
+  },
+  "loss": {
+    "mode": "ordinal",
+    "ordinal_field": "index",
+    "produced": {
+      "kind": "field_of_end_marker",
+      "field": "size"
+    },
+    "note": "The signed checkpoint states the tree size, and entry indices are contiguous from 0 (Tessera README, Sequencing: 'All index numbers are contiguous and start from 0'), so a delivered set that is short of the signed size is detectable -- by verify_tlog.py, not by the checker, which cannot tell the size is signed and so fails VLC-L2-1 on it. What the log cannot account for is an entry that never got an index: the same README section says an entry held in memory before sequencing is lost if the process dies, and the log records nothing of it."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The log records what was submitted to it. It does not state what should have been submitted: the capture chose which six statements to append, and a statement never submitted leaves no trace."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The entries are opaque bytes to the log. The capture wrote a decision and a rule name into each statement, but the log binds no policy: it would have accepted any bytes, and nothing ties a statement's decision to a rule set."
+  },
+  "independence": {
+    "mode": "self_reported",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "In this capture the same runner job wrote the statements, held the signing key and could rewrite the log directory, so the log is independent of nothing it records. A transparency log's protection against its own operator comes from other parties holding checkpoints -- witnesses cosigning them, monitors checking consistency; Tessera supports a witness policy (posix-oneshot --witness_policy_file) and none was configured here. A Rekor v2 deployment separates submitters from the operator; that was not captured.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/transparency-dev/tessera/tree/v1.0.4/cmd/examples/posix-oneshot",
+    "https://github.com/transparency-dev/tessera/blob/main/README.md",
+    "https://c2sp.org/tlog-tiles",
+    "https://c2sp.org/tlog-checkpoint",
+    "https://c2sp.org/signed-note",
+    "https://www.rfc-editor.org/rfc/rfc9162#section-2.1",
+    "https://github.com/sigstore/rekor-tiles/blob/main/go.mod",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/falco-rekor/capture/runs/run-20260930T112902Z/tessera"
+  ]
+}
