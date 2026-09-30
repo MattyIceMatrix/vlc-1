@@ -1,0 +1,27 @@
+name: aer1-fetch
+# Fetch the AER-1 draft (draft-zambo-aer1-05), its test vectors and the public receipt
+# dataset for review and scoring against VLC-1. Runs ONLY on branch capture/aer1 on a
+# GitHub-hosted runner; GET requests only. Results are committed to capture/runs/.
+on:
+  push:
+    branches: [capture/aer1]
+    paths: ['.github/workflows/aer1-fetch.yml', 'capture/scripts/aer1_fetch.sh']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: bash capture/scripts/aer1_fetch.sh || true
+      - name: commit
+        if: always()
+        run: |
+          D=capture/runs/aer1-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"; cp -r out/. "$D/"
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "aer1-fetch"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: aer1 fetch $(basename "$D")" && git push -q origin HEAD:capture/aer1
