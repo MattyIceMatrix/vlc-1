@@ -1,0 +1,19 @@
+$ pip install -q openai-agents==0.22.3 openai==3.22.1
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+d61bb30a91241a5ab983af4ae4365effe250566ddac585818c16d5d57b634518  /home/runner/work/vlc-1/vlc-1/out/openai-agents/processors.py
+processors.py BatchTraceProcessor lines:
+560:        max_queue_size: int = 8192,
+611:            self._queue.put_nowait(trace)
+612:        except queue.Full:
+613:            logger.warning("Queue is full, dropping trace.")
+628:            self._queue.put_nowait(span)
+629:        except queue.Full:
+630:            logger.warning("Queue is full, dropping span.")
+$ agents_capture.py full
+[exit 0] trace lines: 29 witness lines: 29 stderr: 
+$ agents_capture.py overflow
+[exit 0] trace lines: 4 witness lines: 29 stderr: Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|Queue is full, dropping span.|
+runner: Linux 6.17.0-1022-azure x86_64; python Python 3.12.14; 2026-09-30T10:28:18Z
