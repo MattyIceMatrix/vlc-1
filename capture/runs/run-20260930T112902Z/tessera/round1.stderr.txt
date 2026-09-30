@@ -1,0 +1,5 @@
+I0930 11:26:56.113305    4574 files.go:496] Initializing directory for POSIX log at "/tmp/tmp.Hu0oSlz8KY/log" (this should only happen ONCE per log!)
+I0930 11:26:56.114361    4574 append_lifecycle.go:732] Failed to fetch old checkpoint: file does not exist
+I0930 11:26:56.315769    4574 main.go:149] 0: /tmp/tmp.DFjpwfHICQ/r1/a
+I0930 11:26:56.315801    4574 main.go:149] 1: /tmp/tmp.DFjpwfHICQ/r1/b
+I0930 11:26:56.315806    4574 main.go:149] 2: /tmp/tmp.DFjpwfHICQ/r1/c

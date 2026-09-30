@@ -56,7 +56,10 @@ jobs:
                    openai-agents-live:openai-agents-live-full:0:0 \
                    openai-agents-live:openai-agents-live-scrubbed:0:0 \
                    openai-agents-live:openai-agents-live-overflow:0:0 \
-                   otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0; do
+                   otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0 \
+                   falco-live:falco-live-full:0:0 falco-live:falco-live-scrubbed:0:0 \
+                   falco-live:falco-live-default:0:0 \
+                   tessera-live:tessera-live-full:0:0 tessera-live:tessera-live-scrubbed:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
@@ -76,7 +79,8 @@ jobs:
           # The claim THIRD-PARTY.md makes about each live capture: removing the
           # refused calls' records changes no requirement result at all.
           for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
-                   contextforge-live lasso-live bifrost-live openai-agents-live otel-genai-live; do
+                   contextforge-live lasso-live bifrost-live openai-agents-live otel-genai-live \
+                   falco-live tessera-live; do
             IFS=: read -r f n <<< "$g"; n=${n:-$f}
             r() { python3 conformance.py --log "examples/third-party/$f-$1.jsonl" --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
@@ -89,6 +93,24 @@ jobs:
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
           if [ "$(r full)" = "$(r overflow)" ]; then echo "ok    openai-agents-live: overflow scores identically to full"
           else echo "FAIL  openai-agents-live: overflow and full differ"; bad=1; fi
+          # Falco with syscall_event_drops at the image defaults: 11694 syscalls dropped
+          # and no drop alert in the stream; it scores exactly as the tuned capture.
+          r() { python3 conformance.py --log "examples/third-party/falco-live-$1.jsonl" --adapter adapters/falco-live.json --json \
+                | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
+          if [ "$(r full)" = "$(r default)" ]; then echo "ok    falco-live: default-config scores identically to full"
+          else echo "FAIL  falco-live: default-config and full differ"; bad=1; fi
+          # The Tessera log's integrity is checked outside conformance.py, which has no
+          # Merkle-tree mechanism: the raw log and its proofs verify, the full JSONL
+          # verifies, and the scrubbed JSONL -- which the checker scores as the full
+          # one -- must fail.
+          t=examples/third-party/tessera-live
+          if python3 $t/verify_tlog.py log $t/log $t/log.vkey $t/checkpoint.round1 --proofs $t/verify.jsonl > /dev/null \
+             && python3 $t/verify_tlog.py jsonl examples/third-party/tessera-live-full.jsonl $t/log.vkey > /dev/null; then
+            echo "ok    tessera-live: log, proofs and full JSONL verify outside the checker"
+          else echo "FAIL  tessera-live: log, proofs or full JSONL do not verify"; bad=1; fi
+          if python3 $t/verify_tlog.py jsonl examples/third-party/tessera-live-scrubbed.jsonl $t/log.vkey > /dev/null; then
+            echo "FAIL  tessera-live: scrubbed JSONL verified"; bad=1
+          else echo "ok    tessera-live: scrubbed JSONL rejected outside the checker"; fi
           exit $bad
 
   proof:

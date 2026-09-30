@@ -1,0 +1,9 @@
+./.state/publish.lock
+./.state/treeState
+./.state/treeState.lock
+./.state/version
+./checkpoint
+./tile/0/000.p/3
+./tile/0/000.p/6
+./tile/entries/000.p/3
+./tile/entries/000.p/6

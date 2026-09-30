@@ -1,0 +1,3 @@
+I0930 11:57:30.024787    4504 main.go:149] 3: /tmp/tmp.wrKR4NsiMo/r2/d
+I0930 11:57:30.024861    4504 main.go:149] 4: /tmp/tmp.wrKR4NsiMo/r2/e
+I0930 11:57:30.024881    4504 main.go:149] 5: /tmp/tmp.wrKR4NsiMo/r2/f

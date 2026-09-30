@@ -1,0 +1,45 @@
+{
+  "name": "falco-live",
+  "producer": "Falco 0.45.0 (falcosecurity/falco:0.45.0, image sha256:2e338c4e...c520), modern_ebpf driver, in a privileged container on a GitHub-hosted ubuntu-24.04 runner (kernel 6.17.0-1022-azure, 4 CPUs); the JSON alert stream Falco's file_output wrote with json_output enabled, one alert per line",
+  "description": "A live capture, 2026-09-30. Rule triggers ran in an unprivileged alpine:3.20 container in three phases -- 3 rounds quiet, 10 rounds under a find/true syscall storm with the ring buffer cut to one shared 1 MB buffer (buf_size_preset 1, cpus_for_each_buffer 0), 3 rounds quiet -- each round reading /etc/shadow, writing a file under /etc, running a shell with a terminal and symlinking /etc/shadow. All 16 of each rule's triggers alerted in both runs. falco-live-full.jsonl (tuned run: syscall_event_drops threshold 0 and rate 1, metrics snapshots as alerts every 5s) carries 4 in-band `Falco internal: syscall event drop` alerts whose n_drops sum to 8081, equal to the kernel drop counter scap.n_drops (8081) in the side metrics file. falco-live-default.jsonl (same load, syscall_event_drops left at the image defaults threshold .1, actions [log, alert], rate .03333, max_burst 1) carries no drop alert at all while the side metrics file counts 11694 dropped syscalls: no one-second interval in the side metrics file had more than 3.9% of its events dropped, and Falco acts only above the threshold; Falco's own exit summary for that run, which counts the seconds that crossed the threshold, reads `event drop detected: 0 occurrences`. falco-live-scrubbed.jsonl removes one rule alert. All three score L0 on the same failed requirements.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/falco-rekor-capture.yml and capture/scripts/falco.sh on branch capture/falco-rekor, run run-20260930T112902Z; raw alert files, side metrics files, Falco stderr, trigger timestamps, the image's falco.yaml and the config diffs are in examples/third-party/falco-live/. The drop logic is userspace/falco/event_drops.cpp at tag 0.45.0: line 98 `if(delta.n_drops > 0)`, line 104 `if(ratio > m_threshold)` (ratio = drops / events in the last second), line 105 counts the occurrence only inside that test, line 109 claims a token from the rate bucket before acting, and line 147 the `log` action logs at DEBUG, below the image default log_level info (falco.yaml line 1029), so it printed nothing in either run. Image falco.yaml lines 1134-1152 give the syscall_event_drops defaults; line 650 priority debug (needed for the Debug-priority drop alert); line 657 json_output false.",
+  "record_class_field": "rule",
+  "marker_classes": [],
+  "non_event_classes": [
+    "Falco internal: syscall event drop",
+    "Falco internal: metrics snapshot"
+  ],
+  "integrity": {
+    "mechanism": "none",
+    "note": "No hash, signature, chain or sequence number on an alert. falco-live-scrubbed.jsonl, the tuned capture with its first `Read sensitive file untrusted` alert removed, scores identically to falco-live-full.jsonl; so does falco-live-default.jsonl."
+  },
+  "loss": {
+    "mode": "none",
+    "declaration_class": "Falco internal: syscall event drop",
+    "count_field": "output_fields.n_drops",
+    "note": "Falco's drop alert is the most detailed in-band drop statement scored so far: when it fires it says how many kernel events were dropped in the last second, of how many (n_evts), and by syscall category, and here the n_drops of the four alerts summed exactly to the kernel counter. It is scored as mode none because what it counts is syscall events, not alert records: nothing in the stream states how many alerts Falco produced, so VLC-L2-1 has no production count, and a lost alert (for example via falco.outputs_queue_num_drops, 0 in both runs) would not appear in n_drops. The counts are JSON strings. It fires only when a second's drop ratio exceeds syscall_event_drops.threshold (default .1) and a token is available (default rate one per 30 s, burst 1); at the defaults, this capture's 11694 drops produced no drop alert, no log line and a zero in Falco's own exit summary. The declaration_class and count_field keys above are informational; the checker does not read them in mode none."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "The alert stream does not say which rules were loaded, which syscalls the driver attached to, or which event sources were enabled; Falco writes those to its own log at start-up (falco.stderr.txt: rules files, `Enabled event sources: syscall`, the chosen buffer size, and failures to attach the TOCTOU mitigation programs for connect, creat, open, openat and openat2). The metrics snapshot alert (tuned run only) carries rule counters, not a statement of what was observed."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "Each alert names the rule that fired, its priority and tags, and the fields it matched on. No alert carries a digest of the rules files or of falco.yaml, and nothing in the stream shows which rules were loaded, so an alert is tied to the rule set only by its rule name."
+  },
+  "independence": {
+    "mode": "kernel",
+    "audited_process_can_write_records": false,
+    "boundary_statement": "Observed in this run: the triggering commands ran in an unprivileged alpine:3.20 container with no host mounts; Falco ran as a separate privileged container reading kernel events through its eBPF probe and wrote alerts into a directory mounted only into the Falco container. A process with root on the host or access to the Docker socket can stop Falco, change falco.yaml (including the drop threshold) or detach the probe; the drop accounting itself is computed by Falco.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://github.com/falcosecurity/falco/releases/tag/0.45.0",
+    "https://github.com/falcosecurity/falco/blob/0.45.0/userspace/falco/event_drops.cpp",
+    "https://github.com/falcosecurity/falco/blob/0.45.0/falco.yaml",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/falco-rekor/capture/runs/run-20260930T112902Z/falco"
+  ]
+}
