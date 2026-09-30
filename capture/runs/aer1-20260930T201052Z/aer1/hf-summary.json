@@ -1,0 +1,11 @@
+{
+  "license": "cc-by-4.0",
+  "files": [
+    ".gitattributes",
+    "README.md",
+    "receipts.jsonl",
+    "receipts.parquet"
+  ],
+  "lastModified": "2026-09-30T06:11:03.000Z",
+  "downloads": 135
+}

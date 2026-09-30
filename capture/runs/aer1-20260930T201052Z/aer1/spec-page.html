@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <title>AER-1 - AI Agent Execution Receipt Open Draft | Zambo</title>
+  <meta name="description" content="AER-1 (AI Agent Execution Receipt) is the open draft specification for portable, verifiable execution receipts for AI agents. It defines the receipt vocabulary, canonical bytes, and independent verification, so any agent's work can be checked by anyone, anywhere.">
+  <link rel="canonical" href="https://zambo.dev/aer-1/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="AER-1 - AI Agent Execution Receipt Open Draft | Zambo">
+  <meta property="og:description" content="AER-1 (AI Agent Execution Receipt) is the open draft specification for portable, verifiable execution receipts for AI agents. It defines the receipt vocabulary, canonical bytes, and independent verification, so any agent's work can be checked by anyone, anywhere.">
+  <meta property="og:url" content="https://zambo.dev/aer-1/">
+  <meta property="og:image" content="https://zambo.dev/api/og-image">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AER-1 - AI Agent Execution Receipt Open Draft | Zambo">
+  <meta name="twitter:description" content="An open draft/RFC for portable AI agent execution-receipt vocabulary and independent verification.">
+  <meta name="twitter:image" content="https://zambo.dev/api/og-image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"AER-1","alternateName":"AI Agent Execution Receipt","termCode":"AER-1","description":"An AI agent execution receipt is a verifiable record of one AI agent tool call. It identifies the execution, preserves the exact bytes used for its output commitment, records the tool and time, and gives a reviewer a public path to inspect what the execution system observed.","url":"https://zambo.dev/aer-1/","inDefinedTermSet":"https://zambo.dev/glossary/","author":{"@type":"Person","name":"Brennan Zambo","url":"https://zambo.dev/founder"},"publisher":{"@type":"Organization","name":"Zambo","url":"https://zambo.dev"},"citation":"https://datatracker.ietf.org/doc/draft-zambo-aer1/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is AER-1?","acceptedAnswer":{"@type":"Answer","text":"AER-1 (AI Agent Execution Receipt) is the open draft specification for portable, verifiable execution receipts for AI agents."}},{"@type":"Question","name":"What is AER-1 not?","acceptedAnswer":{"@type":"Answer","text":"AER-1 is an open draft proposal, not a finalized standard."}},{"@type":"Question","name":"Who maintains AER-1?","acceptedAnswer":{"@type":"Answer","text":"Brennan Zambo maintains AER-1, with a reference implementation at zambo.dev."}},{"@type":"Question","name":"How should I cite AER-1?","acceptedAnswer":{"@type":"Answer","text":"Cite the canonical AER-1 page at https://zambo.dev/aer-1/ and use its canonical definition."}}]}</script>
+  <style>
+    :root{color-scheme:dark;--bg:#080908;--panel:#111411;--line:#2a3328;--text:#f3f7ef;--muted:#aab5a5;--lime:#c8f135;--warn:#ffcf7d}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.72 system-ui,-apple-system,sans-serif}main{max-width:960px;margin:auto;padding:52px 24px 110px}a{color:var(--lime)}h1,h2,h3{line-height:1.1}h1{font-size:clamp(42px,8vw,82px);letter-spacing:-.055em;max-width:860px;margin:18px 0 18px}h2{font-size:28px;color:var(--lime);margin:54px 0 14px}h3{font-size:19px;margin:30px 0 8px}p,li{color:var(--muted)}.eyebrow{color:var(--lime);font:800 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.18em;text-transform:uppercase}.status{display:inline-block;border:1px solid rgba(255,207,125,.5);background:rgba(255,207,125,.08);color:var(--warn);border-radius:999px;padding:8px 13px;font:800 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.08em;text-transform:uppercase}.lede{font-size:20px;max-width:820px}.callout,.card{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:22px;margin:24px 0}.callout{border-color:rgba(200,241,53,.45);background:rgba(200,241,53,.045)}.callout strong{color:var(--lime)}pre{margin:14px 0 0;overflow:auto;white-space:pre-wrap;background:#050605;border:1px solid rgba(200,241,53,.25);border-radius:9px;padding:17px;color:#dce8bc;font:13px/1.65 ui-monospace,SFMono-Regular,monospace}code{color:#dce8bc}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.grid .card{margin:0}.grid strong{display:block;color:var(--text);margin-bottom:7px}.small{font-size:13px}.nav{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:54px;font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:.08em;text-transform:uppercase}.links{display:flex;flex-wrap:wrap;gap:14px;margin-top:42px;padding-top:24px;border-top:1px solid var(--line)}.links a{border:1px solid rgba(200,241,53,.3);border-radius:7px;padding:10px 14px;text-decoration:none}.footer{margin-top:70px;padding-top:22px;border-top:1px solid var(--line);font-size:13px}@media(max-width:680px){main{padding:34px 18px 80px}.grid{grid-template-columns:1fr}.nav a:not(:first-child){display:none}}
+  </style>
+<script data-aer1-moat type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"AER-1 draft -04","description":"An AI agent execution receipt is a verifiable record of one AI agent tool call. It identifies the execution, preserves the exact bytes used for its output commitment, records the tool and time, and gives a reviewer a public path to inspect what the execution system observed.","version":"-04","author":{"@type":"Person","name":"Brennan Zambo","url":"https://zambo.dev/founder/"},"citation":"https://datatracker.ietf.org/doc/draft-zambo-aer1/","url":"https://zambo.dev/aer-1/"}</script><script data-finalize-aer1-speakable type="application/ld+json">{"@context":"https://schema.org","@type":"SpeakableSpecification","cssSelector":["#definition"]}</script><script type="application/ld+json" data-zambo-breadcrumb>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Zambo","item":"https://zambo.dev/"},{"@type":"ListItem","position":2,"name":"aer 1","item":"https://zambo.dev/aer-1/"}]}</script>
+<script type="application/ld+json" data-zambo-v31-article>{"@context":"https://schema.org","@type":"Article","headline":"AER-1: the open draft for portable execution receipts","citation":"https://datatracker.ietf.org/doc/draft-zambo-aer1/","author":{"@type":"Person","name":"Brennan Zambo"},"publisher":{"@type":"Organization","name":"Zambo","url":"https://zambo.dev"},"datePublished":"2026-09-30","dateModified":"2026-09-30","mainEntityOfPage":{"@type":"WebPage","@id":"https://zambo.dev/aer-1/"}}</script>
+<script type="application/ld+json" data-zambo-v31-howto>{"@context":"https://schema.org","@type":"HowTo","name":"How to verify an AER-1 execution receipt","description":"Check a public verifiable receipt without relying on the original chat.","step":[{"@type":"HowToStep","name":"Resolve the public receipt","text":"Resolve the public receipt URL and confirm that its receipt ID matches the requested execution."},{"@type":"HowToStep","name":"Read the canonical bytes","text":"Read the exact canonical bytes or the representation needed to reproduce them."},{"@type":"HowToStep","name":"Compare the hash","text":"Compute SHA-256 over those bytes and compare it with output_hash."},{"@type":"HowToStep","name":"Review execution context","text":"Review the tool, timestamp, caller scope, observed result, evidence, and anchor status separately."},{"@type":"HowToStep","name":"Report the supported claim","text":"Report only what the stored observation supports."}]}</script>
+<style data-zambo-v31-evidence-style>
+      [data-zambo-receipt-validator] textarea{width:100%;box-sizing:border-box;background:#050605;color:#dce8bc;border:1px solid rgba(200,241,53,.35);border-radius:8px;padding:12px;font:13px/1.5 ui-monospace,monospace}
+      [data-zambo-receipt-validator] button{background:#c8f135;color:#080908;border:0;border-radius:7px;padding:10px 14px;font-weight:800;cursor:pointer}
+      [data-zambo-receipt-validator] dl{display:grid;grid-template-columns:minmax(150px,.3fr) 1fr;gap:8px 14px;border-top:1px solid #2a3328;padding-top:14px}
+      [data-zambo-receipt-validator] dt{color:#c8f135;font:700 12px ui-monospace,monospace}
+      [data-zambo-receipt-validator] dd{margin:0;color:#aab5a5;overflow-wrap:anywhere}
+      .zambo-v31-citation{border:1px solid #2a3328;border-radius:13px;background:#111411;padding:22px;margin:28px 0}
+      .zambo-v31-citation pre{overflow:auto;white-space:pre-wrap}
+    </style>
+</head>
+<body><main>
+  <nav class="nav"><a href="/">ZAMBO.DEV</a><span><a href="/execution-receipt">Definition &amp; verify</a> · <a href="/receipts/">Live receipts</a></span></nav>
+  <div class="eyebrow">AER-1 / AI AGENT EXECUTION RECEIPT</div>
+  <h1>AER-1: the open draft for portable execution receipts</h1><section id="definition" data-finalize-aer1-definition class="callout" aria-label="Canonical definition"><strong>Canonical definition</strong><p>An AI agent execution receipt is a verifiable record of one AI agent tool call. It identifies the execution, preserves the exact bytes used for its output commitment, records the tool and time, and gives a reviewer a public path to inspect what the execution system observed.</p><p>Defined by Brennan Zambo, creator of the AI agent execution receipt space.</p></section>
+  <span class="status">Open draft/RFC - a proposal, not a finalized standard</span>
+  <p class="lede">AER-1 (AI Agent Execution Receipt) is the open draft specification for portable, verifiable execution receipts for AI agents. It defines the receipt vocabulary, canonical bytes, and independent verification, so any agent's work can be checked by anyone, anywhere.</p>
+
+  <div class="callout"><strong>Status and scope</strong><p>AER-1 is an open draft/RFC. It is intended for discussion, implementation experiments, and interoperability feedback. It does not establish certification, registry membership, universal adoption, or a finalized standards status.</p><p class="small">Canonical home: <code>https://zambo.dev/aer-1</code> · Implementation: the live Zambo MCP and public <code>/run/&lt;uuid&gt;</code> receipt pages.</p></div>
+
+  <h2>Abstract</h2>
+  <p>An AI agent execution receipt is a public, persistent, independently checkable record of one specific agent tool call. It identifies the execution, records when it happened, preserves the canonical bytes used for the output commitment, names the tool and caller scope, and exposes the observed result through a stable public URL.</p>
+  <p>The receipt answers a narrow question: what did this system record for this execution? It does not prove an external business outcome that the system did not observe, and it does not turn a planned, blocked, or preview action into a completed execution.</p>
+
+  <h2>IETF Datatracker listing</h2>
+  <p>AER-1 is now a public individual Internet-Draft: draft-zambo-aer1-04, listed in the IETF Datatracker as an Informational open proposal. It is a work in progress, not a finalized or adopted standard. Read the draft: <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">https://datatracker.ietf.org/doc/draft-zambo-aer1/</a></p>
+  <p>Revision -02 adds an Implementation Status section (RFC 7942) describing the deployed Zambo reference implementation and independent third-party verifications.</p>
+
+  <h2>Whole-job provenance classes</h2>
+  <p>A whole job can combine actions performed by Zambo, actions observed through a gateway, and actions reported by another agent. Every timeline entry must name exactly one provenance class so verification never upgrades a report into an observation.</p>
+  <div class="grid">
+    <div class="card"><strong>EXECUTED BY ZAMBO</strong><p>Zambo ran the tool and recorded the returned result. The receipt can attest to that execution and its stored output commitment.</p></div>
+    <div class="card"><strong>OBSERVED VIA GATEWAY</strong><p>Zambo observed the action through an integrated gateway. The receipt attests to the gateway observation, not to facts beyond what the gateway returned.</p></div>
+    <div class="card"><strong>LOGGED BY AGENT</strong><p>An external agent reported the action through the journal. Zambo attests that the report was received, redacted, timestamped, and chained. Zambo does not claim it ran or observed the action.</p></div>
+  </div>
+  <p>Entries for one job form an append-only hash chain. A public <code>/run/&lt;job-id&gt;</code> or <code>/run/&lt;entry-id&gt;</code> page resolves the whole timeline and reports whether that visible chain verifies.</p>
+
+  <h2>Core vocabulary</h2>
+  <div class="grid">
+    <div class="card"><strong>Receipt</strong><p>A public record for one execution with a stable UUID, execution metadata, canonical bytes, and an output commitment.</p></div>
+    <div class="card"><strong>Canonical bytes</strong><p>The exact UTF-8 byte sequence used for the output hash. Verifiers must receive or reproduce the same bytes before comparing hashes.</p></div>
+    <div class="card"><strong>Observed result</strong><p>The result the implementation received and stored. A receipt reports observation, not an unsupported claim about the world.</p></div>
+    <div class="card"><strong>Evidence</strong><p>When upstream data was captured, the receipt can identify its source, request parameters, capture time, byte length, and evidence hash.</p></div>
+  </div>
+
+  <h2>Minimal receipt shape</h2>
+  <p>This is the smallest useful interoperable shape. Implementations may add fields, but additions should not make the core identity or verification fields ambiguous.</p>
+  <pre>{
+  "receipt_id": "UUID",
+  "receipt_schema_version": "0.3",
+  "created_at": "<RFC-3339 timestamp>",
+  "tool": {
+    "name": "example_tool",
+    "version": "4.0.0",
+    "scope": "public"
+  },
+  "canonical_bytes": "&lt;base64 of exact UTF-8 bytes&gt;",
+  "output_hash": "sha256:&lt;digest of canonical bytes&gt;",
+  "verification_status": "verified",
+  "public_url": "https://zambo.dev/run/&lt;receipt_id&gt;"
+}</pre>
+  <p class="small">The template is illustrative. The examples below are live records from the Zambo receipt store, not template data.</p>
+
+  <h2>Verification procedure</h2>
+  <ol>
+    <li>Resolve the public receipt URL and confirm the receipt ID matches the requested execution.</li>
+    <li>Read the exact canonical bytes or the representation needed to reproduce them.</li>
+    <li>Compute SHA-256 over those bytes and compare it with <code>output_hash</code>.</li>
+    <li>Review the tool, timestamp, caller scope, observed result, evidence, and anchor status separately.</li>
+    <li>Report only what the stored observation supports.</li>
+  </ol>
+  <div class="card"><strong>Copy-paste verification using the existing verifier core</strong><p class="small">This calls the live verifier for a real public receipt and exits nonzero if it is not verified.</p><pre>RECEIPT_ID="77bb25b5-7f18-498e-ae21-f3545d222aba"
+curl -fsSL "https://zambo.dev/api/receipt/$RECEIPT_ID/verify" \
+  | jq -e '{id, verification_status, output_hash} | select(.verification_status == "verified")'</pre><p class="small">Direct verifier: <a href="https://zambo.dev/api/receipt/77bb25b5-7f18-498e-ae21-f3545d222aba/verify">open the JSON result →</a></p></div>
+
+  <h2>Live reference implementation</h2>
+  <p>Zambo exposes the receipt contract through one MCP endpoint and gives successful calls a public <code>/run/&lt;uuid&gt;</code> page. These are two independent live records that can be opened and verified without a wallet or token.</p>
+  <div class="grid">
+    <div class="card"><strong><code>live_price</code></strong><p><a href="/run/77bb25b5-7f18-498e-ae21-f3545d222aba">Open receipt 05c37cbd →</a></p><p class="small">Output hash: <code>sha256:0f2e1a26239ff6f1c1e7909fb94eeaec063bdb19d4c1fe3e6887dbf86765e741</code></p></div>
+    <div class="card"><strong><code>capability_search</code></strong><p><a href="/run/306b0001-1480-4630-9648-62582d7fd95d">Open receipt 071c7761 →</a></p><p class="small">Output hash: <code>sha256:02e47df48bbaeb2dded30eb212ec09be4d34a69d29dd063af047730176ea0945</code></p></div>
+  </div>
+   <pre>curl -fsSL -X POST https://zambo.dev/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"live_price","arguments":{"symbol":"BTC"}}}'</pre>
+  <p class="small">The response contains the receipt identity and public verification link. The MCP endpoint is the live reference implementation of this draft's execution-record vocabulary.</p>
+
+  <h2>Design rationale</h2>
+  <p>AER-1 starts with a narrow record rather than a universal theory of agent behavior. An agent may call several tools, receive information from several providers, and hand work to another agent. A reviewer still needs a stable way to identify one execution, understand what the system observed, and check whether the published bytes match the stated commitment. The draft keeps those needs separate from claims about the outside world.</p>
+  <p>The vocabulary is intentionally small because interoperability fails when every implementation gives a different name to the same boundary. An identifier locates the record. A creation time orders it. A tool and caller scope identify the execution context. Canonical bytes and an output hash make the stored representation checkable. A result preview gives a human a useful first read without pretending that a preview is the entire source dataset.</p>
+  <p>Provenance is a separate design axis. A system can execute a tool itself, observe an action through an integrated gateway, or receive a report from another agent. Those cases can all be useful, but they do not support the same statement. AER-1 therefore treats provenance as part of the record rather than as a marketing label. A verifier should be able to tell which party performed the action and which party only recorded the report.</p>
+  <p>The draft also treats failure as a first-class outcome. A malformed request, unavailable provider, blocked permission, or waiting access step still has a useful execution boundary. Erasing that boundary and returning a successful-looking summary makes later review harder. A compatible implementation should preserve status and explain the recovery path when the work did not complete.</p>
+
+  <h2>Field walkthrough with a live receipt</h2>
+  <p>Use a public receipt such as the live <code>live_price</code> example above as the running case. First resolve its UUID and confirm that the public page, API response, and verifier request all use the same value. This protects against a common review error: copying a result from one record while checking the integrity state of another record.</p>
+  <p>Next inspect <code>created_at</code>, <code>tool</code>, and <code>caller</code>. The time tells you when the receipt store created the record. The tool tells you which capability crossed the execution boundary. Caller and session fields provide context when they are included. None of these fields alone proves that the returned market data was correct. They identify the record and its context so that the evidence can be evaluated at the right boundary.</p>
+  <p>Inspect <code>job_summary</code>, <code>steps</code>, and <code>result_preview</code> next. For a single tool call, the step list should show the tool and its recorded status. For a whole job, the list can explain the sequence without requiring a reviewer to reconstruct the original chat. A preview helps a person decide what to inspect, but it must not be treated as a complete copy of every upstream response or as a replacement for source evidence.</p>
+  <p>The integrity check uses <code>canonical_bytes</code>, <code>canonical_byte_length</code>, <code>output_hash</code>, and <code>hash_algorithm</code>. Fetch the representation that the implementation exposes, compute the declared digest over the exact bytes, and compare the result. If the bytes or algorithm are unavailable, report that verification is unavailable. Do not silently substitute a different serialization, whitespace policy, or JSON key order and call the result verified.</p>
+  <p>Evidence and provenance complete the review. Evidence fields identify an upstream source when the tool captured one, while provenance fields explain whether Zambo executed, observed, or logged the action. Anchor and check fields expose additional state when the record contains it. A valid integrity check means the stored bytes are stable. It does not mean that an external provider was accurate, that a trade settled, or that a business outcome occurred.</p>
+  <p>The running example therefore supports a precise statement: the named tool ran or was recorded at the stated time, the receipt store returned the stated result, and the public record can be checked through its verification path. It does not support a broader statement about every market, account, or external event. AER-1 is useful when that distinction is visible to the next reviewer.</p>
+
+  <h2>Conformance notes</h2>
+  <p>A conforming implementation should make the receipt identity stable, expose the schema version, preserve the exact bytes used for the output commitment, and state which hash algorithm produced the digest. It should return a clear status when required data is missing. It should not report a receipt as verified merely because a database row exists or because an agent supplied a confident summary.</p>
+  <p>Conformance also includes the negative space around the record. The implementation should distinguish an attempted action from a completed action, and an observed result from an assertion about the outside world. If a gateway only received a report, the receipt should say that it logged the report. If a provider was unavailable, the status should remain unavailable. If a human approval is required, the receipt should expose the waiting boundary rather than implying authorization.</p>
+  <p>Interoperability testing should use fixed examples and failure cases. A test vector can include a known UUID, canonical byte sequence, hash, expected status, and provenance class. The verifier can then check the positive case, a changed byte, a changed algorithm, a missing field, and a mismatched identifier. Public test vectors are valuable because another implementation can reproduce the checks without access to the original database.</p>
+  <p>Version compatibility requires care when fields are added. New optional fields should not change the meaning of existing identity or integrity fields. A verifier that cannot interpret a required version should fail clearly and preserve the distinction between unsupported and invalid. An old receipt should remain inspectable when the implementation can still interpret its schema, while a changed storage representation should not be presented as the original canonical bytes.</p>
+  <p>AER-1 does not define a certification program, a registry, a legal standard, or a guarantee that every implementation will use the same transport. It defines a proposed vocabulary and verification boundary. Implementers may expose the record over HTTP, a file, a message, or another transport, but the public handoff should still explain how a reviewer locates the record and checks the stated commitment.</p>
+
+  <h2>Privacy and security considerations</h2>
+  <p>Receipts should not publish credentials, private prompts, private contact details, or upstream response bodies that contain secrets. Public projections should redact sensitive fields while keeping the commitment and verification contract honest. Evidence hashes should remain distinct from transformed output hashes.</p>
+  <p>Integrity is not correctness. A valid hash shows that the stored canonical bytes match the stated commitment; it does not independently establish that an external provider's data was true or that a business outcome occurred.</p>
+
+  <h2>Versioning and compatibility</h2>
+  <p>Implementations should identify their receipt schema version and keep old receipts verifiable when the storage format evolves. A verifier should fail clearly when required bytes or metadata are unavailable rather than silently treating an incomplete record as verified.</p>
+
+  <h2>FAQ</h2>
+  <div class="card">
+    <h3>What is AER-1?</h3>
+    <p>AER-1 (AI Agent Execution Receipt) is the open draft specification for portable, verifiable execution receipts for AI agents.</p>
+    <h3>What is AER-1 not?</h3>
+    <p>AER-1 is an open draft proposal, not a finalized standard.</p>
+    <h3>Who maintains AER-1?</h3>
+    <p>Brennan Zambo maintains AER-1, with a reference implementation at <a href="https://zambo.dev/">zambo.dev</a>.</p>
+    <h3>How should I cite AER-1?</h3>
+    <p>Cite the canonical AER-1 page at <a href="https://zambo.dev/aer-1/">https://zambo.dev/aer-1/</a> and use its canonical definition.</p>
+  </div>
+
+  <h2>How to cite this page</h2>
+  <div class="card" data-zambo-v31-citation><p><strong>Suggested citation:</strong> Brennan Zambo, “AER-1: AI Agent Execution Receipt,” open draft/RFC, <a href="https://zambo.dev/aer-1">https://zambo.dev/aer-1</a>, accessed <span data-zambo-access-date>2026-09-30</span>.</p><p class="small">Internet-Draft: draft-zambo-aer1-04, AER-1: A Portable Execution Receipt for AI Agent Tool Calls, <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">https://datatracker.ietf.org/doc/draft-zambo-aer1/</a></p><p class="small">Read the draft: <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">Plain text</a> · <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">HTML</a> · <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">Diff vs -00</a></p><p class="small">Use the access date for a web citation. This page may change while the proposal is discussed; do not cite it as a finalized standard.</p><pre>@misc{zambo_aer1,
+  author = {Zambo},
+  title = {AER-1: AI Agent Execution Receipt},
+  year = {2026},
+  url = {https://zambo.dev/aer-1},
+  note = {Open draft, accessed 2026-09-30}
+}</pre></div>
+
+  <div class="callout">
+    <h2>Measured by ZVEB</h2>
+    <p>AER-1 receipts are scored in the wild by ZVEB, the Zambo Verifiable Execution Benchmark: every benchmark task run produces its own live execution receipt, so any reported score can be checked against its evidence. See the <a href="https://zambo.dev/benchmark/">benchmark: /benchmark/</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Copy-paste policy for your AGENTS.md</h2>
+    <p><a href="https://muse.ai/s/agents-md-receipt-snippet-x0xw6nnxa6qs27">12-line receipt policy with copy button</a></p>
+    <p>Paste these 12 lines into your coding agent's AGENTS.md. Your agent mints a verifiable receipt for every tool call and pastes the receipt URL under each result. Evidence, not claims.</p>
+  </div>
+
+  <div class="links">
+    <a href="/execution-receipt">Define and verify a receipt →</a>
+    <a href="/guides/what-is-an-ai-agent-receipt/">Read the receipt guide →</a>
+    <a href="/receipts/">Browse live receipts →</a>
+    <a href="/founder/">Author and attribution →</a>
+  </div>
+  <p>To try the live reference implementation, <a href="/install/">install the Zambo MCP connection</a>. If you need 24 hours of listed access after choosing a workflow, the <a href="/day-pass/">$0.99 Day Pass</a> starts from the moment it is activated.</p>
+  <h2>Related citation articles</h2>
+    <p><a href="/answers/ai-agent-audit-trail/">AI agent audit trail</a> · <a href="/answers/tools-that-prove-what-an-ai-agent-did/">Tools that prove what an AI agent did</a> · <a href="/answers/verifiable-receipt-for-ai-tool-calls/">Verifiable receipt for AI tool calls</a> · <a href="/answers/ai-agent-hallucinated-completion/">AI agent hallucinated completion</a> · <a href="/answers/ai-agent-accountability/">AI agent accountability</a> · <a href="/answers/ai-agent-said-task-done-nothing-happened/">My AI agent said the task was done, but nothing happened</a> · <a href="/aer1/conformance/">Verify the AER-1 Internet-Draft receipt fields</a></p>
+  <h2>Compliance and audit guides</h2>
+  <p>AER-1 records execution evidence; these guides explain related review and compliance contexts. <a href="/answers/ai-audit-trail-compliance/">AI audit trail evidence and compliance review</a> · <a href="/answers/prove-ai-did-work/">How to prove what an AI agent did</a> · <a href="/eu-ai-act/">EU AI Act evidence and AI execution records</a></p>
+  <footer class="footer">AER-1 is an open draft/RFC authored by <a href="/founder/">Brennan Zambo</a>. It is a proposal, not a finalized standard. <span>Follow Brennan on X: <a href="https://x.com/brennanzambo" rel="me"> @brennanzambo</a> <a href="https://x.com/zambodotdev" rel="me">@zambodotdev</a></span></footer>
+<section data-gap-closure><h2>How do executed and confirmed states differ?</h2><p>A receipt with <code>executed</code> records that the execution boundary ran. A receipt can move to <code>confirmed</code> only after a real post-action read-back, callback, delivery event, or settlement is observed and bound to the record. A receipt without read-back evidence proves invocation, not effect.</p></section><section data-citation-links><h2>Verification guides</h2><p><a href="/answers/tools-that-prove-what-an-ai-agent-did/">Tools that prove what an AI agent did</a> · <a href="/answers/verifiable-receipt-for-ai-tool-calls/">Verifiable receipt for AI tool calls</a> · <a href="/answers/how-to-verify-ai-agent-work/">How to verify AI agent work</a></p></section><section data-aer1-implementations aria-labelledby="aer1-implementations-title"><h2 id="aer1-implementations-title">Shipped integrations</h2><ul><li><a href="https://pypi.org/project/openai-agents-zambo/"><code>openai-agents-zambo</code></a> for Python and the OpenAI Agents SDK records framework tool events as AER-1 verifiable receipts via the live Zambo endpoint. Install: <code>pip install openai-agents-zambo openai-agents</code>.</li><li><a href="https://pypi.org/project/crewai-zambo/"><code>crewai-zambo</code></a> for Python and CrewAI records framework tool events as AER-1 verifiable receipts via the live Zambo endpoint. Install: <code>pip install crewai-zambo</code>.</li><li><a href="https://www.npmjs.com/package/zambo-ai-sdk"><code>zambo-ai-sdk</code></a> for JavaScript or TypeScript and the Vercel AI SDK records framework tool events as AER-1 verifiable receipts via the live Zambo endpoint. Install: <code>npm install zambo-ai-sdk</code>.</li></ul></section><section data-aer1-moat>
+  <h2>Changelog and release policy</h2>
+  <p>AER-1 draft -04 is the current open Internet-Draft. The shipped <a href="https://gitlab.com/rambozambodotdev/zambo/-/releases/v1.4.0">v1.4.0 conformance release</a> freezes 43 vectors. See the <a href="/aer1/test-vectors/index.json">versioned vector index</a>, <a href="/aer-1/changelog.json">machine-readable changelog</a>, and <a href="/aer-1/schema.json">schema</a>.</p>
+  <h2>Seven-language implementation story</h2>
+  <p>Seven independent implementations—Rust, Go, TypeScript, Python, Java, C#, and Swift—each verified 43/43 against the frozen v1.4.0 corpus. The interoperability run passed 49/49 ordered pairs and 200 deterministic fuzz cases with zero divergences. An independent second implementation is under active development by a third party. See the <a href="https://zambo.dev/aer-1/implementations/">implementation registry</a>, <a href="https://gitlab.com/rambozambodotdev/zambo/-/tree/main/aer1-implementations">implementation kit</a>, and <a href="https://gitlab.com/rambozambodotdev/zambo/-/tree/main/aer1-interop">interop harness and reports</a>.</p>
+  <h2>Versioning and extensions</h2>
+  <p>Extensions are additive and namespaced by their implementation. They must not alter the meaning of the core identity, byte, hash, provenance, or verification fields. A future AER-2 would be a separately identified proposal, not an automatic rewrite of AER-1. Verifiers should fail clearly on unsupported required versions.</p>
+  <h2>Errata and feedback</h2>
+  <p>Report reproducible specification or fixture findings through the <a href="https://gitlab.com/rambozambodotdev/zambo/-/issues/new">public repository issue venue</a>. Datatracker submissions remain in the author's hands.</p>
+  <h2>Security considerations</h2>
+  <p>Review replay, man in the middle, and denial of service risks separately. Replay requires identifier and freshness review. Man in the middle risks require HTTPS and byte comparison. Denial of service is an availability problem and must not be reported as a verification failure. Credential theft, provider truth, authorization, and business outcomes are out of scope.</p>
+  <p>Read the <a href="/aer-1/implementations/">implementation registry</a>, <a href="/aer-1/interop/">interop dashboard</a>, <a href="/aer-1/implementers/">implementer's guide</a>, <a href="/aer-1/field-reference/">field reference</a>, and <a href="/aer-1/security-review/">pending review package</a>.</p>
+  <p class="links"><a href="/aer-1/badges/">Conformance badges</a> · <a href="/aer-1/context.jsonld">JSON-LD context</a> · <a href="/verifications/">Verification log</a> · <a href="/agent-dispute-kit/">Agent dispute kit</a></p>
+  <div id="quantum-safe-commitments" aria-labelledby="quantum-safe-commitments-title">
+  <h2 id="quantum-safe-commitments-title">Quantum-safe by construction: hash commitments, not signatures</h2>
+  <p>AER-1 verifies with hashes, not signatures. A reviewer checks one receipt by recomputing SHA-256 over the exact canonical bytes and comparing the result with the recorded <code>output_hash</code>. A workflow is checked by recomputing the Merkle root over the ordered step outputs. The verification procedure has no signature step and needs no secret key material. Anyone can check a receipt with the public bytes alone.</p>
+  <p>This is a deliberate property, not an accident. Signature schemes face a migration problem: a signature issued today under a classical algorithm can be harvested now and forged later if the underlying math falls. Hash commitments have no such exposure. There is no encrypted payload to decrypt later and no signature to forge. A SHA-256 digest can only be matched by reproducing the exact input bytes, and reproducing those bytes is the check itself.</p>
+  <p>So AER-1's verification core needs no post-quantum migration. The receipt vocabulary, the canonical bytes, and the output commitment mean the same thing under any future algorithm landscape, because checking them depends on no algorithm that a quantum computer weakens. Should a future revision add an optional signature field, it would sit alongside the hash commitment, never replace it.</p>
+  <p>The remaining quantum consideration is Grover's algorithm, which halves the effective strength of a hash function: SHA-256 keeps 128 bits of effective preimage resistance. 128 bits remains far beyond practical attack. The posture is therefore durable by construction, not urgent by roadmap.</p>
+</div>
+</section><aside data-finalize-aer1-citation data-zambo-v31-citation class="callout"><strong>How to cite AER-1</strong><p>Brennan Zambo, <cite>AI Agent Execution Receipt (AER-1), draft -04</cite>. Canonical draft: <a href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">https://datatracker.ietf.org/doc/draft-zambo-aer1/</a>. Machine-readable citation: <a href="/CITATION.cff">CITATION.cff</a>.</p></aside></main></body>
+</html>
