@@ -45,7 +45,8 @@ jobs:
                    mcp-toolcall:mcp-toolcall:0:0 mcp-toolcall:mcp-toolcall-partial-host:0:0 \
                    fab-equipment-secsgem:fab-equipment-full:0:0 \
                    fab-equipment-secsgem:fab-equipment-sampled:0:0 \
-                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:0:0 \
+                   jidec-ledger:jidec-ledger:0:0 jidec-ledger-chained:jidec-ledger-chained:1:1 \
+                   jidec-ledger-chained-unbound:jidec-ledger-chained-unbound:0:0 \
                    nvidia-openshell-live:openshell-live-full:0:0 \
                    nvidia-openshell-live:openshell-live-scrubbed:0:0 \
                    agentgateway-live:agentgateway-live-full:0:0 agentgateway-live:agentgateway-live-scrubbed:0:0 \
@@ -59,7 +60,7 @@ jobs:
                    otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0 \
                    falco-live:falco-live-full:0:0 falco-live:falco-live-scrubbed:0:0 \
                    falco-live:falco-live-default:0:0 \
-                   tessera-live:tessera-live-full:0:0 tessera-live:tessera-live-scrubbed:0:0 \
+                   tessera-live:tessera-live-full:1:1 tessera-live:tessera-live-scrubbed:0:0 \
                    invinoveritas-ledger-live:invinoveritas-ledger-live-full:0:0 \
                    invinoveritas-ledger-live:invinoveritas-ledger-live-truncated:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
@@ -69,15 +70,22 @@ jobs:
             if [ "$got" = "$ws $wa" ]; then echo "ok    $n / $f: structural/attested $got"
             else echo "FAIL  $n / $f: got $got, expected $ws $wa"; bad=1; fi
           done
-          # EXT-022: the JIDEC chained ledger's end marker is not itself chained,
-          # so it is L0 on the log alone and L1 only against the head its
-          # operator stamped to Bitcoin in the daily batch (held outside the log).
-          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained.jsonl \
-                  --adapter adapters/jidec-ledger-chained.json --json \
+          # EXT-022. The unbound JIDEC capture (control) is L0 on the log alone and L1 only against the head
+          # its operator stamped to Bitcoin in the daily batch (held outside the log).
+          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained-unbound.jsonl \
+                  --adapter adapters/jidec-ledger-chained-unbound.json --json \
                   --expect-head 87613590ae46fe98c85925be2bbf8aafe4262634ffa69a45f94081502f8cc7d4 \
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
-          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with its stamped head: structural/attested $got"
-          else echo "FAIL  jidec-ledger-chained with its stamped head: got $got, expected 1 1"; bad=1; fi
+          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained-unbound with its stamped head: structural/attested $got"
+          else echo "FAIL  jidec-ledger-chained-unbound with its stamped head: got $got, expected 1 1"; bad=1; fi
+          # The bound capture is L1 on the log alone (asserted above) and also against the marker hash a
+          # verifier derives from a stamped (n, head): sha256(canon({n, schema, prev_entry_sha256: head, head})).
+          got=$(python3 conformance.py --log examples/third-party/jidec-ledger-chained.jsonl \
+                  --adapter adapters/jidec-ledger-chained.json --json \
+                  --expect-head 1dce7a79c4dd26fee7ae4dd007e232483360efa82669056d3c485ad722fbdd2d \
+                | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['attested_level'])")
+          if [ "$got" = "1 1" ]; then echo "ok    jidec-ledger-chained with the head derived from its stamp: structural/attested $got"
+          else echo "FAIL  jidec-ledger-chained with the head derived from its stamp: got $got, expected 1 1"; bad=1; fi
           # sha256-hex-join: the invinoveritas ledger's head event is signed but not a
           # chain link, so it is L0 on the log alone and L1 only against a head held
           # outside the log (here, the value its signed Nostr head event states).
@@ -91,10 +99,11 @@ jobs:
             else echo "FAIL  invinoveritas-ledger-live / $f with its signed head: got $got, expected $want"; bad=1; fi
           done
           # The claim THIRD-PARTY.md makes about each live capture: removing the
-          # refused calls' records changes no requirement result at all.
+          # refused calls' records changes no requirement result at all. (Tessera
+          # left this list in 1.4.3-draft: its scrubbed file now scores lower; below.)
           for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
                    contextforge-live lasso-live bifrost-live openai-agents-live otel-genai-live \
-                   falco-live tessera-live; do
+                   falco-live; do
             IFS=: read -r f n <<< "$g"; n=${n:-$f}
             r() { python3 conformance.py --log "examples/third-party/$f-$1.jsonl" --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
@@ -113,10 +122,27 @@ jobs:
                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
           if [ "$(r full)" = "$(r default)" ]; then echo "ok    falco-live: default-config scores identically to full"
           else echo "FAIL  falco-live: default-config and full differ"; bad=1; fi
-          # The Tessera log's integrity is checked outside conformance.py, which has no
-          # Merkle-tree mechanism: the raw log and its proofs verify, the full JSONL
-          # verifies, and the scrubbed JSONL -- which the checker scores as the full
-          # one -- must fail.
+          # The Tessera log under merkle-tlog (1.4.3-draft, EXT-026): the scrubbed file,
+          # one entry removed, must now score LOWER than the full one, and fail VLC-L1-1.
+          # Up to 1.4.2-draft the checker had no Merkle mechanism and scored them equal.
+          lv() { python3 conformance.py --log "examples/third-party/tessera-live-$1.jsonl" --adapter adapters/tessera-live.json --json \
+                 | python3 -c "import json,sys;r=json.load(sys.stdin);print(r['structural_level'],r['requirements']['VLC-L1-1']['status'])"; }
+          full=$(lv full); scr=$(lv scrubbed)
+          if [ "${scr%% *}" -lt "${full%% *}" ] && [ "${scr#* }" = FAIL ] && [ "${full#* }" = PASS ]; then
+            echo "ok    tessera-live: scrubbed (L${scr%% *}, VLC-L1-1 FAIL) scores lower than full (L${full%% *})"
+          else echo "FAIL  tessera-live: scrubbed '$scr' does not score lower than full '$full'"; bad=1; fi
+          # Tail truncation against a held checkpoint: the size-3 checkpoint's root is an
+          # earlier root the full log must extend (--expect-root), and a head it is not.
+          R1=d1d2ed1574b70efc82f33f01678111d11e0887d180463251eb52f387a9836519
+          H6=8082a0520690ab287e22984de621e3739250545056d715c15e0e6d773ba7318e
+          if python3 conformance.py --log examples/third-party/tessera-live-full.jsonl --adapter adapters/tessera-live.json \
+               --expect-root $R1 --expect-head $H6 --expect-structural 1 > /dev/null \
+             && ! python3 conformance.py --log examples/third-party/tessera-live-full.jsonl --adapter adapters/tessera-live.json \
+               --expect-head $R1 --expect-structural 1 > /dev/null 2>&1; then
+            echo "ok    tessera-live: held checkpoints (size 3 as root, size 6 as head) anchor it; size 3 as head refused"
+          else echo "FAIL  tessera-live: held-checkpoint anchoring"; bad=1; fi
+          # The same checks outside conformance.py: the raw log and its proofs verify,
+          # the full JSONL verifies, and the scrubbed JSONL must fail.
           t=examples/third-party/tessera-live
           if python3 $t/verify_tlog.py log $t/log $t/log.vkey $t/checkpoint.round1 --proofs $t/verify.jsonl > /dev/null \
              && python3 $t/verify_tlog.py jsonl examples/third-party/tessera-live-full.jsonl $t/log.vkey > /dev/null; then

@@ -14,6 +14,7 @@
     "content_field": "content_hash",
     "prev_field": "prev_head_hash",
     "separator": "|",
+    "link_class": "ledger-entry",
     "root": {
       "kind": "constant",
       "value": "09c790b34b51e22a0d4a0bd9c393d7e0c5891129038f83676a85e2b45f0316d2",

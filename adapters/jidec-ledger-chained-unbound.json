@@ -1,7 +1,7 @@
 {
-  "name": "jidec-ledger-chained",
+  "name": "jidec-ledger-chained-unbound",
   "producer": "JIDEC public verification ledger (HORIZON SHIELD), entries as served at GET https://ledger.horizonshield.dev/ledger/{n}?format=json",
-  "description": "The JIDEC ledger after jidec-chain-v1 with its end marker bound (2026-09-29), exported live from GET https://ledger.horizonshield.dev/ledger/export.jsonl. Each entry carries prev_entry_sha256 and entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})). The export ends in a jidec-head-v1 marker that links to the last entry and carries its own entry_sha256 = sha256(canon({n, schema, prev_entry_sha256, head})), the same recipe over the fields it has, so the EXT-022 tail cut breaks a hash. The marker hash is a function of (n, head), which the daily witness batch stamps to Bitcoin as ledger_head, so the stamped value still serves --expect-head. Loss, coverage and policy are unchanged.",
+  "description": "Control, kept byte for byte: the jidec-chain-v1 export as captured on 2026-09-28, before the end marker was bound (2026-09-29). Its jidec-head-v1 marker names the head but is not chained, so under 1.4.1-draft (EXT-022) it is L0 on the log alone and L1 against the head stamped in the operator's daily Bitcoin batch. The same ledger after jidec-chain-v1 (2026-09-28), exported live from GET https://ledger.horizonshield.dev/ledger/export.jsonl. Each row carries prev_entry_sha256 and entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})), this specification's sha256-canonical-fields recipe, and the export ends in a jidec-head-v1 record whose head is the last entry_sha256. The binding is derived from fields every entry already carried, so no stored entry was rewritten and every per-entry Bitcoin anchor is unchanged. The daily witness batch carries the head inside its stamped bytes, which is the independently held value --expect-head wants. Loss, coverage and policy are unchanged from the L0 scoring.",
   "record_class_field": "schema",
   "marker_classes": [
     "jidec-head-v1"
@@ -29,9 +29,9 @@
     "end_marker": {
       "class": "jidec-head-v1",
       "head_field": "head",
-      "self_bound": true
+      "self_bound": false
     },
-    "note": "jidec-chain-v1 (2026-09-28): entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})), entry 1 links to 64 zeros. End marker bound 2026-09-29 after EXT-022: the jidec-head-v1 record has prev_entry_sha256 = head = the last entry_sha256 and entry_sha256 = sha256(canon({n, schema, prev_entry_sha256, head})). head is in hash_fields because the marker reads and hashes it; no entry carries it, so every entry's hashed object is unchanged."
+    "note": "jidec-chain-v1 (2026-09-28): entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})), the VLC-1 canonical-fields recipe; entry 1 links to 64 zeros; GET /ledger/export.jsonl ends with a jidec-head-v1 record whose head is the last entry_sha256. The binding is derived from fields each entry already carried, so no stored entry was rewritten; each claim_sha256 is also anchored to Bitcoin on its own, and each daily witness batch carries the head inside its stamped bytes. head is listed in hash_fields only because the end marker reads it; no entry carries it, so it is omitted from every entry's hashed object and the recipe is unchanged."
   },
   "loss": {
     "mode": "none",
@@ -52,10 +52,10 @@
   },
   "sources": [
     "https://github.com/ogasurfproject-jpg/horizon-shield/tree/main/workers/hs-ledger",
+    "https://ledger.horizonshield.dev/ledger/57?format=json",
     "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/path/JIDEC_PATH_SPEC_v1.md",
     "https://ledger.horizonshield.dev/ledger/head",
     "https://ledger.horizonshield.dev/ledger/export.jsonl",
-    "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/src/chain_v1.mjs",
-    "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/test/chain.test.mjs"
+    "https://github.com/ogasurfproject-jpg/horizon-shield/blob/main/workers/hs-ledger/src/chain_v1.mjs"
   ]
 }

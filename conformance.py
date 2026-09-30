@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.2-draft"
+VERSION = "VLC-1 1.4.3-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -319,12 +319,355 @@ class Ctx:
     expect_root / expect_head: values the verifier obtained independently of
     the log (EXT-008), from --expect-root / --expect-head or check().
     end_bound: set by check_l1. True only when the end marker's own binding was
-    recomputed and verified, so the values L2 reads from it are anchored."""
+    recomputed and verified, so the values L2 reads from it are anchored.
+    signature: merkle-tlog only -- whether the checkpoint's signature was
+    verified; None for every other mechanism (and then not reported)."""
 
     def __init__(self, expect_root=None, expect_head=None):
         self.expect_root = expect_root.lower() if expect_root else None
         self.expect_head = expect_head.lower() if expect_head else None
         self.end_bound = False
+        self.signature = None
+
+
+# ---------------------------------------------------------------------------
+# merkle-tlog (1.4.3-draft, EXT-026): an RFC 6962 Merkle tree over the entries,
+# closed by a checkpoint stating the tree size and root (C2SP tlog-checkpoint),
+# optionally in a C2SP signed note with an Ed25519 signature. The shape Trillian
+# Tessera and Sigstore's Rekor v2 write. Standard library only.
+# ---------------------------------------------------------------------------
+# Ed25519 verification, RFC 8032 section 5.1.7 (cofactorless equation, strict
+# decoding: a y >= p or an S >= L is refused).
+# VENDORED: point_add, point_mul, point_equal, recover_x / point_decompress and
+# verify below are the Python reference code of RFC 8032 section 6 (S. Josefsson,
+# I. Liusvaara, "Edwards-Curve Digital Signature Algorithm (EdDSA)", IETF, January
+# 2017), renamed and reformatted, arithmetic unchanged; signing is omitted. Code
+# Components extracted from an RFC are available under the Simplified BSD
+# License (IETF Trust Legal Provisions, section 4.e):
+#   Copyright (c) 2017 IETF Trust and the persons identified as the document
+#   authors. All rights reserved. Redistribution and use in source and binary
+#   forms, with or without modification, is permitted pursuant to, and subject
+#   to the license terms contained in, the Simplified BSD License set forth in
+#   Section 4.c of the IETF Trust's Legal Provisions Relating to IETF Documents
+#   (https://trustee.ietf.org/license-info).
+# It is variable-time, which is harmless here: it verifies public data only.
+_ED_P = 2 ** 255 - 19
+_ED_L = 2 ** 252 + 27742317777372353535851937790883648493
+_ED_D = -121665 * pow(121666, _ED_P - 2, _ED_P) % _ED_P
+_ED_I = pow(2, (_ED_P - 1) // 4, _ED_P)
+
+
+def _ed_add(a, b):
+    p = _ED_P
+    A, B = (a[1] - a[0]) * (b[1] - b[0]) % p, (a[1] + a[0]) * (b[1] + b[0]) % p
+    C, D = 2 * a[3] * b[3] * _ED_D % p, 2 * a[2] * b[2] % p
+    E, F, G, H = B - A, D - C, D + C, B + A
+    return (E * F % p, G * H % p, F * G % p, E * H % p)
+
+
+def _ed_mul(s, pt):
+    q = (0, 1, 1, 0)
+    while s:
+        if s & 1:
+            q = _ed_add(q, pt)
+        pt = _ed_add(pt, pt)
+        s >>= 1
+    return q
+
+
+def _ed_eq(a, b):
+    p = _ED_P
+    return (a[0] * b[2] - b[0] * a[2]) % p == 0 and (a[1] * b[2] - b[1] * a[2]) % p == 0
+
+
+def _ed_decompress(s):
+    p = _ED_P
+    if len(s) != 32:
+        return None
+    y = int.from_bytes(s, "little")
+    sign, y = y >> 255, y & ((1 << 255) - 1)
+    if y >= p:
+        return None
+    x2 = (y * y - 1) * pow(_ED_D * y * y + 1, p - 2, p) % p
+    if x2 == 0:
+        if sign:
+            return None
+        x = 0
+    else:
+        x = pow(x2, (p + 3) // 8, p)
+        if (x * x - x2) % p:
+            x = x * _ED_I % p
+        if (x * x - x2) % p:
+            return None
+        if (x & 1) != sign:
+            x = p - x
+    return (x, y, 1, x * y % p)
+
+
+_ED_B = _ed_decompress((4 * pow(5, _ED_P - 2, _ED_P) % _ED_P).to_bytes(32, "little"))
+
+
+def ed25519_verify(pub, msg, sig):
+    """RFC 8032 Ed25519 verification. pub 32 bytes, sig 64 bytes."""
+    if len(pub) != 32 or len(sig) != 64:
+        return False
+    A, R = _ed_decompress(pub), _ed_decompress(sig[:32])
+    if A is None or R is None:
+        return False
+    s = int.from_bytes(sig[32:], "little")
+    if s >= _ED_L:
+        return False
+    k = int.from_bytes(hashlib.sha512(sig[:32] + pub + msg).digest(), "little") % _ED_L
+    return _ed_eq(_ed_mul(s, _ED_B), _ed_add(R, _ed_mul(k, A)))
+
+
+def parse_note_vkey(vkey):
+    """A C2SP signed-note verifier key, name+keyhash+base64(0x01 || pubkey), Ed25519
+    only. Returns (name, 4-byte key hash, 32-byte public key); raises ValueError."""
+    import base64
+    if not isinstance(vkey, str) or vkey.count("+") < 2:
+        raise ValueError("not a signed-note verifier key (name+hash+key)")
+    name, kh, key = vkey.strip().split("+", 2)
+    try:
+        raw = base64.b64decode(key, validate=True)
+    except ValueError:
+        raise ValueError("verifier key is not base64")
+    if len(raw) != 33 or raw[0] != 1:
+        raise ValueError("verifier key is not an Ed25519 (type 0x01) key")
+    h = hashlib.sha256(name.encode() + b"\n" + raw).digest()[:4]
+    if h.hex() != kh.lower():
+        raise ValueError("verifier key hash does not match its name and key")
+    return name, h, raw[1:]
+
+
+def open_signed_note(text, vkey=None):
+    """Split a C2SP signed note into its signed text and signature lines. With
+    vkey, verify that a signature line by that key verifies over the text.
+    Returns (body, error); body is the signed text (ending in a newline)."""
+    import base64
+    i = text.rfind("\n\n")
+    if i < 0:
+        return None, "not a signed note: no blank line before the signatures"
+    body, sigs = text[: i + 1], text[i + 2:]
+    lines = [l for l in sigs.split("\n") if l]
+    if not lines or not all(l.startswith("— ") for l in lines):
+        return None, "not a signed note: malformed signature lines"
+    if vkey is None:
+        return body, None
+    name, kh, pub = parse_note_vkey(vkey)
+    for l in lines:
+        n, _, b = l[2:].rpartition(" ")
+        try:
+            raw = base64.b64decode(b, validate=True)
+        except ValueError:
+            continue
+        if n == name and raw[:4] == kh:
+            if ed25519_verify(pub, body.encode(), raw[4:]):
+                return body, None
+            return None, f"the signature by {name!r} does not verify"
+    return None, f"no signature by the adapter's key {name!r}"
+
+
+def rfc6962_leaf(b):
+    return hashlib.sha256(b"\x00" + b).digest()
+
+
+def rfc6962_node(l, r):
+    return hashlib.sha256(b"\x01" + l + r).digest()
+
+
+class MerkleTree:
+    """RFC 6962 section 2.1 Merkle Tree Hash over a list of leaf hashes, with the
+    hashes of perfect subtrees cached, so the root of every prefix costs O(log n)
+    once the full root has been computed."""
+
+    def __init__(self, leaves):
+        self.leaves, self._perfect = leaves, {}
+
+    def root(self, lo=0, hi=None):
+        hi = len(self.leaves) if hi is None else hi
+        n = hi - lo
+        if n == 0:
+            return hashlib.sha256(b"").digest()
+        if n == 1:
+            return self.leaves[lo]
+        if n & (n - 1) == 0 and (lo, n) in self._perfect:
+            return self._perfect[(lo, n)]
+        k = 1
+        while k * 2 < n:
+            k *= 2
+        h = rfc6962_node(self.root(lo, lo + k), self.root(lo + k, hi))
+        if n & (n - 1) == 0:
+            self._perfect[(lo, n)] = h
+        return h
+
+
+def _decode_hash(v, enc):
+    import base64
+    if not isinstance(v, str):
+        return None
+    try:
+        b = base64.b64decode(v, validate=True) if enc == "base64" else bytes.fromhex(v)
+    except ValueError:
+        return None
+    return b if len(b) == 32 else None
+
+
+def _merkle_bound_fields(ad):
+    integ, em = ad["integrity"], ad["integrity"]["end_marker"]
+    return {x for x in (integ.get("leaf_field"), integ.get("index_field"), ad.get("record_class_field"),
+                        em.get("size_field"), em.get("head_field"), em.get("note_field")) if x}
+
+
+def check_l1_merkle(recs, ad, res, ctx):
+    """VLC-L1-1 and VLC-L1-3 for mechanism merkle-tlog.
+
+    The delivered set is the entries in log order, then one checkpoint record (the
+    end marker) carrying the tree size and root, and optionally the checkpoint note
+    verbatim. Every record but the last is a leaf: its leaf_field decoded to bytes
+    is hashed as SHA-256(0x00 || data); interior nodes are SHA-256(0x01 || l || r).
+    The root over all delivered entries must equal the checkpoint's root and their
+    number its size, so removing, altering, inserting or reordering any entry
+    fails VLC-L1-1. The checkpoint's size and root are recomputed from the entries,
+    so a cut tail passes only with a checkpoint whose root was recomputed for the
+    shorter tree -- a rewrite, as for a chain's self-bound end marker -- which
+    --expect-head (a root held from an earlier reading) or a verified signature by
+    the adapter's key detects. --expect-root: a root obtained independently for an
+    earlier tree size; some prefix of the delivered entries must produce it (the
+    log was extended, not rewritten, since that root was taken)."""
+    import base64
+    integ = ad["integrity"]
+    em = integ["end_marker"]
+    last = recs[-1]
+    if last.cls != em["class"]:
+        res.fail("VLC-L1-1", f"last record class is {last.cls!r}, not the checkpoint {em['class']!r}: "
+                             f"there is no tree size and root to recompute against")
+        res.fail("VLC-L1-3", f"last record class is {last.cls!r}, expected {em['class']!r}: "
+                             f"truncation undetectable")
+        return None
+    entries = recs[:-1]
+    stray = [r.i for r in entries if r.cls != integ["entry_class"]]
+    if stray:
+        res.fail("VLC-L1-1", f"record(s) {stray[:5]} are not {integ['entry_class']!r} entries: in a "
+                             f"Merkle log every record before the checkpoint is a leaf, and a class "
+                             f"label outside the tree would be unanchored")
+        return None
+    # a field a later requirement reads that the tree does not bind is unanchored,
+    # exactly as under sha256-canonical-fields (vlc-1#3)
+    bound = _merkle_bound_fields(ad)
+    unanchored = sorted({(p, f) for p, f in _read_fields(ad) if f not in bound})
+    if unanchored:
+        res.fail("VLC-L1-1", "fields read by later requirements are not bound by the Merkle tree "
+                             "(unanchored): " + ", ".join(f"{f} (via {p})" for p, f in unanchored))
+        return None
+
+    size = dig(last.obj, em["size_field"])
+    root = _decode_hash(dig(last.obj, em["head_field"]), em.get("head_encoding", "base64"))
+    if type(size) is not int or size < 0:
+        res.fail("VLC-L1-1", f"checkpoint {em['size_field']!r} is {size!r}, not a non-negative JSON integer")
+        return None
+    if root is None:
+        res.fail("VLC-L1-1", f"checkpoint {em['head_field']!r} is not a 32-byte hash in "
+                             f"{em.get('head_encoding', 'base64')}")
+        return None
+
+    signed = False
+    nf, vkey = em.get("note_field"), integ.get("verifier_key")
+    if nf:
+        note = dig(last.obj, nf)
+        if not isinstance(note, str):
+            res.fail("VLC-L1-1", f"checkpoint carries no note in {nf!r}")
+            return None
+        body, err = open_signed_note(note, vkey)
+        if err:
+            res.fail("VLC-L1-1", f"checkpoint note: {err}")
+            return None
+        nl = body.split("\n")
+        try:
+            n_size = int(nl[1]) if re.fullmatch(r"0|[1-9][0-9]*", nl[1]) else None
+            n_root = base64.b64decode(nl[2], validate=True)
+        except (IndexError, ValueError):
+            n_size = n_root = None
+        if n_size is None or n_root is None or len(n_root) != 32:
+            res.fail("VLC-L1-1", "checkpoint note body is not origin / size / root (C2SP tlog-checkpoint)")
+            return None
+        if (n_size, n_root) != (size, root):
+            res.fail("VLC-L1-1", f"checkpoint fields (size {size}, root {root.hex()[:16]}...) do not match "
+                                 f"its note (size {n_size}, root {n_root.hex()[:16]}...): the record was "
+                                 f"edited beside the note")
+            return None
+        signed = vkey is not None
+
+    enc = integ.get("leaf_encoding", "utf-8")
+    ixf = integ.get("index_field")
+    leaves = []
+    for pos, r in enumerate(entries):
+        v = dig(r.obj, integ["leaf_field"])
+        if not isinstance(v, str):
+            res.fail("VLC-L1-1", f"record {r.i} carries no leaf data in {integ['leaf_field']!r}")
+            return None
+        if enc == "base64":
+            try:
+                data = base64.b64decode(v, validate=True)
+            except ValueError:
+                res.fail("VLC-L1-1", f"record {r.i}: leaf data is not base64")
+                return None
+        else:
+            data = v.encode("utf-8")
+        if ixf is not None and not (type(dig(r.obj, ixf)) is int and dig(r.obj, ixf) == pos):
+            res.fail("VLC-L1-1", f"record {r.i}: {ixf!r} is {dig(r.obj, ixf)!r}, but it is leaf {pos} "
+                                 f"of the delivered tree")
+            return None
+        leaves.append(rfc6962_leaf(data))
+
+    if len(leaves) != size:
+        res.fail("VLC-L1-1", f"the checkpoint commits to {size} entries and {len(leaves)} were delivered")
+        res.fail("VLC-L1-3", f"checkpoint size {size} != {len(leaves)} delivered entries")
+        return None
+    tree = MerkleTree(leaves)
+    got = tree.root()
+    if got != root:
+        res.fail("VLC-L1-1", f"RFC 6962 root over the {size} delivered entries {got.hex()[:16]}... does "
+                             f"not equal the checkpoint root {root.hex()[:16]}...")
+        return None
+    # only now are the entries (and the checkpoint) bound; L2-3 and L3-2 read r.hash
+    for r, lh in zip(entries, leaves):
+        r.hash = lh.hex()
+    last.hash = got.hex()
+    ctx.end_bound = True
+    res.ok("VLC-L1-3", f"the checkpoint states tree size {size} and its root, both recomputed from the "
+                       f"entries: cutting the tail needs a checkpoint recomputed for the shorter tree")
+
+    if ctx.expect_root:
+        want = bytes.fromhex(ctx.expect_root)
+        hit = next((k for k in range(1, size + 1) if tree.root(0, k) == want), None)
+        if hit is None:
+            res.fail("VLC-L1-1", f"no prefix of the delivered entries has the independently supplied "
+                                 f"root {ctx.expect_root[:16]}...: the entries under it were rewritten")
+            return None
+    if ctx.expect_head and got.hex() != ctx.expect_head:
+        res.fail("VLC-L1-1", f"tree root {got.hex()[:16]}... does not equal the independently supplied "
+                             f"head {ctx.expect_head[:16]}...")
+        return None
+    how = ("RFC 6962 root over every entry equals the checkpoint (tree size " + str(size) + ")")
+    anchored = [k for k, v in (("an earlier root (a prefix of the entries)", ctx.expect_root),
+                               ("the head", ctx.expect_head)) if v]
+    if signed:
+        how += "; the checkpoint note's Ed25519 signature verifies under the adapter's verifier key"
+        ctx.signature = "verified: Ed25519, C2SP signed note, under integrity.verifier_key"
+    else:
+        why = "the adapter supplies no verifier_key" if nf else "the adapter maps no signed note"
+        how += f"; checkpoint signature verification not performed ({why}) and not credited"
+        ctx.signature = f"not performed: {why}"
+    if anchored:
+        res.ok("VLC-L1-1", how + "; " + " and ".join(anchored) + " equal the value(s) supplied "
+                           "independently of the log")
+    else:
+        res.ok("VLC-L1-1", how + "; a complete rewrite" + (" needs the signing key, and by its holder" if signed
+                           else "") + " is detectable only against an independently held root or head "
+                           "(--expect-root / --expect-head)")
+    _l1_declared(ad, res)
+    return got.hex()
 
 
 def check_l1(recs, ad, res, ctx):
@@ -334,6 +677,8 @@ def check_l1(recs, ad, res, ctx):
         res.fail("VLC-L1-2", "no mechanism to recompute")
         res.fail("VLC-L1-3", "no end marker binding")
         return None
+    if mech == "merkle-tlog":
+        return check_l1_merkle(recs, ad, res, ctx)
 
     if mech == "sha256-canonical-fields":
         why = check_canonical_fields_adapter(recs, ad)
@@ -370,6 +715,19 @@ def check_l1(recs, ad, res, ctx):
             end = last
             body = body[:-1]
 
+    # Under sha256-hex-join the hash covers content_field only, so the record class
+    # is outside the binding: relabelling an interior entry (to the end-marker class,
+    # or to anything else) changes no hash. Classes drive coverage and loss, so every
+    # interior record must be a chain link of the adapter's declared link_class; only
+    # the final record may carry the end-marker class.
+    if mech == "sha256-hex-join" and ad.get("record_class_field"):
+        lc = ad["integrity"].get("link_class")
+        for r in body:
+            if r.cls != lc:
+                res.fail("VLC-L1-1", f"record {r.i} has class {r.cls!r}: under sha256-hex-join the class is "
+                                     f"not bound, so every interior record must be a {lc!r} chain link")
+                return None
+
     prev_raw = b""
     # EXT-013. Under sha256-prev-field each record's hash covers its OWN prev
     # field, so a record is self-consistent whatever that field says. Nothing
@@ -397,9 +755,13 @@ def check_l1(recs, ad, res, ctx):
         if em.get("content_json_field"):
             # The head sits inside a string member holding JSON (a Nostr event's
             # `content`, for one). Parse that member and read head_field from it.
+            # Same I-JSON hooks as load(): a duplicate member name or a non-finite
+            # number in the embedded JSON is a LogError, not a last-wins read.
+            inner = dig(end.obj, em["content_json_field"])
             try:
-                head_src = json.loads(dig(end.obj, em["content_json_field"]) or "")
-            except (TypeError, ValueError):
+                head_src = json.loads(inner, object_pairs_hook=_no_duplicate_names,
+                                      parse_constant=_reject_nonfinite) if isinstance(inner, str) else None
+            except json.JSONDecodeError:
                 head_src = None
         claimed = dig(head_src, em.get("head_field", "head"))
         head_ok = claimed is not None and str(claimed) == prev.hex()
@@ -463,7 +825,12 @@ def check_l1(recs, ad, res, ctx):
         res.ok("VLC-L1-1", "chain consistent from the root the log states; a complete "
                            "rewrite is detectable only against an independently held root or head "
                            "(--expect-root / --expect-head)")
+    _l1_declared(ad, res)
+    return prev.hex()
 
+
+def _l1_declared(ad, res):
+    """VLC-L1-2 and VLC-L1-4, attested, for every mechanism."""
     # These two used to default to TRUE, which meant an adapter that said
     # nothing at all passed them. That is not trusting an assertion, it is
     # manufacturing one out of silence. Both must now be stated explicitly.
@@ -485,7 +852,6 @@ def check_l1(recs, ad, res, ctx):
     else:
         res.fail("VLC-L1-4", "adapter does not name the primitive and state that "
                              "its strength and lifetime are documented")
-    return prev.hex()
 
 
 # ===========================================================================
@@ -1292,7 +1658,7 @@ def mutate(lines, how, ad):
 # adapter validation -- a malformed adapter is an error, not a verdict
 # ===========================================================================
 MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-prev-raw",
-              "sha256-prev-field", "sha256-canonical-fields", "sha256-hex-join")
+              "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join")
 ROOT_KINDS = ("zero", "constant", "field_of_first_record")
 LOSS_MODES = ("none", "declaration", "ordinal")
 PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
@@ -1339,7 +1705,35 @@ def validate_adapter(ad):
         need(isinstance(v, list) and all(isinstance(x, str) for x in v), f"{k} must be a list of strings")
     for k in ("loss", "coverage", "policy", "independence", "interval", "evidence"):
         need(obj(ad.get(k)), f"{k} must be an object")
-    if integ["mechanism"] != "none":
+    if integ["mechanism"] == "merkle-tlog":
+        # 1.4.3-draft, EXT-026: no per-record hash field and no chain root; the
+        # binding is the tree, and the checkpoint is its end marker.
+        need(isinstance(integ.get("leaf_field"), str), "integrity.leaf_field (a string) is required for merkle-tlog")
+        need(isinstance(integ.get("entry_class"), str), "integrity.entry_class (a string) is required for merkle-tlog")
+        need(isinstance(ad.get("record_class_field"), str), "record_class_field is required for merkle-tlog")
+        need(integ.get("leaf_encoding", "utf-8") in ("utf-8", "base64"),
+             "integrity.leaf_encoding must be 'utf-8' or 'base64'")
+        need(integ.get("index_field") is None or isinstance(integ.get("index_field"), str),
+             "integrity.index_field must be a string")
+        em = integ.get("end_marker")
+        need(isinstance(em, dict), "integrity.end_marker (the checkpoint) is required for merkle-tlog")
+        for k in ("class", "head_field", "size_field"):
+            need(isinstance(em.get(k), str), f"integrity.end_marker.{k} (a string) is required for merkle-tlog")
+        need(em.get("class") != integ.get("entry_class"), "the checkpoint class cannot be the entry class")
+        need(em.get("head_encoding", "base64") in ("base64", "hex"),
+             "integrity.end_marker.head_encoding must be 'base64' or 'hex'")
+        need(em.get("note_field") is None or isinstance(em.get("note_field"), str),
+             "integrity.end_marker.note_field must be a string")
+        need("self_bound" not in em, "integrity.end_marker.self_bound does not apply to merkle-tlog: "
+                                     "the checkpoint's size and root are recomputed from the entries")
+        if integ.get("verifier_key") is not None:
+            need(em.get("note_field") is not None,
+                 "integrity.verifier_key needs integrity.end_marker.note_field (the signed note to verify)")
+            try:
+                parse_note_vkey(integ["verifier_key"])
+            except ValueError as e:
+                raise AdapterError(f"integrity.verifier_key: {e}")
+    elif integ["mechanism"] != "none":
         need(isinstance(integ.get("hash_field"), str), "integrity.hash_field (a string) is required")
         root = integ.get("root", {})
         need(isinstance(root, dict) and root.get("kind", "zero") in ROOT_KINDS,
@@ -1356,6 +1750,9 @@ def validate_adapter(ad):
             need(isinstance(integ.get("separator", "|"), str), "integrity.separator must be a string")
             need(integ.get("prev_field") is None or isinstance(integ.get("prev_field"), str),
                  "integrity.prev_field must be a string")
+            need(not ad.get("record_class_field") or isinstance(integ.get("link_class"), str),
+                 "integrity.link_class (a string) is required with record_class_field: the class is not "
+                 "under the hash, so interior records are pinned to one chain-link class")
         em = integ.get("end_marker")
         need(obj(em), "integrity.end_marker must be an object")
         if em:
@@ -1453,6 +1850,7 @@ def _check(log_path, ad, adapter_sha256, expect_root=None, expect_head=None, mut
         "attested_requirements_with_evidence": cited,
         "attested_requirements_total": n_attested,
         "anchors": {"root": ctx.expect_root, "head": ctx.expect_head},
+        **({"checkpoint_signature": ctx.signature} if ctx.signature is not None else {}),
         "head": head,
         "requirements": {
             k: {"status": v[0], "note": v[1],
@@ -1543,8 +1941,11 @@ def main(argv=None):
     ap.add_argument("--expect-structural", type=int, choices=[0, 1, 2, 3, 4, 5],
                     help="require exactly this STRUCTURAL level; exit 1 otherwise")
     ap.add_argument("--expect-root", help="hex chain root obtained independently of the log; "
-                    "VLC-L1-1 fails if the log's derived root differs (detects a re-rooted, re-sealed log)")
-    ap.add_argument("--expect-head", help="hex final head obtained independently of the log; "
+                    "VLC-L1-1 fails if the log's derived root differs (detects a re-rooted, re-sealed log). "
+                    "Under merkle-tlog: a tree root held from an earlier reading, which some prefix of the "
+                    "delivered entries must produce")
+    ap.add_argument("--expect-head", help="hex final head obtained independently of the log "
+                    "(under merkle-tlog, the tree root of the held checkpoint); "
                     "VLC-L1-1 fails if the recomputed head differs (detects a rewritten, re-sealed log); "
                     "also anchors the tail when the end marker is not bound by the chain (VLC-L1-3)")
     ap.add_argument("--mutate", help="apply an Annex A mutation before checking")
