@@ -72,5 +72,5 @@ the signed head (both relabels, class removed, duplicate key, NaN, marker moved,
 doubled or relabelled, JSON list content, truncation, upper-case digest); every
 one fails.
 
-This version needs a 1.4.4-draft release and version DOI, which the maintainer
-issues; none is cited here until it exists.
+The maintainer issued the 1.4.4-draft release and its version DOI on 2026-09-30:
+**[10.5281/zenodo.23067353](https://doi.org/10.5281/zenodo.23067353)**.
