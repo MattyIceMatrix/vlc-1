@@ -1,0 +1,8 @@
+$ pip install -q openai==3.22.1 opentelemetry-sdk==1.45.0 opentelemetry-instrumentation-openai-v2==2.4b0 opentelemetry-util-genai==1.1b0 httpx
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+[exit 0]
+$ otel_capture.py
+[exit 0] span lines: 4 stderr: 
+runner: Linux 6.17.0-1022-azure x86_64; python Python 3.12.14; 2026-09-30T10:28:11Z

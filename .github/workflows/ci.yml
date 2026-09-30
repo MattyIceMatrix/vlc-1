@@ -52,7 +52,11 @@ jobs:
                    docker-mcp-live:docker-mcp-live-full:0:0 docker-mcp-live:docker-mcp-live-scrubbed:0:0 \
                    contextforge-live:contextforge-live-full:0:0 contextforge-live:contextforge-live-scrubbed:0:0 \
                    lasso-live:lasso-live-full:0:0 lasso-live:lasso-live-scrubbed:0:0 \
-                   bifrost-live:bifrost-live-full:0:0 bifrost-live:bifrost-live-scrubbed:0:0; do
+                   bifrost-live:bifrost-live-full:0:0 bifrost-live:bifrost-live-scrubbed:0:0 \
+                   openai-agents-live:openai-agents-live-full:0:0 \
+                   openai-agents-live:openai-agents-live-scrubbed:0:0 \
+                   openai-agents-live:openai-agents-live-overflow:0:0 \
+                   otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0; do
             IFS=: read -r n f ws wa <<< "$a"
             got=$(python3 conformance.py --log "examples/third-party/$f.jsonl" \
                     --adapter "adapters/$n.json" --json \
@@ -72,13 +76,19 @@ jobs:
           # The claim THIRD-PARTY.md makes about each live capture: removing the
           # refused calls' records changes no requirement result at all.
           for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
-                   contextforge-live lasso-live bifrost-live; do
+                   contextforge-live lasso-live bifrost-live openai-agents-live otel-genai-live; do
             IFS=: read -r f n <<< "$g"; n=${n:-$f}
             r() { python3 conformance.py --log "examples/third-party/$f-$1.jsonl" --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
             if [ "$(r full)" = "$(r scrubbed)" ]; then echo "ok    $f: scrubbed scores identically to full"
             else echo "FAIL  $f: scrubbed and full differ"; bad=1; fi
           done
+          # The OpenAI Agents SDK capture with 25 of 29 items dropped by a full
+          # BatchTraceProcessor queue scores exactly as the capture without drops.
+          r() { python3 conformance.py --log "examples/third-party/openai-agents-live-$1.jsonl" --adapter adapters/openai-agents-live.json --json \
+                | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }
+          if [ "$(r full)" = "$(r overflow)" ]; then echo "ok    openai-agents-live: overflow scores identically to full"
+          else echo "FAIL  openai-agents-live: overflow and full differ"; bad=1; fi
           exit $bad
 
   proof:

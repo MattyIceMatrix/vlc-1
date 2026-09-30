@@ -1,0 +1,41 @@
+{
+  "name": "otel-genai-live",
+  "producer": "OpenTelemetry Python SDK 1.45.0 with opentelemetry-instrumentation-openai-v2 2.4b0 and opentelemetry-util-genai 1.1b0 (semantic-conventions package 0.66b0), OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental and message content captured on spans; the openai 3.22.1 client against a local mock endpoint, no API key; spans written by the SDK's ConsoleSpanExporter, one to_json() per line, through a SimpleSpanProcessor",
+  "description": "A live capture, 2026-09-30: two `chat` spans from the openai instrumentation and two `execute_tool` spans the application recorded with util-genai's TelemetryHandler.tool() -- read_file, executed, and delete_file, refused by the application. The refusal is recorded: the delete_file span has status ERROR with the refusal text as its description and `error.type: PermissionError`, the type of the exception the application passed to fail(). None of the execute_tool attributes util-genai lists (its ToolInvocation docstring, which cites the conventions' execute-tool span) is a policy decision, so a refusal and a tool that raised PermissionError are recorded alike. The openai instrumentation does not see tool execution; without these application calls no refusal would be recorded. L0.",
+  "_basis": "Captured, not read from documentation: workflow .github/workflows/agent-sdk-capture.yml and capture/scripts/ on branch capture/agent-sdks, run run-20260930T102830Z, on a GitHub-hosted runner (Python 3.12). The raw spans and the mock endpoint's request log are committed there and copied to examples/third-party/agent-sdks-live/otel-genai/; examples/third-party/agent-sdks-live/convert.py turns them into this JSONL without adding any field except `class`. Semconv status: the instrumentation's module docstring says it follows GenAI semantic conventions v1.30.0 by default and the latest experimental conventions only with the opt-in used here; the gen_ai attributes are in the SDK's `_incubating` module, whose docstrings in 0.66b0 read 'Deprecated: Moved to the OpenTelemetry GenAI semantic conventions repository'. They are not stable conventions. util-genai was pinned to 1.1b0 because instrumentation-openai-v2 2.4b0 does not import against util-genai 1.2b0 (it imports opentelemetry.util.genai.instruments; 1.2b0 ships _instruments.py instead; found by reading the source on 2026-09-30, not recorded in this run); httpx was added because the instrumentation imports it and openai 3.22.1 does not install it.",
+  "record_class_field": "class",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "Trace and span ids are random; no hash, signature or chaining. otel-genai-live-scrubbed.jsonl removes the delete_file execute_tool span and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "unspecified",
+    "note": "No sequence number and no drop count in the spans. This capture used SimpleSpanProcessor, which exports each span as it ends; BatchSpanProcessor, the usual production choice, was not exercised here, so its behaviour under overflow is not claimed. The application made no root span, so each of the four spans is its own trace with no parent: nothing links the refused call to the model calls around it except the tool call id, which also appears in the next chat span's input messages."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "Nothing states which clients, models or tools the record covers."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The refusal is an ERROR status and an error.type chosen by the application; no attribute names a policy, rule or version."
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The tracer provider, the instrumentation and the exporter all run inside the application's process, and the application itself wrote the execute_tool spans, including the one for the call it refused.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://pypi.org/project/opentelemetry-instrumentation-openai-v2/2.4b0/",
+    "https://pypi.org/project/opentelemetry-util-genai/1.1b0/",
+    "https://github.com/open-telemetry/semantic-conventions-genai",
+    "https://github.com/MattyIceMatrix/vlc-1/tree/capture/agent-sdks/capture/runs/run-20260930T102830Z"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+ "mode": "full",
+ "final_output": "Read notes.txt; the delete was refused.",
+ "new_items": [
+  {
+   "type": "ToolCallItem"
+  },
+  {
+   "type": "ToolCallItem"
+  },
+  {
+   "type": "ToolCallOutputItem",
+   "output": "contents of notes.txt: hello from vlc1"
+  },
+  {
+   "type": "ToolCallOutputItem",
+   "output": "delete_file refused by policy: deletion is not permitted"
+  },
+  {
+   "type": "MessageOutputItem"
+  }
+ ],
+ "tool_input_guardrail_results": [
+  "ToolGuardrailFunctionOutput(output_info={'rule': 'no-delete'}, behavior={'type': 'reject_content', 'message': 'delete_file refused by policy: deletion is not permitted'})"
+ ]
+}
