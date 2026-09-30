@@ -1,0 +1,96 @@
+{
+  "wss://relay.damus.io": {
+    "events": 0,
+    "error": null,
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://nos.lol": {
+    "events": 67,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 14
+  },
+  "wss://relay.primal.net": {
+    "events": 509,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 14
+  },
+  "wss://relay.nostr.band": {
+    "events": 0,
+    "error": "TimeoutError: timed out during opening handshake",
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://nostr.wine": {
+    "events": 0,
+    "error": null,
+    "kinds": [],
+    "head_events": 0
+  },
+  "wss://relay.snort.social": {
+    "events": 17,
+    "error": null,
+    "kinds": [
+      1,
+      30078
+    ],
+    "head_events": 14
+  },
+  "wss://offchain.pub": {
+    "events": 510,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 14
+  },
+  "wss://relay.nostr.net": {
+    "events": 200,
+    "error": null,
+    "kinds": [
+      1,
+      30078,
+      31990
+    ],
+    "head_events": 16
+  },
+  "wss://nostr.mom": {
+    "events": 125,
+    "error": null,
+    "kinds": [
+      0,
+      1,
+      3,
+      5,
+      7,
+      10002,
+      30023,
+      30078
+    ],
+    "head_events": 14
+  },
+  "_distinct_head_events": 8,
+  "_valid_head_events": 8,
+  "_d_tags": [
+    "invinoveritas-proof-proof-1790458948-d7bff25c",
+    "invinoveritas-proof-proof-1790773127-4d22145d",
+    "invinoveritas-proof-proof-1790773129-77e0e5db",
+    "invinoveritas-proof-proof-1790773131-80e5b0d0",
+    "invinoveritas-proof-proof-1790773133-ff8c984c",
+    "invinoveritas-proof-proof-1790773135-f07627cb",
+    "invinoveritas-proof-proof-1790773137-a8375732",
+    "invinoveritas-proof-proof-1790788494-623f89ac"
+  ]
+}

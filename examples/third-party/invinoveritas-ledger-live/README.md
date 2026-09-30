@@ -82,3 +82,26 @@ heads (independence).
 Entries 264 to 269 were written outside the chain and chained late on 2026-09-30; each
 carries `chain_note` and `chain_backfilled_at` saying so. The operator found and disclosed
 this on PR #3 while preparing the ledger for scoring.
+
+## Re-capture, 2026-09-30 18:52Z
+
+After the operator replied on PR #3 (heads now also sent to offchain.pub,
+relay.nostr.net, nostr.mom and relay.snort.social; damus was returning 503 and
+nostr.wine serves authenticated readers only), the same workflow ran again with
+those relays added (`run-20260930T185207Z` on branch `capture/invinoveritas-ledger`):
+
+- The ledger had grown to 270 entries, 231 chained (40 to 270). Every
+  `content_hash` and `head_hash` recomputed; zero link breaks.
+- Eight signed head events, for entries 263 to 270, all with a valid NIP-01 id and
+  BIP-340 signature by the published key, found on 6 of 9 relays (nos.lol,
+  relay.primal.net, relay.snort.social, offchain.pub, relay.nostr.net, nostr.mom).
+  relay.damus.io and nostr.wine returned none; relay.nostr.band timed out. No head
+  for entries 40 to 262 was found on any of them.
+- The newest head (entry 270) equals the recomputed head.
+- invinoveritas's updated `recompute_ledger.py` (commit `a352726`) now finishes:
+  chain 231 of 231 verified; 237 of 270 verdict events verified from relay bytes, the
+  other 33 no longer on any relay queried and each carrying a confirmed
+  OpenTimestamps anchor, as the operator states.
+
+The scored files above are unchanged: they are the 13:43Z capture, and CI pins its
+head. This re-capture is recorded as evidence, not re-scored.
