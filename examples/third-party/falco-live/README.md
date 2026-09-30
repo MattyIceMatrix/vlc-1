@@ -84,11 +84,22 @@ python3 convert.py default/events.json         > ../falco-live-default.jsonl
 
 ## Not established
 
-One run of each configuration, one kernel, one runner. The storm dropped under 4%
-of events in any second; a load heavy enough to cross the 10% default threshold was
-not tried, so this capture does not show whether the default configuration reports
-drops at that level. Whether dropped syscalls cost any rule hit was not
-demonstrated: every trigger here alerted. At start-up, in both runs, Falco's libs (libpman) reported
+The scored files come from one run of each configuration, one kernel, one runner.
+The default-configuration runs (this one and the second run below) dropped at most
+3.9% and 4.7% of events in any one-second side-file interval; a load heavy enough to cross the 10% default threshold was not tried, so this
+capture does not show whether the default configuration reports drops at that level.
+
+A second run, `run-20260930T115929Z` (same scripts; triggered by a comment-only change
+to `falco.sh`, kept under `capture/runs/` and not converted or scored), repeated the
+pattern: tuned, 3 drop alerts whose `n_drops` sum to 12775, equal to `scap.n_drops`;
+default, no drop alert, 8358 dropped syscalls, `event drop detected: 0 occurrences`.
+In its default run one trigger did **not** alert: round B 6's `cat /etc/shadow`
+(15 of 16 *Read sensitive file untrusted*; all other rules 16 of 16). The side-file
+interval ending 11:58:32.797, in which that round ran, dropped 6417 of 137485 events
+(4.7%, under the 10% threshold). That the dropped syscalls cost this alert is
+consistent with the timing but was not established; if they did, a rule hit was lost
+with nothing in the alert stream, the log or Falco's exit summary to say so. In the
+first run every trigger alerted. At start-up, in both runs, Falco's libs (libpman) reported
 failures to attach the TOCTOU-mitigation programs for connect, creat, open, openat and openat2 (stderr:
 "Detection will continue to work, but TOCTOU mitigation may not properly work").
 Not confirmed by the Falco maintainers.
