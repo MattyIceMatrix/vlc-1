@@ -46,7 +46,9 @@ dropped nothing here; the load at which the default overflows was not measured.
 - `convert.py` -- `python3 convert.py {openai-agents|otel-genai} FILE [--scrub]`.
   Adds only a `class` label taken from an existing field; no ordinals.
 - `openai-agents/{full,overflow}/` -- `trace.jsonl` (each exported item's
-  `export()` dict, the payload the SDK's default exporter sends to OpenAI),
+  `export()` dict, what the SDK's default `BackendSpanExporter` builds its payload
+  from, before it truncates oversized input/output and drops `usage` from
+  non-generation spans for OpenAI's ingest endpoint),
   `witness.jsonl`, `stderr.txt`, and `result.json` (the run result, including the
   guardrail's output).
 - `otel-genai/` -- `spans.jsonl` (the SDK's `ConsoleSpanExporter`, one
@@ -69,9 +71,10 @@ python3 convert.py otel-genai otel-genai/spans.jsonl --scrub            > ../ote
   `agents.tracing.processors` and `agents.tracing.processor_interface`.
   `set_trace_processors` replaced the default processor, so nothing was sent to
   OpenAI.
-- **OpenTelemetry GenAI**: instrumentation-openai-v2 2.4b0 failed to import with
-  util-genai 1.2b0 (it imports `opentelemetry.util.genai.instruments`, which 1.2b0
-  does not have); util-genai was pinned to 1.1b0. The instrumentation imports
+- **OpenTelemetry GenAI**: instrumentation-openai-v2 2.4b0 does not import against
+  util-genai 1.2b0 (it imports `opentelemetry.util.genai.instruments`; 1.2b0 ships
+  `_instruments.py` instead; found by reading the source on 2026-09-30, not
+  recorded in this run); util-genai was pinned to 1.1b0. The instrumentation imports
   `httpx`, which openai 3.22.1 does not install; it was added. The openai
   instrumentation records model calls only; the `execute_tool` spans come from the
   application. The application made no root span, so each of the four spans is its
