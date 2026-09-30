@@ -1,0 +1,53 @@
+2026-09-30T11:58:09+0000: Falco version: 0.45.0 (x86_64)
+2026-09-30T11:58:09+0000: Falco initialized with configuration files:
+2026-09-30T11:58:09+0000:    /etc/falco/config.d/falco.container_plugin.yaml | schema validation: ok
+2026-09-30T11:58:09+0000:    /etc/falco/config.d/falco.iso8601_timeformat.yaml | schema validation: ok
+2026-09-30T11:58:09+0000:    /etc/falco/falco.yaml | schema validation: ok
+2026-09-30T11:58:09+0000: System info: Linux version 6.17.0-1022-azure (buildd@lcy02-amd64-020) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026
+2026-09-30T11:58:09+0000: Loaded plugin 'container@0.7.4' from file /usr/share/falco/plugins/libcontainer.so
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'podman' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/podman/podman.sock'
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'docker' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/var/run/docker.sock'
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'cri' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/containerd/containerd.sock'
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/crio/crio.sock'
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/k3s/containerd/containerd.sock'
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/host-containerd/containerd.sock'
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'containerd' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: * enabled container runtime socket at '/host/run/host-containerd/containerd.sock'
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'lxc' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'libvirt_lxc' container engine.
+2026-09-30T11:58:09+0000: [libs]: container: Enabled 'bpm' container engine.
+2026-09-30T11:58:09+0000: Loading rules from:
+2026-09-30T11:58:09+0000:    /etc/falco/falco_rules.yaml | schema validation: ok
+2026-09-30T11:58:09+0000:    /etc/falco/falco_rules.local.yaml | schema validation: none
+2026-09-30T11:58:09+0000:    /vlc/vlc_rules.yaml | schema validation: ok
+2026-09-30T11:58:09+0000: The chosen syscall buffer dimension is: 1048576 bytes (1 MBs)
+2026-09-30T11:58:09+0000: Starting health webserver with threadiness 4, listening on 0.0.0.0:8765
+2026-09-30T11:58:09+0000: Setting metrics interval to 1s, equivalent to 1000 (ms)
+2026-09-30T11:58:09+0000: Loaded event sources: syscall
+2026-09-30T11:58:09+0000: Enabled event sources: syscall
+2026-09-30T11:58:09+0000: Opening 'syscall' source with modern BPF probe.
+2026-09-30T11:58:09+0000: One ring buffer every '0' CPUs.
+2026-09-30T11:58:09+0000: [libs]: Trying to open the right engine!
+2026-09-30T11:58:09+0000: [libs]: libpman: disabled BPF iterators (not running in the root PID namespace, or failed to determine it)
+2026-09-30T11:58:11+0000: [libs]: libbpf: failed to determine tracepoint 'syscalls/sys_enter_connect' perf event ID: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libbpf: prog 'connect_e': failed to create tracepoint 'syscalls/sys_enter_connect' perf event: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libpman: failure while attaching TOCTOU mitigation program for 'connect' system call. Detection will continue to work, but TOCTOU mitigation may not properly work (errno: 2 | message: No such file or director
+2026-09-30T11:58:11+0000: [libs]: libbpf: failed to determine tracepoint 'syscalls/sys_enter_creat' perf event ID: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libbpf: prog 'creat_e': failed to create tracepoint 'syscalls/sys_enter_creat' perf event: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libpman: failure while attaching TOCTOU mitigation program for 'creat' system call. Detection will continue to work, but TOCTOU mitigation may not properly work (errno: 2 | message: No such file or directory)
+2026-09-30T11:58:11+0000: [libs]: libbpf: failed to determine tracepoint 'syscalls/sys_enter_open' perf event ID: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libbpf: prog 'open_e': failed to create tracepoint 'syscalls/sys_enter_open' perf event: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libpman: failure while attaching TOCTOU mitigation program for 'open' system call. Detection will continue to work, but TOCTOU mitigation may not properly work (errno: 2 | message: No such file or directory)
+2026-09-30T11:58:11+0000: [libs]: libbpf: failed to determine tracepoint 'syscalls/sys_enter_openat2' perf event ID: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libbpf: prog 'openat2_e': failed to create tracepoint 'syscalls/sys_enter_openat2' perf event: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libpman: failure while attaching TOCTOU mitigation program for 'openat2' system call. Detection will continue to work, but TOCTOU mitigation may not properly work (errno: 2 | message: No such file or director
+2026-09-30T11:58:11+0000: [libs]: libbpf: failed to determine tracepoint 'syscalls/sys_enter_openat' perf event ID: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libbpf: prog 'openat_e': failed to create tracepoint 'syscalls/sys_enter_openat' perf event: No such file or directory
+2026-09-30T11:58:11+0000: [libs]: libpman: failure while attaching TOCTOU mitigation program for 'openat' system call. Detection will continue to work, but TOCTOU mitigation may not properly work (errno: 2 | message: No such file or directory
+2026-09-30T11:59:20+0000: SIGINT received, exiting...
+Syscall event drop monitoring:
+   - event drop detected: 0 occurrences
+   - num times actions taken: 0

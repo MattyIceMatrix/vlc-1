@@ -1,0 +1,126 @@
+image: falcosecurity/falco:0.45.0
+$ docker pull falcosecurity/falco:0.45.0
+0.45.0: Pulling from falcosecurity/falco
+8e3d09a782fc: Pulling fs layer
+d65a7dc91624: Pulling fs layer
+8e4cea8c0c17: Pulling fs layer
+c3f386722b4d: Pulling fs layer
+d1a7489042f1: Pulling fs layer
+fc576d212bbe: Pulling fs layer
+57ab72438bf8: Pulling fs layer
+972a81d1f6fa: Pulling fs layer
+0c3ff933e912: Pulling fs layer
+3ef57a18cc80: Pulling fs layer
+4ad20814719b: Pulling fs layer
+57f5252fc638: Pulling fs layer
+37341f18d254: Pulling fs layer
+2c831c03cc1a: Pulling fs layer
+0c3ff933e912: Waiting
+c3f386722b4d: Waiting
+3ef57a18cc80: Waiting
+57f5252fc638: Waiting
+d1a7489042f1: Waiting
+2c831c03cc1a: Waiting
+4ad20814719b: Waiting
+fc576d212bbe: Waiting
+57ab72438bf8: Waiting
+972a81d1f6fa: Waiting
+37341f18d254: Waiting
+8e4cea8c0c17: Verifying Checksum
+8e4cea8c0c17: Download complete
+8e3d09a782fc: Download complete
+d65a7dc91624: Verifying Checksum
+d65a7dc91624: Download complete
+c3f386722b4d: Verifying Checksum
+c3f386722b4d: Download complete
+d1a7489042f1: Verifying Checksum
+d1a7489042f1: Download complete
+fc576d212bbe: Verifying Checksum
+fc576d212bbe: Download complete
+57ab72438bf8: Verifying Checksum
+57ab72438bf8: Download complete
+8e3d09a782fc: Pull complete
+972a81d1f6fa: Verifying Checksum
+972a81d1f6fa: Download complete
+0c3ff933e912: Verifying Checksum
+0c3ff933e912: Download complete
+3ef57a18cc80: Verifying Checksum
+3ef57a18cc80: Download complete
+4ad20814719b: Download complete
+2c831c03cc1a: Verifying Checksum
+2c831c03cc1a: Download complete
+37341f18d254: Verifying Checksum
+37341f18d254: Download complete
+57f5252fc638: Download complete
+d65a7dc91624: Pull complete
+8e4cea8c0c17: Pull complete
+c3f386722b4d: Pull complete
+d1a7489042f1: Pull complete
+fc576d212bbe: Pull complete
+57ab72438bf8: Pull complete
+972a81d1f6fa: Pull complete
+0c3ff933e912: Pull complete
+3ef57a18cc80: Pull complete
+4ad20814719b: Pull complete
+57f5252fc638: Pull complete
+37341f18d254: Pull complete
+2c831c03cc1a: Pull complete
+Digest: sha256:788f1129c542171813083d4afc61b16730a47dde8c23d9c39370acef996349b6
+Status: Downloaded newer image for falcosecurity/falco:0.45.0
+docker.io/falcosecurity/falco:0.45.0
+[exit 0]
+sha256:2e338c4ec198e5016d4bd151eb51d16d2622ff1f0555342e4347ea51b497c520 ["falcosecurity/falco@sha256:788f1129c542171813083d4afc61b16730a47dde8c23d9c39370acef996349b6"]
+kernel: 6.17.0-1022-azure; cpus: 4; page size: 4096
+ba9eb59a3bcea34078c6a514e515040aed80d9427f3a9b4292a93ef5ef8fdc09  /home/runner/work/vlc-1/vlc-1/out/falco/falco.default.yaml
+30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b  /home/runner/work/vlc-1/vlc-1/out/falco/falco_rules.yaml
+image defaults (falco.default.yaml):
+1134:syscall_event_drops:
+1138-  threshold: .1
+1141-  actions:
+1142-    - log
+1143-    - alert
+443:  kind: modern_ebpf
+446:    buf_size_preset: 4
+450:    cpus_for_each_buffer: 2
+451:    buf_size_preset: 4
+650:priority: debug
+657:json_output: false
+=== run tuned (falco.tuned.yaml)
+1e9f31d6c89ebbddf58c468d6c2569bef515baf5ed4b967717976ada409a94e9
+Unable to find image 'alpine:3.20' locally
+3.20: Pulling from library/alpine
+25f1d6b1951a: Pulling fs layer
+25f1d6b1951a: Verifying Checksum
+25f1d6b1951a: Download complete
+25f1d6b1951a: Pull complete
+Digest: sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+Status: Downloaded newer image for alpine:3.20
+a736f26d4a968b878672d8f23fef6799d0a15b475d3d9617871b5d3160f2fe01
+34a021b20e2e8e0cabc45be36b481cdacde9455c382b4f25f13bbede67ec4eb3
+4f9fd36bf75d7efd8c1ceb332d6fa8b4c3e3a8e166bc7e8db1b8369ae000838a
+170a3730631110ac90ae7d6b484e700b2909599dd0054371a99ceccba27c9fd4
+b651b34d2e3d890f3cee3f001b390ee7ea0d6693de9c094f703e654eb2c9919a
+tuned: events.json lines 81; metrics.jsonl lines 14
+     16  Create Symlink Over Sensitive Files
+     14  Falco internal: metrics snapshot
+      3  Falco internal: syscall event drop
+     16  Read sensitive file untrusted
+     16  Terminal shell in container
+     16  VLC capture write below etc
+  sum of n_drops over drop alerts: 12775
+  last side-file metrics: {'falco.outputs_queue_num_drops': 0, 'scap.n_drops': 12775, 'scap.n_evts': 6789250}
+=== run default (falco.default-run.yaml)
+403ac829b4e314de3913f0d478535c0a0961d7a69f14f9ff974e8f456127be38
+58473b6e68a465d363fe80d9b357e0da2b83e7ae9ea6b91150cf7df86ff9789d
+8b174c8ca10f3dfcd3da3cdc5f208a2828bf299a232473b4b6a7538fe7810ff4
+2049ce50ac5d45bd679ad303bd33cdb615b8ff04bc5b7bd039587080c9b97dc0
+2935694df5382f547d8974a868343fe7568b55e56ae1499b6b967ba937b6d51c
+c544efc041954755cb5adf871664dce1e7a493e13739415d28bdabde2f33c74b
+default: events.json lines 63; metrics.jsonl lines 70
+     16  Create Symlink Over Sensitive Files
+     15  Read sensitive file untrusted
+     16  Terminal shell in container
+     16  VLC capture write below etc
+  sum of n_drops over drop alerts: 0
+  last side-file metrics: {'falco.outputs_queue_num_drops': 0, 'scap.n_drops': 8358, 'scap.n_evts': 6959939}
+runner: Linux 6.17.0-1022-azure x86_64; Ubuntu 24.04.5 LTS; docker 28.0.4; 2026-09-30T11:59:20Z

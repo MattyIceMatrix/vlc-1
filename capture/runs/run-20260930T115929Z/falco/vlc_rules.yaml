@@ -1,0 +1,6 @@
+- rule: VLC capture write below etc
+  desc: A file under /etc/vlc- opened for writing (added by the VLC-1 capture; not a Falco rule)
+  condition: open_write and fd.name startswith /etc/vlc-
+  output: "File below /etc opened for writing (file=%fd.name command=%proc.cmdline)"
+  priority: ERROR
+  tags: [vlc_capture]
