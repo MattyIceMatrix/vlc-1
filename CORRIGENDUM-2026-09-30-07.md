@@ -72,5 +72,5 @@ Ed25519 known answers and the Annex A mutations on the live Tessera log. CI now
 asserts Tessera full L1, scrubbed lower with VLC-L1-1 failed, and the held
 checkpoint anchors, and keeps the `verify_tlog.py` checks.
 
-This version needs a 1.4.3-draft release and version DOI, which the maintainer
-issues; none is cited here until it exists.
+The maintainer issued the 1.4.3-draft release and its version DOI on 2026-09-30:
+**[10.5281/zenodo.23063984](https://doi.org/10.5281/zenodo.23063984)**.
