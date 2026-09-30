@@ -1,0 +1,52 @@
+name: ledger-capture
+# Live capture of the invinoveritas verdict-ledger hash chain, scored against VLC-1 from
+# public data the way the gateways, agent SDKs, Falco and Tessera were. Runs ONLY on
+# branch capture/invinoveritas-ledger and ONLY on a GitHub-hosted runner. It sends only
+# GET requests to api.babyblueviper.com and REQ subscriptions to public Nostr relays;
+# it never publishes anything. Results are committed to capture/runs/ on this branch,
+# because job logs and artifacts are not readable from the maintainer's tooling.
+on:
+  push:
+    branches: [capture/invinoveritas-ledger]
+    paths: ['.github/workflows/ledger-capture.yml', 'capture/scripts/ledger_capture.py',
+            'examples/third-party/invinoveritas-ledger-live/verify_ledger.py']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: capture
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: |
+          pip install -q websockets
+          mkdir -p out/ledger
+          timeout 900 python capture/scripts/ledger_capture.py || echo "script exit $?" >> out/ledger/steps.txt
+      - name: cross-check with invinoveritas's own recompute script
+        continue-on-error: true
+        run: |
+          git clone -q --depth 1 https://github.com/babyblueviper1/invinoveritas /tmp/inv
+          echo "invinoveritas commit $(git -C /tmp/inv rev-parse HEAD)" > out/ledger/their-recompute.txt
+          timeout 600 python /tmp/inv/integrations/verify-proof/python/recompute_ledger.py --json > /tmp/theirs.json; echo "exit $?" >> out/ledger/their-recompute.txt
+          python - <<'PY' >> out/ledger/their-recompute.txt
+          import json
+          d = json.load(open('/tmp/theirs.json'))
+          c = d.get('chain', {})
+          print(json.dumps({k: d.get(k) for k in ('total', 'verified', 'failed', 'relay_unavailable', 'ots_confirmed_of_unavailable')}))
+          print(json.dumps({'chain_total': c.get('total'), 'chain_verified': c.get('verified'), 'chain_failed': c.get('failed'),
+                            'chain_fetch_failed': [r['entry'] for r in c.get('results', []) if r['status'] == 'fetch_failed'],
+                            'chain_failed_entries': [r['entry'] for r in c.get('results', []) if r['status'] == 'FAILED']}))
+          PY
+      - name: commit results
+        if: always()
+        run: |
+          echo "runner: $(uname -srm); $(date -u +%FT%TZ)" >> out/ledger/steps.txt
+          D=capture/runs/run-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"; cp -r out/. "$D/"
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "ledger-capture"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: invinoveritas ledger run $(basename "$D")" && git push -q origin HEAD:capture/invinoveritas-ledger
