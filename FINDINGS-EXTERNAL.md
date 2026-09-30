@@ -803,3 +803,24 @@ scrubbed L0 with VLC-L1-1 failed. The key that signed the capture's checkpoints 
 held by the job that wrote the entries, so the signature establishes nothing about
 independence (VLC-L5-1 still fails). Control: `selftest.sh` §2b (26 vectors) and
 §20; CI asserts the Tessera levels and scrubbed < full.
+
+---
+## EXT-027 — a hash chain over carried per-record digests had to be declared `none`
+
+*Source: the invinoveritas verdict-ledger capture from public data, 2026-09-30
+(`examples/third-party/invinoveritas-ledger-live/`, #16). Mechanism contributed by
+the ledger's operator, babyblueviper1, in #17. Fixed in 1.4.4-draft, Corrigendum 8.*
+
+The ledger chains digests, not records: `head_hash = SHA-256(content_hash + "|" +
+prev_head_hash)`, with `content_hash` the SHA-256 of each full record and the head
+broadcast as a signed Nostr event. No mechanism in `conformance.py` computed that,
+so the adapter declared `none`, the ledger scored L0, and the file with its newest
+entry dropped scored exactly as the full one, although `verify_ledger.py` rejects it
+against the signed head. Fixed: `integrity.mechanism: "sha256-hex-join"` recomputes
+the chain over the carried digests (SPEC.md §4.1), with interior records pinned to
+the adapter's `link_class` because the class is outside the hash, and
+`end_marker.content_json_field` reads a head from a JSON string member under the
+log's I-JSON rules. Full file L0 on the log alone and L1 with its signed head;
+truncated L0 with VLC-L1-1 failed. The checker does not recompute each digest from
+its full record; the capture run did. Control: `selftest.sh` §2b (10 vectors); CI
+asserts the levels.
