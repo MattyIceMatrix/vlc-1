@@ -1,0 +1,864 @@
+[
+ {
+  "title": "agentgateway 1.5.0",
+  "file": "agentgateway-1-5-0",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log agentgateway-live-full.jsonl --adapter adapters/agentgateway-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff agentgateway-live-full.jsonl agentgateway-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"request:tools/call\",\"duration\":\"0ms\",\"error\":\"mcp: Unknown tool: get-sum\",\"gateway\":\"default/default\",\"gen_ai.tool.name\":\"get-sum\",\"http.host\":\"127.0.0.1\",\"http.method\":\"POST\",\"http.path\":\"/mcp\",\"http.status\":400,\"http.version\":\"HTTP/1.1\",\"level\":\"info\",\"listener\":\"listener0\",\"mcp.method.name\":\"tools/call\",\"mcp.resource.type\":\"tool\",\"mcp.session.id\":\"9a987a2f-5343-461f-81a6-cde8246eb79e\",\"mcp.target\":\"everything\",\"protocol\":\"mcp\",\"reason\":\"MCP\",\"route\":\"default/route0\",\"scope\":\"request\",\"src.addr\":\"127.0.0.1:42264\",\"time\":\"2026-09-29T01:30:34.69127Z\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log agentgateway-live-scrubbed.jsonl --adapter adapters/agentgateway-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Docker MCP Gateway v0.44.1",
+  "file": "docker-mcp-gateway-v0-44-1",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log docker-mcp-live-full.jsonl --adapter adapters/docker-mcp-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff docker-mcp-live-full.jsonl docker-mcp-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"call\",\"msg\":\"  - Calling tool convert_time with arguments: object with 3 field(s)\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log docker-mcp-live-scrubbed.jsonl --adapter adapters/docker-mcp-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "IBM ContextForge 1.0.11",
+  "file": "ibm-contextforge-1-0-11",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log contextforge-live-full.jsonl --adapter adapters/contextforge-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff contextforge-live-full.jsonl contextforge-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"tool_service\",\"component\":\"tool_service\",\"context\":\"{\\\"resource_type\\\": \\\"tool\\\", \\\"resource_id\\\": \\\"6cf42a80f44843d2bc0121a758c3c18d\\\", \\\"resource_action\\\": \\\"invoke\\\", \\\"custom_fields\\\": {\\\"tool_name\\\": \\\"everything-echo\\\", \\\"integration_type\\\": \\\"MCP\\\", \\\"error_message\\\": null}}\",\"correlation_id\":\"90013acbb7b944d3b8fac91067573e61\",\"duration_ms\":1.8437800000015159,\"environment\":\"development\",\"error_details\":\"null\",\"hostname\":\"runnervmtr4k5\",\"id\":\"c45b5635c5d846b7a2766c67aa95f919\",\"is_security_event\":0,\"level\":\"ERROR\",\"message\":\"Tool 'everything-echo' invocation failed\",\"performance_metrics\":\"null\",\"process_id\":2380,\"threat_indicators\":\"null\",\"timestamp\":\"2026-09-29 01:30:59.330992\",\"user_id\":\"admin@example.com\",\"version\":\"unknown\"}"
+   ],
+   [
+    "del",
+    "- {\"class\":\"http_gateway\",\"client_ip\":\"127.0.0.1\",\"component\":\"http_gateway\",\"context\":\"{\\\"response_status_code\\\": 200, \\\"metadata\\\": {\\\"event\\\": \\\"request_completed\\\", \\\"response_time_category\\\": \\\"fast\\\"}}\",\"correlation_id\":\"90013acbb7b944d3b8fac91067573e61\",\"duration_ms\":13.175487518310547,\"environment\":\"development\",\"error_details\":\"null\",\"hostname\":\"runnervmtr4k5\",\"id\":\"02d8a9a9da3c4ff7839fc65ab879ec00\",\"is_security_event\":0,\"level\":\"INFO\",\"message\":\"Request completed: POST /rpc - 200\",\"operation_type\":\"http_request\",\"performance_metrics\":\"null\",\"process_id\":2380,\"request_method\":\"POST\",\"request_path\":\"/rpc\",\"threat_indicators\":\"null\",\"timestamp\":\"2026-09-29 01:30:59.333085\",\"user_agent\":\"curl/8.5.0\",\"user_email\":\"admin@example.com\",\"version\":\"unknown\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log contextforge-live-scrubbed.jsonl --adapter adapters/contextforge-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Lasso MCP Gateway 1.2.1",
+  "file": "lasso-mcp-gateway-1-2-1",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log lasso-live-full.jsonl --adapter adapters/lasso-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff lasso-live-full.jsonl lasso-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"call_id\":\"f1d72909-1437-49a4-b60b-7dba5f27aefe\",\"capability_name\":\"read_multiple_files\",\"capability_type\":\"tool\",\"class\":\"tool\",\"content_text\":\"/tmp/tmp.NHvqCjWcoq/root/tokens.txt:\\ndeploy key: <GITHUB_PERSONAL_ACCESS_TOKEN>\\n\\n\",\"content_type\":\"text\",\"isError\":0,\"paths\":\"['/tmp/tmp.NHvqCjWcoq/root/tokens.txt']\",\"response_type\":\"CallToolResult\",\"server_name\":\"filesystem\",\"timestamp\":\"2026-09-29 01:30:41.180069\",\"track_id\":\"romantic-labradoodle-0132\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log lasso-live-scrubbed.jsonl --adapter adapters/lasso-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Bifrost 2.2.3",
+  "file": "bifrost-2-2-3",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log bifrost-live-full.jsonl --adapter adapters/bifrost-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff bifrost-live-full.jsonl bifrost-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"app\":\"Other\",\"arguments\":\"{\\\"path\\\":\\\"/tmp/tmp.UUdJ4BTv4F/root/x.txt\\\",\\\"content\\\":\\\"y\\\"}\",\"class\":\"tool_call\",\"created_at\":\"2026-09-29T01:30:42.958317465Z\",\"error_details\":{\"error\":{\"error\":\"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)\",\"message\":\"tool 'fs-write_file' is not permitted (not in client's ToolsToExecute allow-list)\"},\"extra_fields\":{\"mcp_request_type\":\"chat_tool_call\",\"routing_info\":{}},\"is_bifrost_error\":false},\"id\":\"74dbebec-cf6f-4495-9e94-33d5908ad3a8\",\"request_id\":\"74dbebec-cf6f-4495-9e94-33d5908ad3a8\",\"server_label\":\"fs\",\"status\":\"error\",\"timestamp\":\"2026-09-29T01:30:42.958317465Z\",\"tool_name\":\"write_file\",\"user_agent\":\"curl/8.5.0\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log bifrost-live-scrubbed.jsonl --adapter adapters/bifrost-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "NVIDIA OpenShell 0.1.2",
+  "file": "nvidia-openshell-0-1-2",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log openshell-live-full.jsonl --adapter adapters/nvidia-openshell-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff openshell-live-full.jsonl openshell-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"NET:REFUSE\",\"level\":\"OCSF\",\"msg\":\"NET:REFUSE [MED] DENIED api.github.com [reason:policy_dns_ineligible]\",\"source\":\"sandbox\",\"t\":\"1790641350.681\",\"target\":\"ocsf\"}"
+   ],
+   [
+    "del",
+    "- {\"class\":\"NET:OPEN\",\"level\":\"OCSF\",\"msg\":\"NET:OPEN [MED] DENIED /usr/bin/curl(0) -> api.github.com:443 [reason:transparent_tcp_policy_denied]\",\"source\":\"sandbox\",\"t\":\"1790641350.683\",\"target\":\"ocsf\"}"
+   ],
+   [
+    "del",
+    "  … and 4 more record(s) removed"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log openshell-live-scrubbed.jsonl --adapter adapters/nvidia-openshell-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "OpenAI Agents SDK 0.22.3",
+  "file": "openai-agents-sdk-0-22-3",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log openai-agents-live-full.jsonl --adapter adapters/openai-agents-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff openai-agents-live-full.jsonl openai-agents-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"span:function\",\"ended_at\":\"2026-09-30T10:28:16.250371+00:00\",\"error\":null,\"id\":\"span_0e491a549e6740f4a52040ea\",\"object\":\"trace.span\",\"parent_id\":\"span_4ea54607611347b881b7a267\",\"span_data\":{\"input\":\"{\\\"path\\\": \\\"notes.txt\\\"}\",\"mcp_data\":null,\"name\":\"delete_file\",\"output\":\"delete_file refused by policy: deletion is not permitted\",\"type\":\"function\"},\"started_at\":\"2026-09-30T10:28:16.250175+00:00\",\"trace_id\":\"trace_3f2910df72474be4b3a1f2133935e7b5\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log openai-agents-live-scrubbed.jsonl --adapter adapters/openai-agents-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ],
+   [
+    "cmd",
+    "$ diff openai-agents-live-full.jsonl openai-agents-live-overflow.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"trace\",\"group_id\":\"full\",\"id\":\"trace_3f2910df72474be4b3a1f2133935e7b5\",\"metadata\":null,\"object\":\"trace\",\"workflow_name\":\"vlc1-capture\"}"
+   ],
+   [
+    "del",
+    "- {\"class\":\"span:generation\",\"ended_at\":\"2026-09-30T10:28:16.248781+00:00\",\"error\":null,\"id\":\"span_fba38204a27143cdb0df2ea6\",\"object\":\"trace.span\",\"parent_id\":\"span_4ea54607611347b881b7a267\",\"span_data\":{\"input\":[{\"content\":\"Use the tools.\",\"role\":\"system\"},{\"content\":\"Read notes.txt, then delete it.\",\"role\":\"user\"}],\"model\":\"mock-model\",\"model_config\":{\"base_url\":\"http://127.0.0.1:18080/v1/\",\"context_management\":null,\"frequency_penalty\":null,\"include_usage\":null,\"max_tokens\":null,\"metadata\":null,\"parallel_tool_calls\":null,\"presence_penalty\":null,\"prompt_cache_options\":null,\"prompt_cache_retention\":null,\"reasoning\":null,\"response_include\":null,\"retry\":null,\"store\":null,\"temperature\":null,\"timeout\":null,\"tool_choice\":null,\"top_logprobs\":null,\"top_p\":null,\"truncation\":null,\"verbosity\":null},\"output\":[{\"annotations\":null,\"audio\":null,\"content\":null,\"function_call\":null,\"refusal\":null,\"role\":\"assistant\",\"tool_calls\":[{\"function\":{\"arguments\":\"{\\\"path\\\": \\\"notes.txt\\\"}\",\"name\":\"read_file\"},\"id\":\"call_allowed\",\"type\":\"function\"},{\"function\":{\"arguments\":\"{\\\"path\\\": \\\"notes.txt\\\"}\",\"name\":\"delete_file\"},\"id\":\"call_refused\",\"type\":\"function\"}]}],\"type\":\"generation\",\"usage\":{\"input_tokens\":10,\"input_tokens_details\":{\"cache_write_tokens\":0,\"cached_tokens\":0},\"output_tokens\":5,\"output_tokens_details\":{\"reasoning_tokens\":0},\"requests\":1,\"total_tokens\":15}},\"started_at\":\"2026-09-30T10:28:16.188203+00:00\",\"trace_id\":\"trace_3f2910df72474be4b3a1f2133935e7b5\"}"
+   ],
+   [
+    "del",
+    "  … and 27 more record(s) removed"
+   ],
+   [
+    "warn",
+    "+ 4 record(s) present only in the second file"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log openai-agents-live-overflow.jsonl --adapter adapters/openai-agents-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "OpenTelemetry GenAI spans",
+  "file": "opentelemetry-genai-spans",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log otel-genai-live-full.jsonl --adapter adapters/otel-genai-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff otel-genai-live-full.jsonl otel-genai-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"attributes\":{\"error.type\":\"PermissionError\",\"gen_ai.operation.name\":\"execute_tool\",\"gen_ai.tool.call.arguments\":\"{\\\"path\\\":\\\"notes.txt\\\"}\",\"gen_ai.tool.call.id\":\"call_refused\",\"gen_ai.tool.name\":\"delete_file\"},\"class\":\"execute_tool\",\"context\":{\"span_id\":\"0x33f11a0e1fad8924\",\"trace_id\":\"0x99be37844c6930c83454c4c924ca0c07\",\"trace_state\":\"[]\"},\"end_time\":\"2026-09-30T10:28:11.625623Z\",\"events\":[],\"kind\":\"SpanKind.INTERNAL\",\"links\":[],\"name\":\"execute_tool delete_file\",\"parent_id\":null,\"resource\":{\"attributes\":{\"service.instance.id\":\"d5c4e069-9471-49c3-a967-bd80e18c6e6a\",\"service.name\":\"vlc1-otel-genai\",\"telemetry.sdk.language\":\"python\",\"telemetry.sdk.name\":\"opentelemetry\",\"telemetry.sdk.version\":\"1.45.0\"},\"schema_url\":\"\"},\"start_time\":\"2026-09-30T10:28:11.625569Z\",\"status\":{\"description\":\"delete_file refused by policy: deletion is not permitted\",\"status_code\":\"ERROR\"}}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log otel-genai-live-scrubbed.jsonl --adapter adapters/otel-genai-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Falco 0.45.0",
+  "file": "falco-0-45-0",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log falco-live-full.jsonl --adapter adapters/falco-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff falco-live-full.jsonl falco-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"hostname\":\"699980ecaa97\",\"output\":\"2026-09-30T11:26:37.858993540+0000: Warning Sensitive file opened for reading by non-trusted program | file=/etc/shadow gparent=systemd ggparent=<NA> gggparent=<NA> evt_type=open user=root user_uid=0 user_loginuid=-1 process=cat proc_exepath=/bin/busybox parent=containerd-shim command=cat /etc/shadow terminal=0 container_id=0d933f88fedf container_name=vlc-victim container_image_repository=alpine container_image_tag=3.20 k8s_pod_name=<NA> k8s_ns_name=<NA>\",\"output_fields\":{\"container.id\":\"0d933f88fedf\",\"container.image.repository\":\"alpine\",\"container.image.tag\":\"3.20\",\"container.name\":\"vlc-victim\",\"evt.time.iso8601\":1790767597858993540,\"evt.type\":\"open\",\"fd.name\":\"/etc/shadow\",\"k8s.ns.name\":null,\"k8s.pod.name\":null,\"proc.aname[2]\":\"systemd\",\"proc.aname[3]\":null,\"proc.aname[4]\":null,\"proc.cmdline\":\"cat /etc/shadow\",\"proc.exepath\":\"/bin/busybox\",\"proc.name\":\"cat\",\"proc.pname\":\"containerd-shim\",\"proc.tty\":0,\"user.loginuid\":-1,\"user.name\":\"root\",\"user.uid\":0},\"priority\":\"Warning\",\"rule\":\"Read sensitive file untrusted\",\"source\":\"syscall\",\"tags\":[\"T1555\",\"container\",\"filesystem\",\"host\",\"maturity_stable\",\"mitre_credential_access\"],\"time\":\"2026-09-30T11:26:37.858993540Z\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log falco-live-scrubbed.jsonl --adapter adapters/falco-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'tuned, as captured': the change is invisible to this check"
+   ],
+   [
+    "cmd",
+    "$ diff falco-live-full.jsonl falco-live-default.jsonl"
+   ],
+   [
+    "del",
+    "- {\"hostname\":\"699980ecaa97\",\"output\":\"Falco metrics snapshot\",\"output_fields\":{\"evt.hostname\":\"699980ecaa97\",\"evt.source\":\"syscall\",\"evt.time\":1790767589882001000,\"falco.cpu_usage_perc\":93.5,\"falco.duration_sec\":1,\"falco.host_boot_ts\":1790767426000000000,\"falco.host_cpu_usage_perc\":11.9,\"falco.host_memory_used_mb\":885.6,\"falco.host_netinfo.interfaces.eth0.protocols.ipv4.addresses\":\"172.17.0.2\",\"falco.host_num_cpus\":4,\"falco.host_open_fds\":1902,\"falco.host_procs_running\":1,\"falco.kernel_release\":\"6.17.0-1022-azure\",\"falco.memory_pss_mb\":116.2,\"falco.memory_rss_mb\":117.2,\"falco.memory_vsz_mb\":1658.8,\"falco.n_added_fds\":1314,\"falco.n_added_threads\":164,\"falco.n_fds\":11279,\"falco.n_noncached_thread_lookups\":1477,\"falco.n_threads\":164,\"falco.num_evts\":0,\"falco.num_evts_prev\":0,\"falco.outputs_queue_num_drops\":0,\"falco.reload_ts\":1790767588405763000,\"falco.rules.matches_total\":0,\"falco.sha256_config_file.falco_yaml\":\"e37248be1b30eebad42548aeb1da1d5ffce1d7c73f8497a6b80914dfa5a0f574\",\"falco.sha256_rules_file.falco_rules_local_yaml\":\"25154e0f2012815109f953a95873e2895b2252f6cc8a8f3579edcbdbbacc26a3\",\"falco.sha256_rules_file.falco_rules_yaml\":\"30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b\",\"falco.sha256_rules_file.vlc_rules_yaml\":\"ec87e549532767b12db1d8c894060b7ddcccfec1db38a35fe85e187dd7447ed2\",\"falco.start_ts\":1790767588409107865,\"falco.version\":\"0.45.0\",\"plugins.container.n_containers\":1,\"scap.engine_name\":\"modern_bpf\",\"scap.evts_drop_rate_sec\":0.0,\"scap.evts_rate_sec\":0.0,\"scap.n_drops\":0,\"scap.n_drops_perc\":0.0,\"scap.n_drops_prev\":0,\"scap.n_evts\":1,\"scap.n_evts_prev\":0},\"priority\":\"Informational\",\"rule\":\"Falco internal: metrics snapshot\",\"source\":\"internal\",\"time\":\"2026-09-30T11:26:29.882001000Z\"}"
+   ],
+   [
+    "del",
+    "- {\"hostname\":\"699980ecaa97\",\"output\":\"Falco metrics snapshot\",\"output_fields\":{\"evt.hostname\":\"699980ecaa97\",\"evt.source\":\"syscall\",\"evt.time\":1790767593738649000,\"falco.cpu_usage_perc\":27.2,\"falco.duration_sec\":5,\"falco.host_boot_ts\":1790767426000000000,\"falco.host_cpu_usage_perc\":11.7,\"falco.host_memory_used_mb\":864.2,\"falco.host_netinfo.interfaces.eth0.protocols.ipv4.addresses\":\"172.17.0.2\",\"falco.host_num_cpus\":4,\"falco.host_open_fds\":1872,\"falco.host_procs_running\":1,\"falco.kernel_release\":\"6.17.0-1022-azure\",\"falco.memory_pss_mb\":120.2,\"falco.memory_rss_mb\":121.2,\"falco.memory_vsz_mb\":1662.8,\"falco.n_added_fds\":1372,\"falco.n_added_threads\":164,\"falco.n_cached_fd_lookups\":119,\"falco.n_cached_thread_lookups\":328,\"falco.n_failed_fd_lookups\":15,\"falco.n_fds\":11156,\"falco.n_noncached_fd_lookups\":157,\"falco.n_noncached_thread_lookups\":1524,\"falco.n_removed_fds\":69,\"falco.n_removed_threads\":8,\"falco.n_retrieve_evts_drops\":51,\"falco.n_threads\":156,\"falco.num_evts\":254,\"falco.num_evts_prev\":0,\"falco.outputs_queue_num_drops\":0,\"falco.reload_ts\":1790767588405763000,\"falco.rules.matches_total\":0,\"falco.sha256_config_file.falco_yaml\":\"e37248be1b30eebad42548aeb1da1d5ffce1d7c73f8497a6b80914dfa5a0f574\",\"falco.sha256_rules_file.falco_rules_local_yaml\":\"25154e0f2012815109f953a95873e2895b2252f6cc8a8f3579edcbdbbacc26a3\",\"falco.sha256_rules_file.falco_rules_yaml\":\"30a1a60263ab97650c851011468da03b17fc0096a7cfa3b6686eba5de73b865b\",\"falco.sha256_rules_file.vlc_rules_yaml\":\"ec87e549532767b12db1d8c894060b7ddcccfec1db38a35fe85e187dd7447ed2\",\"falco.start_ts\":1790767588409107865,\"falco.version\":\"0.45.0\",\"plugins.container.n_containers\":1,\"scap.engine_name\":\"modern_bpf\",\"scap.evts_drop_rate_sec\":0.0,\"scap.evts_rate_sec\":80.1,\"scap.n_drops\":0,\"scap.n_drops_perc\":0.0,\"scap.n_drops_prev\":0,\"scap.n_evts\":310,\"scap.n_evts_prev\":1},\"priority\":\"Informational\",\"rule\":\"Falco internal: metrics snapshot\",\"source\":\"internal\",\"time\":\"2026-09-30T11:26:33.738649000Z\"}"
+   ],
+   [
+    "del",
+    "  … and 81 more record(s) removed"
+   ],
+   [
+    "warn",
+    "+ 64 record(s) present only in the second file"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log falco-live-default.jsonl --adapter adapters/falco-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'tuned, as captured': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Trillian Tessera v1.0.4 (positive control)",
+  "file": "trillian-tessera-v1-0-4",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log tessera-live-full.jsonl --adapter adapters/tessera-live.json"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 23 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L2-2 adapter names no loss-declaration class"
+   ],
+   [
+    "cmd",
+    "$ diff tessera-live-full.jsonl tessera-live-scrubbed.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"entry\",\"data\":\"{\\\"event\\\":\\\"tool_call\\\",\\\"tool\\\":\\\"delete_file\\\",\\\"args\\\":{\\\"path\\\":\\\"notes.txt\\\"},\\\"decision\\\":\\\"deny\\\",\\\"rule\\\":\\\"no-delete\\\"}\\n\",\"index\":2}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log tessera-live-scrubbed.jsonl --adapter adapters/tessera-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   10 of 15 requirements fail"
+   ],
+   [
+    "ok",
+    "  CAUGHT: VLC-L1-1 PASS→FAIL, VLC-L2-1 PASS→FAIL (and 8 later checks no longer reached)"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log tessera-live-full.jsonl --adapter adapters/tessera-live.json --expect-root d1d2ed1574b7… --expect-head 8082a0520690…"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 23 requirements fail"
+   ],
+   [
+    "dim",
+    "  same result as 'as captured'"
+   ]
+  ]
+ },
+ {
+  "title": "invinoveritas verdict ledger (positive control)",
+  "file": "invinoveritas-verdict-ledger",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log invinoveritas-ledger-live-full.jsonl --adapter adapters/invinoveritas-ledger-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   11 of 19 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-3 not established: the end marker names the recomputed head, but the adapter declares it not self-bound, so records dropped from the tail with the marker's head rewritten are undetectable on the log alone; supply --expect-head (a head obtained independently of the log)"
+   ],
+   [
+    "cmd",
+    "$ diff invinoveritas-ledger-live-full.jsonl invinoveritas-ledger-live-truncated.jsonl"
+   ],
+   [
+    "del",
+    "- {\"class\":\"ledger-entry\",\"entry\":269,\"content_hash\":\"ae6936f15c9180a32d10110f121710eb434a5fffec51bcbc9922fa5e122b57a6\",\"prev_head_hash\":\"1551443d8c3ab109c6fd4d8c12fc3e3f32650851d07fbd03c721837d45b02156\",\"head_hash\":\"04467b72e3231f1deb61e1e15741674e226e3aece0892800d7fc7ace2e7a108d\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log invinoveritas-ledger-live-truncated.jsonl --adapter adapters/invinoveritas-ledger-live.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   11 of 19 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'log alone': the change is invisible to this check"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log invinoveritas-ledger-live-full.jsonl --adapter adapters/invinoveritas-ledger-live.json --expect-head 04467b72e323…"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 19 requirements fail"
+   ],
+   [
+    "head",
+    "  changed: VLC-L1-3 FAIL→PASS"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log invinoveritas-ledger-live-truncated.jsonl --adapter adapters/invinoveritas-ledger-live.json --expect-head 04467b72e323…"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 17 requirements fail"
+   ],
+   [
+    "ok",
+    "  CAUGHT: VLC-L1-1 PASS→FAIL (and 2 later checks no longer reached)"
+   ]
+  ]
+ },
+ {
+  "title": "JIDEC ledger, n 65 export (scored by its operator)",
+  "file": "jidec-ledger-n-65-export",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log jidec-ledger-chained-n65.jsonl --adapter adapters/jidec-ledger-chained.json"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 19 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L2-1 adapter declares no production count or ordinal"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log jidec-ledger-chained-n65.jsonl --adapter adapters/jidec-ledger-chained.json --expect-head 13d1a8dad24d…"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 19 requirements fail"
+   ],
+   [
+    "dim",
+    "  same result as 'log alone'"
+   ],
+   [
+    "cmd",
+    "$ diff jidec-ledger-chained-n65.jsonl jidec-ledger-chained-n65-resealed-64.jsonl"
+   ],
+   [
+    "del",
+    "- {\"n\":65,\"claim_sha256\":\"8e7dd4589c4a47b0abc881a4ca35deb6cb94d70d8a4e96e4e6bef66eb81f453c\",\"prev_entry_sha256\":\"35944a92441f64bacdb6fed1197764e14eb392975375cb06b7c92ca57329533c\",\"schema\":\"v0-plain\",\"created_at\":\"2026-09-30T00:30:35.567Z\",\"entry_sha256\":\"10c81a974ea12890c5901f6e98f2c3b3489b966330936ac7ab43070ddb095d5d\"}"
+   ],
+   [
+    "del",
+    "- {\"schema\":\"jidec-head-v1\",\"n\":65,\"head\":\"10c81a974ea12890c5901f6e98f2c3b3489b966330936ac7ab43070ddb095d5d\",\"root\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"chain\":\"jidec-chain-v1\",\"prev_entry_sha256\":\"10c81a974ea12890c5901f6e98f2c3b3489b966330936ac7ab43070ddb095d5d\",\"entry_sha256\":\"13d1a8dad24d5b70a5e5b05fc3b7359b14fcfe1f56a1424d8454c371811f36b4\"}"
+   ],
+   [
+    "warn",
+    "+ 1 record(s) present only in the second file"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log jidec-ledger-chained-n65-resealed-64.jsonl --adapter adapters/jidec-ledger-chained.json"
+   ],
+   [
+    "out",
+    "  structural L1   attested L1   10 of 19 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'log alone': the change is invisible to this check"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log jidec-ledger-chained-n65-resealed-64.jsonl --adapter adapters/jidec-ledger-chained.json --expect-head 13d1a8dad24d…"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   11 of 17 requirements fail"
+   ],
+   [
+    "ok",
+    "  CAUGHT: VLC-L1-1 PASS→FAIL (and 2 later checks no longer reached)"
+   ]
+  ]
+ },
+ {
+  "title": "MCP tool calls (from public documentation)",
+  "file": "mcp-tool-calls",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log mcp-toolcall.jsonl --adapter adapters/mcp-toolcall.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff mcp-toolcall.jsonl mcp-toolcall-partial-host.jsonl"
+   ],
+   [
+    "del",
+    "- {\"id\":5,\"jsonrpc\":\"2.0\",\"method\":\"tools/call\",\"params\":{\"arguments\":{\"url\":\"https://api.partner.example/v1/orders\"},\"name\":\"http_post\"}}"
+   ],
+   [
+    "del",
+    "- {\"id\":5,\"jsonrpc\":\"2.0\",\"result\":{\"content\":[{\"text\":\"201 created\",\"type\":\"text\"}],\"isError\":false}}"
+   ],
+   [
+    "del",
+    "  … and 4 more record(s) removed"
+   ],
+   [
+    "warn",
+    "+ 2 record(s) present only in the second file"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log mcp-toolcall-partial-host.jsonl --adapter adapters/mcp-toolcall.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'full session': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "Fab equipment, SECS-II/GEM (from public documentation)",
+  "file": "fab-equipment-secs-ii-gem",
+  "lines": [
+   [
+    "cmd",
+    "$ python3 conformance.py --log fab-equipment-full.jsonl --adapter adapters/fab-equipment-secsgem.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ],
+   [
+    "cmd",
+    "$ diff fab-equipment-full.jsonl fab-equipment-sampled.jsonl"
+   ],
+   [
+    "del",
+    "- {\"body\":{\"DSPER\":\"000100\",\"SVID\":[7001,7002,7003,7101],\"TOTSMP\":0,\"TRID\":\"TR-OVL-1\"},\"dir\":\"H->E\",\"eqp\":\"LITHO-07\",\"sf\":\"S2F23\",\"ts\":\"2026-04-01T06:02:00Z\"}"
+   ],
+   [
+    "del",
+    "- {\"body\":{\"TIAACK\":0},\"dir\":\"H<-E\",\"eqp\":\"LITHO-07\",\"sf\":\"S2F24\",\"ts\":\"2026-04-01T06:02:00Z\"}"
+   ],
+   [
+    "del",
+    "  … and 8 more record(s) removed"
+   ],
+   [
+    "warn",
+    "+ 4 record(s) present only in the second file"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log fab-equipment-sampled.jsonl --adapter adapters/fab-equipment-secsgem.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "bad",
+    "  SAME RESULT as 'full trace': the change is invisible to this check"
+   ]
+  ]
+ },
+ {
+  "title": "OpenTelemetry OTLP logs (from public documentation)",
+  "file": "opentelemetry-otlp-logs",
+  "lines": [
+   [
+    "cmd",
+    "$ head -1 otlp-logs.jsonl"
+   ],
+   [
+    "out",
+    "{\"attributes\":{\"tool\":\"bash\"},\"body\":{\"stringValue\":\"tool call 0\"},\"droppedAttributesCount\":0,\"resource\":{\"attributes\":{\"service.name\":\"agent-runner\"}},\"scope\":{\"name\":\"acme.agent\"},\"severityNumber\":9,\"severityText\":\"INFO\",\"spanId\":\"00f067aa0ba90200\",\"timeUnixNano\":\"1757000000000000000\",\"traceId\":\"4bf92f3577b34da6a3ce929d0e0e4736\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log otlp-logs.jsonl --adapter adapters/otel-otlp-logs.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   13 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ]
+  ]
+ },
+ {
+  "title": "Kubernetes audit (from public documentation)",
+  "file": "kubernetes-audit",
+  "lines": [
+   [
+    "cmd",
+    "$ head -1 k8s-audit.jsonl"
+   ],
+   [
+    "out",
+    "{\"annotations\":{\"authorization.k8s.io/decision\":\"allow\"},\"apiVersion\":\"audit.k8s.io/v1\",\"auditID\":\"9e1f0000-0000-4000-8000-000000000000\",\"kind\":\"Event\",\"level\":\"RequestResponse\",\"objectRef\":{\"apiVersion\":\"v1\",\"namespace\":\"default\",\"resource\":\"pods\"},\"requestReceivedTimestamp\":\"2026-09-12T10:00:00.000000Z\",\"requestURI\":\"/api/v1/namespaces/default/pods\",\"responseStatus\":{\"code\":201},\"sourceIPs\":[\"10.0.0.7\"],\"stage\":\"ResponseComplete\",\"stageTimestamp\":\"2026-09-12T10:00:00.120000Z\",\"user\":{\"username\":\"system:serviceaccount:default:agent\"},\"userAgent\":\"agent/1.0\",\"verb\":\"create\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log k8s-audit.jsonl --adapter adapters/k8s-audit.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ]
+  ]
+ },
+ {
+  "title": "Linux auditd (from public documentation)",
+  "file": "linux-auditd",
+  "lines": [
+   [
+    "cmd",
+    "$ head -1 linux-auditd.jsonl"
+   ],
+   [
+    "out",
+    "{\"arch\":\"c000003e\",\"auid\":\"1000\",\"comm\":\"python3\",\"exe\":\"/usr/bin/python3\",\"exit\":\"0\",\"key\":\"agent-exec\",\"msg\":\"audit(1757000000.123:4400)\",\"pid\":\"2000\",\"ppid\":\"1\",\"success\":\"yes\",\"syscall\":\"59\",\"type\":\"SYSCALL\",\"uid\":\"1000\"}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log linux-auditd.jsonl --adapter adapters/linux-auditd.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   12 of 18 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-1 adapter declares no integrity binding"
+   ]
+  ]
+ },
+ {
+  "title": "AWS CloudTrail digests (from public documentation)",
+  "file": "aws-cloudtrail-digests",
+  "lines": [
+   [
+    "cmd",
+    "$ head -1 cloudtrail-digests.jsonl"
+   ],
+   [
+    "out",
+    "{\"awsAccountId\":\"111122223333\",\"digestEndTime\":\"2026-09-12T01:00:00Z\",\"digestPublicKeyFingerprint\":\"a1b2c3d4e5f60718293a4b5c6d7e8f90\",\"digestS3Bucket\":\"acme-trail\",\"digestS3Object\":\"AWSLogs/.../digest-0.json.gz\",\"digestSignatureAlgorithm\":\"SHA256withRSA\",\"digestStartTime\":\"2026-09-12T00:00:00Z\",\"logFiles\":[{\"hashAlgorithm\":\"SHA-256\",\"hashValue\":\"663555dd495b3e9d76ff29dfb4be2e42f688ec06e9449fd8b85175077ee2de6a\",\"newestEventTime\":\"2026-09-12T01:00:00Z\",\"oldestEventTime\":\"2026-09-12T00:00:00Z\",\"s3Bucket\":\"acme-trail\",\"s3Object\":\"CloudTrail/log-0.json.gz\"}],\"newestEventTime\":\"2026-09-12T01:00:00Z\",\"oldestEventTime\":\"2026-09-12T00:00:00Z\",\"previousDigestHashAlgorithm\":\"SHA-256\",\"previousDigestHashValue\":\"\",\"previousDigestS3Bucket\":null,\"previousDigestS3Object\":null,\"previousDigestSignature\":null}"
+   ],
+   [
+    "cmd",
+    "$ python3 conformance.py --log cloudtrail-digests.jsonl --adapter adapters/aws-cloudtrail-digest.json"
+   ],
+   [
+    "out",
+    "  structural L0   attested L0   10 of 19 requirements fail"
+   ],
+   [
+    "dim",
+    "  first failure: VLC-L1-3 adapter declares no end marker: truncation undetectable"
+   ]
+  ]
+ },
+ {
+  "title": "AER-1 cross-test",
+  "file": "aer-1",
+  "lines": [
+   [
+    "dim",
+    "AER-1 reference verifier (Python), VLC-1 tamper cases, saved output per kit commit"
+   ],
+   [
+    "cmd",
+    "$ python3 aer1-07/chain_attacks.py zambo@aff1330/aer1-implementations/python"
+   ],
+   [
+    "bad",
+    "GAP  edit the LAST entry's output bytes                             -> ACCEPTED"
+   ],
+   [
+    "bad",
+    "GAP  relabel the LAST entry's provenance_class                      -> ACCEPTED"
+   ],
+   [
+    "bad",
+    "GAP  relabel the LAST entry's tool and id                           -> ACCEPTED"
+   ],
+   [
+    "bad",
+    "GAP  seq 1.0 on entry 0 (7.1: equivalent to 1, accepted)            -> rejected  ['entry 0 seq is not an integer']"
+   ],
+   [
+    "head",
+    "26 of 30 as expected; 4 gap(s)"
+   ],
+   [
+    "cmd",
+    "$ python3 aer1-07/chain_attacks.py zambo@4edbcbb/aer1-implementations/python"
+   ],
+   [
+    "bad",
+    "GAP  edit the LAST entry's output bytes                             -> ACCEPTED"
+   ],
+   [
+    "bad",
+    "GAP  relabel the LAST entry's provenance_class                      -> ACCEPTED"
+   ],
+   [
+    "bad",
+    "GAP  relabel the LAST entry's tool and id                           -> ACCEPTED"
+   ],
+   [
+    "ok",
+    "ok   seq 1.0 on entry 0 (7.1: equivalent to 1, accepted)            -> ACCEPTED"
+   ],
+   [
+    "head",
+    "27 of 30 as expected; 3 gap(s)"
+   ]
+  ]
+ }
+]

@@ -7,13 +7,16 @@ second file with records removed, cut or resealed, the table shows whether the
 score noticed. **Same result** means the removal is invisible to a reader holding
 only that file; **caught** means a check that passed now fails.
 
-Rerun it yourself: `python3 examples/third-party/demo.py`
+Rerun it yourself: `python3 examples/third-party/demo.py`. The recordings are
+rendered from the same output by `make_videos.py` (needs Pillow and ffmpeg).
 
 ## agentgateway 1.5.0
 
 *one live run on a GitHub-hosted runner, 2026-09-29*. Pair: the refused tool call removed.
 
-![agentgateway 1.5.0: recorded run](demo/agentgateway-1-5-0.svg)
+![agentgateway 1.5.0: recorded run](demo/agentgateway-1-5-0.gif)
+
+[MP4](demo/agentgateway-1-5-0.mp4) · [SVG](demo/agentgateway-1-5-0.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -29,7 +32,9 @@ python3 conformance.py --log examples/third-party/agentgateway-live-scrubbed.jso
 
 *one live run, 2026-09-29*. Pair: the refused calls removed.
 
-![Docker MCP Gateway v0.44.1: recorded run](demo/docker-mcp-gateway-v0-44-1.svg)
+![Docker MCP Gateway v0.44.1: recorded run](demo/docker-mcp-gateway-v0-44-1.gif)
+
+[MP4](demo/docker-mcp-gateway-v0-44-1.mp4) · [SVG](demo/docker-mcp-gateway-v0-44-1.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -45,7 +50,9 @@ python3 conformance.py --log examples/third-party/docker-mcp-live-scrubbed.jsonl
 
 *one live run, 2026-09-29*. Pair: the refused calls removed.
 
-![IBM ContextForge 1.0.11: recorded run](demo/ibm-contextforge-1-0-11.svg)
+![IBM ContextForge 1.0.11: recorded run](demo/ibm-contextforge-1-0-11.gif)
+
+[MP4](demo/ibm-contextforge-1-0-11.mp4) · [SVG](demo/ibm-contextforge-1-0-11.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -61,7 +68,9 @@ python3 conformance.py --log examples/third-party/contextforge-live-scrubbed.jso
 
 *one live run, 2026-09-29*. Pair: the refused call removed.
 
-![Lasso MCP Gateway 1.2.1: recorded run](demo/lasso-mcp-gateway-1-2-1.svg)
+![Lasso MCP Gateway 1.2.1: recorded run](demo/lasso-mcp-gateway-1-2-1.gif)
+
+[MP4](demo/lasso-mcp-gateway-1-2-1.mp4) · [SVG](demo/lasso-mcp-gateway-1-2-1.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -77,7 +86,9 @@ python3 conformance.py --log examples/third-party/lasso-live-scrubbed.jsonl --ad
 
 *one live run, 2026-09-29*. Pair: the refused call removed.
 
-![Bifrost 2.2.3: recorded run](demo/bifrost-2-2-3.svg)
+![Bifrost 2.2.3: recorded run](demo/bifrost-2-2-3.gif)
+
+[MP4](demo/bifrost-2-2-3.mp4) · [SVG](demo/bifrost-2-2-3.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -93,7 +104,9 @@ python3 conformance.py --log examples/third-party/bifrost-live-scrubbed.jsonl --
 
 *one live run, one driver, 2026-09-29*. Pair: the six DENIED lines removed.
 
-![NVIDIA OpenShell 0.1.2: recorded run](demo/nvidia-openshell-0-1-2.svg)
+![NVIDIA OpenShell 0.1.2: recorded run](demo/nvidia-openshell-0-1-2.gif)
+
+[MP4](demo/nvidia-openshell-0-1-2.mp4) · [SVG](demo/nvidia-openshell-0-1-2.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -109,7 +122,9 @@ python3 conformance.py --log examples/third-party/openshell-live-scrubbed.jsonl 
 
 *one live run, mock model endpoint, 2026-09-30*. Pair: the guardrail-refused call removed, and 25 of 29 items dropped by a full queue.
 
-![OpenAI Agents SDK 0.22.3: recorded run](demo/openai-agents-sdk-0-22-3.svg)
+![OpenAI Agents SDK 0.22.3: recorded run](demo/openai-agents-sdk-0-22-3.gif)
+
+[MP4](demo/openai-agents-sdk-0-22-3.mp4) · [SVG](demo/openai-agents-sdk-0-22-3.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -127,7 +142,9 @@ python3 conformance.py --log examples/third-party/openai-agents-live-overflow.js
 
 *one live run, mock model endpoint, 2026-09-30*. Pair: the refused call removed.
 
-![OpenTelemetry GenAI spans: recorded run](demo/opentelemetry-genai-spans.svg)
+![OpenTelemetry GenAI spans: recorded run](demo/opentelemetry-genai-spans.gif)
+
+[MP4](demo/opentelemetry-genai-spans.mp4) · [SVG](demo/opentelemetry-genai-spans.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -143,7 +160,9 @@ python3 conformance.py --log examples/third-party/otel-genai-live-scrubbed.jsonl
 
 *one live run per configuration, 2026-09-30*. Pair: a rule alert removed, and the default configuration that dropped 11694 syscalls with no drop alert.
 
-![Falco 0.45.0: recorded run](demo/falco-0-45-0.svg)
+![Falco 0.45.0: recorded run](demo/falco-0-45-0.gif)
+
+[MP4](demo/falco-0-45-0.mp4) · [SVG](demo/falco-0-45-0.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -161,7 +180,9 @@ python3 conformance.py --log examples/third-party/falco-live-default.jsonl --ada
 
 *one live run, 2026-09-30*. Pair: one entry removed; then the full log against held checkpoints.
 
-![Trillian Tessera v1.0.4 (positive control): recorded run](demo/trillian-tessera-v1-0-4.svg)
+![Trillian Tessera v1.0.4 (positive control): recorded run](demo/trillian-tessera-v1-0-4.gif)
+
+[MP4](demo/trillian-tessera-v1-0-4.mp4) · [SVG](demo/trillian-tessera-v1-0-4.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -179,7 +200,9 @@ python3 conformance.py --log examples/third-party/tessera-live-full.jsonl --adap
 
 *public API and Nostr relays, 2026-09-30*. Pair: the newest entry dropped, on the log alone and against the signed Nostr head.
 
-![invinoveritas verdict ledger (positive control): recorded run](demo/invinoveritas-verdict-ledger.svg)
+![invinoveritas verdict ledger (positive control): recorded run](demo/invinoveritas-verdict-ledger.gif)
+
+[MP4](demo/invinoveritas-verdict-ledger.mp4) · [SVG](demo/invinoveritas-verdict-ledger.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -199,7 +222,9 @@ python3 conformance.py --log examples/third-party/invinoveritas-ledger-live-trun
 
 *live export, 2026-09-30*. Pair: the same export cut at n 64 and resealed consistently, against the Bitcoin-stamped n 65 head.
 
-![JIDEC ledger, n 65 export (scored by its operator): recorded run](demo/jidec-ledger-n-65-export.svg)
+![JIDEC ledger, n 65 export (scored by its operator): recorded run](demo/jidec-ledger-n-65-export.gif)
+
+[MP4](demo/jidec-ledger-n-65-export.mp4) · [SVG](demo/jidec-ledger-n-65-export.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -219,7 +244,9 @@ python3 conformance.py --log examples/third-party/jidec-ledger-chained-n65-resea
 
 *synthetic, shape-accurate*. Pair: the same session recorded by a host connected to one server.
 
-![MCP tool calls (from public documentation): recorded run](demo/mcp-tool-calls.svg)
+![MCP tool calls (from public documentation): recorded run](demo/mcp-tool-calls.gif)
+
+[MP4](demo/mcp-tool-calls.mp4) · [SVG](demo/mcp-tool-calls.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -235,7 +262,9 @@ python3 conformance.py --log examples/third-party/mcp-toolcall-partial-host.json
 
 *synthetic, shape-accurate*. Pair: the same excursion under a sparse sampling plan.
 
-![Fab equipment, SECS-II/GEM (from public documentation): recorded run](demo/fab-equipment-secs-ii-gem.svg)
+![Fab equipment, SECS-II/GEM (from public documentation): recorded run](demo/fab-equipment-secs-ii-gem.gif)
+
+[MP4](demo/fab-equipment-secs-ii-gem.mp4) · [SVG](demo/fab-equipment-secs-ii-gem.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -251,7 +280,9 @@ python3 conformance.py --log examples/third-party/fab-equipment-sampled.jsonl --
 
 *synthetic, shape-accurate*.
 
-![OpenTelemetry OTLP logs (from public documentation): recorded run](demo/opentelemetry-otlp-logs.svg)
+![OpenTelemetry OTLP logs (from public documentation): recorded run](demo/opentelemetry-otlp-logs.gif)
+
+[MP4](demo/opentelemetry-otlp-logs.mp4) · [SVG](demo/opentelemetry-otlp-logs.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -265,7 +296,9 @@ python3 conformance.py --log examples/third-party/otlp-logs.jsonl --adapter adap
 
 *synthetic, shape-accurate*.
 
-![Kubernetes audit (from public documentation): recorded run](demo/kubernetes-audit.svg)
+![Kubernetes audit (from public documentation): recorded run](demo/kubernetes-audit.gif)
+
+[MP4](demo/kubernetes-audit.mp4) · [SVG](demo/kubernetes-audit.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -279,7 +312,9 @@ python3 conformance.py --log examples/third-party/k8s-audit.jsonl --adapter adap
 
 *synthetic, shape-accurate*.
 
-![Linux auditd (from public documentation): recorded run](demo/linux-auditd.svg)
+![Linux auditd (from public documentation): recorded run](demo/linux-auditd.gif)
+
+[MP4](demo/linux-auditd.mp4) · [SVG](demo/linux-auditd.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -293,7 +328,9 @@ python3 conformance.py --log examples/third-party/linux-auditd.jsonl --adapter a
 
 *synthetic, shape-accurate*.
 
-![AWS CloudTrail digests (from public documentation): recorded run](demo/aws-cloudtrail-digests.svg)
+![AWS CloudTrail digests (from public documentation): recorded run](demo/aws-cloudtrail-digests.gif)
+
+[MP4](demo/aws-cloudtrail-digests.mp4) · [SVG](demo/aws-cloudtrail-digests.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -306,7 +343,9 @@ python3 conformance.py --log examples/third-party/cloudtrail-digests.jsonl --ada
 ## AER-1, IETF agent-receipt draft
 
 
-![AER-1: recorded runs](demo/aer-1.svg)
+![AER-1: recorded runs](demo/aer-1.gif)
+
+[MP4](demo/aer-1.mp4) · [SVG](demo/aer-1.svg)
 *Not a log: the draft's own reference verifier, run against the VLC-1 tamper cases
 (`aer1-07/chain_attacks.py`). The kit is not in this repository, so this section
 shows the saved output from each kit commit tested.* Details: `THIRD-PARTY.md`,
