@@ -187,6 +187,10 @@ jobs:
           if [ "$(r full)" = "$(r truncated)" ]; then echo "ok    invinoveritas-ledger-live: truncated scores identically to full in the checker"
           else echo "FAIL  invinoveritas-ledger-live: truncated and full differ in the checker"; bad=1; fi
           exit $bad
+      - name: the case demo must match what the samples score today
+        run: |
+          python3 examples/third-party/demo.py
+          git diff --exit-code examples/third-party/DEMO.md
 
   proof:
     name: Coq development

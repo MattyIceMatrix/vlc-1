@@ -24,6 +24,10 @@ for each is further down this page.
   audit, Linux auditd, AWS CloudTrail, MCP and fab equipment. None is badly
   engineered; integrity was specified and completeness never was. [Results](#results)
 
+**See every run:** [`examples/third-party/DEMO.md`](examples/third-party/DEMO.md) rescores each
+case from the files in this repository and shows, per case, whether removing the
+refused or dropped records changed the score. CI regenerates it on every change.
+
 Want your own format scored? Field names are enough:
 [open an access request](https://github.com/MattyIceMatrix/vlc-1/issues/new?template=access-request.yml).
 
