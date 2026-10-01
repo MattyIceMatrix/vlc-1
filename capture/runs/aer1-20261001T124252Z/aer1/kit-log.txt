@@ -1,0 +1,30 @@
+4edbcbb 2026-10-01T08:28:32-04:00 Fix seq 1.0 rejection in aer1-implementations/python/verifier.py
+1b3e3ee 2026-10-01T08:00:53-04:00 fix: JavaScript verifyChainV07 accepts integer-valued float seq (1.0)
+e1430ec 2026-10-01T07:28:11-04:00 Polish -08 draft: acknowledgments and security considerations
+9b22c1f 2026-10-01T07:26:48-04:00 Add draft-zambo-aer1-08 with last-entry digest binding guidance
+6f6a060 2026-10-01T06:30:15-04:00 Fix verify_workflow to accept integer-valued float seq (1.0)
+aff1330 2026-10-01T07:22:32Z AER-1 -07: harden Section 7 chain-entry digest
+20ea822 2026-10-01T02:37:14-04:00 Sync certifier corpus to -06/45 vectors (was stale at -03/44)
+0678e08 2026-10-01T02:26:18-04:00 Apply the marketplace manifest fixes (correct content)
+f44dd99 2026-10-01T02:25:19-04:00 Fix Claude Code marketplace install
+c4e75ec 2026-09-30T19:50:55-04:00 Revert Cursor plugin manifests - Cursor listing already live, no duplicates
+07c8cc1 2026-09-30T19:49:48-04:00 Repo audit fixes: CITATION.cff 1.4.3, INSTALL.md em dashes, vendor -06 draft
+bb43baa 2026-09-30T19:49:14-04:00 Add Cursor plugin manifests for marketplace submission
+e63c0b6 2026-09-30T19:47:51-04:00 Add Claude Code plugin marketplace catalog
+95c94bf 2026-09-30T18:31:33-04:00 AER-1 -06: close Matthew Moore findings
+1fb9570 2026-09-30T12:28:51-04:00 corpus: add uppercase-id rejection vector (45 vectors), all seven implementations green
+01b9b99 2026-09-30T11:25:25-04:00 Enforce lowercase UUIDs across kit and all seven implementations
+2c09adf 2026-09-30T15:00:13Z Add Section 8.1 Merkle worked-example reproduction (script + README)
+0c6279c 2026-09-30T09:43:09-04:00 Add Section 8.1 Merkle regression vectors and conformance gate
+102e7ad 2026-09-30T06:47:17Z Fix 44-vector corpus acceptance: dynamic exit counts, missing certifier fixture, doc updates
+34396cd 2026-09-29T19:38:49-04:00 Bump conformance corpus to v1.3.1 (44 vectors)
+97733d8 2026-09-29T19:37:02-04:00 Regenerate CONFORMANCE.md with bad-verification-status row
+5b55ff1 2026-09-29T19:26:03-04:00 Index bad-verification-status vector in conformance corpora
+c478084 2026-09-29T19:12:29-04:00 Rename reports to reflect actual corpus version and scope
+4f14875 2026-09-29T19:12:12-04:00 Document UUID case ambiguity in spec notes
+512dce9 2026-09-29T19:11:43-04:00 Add regression vector for verification_status fail-open
+f3aacbb 2026-09-29T18:31:05-04:00 Fix verification_status fail-open in legacy conformance harness
+384db8d 2026-09-29T18:27:42-04:00 Remove competitor-named analysis files from public tree
+46f921d 2026-09-29T18:19:06-04:00 Publish seven-language interoperability evidence
+586dafd 2026-09-29T20:34:41Z Interop README: accurate C#/Swift 43/43 claim
+585a17d 2026-09-29T20:34:06Z Root README: surface the 7-language implementations

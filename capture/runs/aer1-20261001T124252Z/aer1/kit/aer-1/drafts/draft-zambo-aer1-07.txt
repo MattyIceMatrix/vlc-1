@@ -1,0 +1,1165 @@
+
+
+
+
+Independent Submission                                          B. Zambo
+Internet-Draft                                                     Zambo
+Intended status: Informational                          1 October 2026
+Expires: 1 April 2027
+
+
+      AER-1: A Portable Execution Receipt for AI Agent Tool Calls
+                          draft-zambo-aer1-07
+
+Abstract
+
+   This document specifies AER-1, a small vocabulary for recording one
+   AI agent tool call as a portable, independently checkable execution
+   receipt.  A receipt identifies the execution, records when it
+   happened, preserves the canonical bytes used for the output
+   commitment, names the tool and caller scope, carries a provenance
+   class, and resolves at a stable public URL.  The format separates
+   what the system observed from claims about the outside world, and it
+   separates provenance (who ran or reported the action) from the record
+   itself.  A reference implementation is deployed, and its receipts are
+   publicly verifiable without an account or token.  This revision adds
+   workflow receipts: a verifiable record that binds an ordered
+   sequence of step receipts to a single goal, with a Merkle root over
+   the step sequence for tamper evidence.  The worked workflow
+   example's Merkle root is computed with the Section 8.1 leaf
+   construction.  This revision hardens the Section 7 hash-chain entry
+   digest: the digest now binds the entry's sequence number, job
+   identifier, closing flag, receipt identifier, tool name, and
+   provenance class alongside the output commitment, so relabeling or
+   splicing attacks against chain metadata are detectable by
+   recomputation.  The revision also states the honest limit of chain
+   mechanics: truncation with re-linking is not detectable by the chain
+   alone and needs an anchored endpoint commitment.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 1 April 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 1]
+
+Internet-Draft                    AER-1                    October 2026
+
+Implementation Status
+
+   This section records the implementation status of the AER-1
+   vocabulary at the time of this revision, following [RFC7942].  It
+   will be removed before publication as an RFC.
+
+   Reference implementation.  Zambo (https://zambo.dev), operated by
+   the document author, is a deployed implementation of Sections 3
+   through 10.  Tool calls made over HTTPS as JSON-RPC to
+   https://zambo.dev/api/mcp receive a public receipt page at
+   https://zambo.dev/run/<id>, retrievable without an account, wallet,
+   or token.  A machine-readable verifier is exposed as described in
+   Section 7.  Receipts are anchored to public Nostr relays with an
+   envelope binding the receipt identifier, the output hash, and the
+   evidence hash (envelope "zambo-receipt-anchor/1").
+
+   Workflow receipts (Section 8) are deployed in the reference
+   implementation.  Multi-step sessions receive a workflow receipt at
+   https://zambo.dev/workflow/<workflow_id> binding the ordered step
+   receipts with a Merkle root, and step receipt pages link to the
+   parent workflow ("Part of workflow") while workflow pages link to
+   each step receipt.
+
+   Conformance kit.  An open conformance suite for this vocabulary is
+   maintained at https://gitlab.com/rambozambodotdev/zambo.  It ships
+   seven independent runners (Rust, Go, TypeScript, Python, Java, C#,
+   and Swift), each verified 45/45 against a corpus of 45 test
+   vectors covering valid receipts, invalid receipts, anchored
+   receipts, and reference-producer profile boundaries: the 43 vectors
+   of the frozen v1.4.0 corpus plus the uppercase-id and
+   bad-verification-status regression vectors added after -05, plus the
+   7-vector Section 7 chain corpus and the 15-vector Section 7.1/-07
+   hardened chain corpus.  Each runner is zero-dependency within its
+   language toolchain.  Running the
+   Python suite takes two steps and no dependencies beyond git and a
+   Python 3 interpreter:
+
+      git clone https://gitlab.com/rambozambodotdev/zambo.git
+      python3 aer1-implementations/python/conformance.py
+
+   An implementation is conformant when it produces byte-identical
+   verdicts to the reference runners across the full vector corpus.
+   The kit is versioned; the v1.4.0 release is the frozen reference
+   for this revision of the draft.
+
+   Independent verification.  The Section 6 verification procedure has
+   been exercised against live receipts by independent third parties:
+
+   *  On 2026-09-16, an independent agent ("Merv", on the Clawstr
+      network) verified a live receipt
+      (id 0ec81343-cc1f-4c25-9c33-d76b5582406d) in three checks: the
+      SHA-256 of the decoded canonical bytes matched the output
+      commitment, the upstream evidence hash matched, and the anchor
+      event carried a valid signature retrievable on independent
+      relays.  The same party reported that the anchor envelope did
+      not then bind the evidence hash; the reference implementation
+      has since shipped the binding envelope described above.
+
+   *  On 2026-09-16, an independent agent ("nilo_agent", on Nostr)
+      ran adversarial verification challenges against live receipts,
+      including a witness round and a strong-form Bitcoin-anchored
+      challenge (anchor block 967351, receipt 88094e26), each
+      answered with bytes the challenger could check independently.
+
+   *  On 2026-09-25 and 2026-09-26, an independent agent ("Devan",
+      on Nostr) published timestamped probe receipts (v1 and v2)
+      exercising independent verification of agent work in the same
+      receipt model.
+
+   Seven independent implementations of Sections 3 through 6 are
+   maintained in the conformance kit repository (Rust, Go, TypeScript,
+   Python, Java, C#, and Swift), each verified 45/45 against the
+   vector corpus (the frozen v1.4.0 corpus plus the regression vectors
+   added after -05).  An independent second implementation
+   is under active development by a third party against the same
+   corpus.  Reports of additional implementations or independent
+   verification results are solicited; implementers are encouraged to
+   validate against the open conformance kit described above and to
+   report their results.
+
+
+
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 2]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  The Receipt Record  . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Canonical Bytes and Output Commitment . . . . . . . . . . . .   5
+   5.  Provenance Classes  . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Verification Procedure  . . . . . . . . . . . . . . . . . . .   6
+   7.  Hash-Chained Job Timelines  . . . . . . . . . . . . . . . . .   7
+   8.  Workflow Receipts . . . . . . . . . . . . . . . . . . . . . .   8
+   9.  Public Resolution . . . . . . . . . . . . . . . . . . . . . .  10
+   10. External Anchoring  . . . . . . . . . . . . . . . . . . . . .  10
+   11. Reference Implementation  . . . . . . . . . . . . . . . . . .  11
+   12. Design Rationale  . . . . . . . . . . . . . . . . . . . . . .  11
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   14. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   15. Related Work  . . . . . . . . . . . . . . . . . . . . . . . .  13
+   16. Normative References  . . . . . . . . . . . . . . . . . . . .  13
+   17. Informative References  . . . . . . . . . . . . . . . . . . .  14
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  14
+
+1.  Introduction
+
+   AI agents increasingly act through tool calls: they query prices,
+   send messages, modify files, and invoke services on a principal's
+   behalf.  When something later needs checking -- what happened, when
+   it happened, and what the system actually observed -- the parties
+   involved usually have only vendor-specific logs, screenshots, or the
+   agent's own summary.  None of these is portable across
+   implementations, and none lets an independent third party recompute
+   what was recorded.
+
+   AER-1 (AI Agent Execution Receipt, version 1) defines a small,
+   portable vocabulary for recording one agent tool call as a verifiable
+   receipt.  The receipt answers a narrow question: what did this system
+   record for this execution?  It does not prove an external business
+   outcome the system did not observe, and it does not turn a planned,
+   blocked, or preview action into a completed execution.
+
+   This document is an open proposal authored by Brennan Zambo.  It is
+   not a claim to invent or own the broader execution-receipt category,
+   and it does not establish certification, registry membership,
+   universal adoption, or a finalized standards status.  It is intended
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 3]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   for discussion, implementation experiments, and interoperability
+   feedback.  A reference implementation is deployed at the time of
+   writing, and its receipts are publicly verifiable as described in
+   Section 11.
+
+2.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   This document also uses the following terms:
+
+   Execution:  One invocation of one tool by or on behalf of an agent,
+      with its inputs, observed result, and timing.
+
+   Receipt:  A public record for one execution with a stable identifier,
+      execution metadata, canonical bytes, and an output commitment, as
+      defined in Section 3.
+
+   Canonical bytes:  The exact UTF-8 byte sequence over which the output
+      commitment was computed.  Verifiers MUST receive or reproduce the
+      same bytes before comparing hashes.
+
+   Observed result:  The result the implementation received and stored
+      for the execution.  A receipt reports observation, not an
+      unsupported claim about the world beyond the observation.
+
+   Output commitment:  A SHA-256 digest of the canonical bytes, written
+      "sha256:" followed by the lowercase hexadecimal digest.
+
+3.  The Receipt Record
+
+   A receipt is a JSON object with the following members.  This is the
+   smallest useful interoperable shape; implementations MAY add fields,
+   but additions MUST NOT make the core identity or verification fields
+   ambiguous.
+
+
+
+
+
+
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 4]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | id                     | MUST     | Stable UUID                   |
+   |                        |          | identifying the               |
+   |                        |          | receipt.                      |
+   +------------------------+----------+-------------------------------+
+   | receipt_schema_version | MUST     | Schema version. "0.3"         |
+   |                        |          | in the reference              |
+   |                        |          | implementation.               |
+   +------------------------+----------+-------------------------------+
+   | created_at             | MUST     | Timestamp of record           |
+   |                        |          | creation, in RFC 3339         |
+   |                        |          | format.  The timestamp MUST   |
+   |                        |          | denote a valid calendar date  |
+   |                        |          | and time; a verifier MUST     |
+   |                        |          | reject values such as         |
+   |                        |          | February 30 that match the    |
+   |                        |          | RFC 3339 syntax but are not   |
+   |                        |          | real dates.                   |
+   +------------------------+----------+-------------------------------+
+   | tool                   | MUST     | Object naming the             |
+   |                        |          | tool: name, version,          |
+   |                        |          | and caller scope (for         |
+   |                        |          | example "public").            |
+   +------------------------+----------+-------------------------------+
+   | provenance_class       | MUST     | One of the provenance         |
+   |                        |          | classes in Section 5.         |
+   +------------------------+----------+-------------------------------+
+   | canonical_bytes        | MUST     | Base64 encoding of            |
+   |                        |          | the exact UTF-8 bytes         |
+   |                        |          | hashed for the output         |
+   |                        |          | commitment.                   |
+   +------------------------+----------+-------------------------------+
+   | output_hash            | MUST     | "sha256:" plus the            |
+   |                        |          | lowercase hex digest          |
+   |                        |          | of the decoded                |
+   |                        |          | canonical_bytes.              |
+   +------------------------+----------+-------------------------------+
+   | verification_status    | MUST     | "verified" when the           |
+   |                        |          | stored record passes          |
+   |                        |          | the procedure in              |
+   |                        |          | Section 6.                    |
+   +------------------------+----------+-------------------------------+
+
+                       Table 1: Core receipt members
+
+   The public URL is not a stored member; it is a resolution rule.
+   Every receipt MUST be retrievable at a stable public URL without an
+   account, wallet, or token, as specified in Section 9.  In the
+   reference implementation the URL is https://zambo.dev/run/<id>.
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 5]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   Deployed records carry additional members outside the interoperable
+   core (for example caller identity, evidence references, external
+   anchor data, per-check results, side-effect declarations, and a
+   result preview).  A verifier MUST NOT require them, and their
+   presence MUST NOT change the meaning of the core members.
+
+   Example: the following shows the core fields of a real receipt issued
+   by the reference implementation (id 130da435-e157-498e-
+   af90-605866a86a27, a live_price call).  The canonical bytes and
+   output hash are elided here to respect line-length limits; the
+   complete record is published at https://zambo.dev/run/130da435-e157-
+   498e-af90-605866a86a27, where the output hash was independently
+   recomputed from the decoded canonical bytes while preparing this
+   document and matches.
+
+   {
+     "id": "130da435-e157-498e-af90-605866a86a27",
+     "receipt_schema_version": "0.3",
+     "created_at": "2026-09-23T23:45:20.760Z",
+     "tool": {
+       "name": "live_price",
+       "version": "4.0.0",
+       "scope": "public"
+     },
+     "provenance_class": "EXECUTED BY ZAMBO",
+     "canonical_bytes": "(elided; full value at the URL above)",
+     "output_hash": "(elided; full value at the URL above)",
+     "verification_status": "verified"
+   }
+
+4.  Canonical Bytes and Output Commitment
+
+   Interoperability fails when every implementation gives a different
+   name to the same boundary, so the checkable core of a receipt is
+   deliberately small: an identifier locates the record, a creation time
+   orders it, a tool and caller scope identify the execution context,
+   and canonical bytes plus an output hash make the stored
+   representation checkable.
+
+   The producer MUST preserve the exact UTF-8 byte sequence that was
+   hashed, and MUST expose it (directly, or in a form from which a
+   verifier can reproduce it byte for byte) so that any party can
+   recompute the digest.  The digest algorithm is SHA-256 [FIPS180-4].
+   A verifier that cannot obtain or reproduce the exact canonical bytes
+   MUST NOT report the output commitment as confirmed.  A verifier
+   MUST decode the canonical bytes as strict UTF-8 and MUST reject
+   the receipt if the bytes are not valid UTF-8, even when the
+   base64 decoding and hash comparison would otherwise succeed.
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 6]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   A result preview MAY accompany the receipt to give a human reader a
+   useful first read.  A preview is not the source dataset, and a
+   verifier MUST NOT treat agreement with a preview as agreement with
+   the committed bytes.
+
+5.  Provenance Classes
+
+   A whole job can combine actions performed by the recording system
+   itself, actions observed through an integrated gateway, and actions
+   reported by another agent.  Those cases can all be useful, but they
+   do not support the same statement, so every receipt MUST name exactly
+   one provenance class.  Verification MUST NOT upgrade a report into an
+   observation.
+
+   The three classes are:
+
+   EXECUTED BY ZAMBO:  The recording system ran the tool and recorded
+      the returned result.  The receipt can attest to that execution and
+      its stored output commitment.
+
+   OBSERVED VIA GATEWAY:  The recording system observed the action
+      through an integrated gateway.  The receipt attests to the gateway
+      observation, not to facts beyond what the gateway returned.
+
+   LOGGED BY AGENT:  An external agent reported the action through a
+      journal interface.  The receipt attests that the report was
+      received, redacted, timestamped, and chained.  The recording
+      system does not claim it ran or observed the action.
+
+   The first label names the recording system; its interoperable content
+   is the definition, and another implementation substitutes its own
+   system name in that position.  The second and third labels are fixed
+   strings.
+
+   Provenance is a separate design axis from the receipt envelope.  Two
+   receipts with identical envelopes can carry different provenance, and
+   a verifier MUST surface the provenance class alongside every other
+   field when presenting a receipt.
+
+6.  Verification Procedure
+
+   To verify a receipt, a verifier performs the following steps:
+
+   1.  Resolve the public receipt URL and confirm the id in the
+       retrieved record matches the requested execution.
+
+   2.  Read the exact canonical bytes, or the representation needed to
+       reproduce them byte for byte.
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 7]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   3.  Compute SHA-256 over those bytes and compare the result with
+       output_hash.
+
+   4.  Review the tool, timestamp, caller scope, observed result,
+       evidence, and anchor status separately from the hash check.
+
+   5.  Report only what the stored observation supports.  A passing hash
+       confirms the bytes match the commitment; it does not confirm
+       anything the system did not observe.
+
+   A machine-readable verifier SHOULD expose the same procedure over
+   HTTP, returning the receipt identifier, verification status, and
+   output hash, and signaling failure with a non-success status when the
+   record does not verify.  In the reference implementation, an HTTP GET
+   on https://zambo.dev/api/receipt/<id>/verify returns a JSON object
+   containing at least id, verification_status, and output_hash.
+
+7.  Hash-Chained Job Timelines
+
+   Entries for one job form an append-only hash chain.  Each entry
+   carries a prev_digest member whose value is the lowercase
+   hex-encoded SHA-256 entry digest of the previous entry, computed as
+   defined in Section 7.1.  Because the entry digest binds the entry's
+   sequence position, job identifier, closing flag, receipt identifier,
+   tool name, provenance class, and output commitment, relabeling an
+   entry's metadata, moving the closing flag, or splicing entries
+   across jobs breaks the links and is detectable by recomputation.
+   The conformance kit exposes this as a chain-validity check alongside
+   the other verification checks.
+
+7.1.  The Entry Digest
+
+   The entry digest of a chain entry is SHA-256 over the UTF-8
+   encoding of a canonical JSON object with exactly the following
+   members.  Member names are sorted by Unicode code point, which
+   yields the order shown; the serialization emits no whitespace
+   outside strings:
+
+   prev_digest:  the entry's prev_digest member, a string.
+
+   seq:  the entry's sequence number, a JSON number with an integer
+      value.  The representations 1 and 1.0 are equivalent; both are
+      accepted, and the digest serializes the value in integer form
+      (1, never 1.0).  A verifier MUST reject a non-integer number
+      (such as 1.5), a boolean, a string, null, or a missing seq.
+
+   job_id:  the entry's job identifier, a string.
+
+   close:  the entry's close member if present; if the member is
+      absent, the boolean false.
+
+   id:  the entry's receipt identifier, a string.
+
+   tool:  the entry's tool name, a string.
+
+   provenance_class:  the entry's provenance class, a string.
+
+   output_hash:  the lowercase hex-encoded SHA-256 digest of the raw
+      bytes obtained by base64-decoding the entry's canonical_bytes
+      member.
+
+   Strings are escaped as in Section 7 of [RFC8259], with every
+   non-ASCII character escaped as \uXXXX (surrogate pairs for
+   characters outside the Basic Multilingual Plane).  A verifier MUST
+   decode canonical_bytes with strict base64 and fail closed: any
+   input that is not valid base64 causes chain verification to fail
+   rather than being skipped or repaired.
+
+7.2.  Chain Rules
+
+   A timeline is a non-empty JSON array of chain entries.  Each entry
+   carries canonical_bytes (a base64 string), prev_digest (a string),
+   seq (an integer), job_id, id, tool, and provenance_class
+   (non-empty strings), and optionally close.
+
+   Genesis.  The first entry's prev_digest MUST be 64 zero characters
+   ("0" repeated 64 times), the conventional zero digest.  A verifier
+   MUST reject a first entry carrying any other prev_digest value.
+
+   Sequence.  The first entry's seq MUST be 1, and each subsequent
+   entry's seq MUST be exactly one greater than the previous entry's
+   seq.  A verifier MUST reject a timeline with a gap, a duplicate,
+   or an out-of-order sequence number.
+
+   One job.  Every entry in a timeline MUST carry the same job_id.  A
+   verifier MUST reject a timeline whose entries name different jobs;
+   entries cannot be spliced across jobs without breaking the chain.
+
+   Closing.  The close member, when present, MUST be a boolean.  The
+   value true MUST appear only on the last entry of the timeline, and
+   the last entry MUST carry close set to true.  A verifier MUST fail
+   a timeline whose last entry is not a closing entry, and MUST fail
+   a timeline carrying close set to true on any earlier entry.
+
+   Links.  A verifier MUST recompute the Section 7.1 entry digest of
+   every entry and confirm that each entry after the first carries a
+   prev_digest equal to the recomputed digest of the entry before it.
+   A verifier MUST NOT accept a link on the basis of the stored
+   prev_digest values alone.
+
+7.3.  What the Chain Does Not Prove
+
+   Recomputation detects relabeling, insertion, deletion, and
+   reordering only when the attacker cannot rebuild the links.  An
+   attacker who removes entries from either end of a timeline and
+   recomputes a complete, valid shorter chain produces a timeline
+   that verifies under the rules above: the chain mechanics alone
+   cannot distinguish a rebuilt truncation from a job that genuinely
+   ended earlier or started later.  This is an honest limit of hash
+   chaining, not a defect in the digest.
+
+   Truncation resistance needs a commitment outside the chain: a
+   witness, a timestamped head, an anchor, or a workflow manifest
+   that binds the expected step list or step count.  Deployments that
+   need to detect truncation MUST publish such a commitment and
+   verify the timeline against it.  The chain check alone MUST NOT be
+   presented as truncation-proof.
+
+   As with receipts, chaining provides tamper evidence for the
+   sequence, not truth about the world.  A chained entry with LOGGED
+   BY AGENT provenance remains a chained report; the chain upgrades
+   nothing about what the entry attests.  A public page resolving the
+   whole timeline reports whether the visible chain verifies.
+
+7.4.  Versioning
+
+   The construction in this section is the -07 chain construction.
+   It differs from the -06 construction, whose entry digest covered
+   only the base64-decoded canonical_bytes.  A verifier MUST
+   distinguish the two: a timeline that verifies under the -06
+   construction MUST NOT be reported as verifying under the -07
+   construction.  The -06 construction is retained for historical
+   chains only; new timelines MUST use the -07 construction, and
+   historical -06 chains MUST be labeled historical and MUST NOT
+   verify as current.
+
+8.  Workflow Receipts
+
+   A single execution receipt (Section 3) records one tool call.  When
+   an agent performs several tool calls toward one goal, the sequence
+   itself needs a verifiable record.  A workflow receipt binds an
+   ordered list of step receipts to a single goal, with a Merkle root
+   over the step sequence and an output hash for the workflow's final
+   result.
+
+   A workflow receipt is a JSON object with the following members.
+   This is the smallest useful interoperable shape; implementations MAY
+   add fields, but additions MUST NOT make the core identity or
+   verification fields ambiguous.
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | type                   | MUST     | "verifiable-workflow-        |
+   |                        |          | receipt".                     |
+   +------------------------+----------+-------------------------------+
+   | version                | MUST     | Workflow receipt schema       |
+   |                        |          | version. "1" in the           |
+   |                        |          | reference implementation.     |
+   +------------------------+----------+-------------------------------+
+   | workflow_id            | MUST     | Stable UUID identifying the   |
+   |                        |          | workflow.                     |
+   +------------------------+----------+-------------------------------+
+   | receipt_id             | MUST     | Stable UUID identifying this  |
+   |                        |          | workflow receipt record.      |
+   |                        |          | Distinct from workflow_id.    |
+   +------------------------+----------+-------------------------------+
+   | session_id             | MUST     | Identifier for the session    |
+   |                        |          | that produced the workflow.   |
+   +------------------------+----------+-------------------------------+
+   | goal                   | MUST     | Human-readable description    |
+   |                        |          | of the goal the workflow      |
+   |                        |          | pursued.                      |
+   +------------------------+----------+-------------------------------+
+   | status                 | MUST     | Overall workflow status,      |
+   |                        |          | for example "ok" or "error".  |
+   +------------------------+----------+-------------------------------+
+   | steps                  | MUST     | Ordered array of step         |
+   |                        |          | objects (see below), ordered  |
+   |                        |          | by execution sequence.        |
+   +------------------------+----------+-------------------------------+
+   | merkle_root            | MUST     | Hex-encoded SHA-256 Merkle    |
+   |                        |          | root over the ordered step    |
+   |                        |          | receipt identifiers           |
+   |                        |          | (Section 8.1).                |
+   +------------------------+----------+-------------------------------+
+   | output_hash            | MUST     | Hex-encoded SHA-256 digest    |
+   |                        |          | of the workflow's final       |
+   |                        |          | output bytes                  |
+   |                        |          | (Section 8.1).                |
+   +------------------------+----------+-------------------------------+
+   | verify_url             | MUST     | Stable public URL where the   |
+   |                        |          | workflow receipt can be       |
+   |                        |          | retrieved and checked         |
+   |                        |          | without an account, wallet,   |
+   |                        |          | or token.                     |
+   +------------------------+----------+-------------------------------+
+
+                       Table 2: Workflow receipt members
+
+   Each step object in the steps array has the following members:
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | seq                    | MUST     | 1-based sequence number       |
+   |                        |          | within the workflow,          |
+   |                        |          | starting at 1 with no gaps.   |
+   +------------------------+----------+-------------------------------+
+   | tool                   | MUST     | Name of the tool invoked for  |
+   |                        |          | this step.                    |
+   +------------------------+----------+-------------------------------+
+   | receipt_id             | MUST     | UUID of the execution         |
+   |                        |          | receipt for this step         |
+   |                        |          | (Section 3).                  |
+   +------------------------+----------+-------------------------------+
+   | receipt_hash           | MUST     | Hex-encoded SHA-256 digest    |
+   |                        |          | bound to the step receipt at  |
+   |                        |          | workflow assembly time.       |
+   +------------------------+----------+-------------------------------+
+   | started_at             | MUST     | Timestamp when the step       |
+   |                        |          | began, in RFC 3339 format.    |
+   +------------------------+----------+-------------------------------+
+   | ended_at               | MUST     | Timestamp when the step       |
+   |                        |          | completed, in RFC 3339        |
+   |                        |          | format.                       |
+   +------------------------+----------+-------------------------------+
+   | status                 | MUST     | Step status, for example      |
+   |                        |          | "ok" or "error".              |
+   +------------------------+----------+-------------------------------+
+
+                       Table 3: Workflow step members
+
+   The public URL is not a stored member beyond verify_url; it is a
+   resolution rule.  Every workflow receipt MUST be retrievable at its
+   verify_url without an account, wallet, or token, as specified for
+   execution receipts in Section 9.  In the reference implementation
+   the URL is https://zambo.dev/workflow/<workflow_id>.
+
+   Example: the following shows the core fields of a real workflow
+   receipt issued by the reference implementation (workflow_id
+   42a3c2cf-2cdd-5b8a-aced-016e5a2fb634, goal "get BTC price", five
+   steps).  The complete record is published at
+   https://zambo.dev/workflow/42a3c2cf-2cdd-5b8a-aced-016e5a2fb634.
+
+   {
+     "type": "verifiable-workflow-receipt",
+     "version": "1",
+     "workflow_id": "42a3c2cf-2cdd-5b8a-aced-016e5a2fb634",
+     "receipt_id": "442243d2-9c32-53f7-817e-2def28fa5b07",
+     "session_id": "receipt-test-001",
+     "goal": "get BTC price",
+     "status": "ok",
+     "steps": [
+       {
+         "seq": 1,
+         "tool": "zambo_universal",
+         "receipt_id": "e80168eb-a6a1-4ec9-8478-ac108f9397ff",
+         "receipt_hash": "11c3a071051a42cbf5cf4da60a7577b1dffeb0419e6dd8a258b19c4c0d0d108e",
+         "started_at": "2026-09-29T10:57:40.911Z",
+         "ended_at": "2026-09-29T10:57:41.147Z",
+         "status": "ok"
+       },
+       {
+         "seq": 2,
+         "tool": "zambo_universal",
+         "receipt_id": "514fe841-bbdd-4804-9ef4-6828842d8763",
+         "receipt_hash": "68e3bcad3f46218672fd7ef7bf32f4a7089937dda2b8ade3cfe1050cec856285",
+         "started_at": "2026-09-29T10:57:42.920Z",
+         "ended_at": "2026-09-29T10:57:43.069Z",
+         "status": "ok"
+       },
+       {
+         "seq": 3,
+         "tool": "zambo_universal",
+         "receipt_id": "a090bdad-f2cf-48c9-bc89-e9e17700fb15",
+         "receipt_hash": "3da48b2d392fb79ed78f7ed0cc8e6c122fc1089947ff6d7f829748d7745840dd",
+         "started_at": "2026-09-29T10:57:45.415Z",
+         "ended_at": "2026-09-29T10:57:45.564Z",
+         "status": "ok"
+       },
+       {
+         "seq": 4,
+         "tool": "zambo_universal",
+         "receipt_id": "bf88a036-416b-456a-8e82-8c0991811d68",
+         "receipt_hash": "0f024f209392b918909df5478aadd3a9189520d74cfdf78e2ccf51b9f075f926",
+         "started_at": "2026-09-29T10:57:48.459Z",
+         "ended_at": "2026-09-29T10:57:48.605Z",
+         "status": "ok"
+       },
+       {
+         "seq": 5,
+         "tool": "zambo_universal",
+         "receipt_id": "ae795bf0-27f8-4cf2-8aef-3f8142b77217",
+         "receipt_hash": "f52d9c03605047ad0ac347e5e9cbc0e2e197a009d8ee5c7d775f86f360eca963",
+         "started_at": "2026-09-29T10:57:55.227Z",
+         "ended_at": "2026-09-29T10:57:55.434Z",
+         "status": "ok"
+       }
+     ],
+     "merkle_root": "7c4817ca249edfeae259b98abf63ed38a31d9dbeebf5ee23139410a7a7f63b37",
+     "output_hash": "16566e46433dd9a00e4437873102531be71fbae3872db8888b7ddc9282d90f54",
+     "verify_url": "https://zambo.dev/workflow/42a3c2cf-2cdd-5b8a-aced-016e5a2fb634"
+   }
+
+   The merkle_root above recomputes from the five step receipt_id
+   values with the Section 8.1 construction: the leaf for each step is
+   SHA-256 over the UTF-8 bytes of its receipt_id string, paired and
+   hashed up the tree with last-duplication on odd levels.  The
+   complete live record remains published at the verify_url above.
+
+8.1.  Merkle Root and Output Hash
+
+   The merkle_root binds the ordered step sequence so that insertion,
+   deletion, reordering, or substitution of steps is detectable by
+   recomputation.  It is a lowercase hex-encoded SHA-256 digest
+   computed over the ordered step receipt identifiers.
+
+   The RECOMMENDED construction is a binary Merkle tree:
+
+   1.  For each step in order, compute the leaf digest as SHA-256
+       over the UTF-8 bytes of the step's receipt_id string.
+
+   2.  Pair adjacent digests in order; for each pair, compute SHA-256
+       over the concatenation of the two 32-byte digests.  If the
+       number of digests at any level is odd, duplicate the last
+       digest before pairing.
+
+   3.  Repeat step 2 on the resulting digests until one digest
+       remains.  Hex-encode that digest in lowercase; this is the
+       merkle_root.
+
+   An implementation MUST use the construction specified above.  The
+   alternative-construction permission from earlier revisions is
+   removed: permitting divergent constructions allows different
+   Merkle roots for the same workflow, which breaks
+   cross-implementation verification of the step sequence.  An
+   implementation MUST document the leaf encoding, hash function,
+   tree structure, and output encoding alongside the receipt (for
+   example, at the verify_url or in implementation documentation)
+   so that an independent verifier can recompute the root from the
+   steps array alone.  A verifier that cannot determine the
+   construction MUST NOT report the Merkle root as confirmed.
+
+   The output_hash is a lowercase hex-encoded SHA-256 digest of the
+   canonical bytes representing the workflow's final output.  The exact
+   byte sequence hashed is implementation-defined and MUST be
+   documented alongside the receipt.  A verifier that cannot obtain or
+   reproduce those bytes MUST NOT report the output hash as confirmed.
+
+8.2.  Workflow Verification Procedure
+
+   To verify a workflow receipt, a verifier performs the following
+   steps:
+
+   1.  Resolve the verify_url and confirm the workflow_id in the
+       retrieved record matches the requested workflow.
+
+   2.  For each step in the steps array, in order, resolve the step's
+       receipt_id at its public URL and run the Section 7 verification
+       procedure on the step receipt.  Every step receipt MUST verify
+       independently; a workflow receipt MUST NOT be reported as
+       verified if any constituent step receipt fails verification.
+
+   3.  Confirm the steps array is ordered by seq starting from 1 with
+       no gaps and no duplicate sequence numbers.  Confirm that no two
+       steps carry the same receipt_id value.  A verifier MUST reject
+       a workflow receipt whose steps array contains the same
+       receipt_id value more than once.
+
+       This rule is structural, not cosmetic.  With the Section 8.1
+       odd-level duplication rule, the step list [r1, r2, r3, r4, r5]
+       and the step list [r1, r2, r3, r4, r5, r5] recompute to the
+       identical Merkle root, so the root comparison in step 4 cannot
+       distinguish them.  Rejecting duplicate receipt_id values closes
+       this collision class at the verification layer.
+
+   4.  Recompute the merkle_root from the ordered step receipt_id
+       values using the construction documented for the receipt
+       (Section 8.1), and compare it to the published merkle_root.
+
+   5.  Review the goal, status, timestamps, and output hash separately
+       from the structural checks.
+
+   6.  Report only what the stored observations support.  A passing
+       Merkle root confirms the step sequence is intact as recorded;
+       it does not confirm anything the individual step receipts did
+       not observe.  Provenance classes (Section 6) apply per step;
+       the workflow receipt does not upgrade the provenance of its
+       steps.
+
+   A machine-readable verifier SHOULD expose the same procedure over
+   HTTP, returning the workflow identifier, verification status, the
+   per-step outcomes, and the Merkle root check result, and signaling
+   failure with a non-success status when the record does not verify.
+
+8.3.  Bidirectional Linking Between Steps and Workflows
+
+   When a step receipt belongs to a workflow, the step receipt's
+   public page MUST reference the parent workflow, and the workflow
+   receipt MUST reference each constituent step receipt.  This lets a
+   reviewer start from any single action and reach the full goal
+   context, or start from the goal and drill into any individual
+   action, without needing session identifiers or internal system
+   knowledge.
+
+   Specifically:
+
+   *  The public page for a step receipt that is part of a workflow
+      MUST display a reference to the parent workflow, including a
+      link to the workflow's verify_url.  In the reference
+      implementation this appears as "Part of workflow" with a link
+      to https://zambo.dev/workflow/<workflow_id>.
+
+   *  The workflow receipt's steps array MUST include the receipt_id
+      of every step in the workflow, and the public workflow page
+      SHOULD link each step entry to its receipt page.
+
+   *  A step receipt that is not part of any workflow MUST NOT display
+      a workflow reference.  The absence of the link is not an error
+      and MUST NOT be treated as a verification failure.
+
+   Linking is presentational and navigational; it does not alter the
+   receipt bytes, the output commitment, or the Merkle root.  Adding or
+   removing a link MUST NOT invalidate verification.
+
+
+9.  Public Resolution
+
+   Every receipt MUST be retrievable at its public URL without an
+   account, wallet, or token.  The URL is stable: once published, the
+   record at that URL MUST NOT be altered.  Corrections are published as
+   new receipts that reference the superseded id; they MUST NOT rewrite
+   history at the original URL.
+
+   The public page SHOULD present the receipt fields, the provenance
+   class, the verification outcome, and the hash chain position in
+   human-readable form alongside the raw JSON.
+
+10.  External Anchoring
+
+   A receipt MAY be bound to one or more external timestamp anchors
+   after issuance.  Anchoring is additive: it does not alter the receipt
+   bytes and MUST NOT invalidate the output commitment.
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 8]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   In the reference implementation, each receipt is anchored to public
+   Nostr relays.  The anchor object carries the relay event identifier,
+   the publisher key, the relay URLs, a published status, and the
+   publication time, plus an envelope binding the anchor to the receipt
+   id, the output hash, and the evidence hash.  Anchoring gives
+   verifiers a witness independent of the receipt publisher; it does not
+   change what the receipt attests.
+
+11.  Reference Implementation
+
+   A reference implementation of this vocabulary is deployed at the time
+   of writing, described at [AER-1-HOME].  The implementation exposes
+   the receipt contract through one MCP endpoint and gives successful
+   calls a public receipt page:
+
+   *  Tool calls are made over HTTPS as JSON-RPC to
+      https://zambo.dev/api/mcp using the tools/call method.  The
+      response contains the receipt identity and the public verification
+      link.
+
+   *  Each receipt resolves at https://zambo.dev/run/<id> and can be
+      opened and checked by anyone, with no account or token.
+
+   *  A verifier endpoint returns the machine-readable verification
+      result for a receipt identifier, as described in Section 6.
+
+   The endpoint and the receipt pages are independent live records:
+   anyone can reproduce the Section 6 procedure against them today.
+   Their availability is a deployment fact, not a standards claim; if
+   the deployment moves, the canonical home of this document's latest
+   revision is updated accordingly.
+
+   Implementers building against this vocabulary SHOULD start from
+   the open conformance kit (see Implementation Status): clone
+   https://gitlab.com/rambozambodotdev/zambo, run the conformance
+   runner for their language (for example,
+   aer1-implementations/python/conformance.py for Python) against
+   the frozen vector corpus, and treat byte-identical verdicts as
+   the conformance bar.  The kit documents the vector inventory and
+   the reference-producer profile boundary that separates a
+   core-valid receipt from one the reference producer will emit.
+
+12.  Design Rationale
+
+   AER-1 starts with a narrow record rather than a universal theory of
+   agent behavior.  An agent may call several tools, receive information
+   from several providers, and hand work to another agent.  A reviewer
+   still needs a stable way to identify one execution, understand what
+   the system observed, and check whether the published bytes match the
+   stated commitment.  The draft keeps those needs separate from claims
+   about the outside world.
+
+
+
+
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                 [Page 9]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   The vocabulary is intentionally small because interoperability fails
+   when every implementation gives a different name to the same
+   boundary.  An identifier locates the record.  A creation time orders
+   it.  A tool and caller scope identify the execution context.
+   Canonical bytes and an output hash make the stored representation
+   checkable.  A result preview gives a human a useful first read
+   without pretending that a preview is the entire source dataset.
+
+   Provenance is a separate design axis (Section 5).  A system can
+   execute a tool itself, observe an action through an integrated
+   gateway, or receive a report from another agent.  AER-1 treats these
+   as distinct attestations because they are distinct claims, and a
+   verifier that cannot tell them apart cannot report honestly.
+
+   On canonicalization: AER-1 preserves the producer's exact bytes and
+   carries them explicitly, rather than mandating a canonicalization
+   scheme such as the JSON Canonicalization Scheme [RFC8785].  A
+   verifier MUST NOT re-serialize the record under a different scheme
+   and claim agreement with the commitment.  The cost of this choice is
+   stated plainly: digests computed under different canonicalizations do
+   not interoperate, so cross-implementation verification requires byte-
+   identical canonical content.
+
+   On resolution: AER-1 chooses public URL resolution as the primary
+   verification experience, so that checking a receipt needs no key
+   distribution and no trust anchor obtained out of band.  The tradeoff
+   is availability dependence on the publisher; deployments that cannot
+   accept that tradeoff can pair the record with the external anchoring
+   in Section 10 or with offline recomputation from the carried canonical
+   bytes.
+
+13.  Security Considerations
+
+   A receipt is evidence of what was recorded, not a security boundary
+   by itself.  The following considerations apply to implementations:
+
+   *  The output commitment binds the recorded bytes, not the real
+      world.  An implementation that records attacker-controlled input
+      produces a verifiable receipt of attacker-controlled input.
+      Verifiers MUST present the observed result as observed, never as
+      independently true.
+
+   *  Canonical bytes MUST be preserved exactly.  Any transformation
+      (re-encoding, whitespace normalization, character set conversion)
+      between recording and verification breaks the commitment and MUST
+      cause verification to fail closed.
+
+
+
+
+
+Zambo                     Expires 1 April 2027                [Page 10]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   *  Public receipt URLs are stable and permanent.  Implementations
+      MUST consider privacy before publishing: a receipt that embeds
+      personal data, credentials, or confidential business information
+      in its canonical bytes publishes that data to everyone.  Redact
+      before recording; a receipt cannot be unpublished.
+
+   *  Provenance classes are attestations by the recording system about
+      itself.  A dishonest recorder can mislabel provenance.  Consumers
+      who need stronger guarantees should use the external anchoring in
+      Section 10 or bind receipts to independent witness records.
+
+   *  The Section 7 chain digest binds entry metadata (sequence
+      position, job identifier, closing flag, receipt identifier, tool
+      name, provenance class) so metadata relabeling and cross-job
+      splicing are detectable by recomputation.  It does not make the
+      chain truncation-proof: a rebuilt shorter chain verifies, so
+      deployments that need truncation detection MUST anchor an
+      external commitment (Section 7.3) and MUST NOT present the chain
+      check alone as sufficient.
+
+   *  Chain verifiers MUST distinguish the -07 construction from the
+      historical -06 construction and MUST NOT report a -06 chain as
+      satisfying the -07 rules (Section 7.4).
+
+   *  Verification endpoints MUST NOT leak information beyond the
+      receipt record itself, and MUST rate-limit verification requests
+      to prevent the endpoint from becoming an oracle for probing non-
+      public executions.
+
+14.  IANA Considerations
+
+   This document has no IANA actions.
+
+15.  Related Work
+
+   Action receipts for AI agents are an active area with multiple
+   concurrent individual proposals, including formats built around
+   signed envelopes bound to decision evidence, hash-chained action
+   records verifiable offline, and canonicalization-based offline
+   recomputation.  This document does not survey or endorse any of them
+   by name.
+
+   AER-1 differs in three ways.  First, the receipt is identified by a
+   UUID and resolved at a stable public URL, with verification offered
+   as a public HTTP endpoint rather than offline recomputation.  Second,
+   it carries provenance (executed, observed-via-gateway, logged-by-
+   agent) as a first-class field, so a verifier can distinguish what the
+   recording system did from what it merely recorded.  Third, a
+   reference implementation is deployed whose receipts are publicly
+   verifiable without an account, key, or token.  AER-1 standardizes the
+   narrow per-execution record and its public verification procedure,
+   leaving decision semantics, authorization, and settlement bindings to
+   other specifications.
+
+16.  Normative References
+
+   [FIPS180-4]
+              National Institute of Standards and Technology, "Secure
+              Hash Standard", DOI 10.6028/NIST.FIPS.180-4, FIPS 180-4,
+              August 2015.
+
+
+
+
+Zambo                     Expires 1 April 2027                [Page 11]
+
+Internet-Draft                    AER-1                    October 2026
+
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, May 2017,
+              <https://www.rfc-editor.org/rfc/rfc8174>.
+
+17.  Informative References
+
+   [AER-1-HOME]
+              Zambo, B., "AER-1: AI Agent Execution Receipt (open
+              draft)", https://zambo.dev/aer-1, September 2026.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
+              Canonicalization Scheme (JCS)", RFC 8785, June 2020,
+              <https://www.rfc-editor.org/rfc/rfc8785>.
+
+18.  Acknowledgments
+
+   Matthew Moore provided the first substantive independent technical
+   review of this draft on the agent2agent list, identifying the
+   duplicate receipt_id Merkle collision (Section 8.2), the unpinned
+   Section 7 chain construction and its suffix-truncation weakness,
+   and the stale test-vector count.  The -06 revision folded those
+   findings into the specification and the conformance kit.  Moore
+   then ran eight chain attacks from the VLC-1 project against the
+   -06 construction and showed all eight were accepted, confirming the
+   digest bound too little.  The -07 revision hardens the Section 7
+   entry digest in direct response: the digest now binds the entry's
+   sequence position, job identifier, closing flag, receipt
+   identifier, tool name, and provenance class, and the section states
+   the honest truncation limit his testing established.
+
+Author's Address
+
+   Brennan Zambo
+   Zambo
+   Email: brennanzambo@zambo.dev
+   URI:   https://zambo.dev/aer-1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Zambo                     Expires 1 April 2027                [Page 12]

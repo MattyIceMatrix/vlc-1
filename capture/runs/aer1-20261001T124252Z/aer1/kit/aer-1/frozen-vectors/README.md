@@ -1,0 +1,1 @@
+Frozen vector corpora, pinned per kit release. Each version directory is an immutable copy of the vectors as of that release tag. Consumers SHOULD verify against the frozen copy for their pinned version.

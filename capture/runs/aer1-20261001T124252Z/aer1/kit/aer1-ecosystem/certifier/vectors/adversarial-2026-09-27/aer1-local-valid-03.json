@@ -1,0 +1,14 @@
+{
+  "id": "00000000-0000-4000-8000-000000000103",
+  "receipt_schema_version": "0.3",
+  "created_at": "2024-12-31T23:59:59.123456789-12:00",
+  "tool": {
+    "name": "vector-tool",
+    "version": "1.2.0",
+    "scope": "local-test"
+  },
+  "provenance_class": "EXECUTED BY ZAMBO",
+  "canonical_bytes": "eyJldmVudCI6InRvb2wucmVzdWx0IiwidmFsdWUiOiJow6lsbG8g4oCiIOS4lueVjCIsIm5vdGUiOiJsb2NhbCBjb3JwdXMifQ==",
+  "output_hash": "sha256:e350d3f24e321a6097bca3d31793f19b6d8b7b3d1ca32ca873f098a2a1e88841",
+  "verification_status": "verified"
+}

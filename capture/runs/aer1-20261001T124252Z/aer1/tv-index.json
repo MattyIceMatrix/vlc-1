@@ -1,0 +1,410 @@
+{
+  "version": "1.3.2",
+  "spec_revision": "-08",
+  "source": "https://gitlab.com/rambozambodotdev/zambo/-/tree/main/aer-1/test-vectors",
+  "local_proposed_corpus": {
+    "label": "Local proposed corpus; not part of published v1.3.0",
+    "date": "2026-09-27",
+    "count": 25
+  },
+  "vectors": [
+    {
+      "id": "anchored-bad-leaf-hash",
+      "kind": "invalid",
+      "vector_group": "anchored",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "5e8ea1918e69be2f26dfa2da6707ad6868797f9114d6d19a3c19189662e377e2",
+      "fixture": "v1.3/anchored/anchored-bad-leaf-hash.json",
+      "source_file": "aer-1/test-vectors/anchored/anchored-bad-leaf-hash.json"
+    },
+    {
+      "id": "anchored-bad-timestamp",
+      "kind": "invalid",
+      "vector_group": "anchored",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "a3b9b400b552777b6cdfb2ff60704682eb46b541ac59d79a0f310a79f424dbe5",
+      "fixture": "v1.3/anchored/anchored-bad-timestamp.json",
+      "source_file": "aer-1/test-vectors/anchored/anchored-bad-timestamp.json"
+    },
+    {
+      "id": "anchored-missing-proof",
+      "kind": "invalid",
+      "vector_group": "anchored",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "9afad2db7b553b9ada209dd86e9d7ed16c5243f8b89f6d932ce8c9978a0538e2",
+      "fixture": "v1.3/anchored/anchored-missing-proof.json",
+      "source_file": "aer-1/test-vectors/anchored/anchored-missing-proof.json"
+    },
+    {
+      "id": "anchored-valid",
+      "kind": "valid",
+      "vector_group": "anchored",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "03dcdc8be19340ce91ddc6f6fc6c98f2b8b2bc183b350c6c3f2b849bd0f52daf",
+      "fixture": "v1.3/anchored/anchored-valid.json",
+      "source_file": "aer-1/test-vectors/anchored/anchored-valid.json"
+    },
+    {
+      "id": "missing-inputs",
+      "kind": "invalid",
+      "vector_group": "invalid-profile",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "8041ed4574a7b26a44fa553d2dc93aebbe091a7257e16c10f828c8fbe9161b94",
+      "fixture": "v1.3/invalid-profile/missing-inputs.json",
+      "source_file": "aer-1/test-vectors/invalid-profile/missing-inputs.json"
+    },
+    {
+      "id": "bad-created-at",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "ff9844474c452ea9de41be32c686040c88c386cd41e54a06c666465c835ced08",
+      "fixture": "v1.3/invalid/bad-created-at.json",
+      "source_file": "aer-1/test-vectors/invalid/bad-created-at.json"
+    },
+    {
+      "id": "bad-id",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "ae913ed23cc4ac7aa8438c583657ec5c5df305b38afe5cd4a5c4ef5eeb0b5c85",
+      "fixture": "v1.3/invalid/bad-id.json",
+      "source_file": "aer-1/test-vectors/invalid/bad-id.json"
+    },
+    {
+      "id": "bad-provenance",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "0f03c4bf363327724ea23d1ea341d730381a4d836fd9ac72a4ccfaca84cfe615",
+      "fixture": "v1.3/invalid/bad-provenance.json",
+      "source_file": "aer-1/test-vectors/invalid/bad-provenance.json"
+    },
+    {
+      "id": "bytes-not-base64",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "5bae03a240a964d0bc1b06e4909586e55c769da504e8e3f6375c3fe11d61137a",
+      "fixture": "v1.3/invalid/bytes-not-base64.json",
+      "source_file": "aer-1/test-vectors/invalid/bytes-not-base64.json"
+    },
+    {
+      "id": "hash-bad-format",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "dfeef1fc348b2edb1d525281168f0ad6c598e4471ac665bcff1dc84b03ba7423",
+      "fixture": "v1.3/invalid/hash-bad-format.json",
+      "source_file": "aer-1/test-vectors/invalid/hash-bad-format.json"
+    },
+    {
+      "id": "hash-mismatch",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "5258b82b9b0d1ba73f164716b36e0bb2b2d1d6a919672b2b93532a51ce5ea3e4",
+      "fixture": "v1.3/invalid/hash-mismatch.json",
+      "source_file": "aer-1/test-vectors/invalid/hash-mismatch.json"
+    },
+    {
+      "id": "impossible-date",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "251acf8f479846c8b6c08b6070c18d996cb226e7b44ba9dcbca8edc9b7941afc",
+      "fixture": "v1.3/invalid/impossible-date.json",
+      "source_file": "aer-1/test-vectors/invalid/impossible-date.json"
+    },
+    {
+      "id": "missing-output-hash",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "24d58237887c3132898e6fc9d80a06c28f520350a7b7da473d50eb5c6f96d906",
+      "fixture": "v1.3/invalid/missing-output-hash.json",
+      "source_file": "aer-1/test-vectors/invalid/missing-output-hash.json"
+    },
+    {
+      "id": "non-utf8-bytes",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "a2e4162a3c79beb33e8de08e3db728bcb67070bfe206ce7377e7b2f54daafd66",
+      "fixture": "v1.3/invalid/non-utf8-bytes.json",
+      "source_file": "aer-1/test-vectors/invalid/non-utf8-bytes.json"
+    },
+    {
+      "id": "tool-not-object",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "0770d138bf2e526564f6e8e627421ed8ce42bce10c9e6a65284525e03fef43ff",
+      "fixture": "v1.3/invalid/tool-not-object.json",
+      "source_file": "aer-1/test-vectors/invalid/tool-not-object.json"
+    },
+    {
+      "id": "receipt-01",
+      "kind": "valid",
+      "vector_group": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "f6f2b532a70c1969a0e70a8342ad5a9fefa5810f163b930560b4bfffb9a24931",
+      "fixture": "v1.3/valid/receipt-01.json",
+      "source_file": "aer-1/test-vectors/valid/receipt-01.json"
+    },
+    {
+      "id": "receipt-02",
+      "kind": "valid",
+      "vector_group": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "cd7fbaf943d691fb25761b14bec6cd26b9a8c001c4f5fc98ee86a5fd4e8178c7",
+      "fixture": "v1.3/valid/receipt-02.json",
+      "source_file": "aer-1/test-vectors/valid/receipt-02.json"
+    },
+    {
+      "id": "receipt-03-live",
+      "kind": "valid",
+      "vector_group": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "c28e45d6d5ee4e532a1f2191e72fe2bccb70fe9d3ee746f54958f2e3e363dd6f",
+      "fixture": "v1.3/valid/receipt-03-live.json",
+      "source_file": "aer-1/test-vectors/valid/receipt-03-live.json"
+    },
+    {
+      "id": "aer1-local-valid-01",
+      "kind": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "354cea111eec9c9c5954046773177c4e11722965731cbd149bf47e5f87c1421d",
+      "fixture": "adversarial-2026-09-27/aer1-local-valid-01.json"
+    },
+    {
+      "id": "aer1-local-valid-02",
+      "kind": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "5dd1e30fec3049fc68c8db04c4c422b39121980a93e28469e2450fc0d35d2f43",
+      "fixture": "adversarial-2026-09-27/aer1-local-valid-02.json"
+    },
+    {
+      "id": "aer1-local-valid-03",
+      "kind": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "abfb0ba48a12b9ea8b035294b53b8da611d2e12c7fdc300772bded60ba26cb30",
+      "fixture": "adversarial-2026-09-27/aer1-local-valid-03.json"
+    },
+    {
+      "id": "aer1-local-valid-04",
+      "kind": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "6771e7d12b04ee35ab6655d0ed33f6dc86b8aba13594ec73c03cdfd2463f75ab",
+      "fixture": "adversarial-2026-09-27/aer1-local-valid-04.json"
+    },
+    {
+      "id": "aer1-local-valid-05",
+      "kind": "valid",
+      "spec_version": "0.3",
+      "expected_verdict": true,
+      "byte_hash": "960359273e242cd3553f56675a741d410f8c1f2e700c2c2848402711d09268f9",
+      "fixture": "adversarial-2026-09-27/aer1-local-valid-05.json"
+    },
+    {
+      "id": "aer1-local-invalid-schema",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "ea3955ed3b6ec0c21cacfa5c3d83a7c916e7d34a160fc92b3a45fdd3b9f4f2e8",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-schema.json"
+    },
+    {
+      "id": "aer1-local-invalid-id",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "ea508a695ba2c9aa044f1933952d8f6e054d473b55487670d4ba0bb4405d7b18",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-id.json"
+    },
+    {
+      "id": "aer1-local-invalid-id-version",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "0b8136e4d6773caab140b0d2d54911ca396890f776622d6aa515bc9798150a4b",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-id-version.json"
+    },
+    {
+      "id": "aer1-local-invalid-date-day",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "f8137c1a734eb0ccab2bd342773bff80571b63614d2c58b761d72fad5de5503d",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-date-day.json"
+    },
+    {
+      "id": "aer1-local-invalid-date-hour",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "afe7220d0f18872f006b7fd989f764ce37c27b89492db0a990a41ae817c7a4be",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-date-hour.json"
+    },
+    {
+      "id": "aer1-local-invalid-date-zone",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "bdfe81a2f0089a0cc65a6770bb7e0d4df578b4b98238a4f9d7bfa2856d89b68e",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-date-zone.json"
+    },
+    {
+      "id": "aer1-local-invalid-tool",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "65c51c5d90121f53169853b2c844a999041e4150343537c6902f5280cb6921c6",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-tool.json"
+    },
+    {
+      "id": "aer1-local-invalid-tool-name",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "a64c167aac4e01cd85798e552aeb765e79de732e0c8b6f43b9f7b584e041a756",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-tool-name.json"
+    },
+    {
+      "id": "aer1-local-invalid-tool-version",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "d25cb934bc4fd8b5f4caf7e07dccfbe3f884fd8bd50052f9a78090bdbe20bc3f",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-tool-version.json"
+    },
+    {
+      "id": "aer1-local-invalid-tool-scope",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "c8e25362a7aaa52c0e085f13fdd2bb403fbda32a80185df8eab4a91fc2de6107",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-tool-scope.json"
+    },
+    {
+      "id": "aer1-local-invalid-provenance",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "8934b569c2bc4fd02c03de18d574e92b342146750c3be3e7164905a371403a8a",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-provenance.json"
+    },
+    {
+      "id": "aer1-local-invalid-status",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "d01188abfc14514a17521ac03210209a7486afabcf52eb0b08e1f6a6f7f55e1f",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-status.json"
+    },
+    {
+      "id": "aer1-local-invalid-missing-id",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "7873fc4907f92ec133095d3baaa77ffe742d8bcefbcb7265241784fabfc56dd1",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-missing-id.json"
+    },
+    {
+      "id": "aer1-local-invalid-missing-tool",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "a1b0c7ebb6837e3fd3c9194cabcee861d582c98167723bb826f2e816c7159593",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-missing-tool.json"
+    },
+    {
+      "id": "aer1-local-invalid-bytes-format",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "d84a2c048842d6e8501e4448b4a59f49a0037e31aefc6cc3c7aebacb53aae054",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-bytes-format.json"
+    },
+    {
+      "id": "aer1-local-invalid-bytes-padding",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "4e065303a110c951a421081e89efdc262352529bb63dc1013877f50846b1c726",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-bytes-padding.json"
+    },
+    {
+      "id": "aer1-local-invalid-bytes-utf8",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "7a4aa24c2a82514bdd7f5342ea2b4a1430fa16dc19e50bfbd00f677d077d092f",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-bytes-utf8.json"
+    },
+    {
+      "id": "aer1-local-invalid-hash-format",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "095e1478fff66ce3a9a23ae54b4f4e03bf65dd2c04d443c248dac3c8c7ed84e8",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-hash-format.json"
+    },
+    {
+      "id": "aer1-local-invalid-hash-mismatch",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "43b43e3d8cdd5904b811ccb13918e022e4dca7a6ddb2ddc0ed0aac4f0392faa3",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-hash-mismatch.json"
+    },
+    {
+      "id": "aer1-local-invalid-missing-hash",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "55b89e7c990bbb72e4033809c9e08ed2d9aaacaae651cc60b303e3978c49e98d",
+      "fixture": "adversarial-2026-09-27/aer1-local-invalid-missing-hash.json"
+    },
+    {
+      "id": "bad-verification-status",
+      "kind": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "c69de237aeb2377566b1f542d456b3b1a3ccca45d146dbe644efb2e579a90e95",
+      "fixture": "v1.3/invalid/bad-verification-status.json"
+    },
+    {
+      "id": "uppercase-id",
+      "kind": "invalid",
+      "vector_group": "invalid",
+      "spec_version": "0.3",
+      "expected_verdict": false,
+      "byte_hash": "96b0b54979ce67f93a2584c390ea076175b0f673597e98e634f43860ec947011",
+      "fixture": "v1.3/invalid/uppercase-id.json",
+      "source_file": "aer-1/test-vectors/invalid/uppercase-id.json"
+    }
+  ]
+}

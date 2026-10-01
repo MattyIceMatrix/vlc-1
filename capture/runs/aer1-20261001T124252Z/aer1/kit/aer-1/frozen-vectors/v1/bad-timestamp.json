@@ -1,0 +1,14 @@
+{
+  "id": "e5f6a7b8-5555-4e6f-2a7b-3c4d5e6f7081",
+  "receipt_schema_version": "0.3",
+  "created_at": "yesterday afternoon",
+  "tool": {
+    "name": "live_price",
+    "version": "4.0.0",
+    "scope": "public"
+  },
+  "provenance_class": "EXECUTED BY ZAMBO",
+  "canonical_bytes": "eyJ0b29sIjoibGl2ZV9wcmljZSIsImlucHV0cyI6eyJwYWlyIjoiQlRDL1VTRCJ9LCJvdXRwdXRzIjp7InByaWNlX3VzZCI6OTc0MTIuNTV9LCJtcyI6MTA4fQ==",
+  "output_hash": "sha256:c2258bdf9c34813a70166bc0e2d79b167f22f51a0adb67e218b5c868b911dca7",
+  "verification_status": "verified"
+}
