@@ -229,6 +229,40 @@ in either one tells a reader which of the two they are holding.
 Each adapter carries its `sources` inline. Disagree with a scoring by editing the
 adapter and re-running; that is a shorter argument than an email.
 
+## Cross-testing another draft's chain: AER-1
+
+VLC-1's tamper cases are not tied to its own checker. Between 2026-09-30 and
+2026-10-01 they were run against the hash-chained job timelines of AER-1, Brennan
+Zambo's agent execution receipt draft on the IETF agent2agent list
+(`draft-zambo-aer1`), using the draft's own reference verifier from its public
+conformance kit (gitlab.com/rambozambodotdev/zambo). This is not a VLC-1 score:
+AER-1 is a receipt format, not a log delivered for scoring. It is the same
+question, whether removal, reordering or relabeling is detectable, asked of
+someone else's construction. Every result was reported on the list, and every
+one the author accepted is now in the draft.
+
+| draft | what was run | result | what the author did |
+|---|---|---|---|
+| -05 | review of the text | the Section 7 chain construction was unpinned, so the trailing entry could be cut undetected; duplicate `receipt_id` values collide in the workflow Merkle tree; the test-vector count was stale | all three folded into -06 |
+| -06 | 14 cases against `verify_chain()`, kit commit `c4e75ec` (`examples/third-party/aer1-06/chain_attacks.py`) | 6 as the text specified, **8 accepted that should not have been**: the entry digest covered only the output bytes, so splicing, reordering, close-flag moves and relabeling went undetected | -07 rebinds the entry digest to `prev_digest`, `seq`, `job_id`, `close`, `id`, `tool`, `provenance_class` and the output hash, and states the trailing-truncation limit in Section 7.3 |
+| -07 | the 14 cases again plus 16 new ones against `verify_chain_v07()`, kit `aff1330` (`examples/third-party/aer1-07/`) | all 14 as -07 specifies; 3 new: the **last entry** can be edited or relabeled and still verify, because no later entry references its digest; 1 spec/code mismatch: `seq` 1.0 rejected though Section 7.1 accepts it | -08 adds Section 7.3 guidance that the outside commitment SHOULD bind the final entry digest, not just the step count; the author reports the `seq` fix |
+| -08 | recheck against kit `e1430ec` | the 7.3 text is as described; `seq` 1.0 is **still rejected** on the main branch, and the kit's own new vector `v07-seq-float-valid` fails its own Python conformance run (18 of 19) | reported back on the list, 2026-10-01 |
+
+The draft's Acknowledgments (Section 18 of -07 and -08) credit this work. The -07
+and -08 findings are the last-entry case: the same reason VLC-1 asks for an
+independently held head (`--expect-head`, L5) rather than trusting a chain on its
+own.
+
+Limits, stated plainly. Only the Python reference implementation was run, not the
+other six languages in the kit. The results are one harness run per kit commit,
+not confirmed by the author beyond what he has written on the list. The fetches
+are in `capture/runs/aer1-*` on branch `capture/aer1`.
+
+```sh
+# with the AER-1 kit checked out at the commit named above
+python3 examples/third-party/aer1-07/chain_attacks.py /path/to/zambo/aer1-implementations/python
+```
+
 ## Caveat
 
 These are **structural** scores of **formats**, from **public documentation**, on
