@@ -1,0 +1,1 @@
+{"mcpServers":{"aer1-receipts":{"command":"python3","args":["/absolute/path/to/aer1-ecosystem-pack/mcp-server/server.py"]}}}
