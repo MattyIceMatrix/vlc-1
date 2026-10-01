@@ -1,0 +1,107 @@
+{
+  "id": "130da435-e157-498e-af90-605866a86a27",
+  "created_at": "2026-09-23T23:45:20.760Z",
+  "receipt_schema_version": "0.3",
+  "job_summary": "MCP tool execution: live_price",
+  "tools": [
+    "live_price"
+  ],
+  "steps": [
+    {
+      "tool": "live_price",
+      "status": "success",
+      "started_at": "2026-09-23T23:45:20.623Z",
+      "completed_at": "2026-09-23T23:45:20.731Z"
+    }
+  ],
+  "output_hash": "sha256:0492c18e09059aa2e30ba0864f6aada2ef08475a5b35944cbf2a9ce46d12b9f1",
+  "hash_algorithm": "sha256",
+  "canonical_bytes": "eyJjYWxsZXIiOnsiaWQiOiJzaGEyNTY6Mjk0YmNmYjE3YjMzOWI3Nzc2Mzc2Yzk5ZmIwZWQ2MWJkODlmM2E2MTdlMzUzMjM5Zjg4NmMxNGJhOWU1NGI5ZSIsInR5cGUiOiJhbm9ueW1vdXMifSwib3V0cHV0Ijp7InRleHQiOiJCVEMgwrcgJDg0LDQ1Ni4wMCBVU0RcbuKWvCAxLjk0JSAoMjRoKSDCtyBNYXJrZXQgY2FwOiAkMTY5Ni44OEJcblxuTGl2ZSBwcmljZSB2aWEgQ29pbkdlY2tvIMK3IFdlZCwgMjMgU2VwIDIwMjYgMjM6NDU6MjAgR01UIn0sInJlY2VpcHRfc2NoZW1hX3ZlcnNpb24iOiIwLjMiLCJzaWRlX2VmZmVjdHMiOnsiZGVjbGFyYXRpb25faGFzaCI6InNoYTI1Njo0NWFhZDM4ZjNhYTk4MmI5YWFmZTkyZWNiNDE2ZWJlOTg3OTFlZGRiYWY4YWI2ZGYwYmQwODYwNWI3YzFiZmVlIiwiZGVjbGFyZWQiOlsibm9uZSJdLCJzY2hlbWFfdmVyc2lvbiI6InphbWJvLXNpZGUtZWZmZWN0cy8xIn0sInRvb2wiOnsibmFtZSI6ImxpdmVfcHJpY2UiLCJzY29wZSI6InB1YmxpYyIsInZlcnNpb24iOiI0LjAuMCJ9fQ==",
+  "canonical_byte_length": 520,
+  "verification_status": "verified",
+  "session_trail": [],
+  "result_preview": "BTC \u00b7 $84,456.00 USD\n\u25bc 1.94% (24h) \u00b7 Market cap: $1696.88B\n\nLive price via CoinGecko \u00b7 Wed, 23 Sep 2026 23:45:20 GMT",
+  "free_used": 2,
+  "free_remaining": 18,
+  "free_limit": 20,
+  "signal_handle": null,
+  "tool": {
+    "name": "live_price",
+    "version": "4.0.0",
+    "scope": "public"
+  },
+  "caller": {
+    "type": "anonymous",
+    "id": "sha256:294bcfb17b339b7776376c99fb0ed61bd89f3a617e353239f886c14ba9e54b9e"
+  },
+  "side_effects": {
+    "declared": [
+      "none"
+    ],
+    "schema_version": "zambo-side-effects/1",
+    "declaration_hash": "sha256:45aad38f3aa982b9aafe92ecb416ebe98791eddbaf8ab6df0bd08605b7c1bfee"
+  },
+  "evidence_sha256": "sha256:203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e",
+  "evidence_url": "/api/evidence/203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e",
+  "evidence_byte_length": 97,
+  "evidence_content_type": "application/json",
+  "evidence_source_url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true",
+  "evidence_status": "captured",
+  "external_evidence": [],
+  "provenance": {
+    "source": "CoinGecko",
+    "request": {
+      "symbol": "BTC",
+      "upstream_url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true"
+    },
+    "queried_at": "2026-09-23T23:45:20.698Z",
+    "response_sha256": "sha256:203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e"
+  },
+  "provenance_class": "EXECUTED BY ZAMBO",
+  "anchor": {
+    "event_id": "b8bbab0543789007d176294339ea3a2ca3cf810008bc0dd99a1d84e7a83cd8ea",
+    "pubkey": "e13475107d30c918ec664adf2ab1141024a22fb35190f82c9e933704fa49af41",
+    "relays": [
+      "wss://relay.damus.io",
+      "wss://nos.lol",
+      "wss://relay.primal.net"
+    ],
+    "status": "published",
+    "published_at": "2026-09-23T23:45:21.908Z",
+    "schema_version": "zambo-receipt-anchor/1",
+    "envelope": {
+      "anchored_at": "2026-09-23T23:45:20.731Z",
+      "evidence_url": "https://zambo.dev/api/evidence/203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e",
+      "receipt_uuid": "130da435-e157-498e-af90-605866a86a27",
+      "output_sha256": "sha256:0492c18e09059aa2e30ba0864f6aada2ef08475a5b35944cbf2a9ce46d12b9f1",
+      "schema_version": "zambo-receipt-anchor/1",
+      "evidence_sha256": "sha256:203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e",
+      "evidence_byte_length": 97
+    },
+    "envelope_bytes": "{\"anchored_at\":\"2026-09-23T23:45:20.731Z\",\"evidence_byte_length\":97,\"evidence_sha256\":\"sha256:203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e\",\"evidence_url\":\"https://zambo.dev/api/evidence/203c40524188ea134f02836cd353b26c8257ca1f2111812aee27608044597a2e\",\"output_sha256\":\"sha256:0492c18e09059aa2e30ba0864f6aada2ef08475a5b35944cbf2a9ce46d12b9f1\",\"receipt_uuid\":\"130da435-e157-498e-af90-605866a86a27\",\"schema_version\":\"zambo-receipt-anchor/1\"}"
+  },
+  "checks": {
+    "signature_valid": {
+      "label": "Integrity check",
+      "passed": true,
+      "detail": "SHA-256 matches the stored canonical receipt bytes."
+    },
+    "issued_by_zambo_dev": {
+      "label": "Issued by zambo.dev",
+      "passed": true,
+      "detail": "Receipt is served from the zambo.dev receipt store."
+    },
+    "chain_valid": {
+      "label": "Chain valid",
+      "passed": true,
+      "detail": "Receipt hash chain is internally consistent."
+    },
+    "immutable_log_timestamp": {
+      "label": "Recorded in the immutable log",
+      "passed": true,
+      "timestamp": "2026-09-23T23:45:20.760Z",
+      "detail": "Recorded at 2026-09-23T23:45:20.760Z."
+    },
+    "receipt_schema_version": "0.3"
+  }
+}

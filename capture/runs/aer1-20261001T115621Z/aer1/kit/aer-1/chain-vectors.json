@@ -1,0 +1,157 @@
+{
+ "spec": "draft-zambo-aer1 Section 7 (normative): entry digest = SHA-256 over base64-decoded canonical_bytes; prev_digest links entries; genesis prev_digest is 64 zeros; timeline must end with a closing entry carrying close=true",
+ "vectors": [
+  {
+   "name": "chain-valid-3",
+   "desc": "Three entries with correct digest chaining from genesis, closing entry carries close=true.",
+   "expected_verdict": "valid",
+   "expected_failure": null,
+   "timeline": [
+    {
+     "id": "6ca8d2c5-e944-451c-a745-1dd6567c29b3",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi12YWxpZC0zIiwiZW50cnkiOjAsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+     "id": "b4cac22c-abf2-4ee5-9cd1-8c06ce5e6c6c",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi12YWxpZC0zIiwiZW50cnkiOjEsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "ccd9bdc0e4869e1b680ffd93f69cb7c4b9ef2458b214c26c7d1e51b6eafcd68b"
+    },
+    {
+     "id": "123088b5-e659-46e7-90f9-4f3077e73968",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi12YWxpZC0zIiwiZW50cnkiOjIsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "f5a413fa876f0bc43f4e17a3d285a7265c336e2eccd6a7b84fcee3c017990846",
+     "close": true
+    }
+   ]
+  },
+  {
+   "name": "chain-single-entry-valid",
+   "desc": "Single entry chained from genesis with close=true.",
+   "expected_verdict": "valid",
+   "expected_failure": null,
+   "timeline": [
+    {
+     "id": "0b1b230b-3b5e-4895-8a68-c8f089fc2785",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1zaW5nbGUtZW50cnktdmFsaWQiLCJlbnRyeSI6MCwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+     "close": true
+    }
+   ]
+  },
+  {
+   "name": "chain-tampered-middle",
+   "desc": "Entry1 canonical_bytes altered after its digest was committed into entry2 prev_digest; entry2 link breaks.",
+   "expected_verdict": "invalid",
+   "expected_failure": "entry2 prev_digest does not match digest of entry1 bytes (link broken)",
+   "timeline": [
+    {
+     "id": "9ca6d090-b769-4178-a590-0bf1d5e02e06",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi10YW1wZXJlZC1taWRkbGUiLCJlbnRyeSI6MCwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+     "id": "57eeec6c-0026-4cae-aa90-c5ac08947ab4",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi10YW1wZXJlZC1taWRkbGUiLCJlbnRyeSI6MSwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IgVEFNUEVSRUQgYWZ0ZXIgY29tbWl0In0=",
+     "prev_digest": "1fe72b1117cb519c810541665e11629414074414ff82bcda0a70987098453179"
+    },
+    {
+     "id": "0af6a982-33cc-47d8-8343-b405a9082447",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi10YW1wZXJlZC1taWRkbGUiLCJlbnRyeSI6Miwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "aa62feb444e1977e24762f8356eeabb9f29fa74fbc6ec626306a475894e2540e",
+     "close": true
+    }
+   ]
+  },
+  {
+   "name": "chain-truncated-no-close",
+   "desc": "Valid chain with the closing entry removed; last entry lacks close=true.",
+   "expected_verdict": "invalid",
+   "expected_failure": "last entry lacks close=true",
+   "timeline": [
+    {
+     "id": "bda40b43-3ac9-47aa-a0b7-344ad1455d10",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi10cnVuY2F0ZWQtbm8tY2xvc2UiLCJlbnRyeSI6MCwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+     "id": "69ba6233-948a-42ec-a4e9-9c3cbcbb11c1",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi10cnVuY2F0ZWQtbm8tY2xvc2UiLCJlbnRyeSI6MSwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "0b8e5f43d6d7a47dd68bee03ecca4c0956c2cebbdbf4c3c94cc9ed05bb95b26f"
+    }
+   ]
+  },
+  {
+   "name": "chain-reordered",
+   "desc": "Valid entries with entry1 and entry2 swapped; links no longer line up.",
+   "expected_verdict": "invalid",
+   "expected_failure": "link broken (prev_digest mismatch in timeline order)",
+   "timeline": [
+    {
+     "id": "bc10dca6-2795-4076-b918-271d70397e02",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1yZW9yZGVyZWQiLCJlbnRyeSI6MCwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+     "id": "60e478cd-9d4f-4347-8c28-0c463233a733",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1yZW9yZGVyZWQiLCJlbnRyeSI6Miwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "683882dca86dc70bc8f97b5150e57787ead606ebad5a0453348ab9bc1527c70e",
+     "close": true
+    },
+    {
+     "id": "f6b0936a-a1dc-4389-8556-03504cb3a6ae",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1yZW9yZGVyZWQiLCJlbnRyeSI6MSwibm90ZSI6ImFlci0xIHNlY3Rpb24gNyBjaGFpbiB2ZWN0b3IifQ==",
+     "prev_digest": "8b4ec2c29ba1d4b5a837af9eba7878067ca584e4a6d82d7a294e172b0c4cc5af"
+    }
+   ]
+  },
+  {
+   "name": "chain-bad-genesis",
+   "desc": "Entry0 prev_digest is 64 f chars instead of 64 zeros.",
+   "expected_verdict": "invalid",
+   "expected_failure": "entry0 prev_digest is not genesis (64 zeros)",
+   "timeline": [
+    {
+     "id": "ecf6e525-3d71-476f-a06a-8bacf7a2bb49",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1iYWQtZ2VuZXNpcyIsImVudHJ5IjowLCJub3RlIjoiYWVyLTEgc2VjdGlvbiA3IGNoYWluIHZlY3RvciJ9",
+     "prev_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    {
+     "id": "d6dabc32-c148-4078-81b6-857b64cd6931",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1iYWQtZ2VuZXNpcyIsImVudHJ5IjoxLCJub3RlIjoiYWVyLTEgc2VjdGlvbiA3IGNoYWluIHZlY3RvciJ9",
+     "prev_digest": "d0c7be68007aba75d58b56ad1e552a8a366370859d63b241516160e73c8c4cb2"
+    },
+    {
+     "id": "985afa0e-5be5-41e1-abb9-7156c37156cc",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1iYWQtZ2VuZXNpcyIsImVudHJ5IjoyLCJub3RlIjoiYWVyLTEgc2VjdGlvbiA3IGNoYWluIHZlY3RvciJ9",
+     "prev_digest": "70d443ea07e04876c0f9f6ea2efd1bcddf7aa54bcbd8cb336738252de0a96a0c",
+     "close": true
+    }
+   ]
+  },
+  {
+   "name": "chain-close-wrong-type",
+   "desc": "Closing entry carries close as the string 'yes' instead of boolean true.",
+   "expected_verdict": "invalid",
+   "expected_failure": "close is not boolean true",
+   "timeline": [
+    {
+     "id": "a489cc42-f48b-4d82-81d2-74ea2f9e627b",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1jbG9zZS13cm9uZy10eXBlIiwiZW50cnkiOjAsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+     "id": "090e7b0c-904f-47dc-a087-881053b4d2fd",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1jbG9zZS13cm9uZy10eXBlIiwiZW50cnkiOjEsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "c29ffb709cd3faf9f4c230eeccd351eff8a98028384d88a674f03d3b222ad1eb"
+    },
+    {
+     "id": "7deb8c1e-e399-4497-8321-97f954a907a4",
+     "canonical_bytes": "eyJ2ZWN0b3IiOiJjaGFpbi1jbG9zZS13cm9uZy10eXBlIiwiZW50cnkiOjIsIm5vdGUiOiJhZXItMSBzZWN0aW9uIDcgY2hhaW4gdmVjdG9yIn0=",
+     "prev_digest": "31820144b68320d87892c5b86aa5d4e4562effa2295081c7a463ccaf983d2168",
+     "close": "yes"
+    }
+   ]
+  }
+ ]
+}

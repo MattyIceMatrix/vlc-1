@@ -1,0 +1,828 @@
+{
+  "spec": "draft-zambo-aer1-07 Section 7: entry digest = SHA-256 over the UTF-8 bytes of the canonical JSON object {prev_digest, seq, job_id, close, id, tool, provenance_class, output_hash} (keys sorted by Unicode code point, no whitespace), where output_hash = lowercase hex SHA-256 of the base64-decoded canonical_bytes. Entry 0: prev_digest is 64 zeros and seq is 1. seq contiguous from 1. One job_id per chain. close is boolean, true only on the last entry. Honest limit: truncation of either end with re-linking is not detectable by chain mechanics alone; it needs an anchored endpoint.",
+  "chain_version": "07",
+  "vectors": [
+    {
+      "name": "v07-valid-5",
+      "desc": "Five-entry chain under the -07 construction: digest binds prev_digest, seq, job_id, close, id, tool, provenance_class, output_hash; genesis is 64 zeros; close:true only on the last entry.",
+      "expected_verdict": "valid",
+      "expected_failure": "",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-valid-single",
+      "desc": "Single-entry chain: entry 0 is genesis (prev_digest 64 zeros, seq 1) and also carries close:true.",
+      "expected_verdict": "valid",
+      "expected_failure": "",
+      "timeline": [
+        {
+          "id": "r-job-solo-0",
+          "seq": 1,
+          "job_id": "job-solo",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2Itc29sbyIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-truncation-limit-prefix",
+      "desc": "HONEST LIMIT: the first 3 entries of a 5-entry chain, re-closed and re-linked, verify as a VALID 3-entry chain. Chain mechanics cannot distinguish a genuine short job from a truncated longer one; truncation resistance needs an anchored endpoint (witnessed head or a manifest-bound step count), not chain rules alone.",
+      "expected_verdict": "valid",
+      "expected_failure": "",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-relabel-provenance",
+      "desc": "Matthew VLC-1 attack 3a: entry 2 relabeled LOGGED BY AGENT -> EXECUTED BY ZAMBO without re-linking. The -07 digest binds provenance_class, so entry 3's prev_digest no longer matches.",
+      "expected_verdict": "invalid",
+      "expected_failure": "prev_digest does not match",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "EXECUTED BY ZAMBO",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-relabel-tool-id",
+      "desc": "Matthew VLC-1 attack 3b: entry 2's tool and id relabeled. The -07 digest binds tool and id.",
+      "expected_verdict": "invalid",
+      "expected_failure": "prev_digest does not match",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "rec-evil-9",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "payment_send",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-close-middle",
+      "desc": "Matthew VLC-1 attack 4: close:true planted on entry 1 of 5. -07 rejects close:true anywhere but the last entry.",
+      "expected_verdict": "invalid",
+      "expected_failure": "close:true before the last entry",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56",
+          "close": true
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-close-wrong-type",
+      "desc": "close:'true' (string) on the last entry. -07 requires boolean true; fail closed on wrong types.",
+      "expected_verdict": "invalid",
+      "expected_failure": "close is not a boolean",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": "true"
+        }
+      ]
+    },
+    {
+      "name": "v07-delete-identical-pair",
+      "desc": "Matthew VLC-1 attack 5a: two entries share identical canonical_bytes; the attacker deletes one and re-links without renumbering. -07 seq contiguity breaks (1,2,4,5).",
+      "expected_verdict": "invalid",
+      "expected_failure": "breaks contiguity",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "e23af8fce8ebb0e41d1df4b7ded575c2af0638f661b0760be192219d8f37eca0",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-insert-duplicate",
+      "desc": "Matthew VLC-1 attack 5b: a copy of entry 2 inserted after it and re-linked. Duplicate seq values break contiguity under -07.",
+      "expected_verdict": "invalid",
+      "expected_failure": "breaks contiguity",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "9f9619837686713c432d29ec651a776d2c7e7a45284d8ae0b3b1e1f13594ef60"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "52d7da7204174ac43de0c291e19732c09ce33388683f5c15b7fd3b51e61fd11f",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-splice-cross-job",
+      "desc": "Matthew VLC-1 attack 6: a job-B entry spliced onto a job-A prefix where an output repeats, re-linked. -07 binds job_id in every digest and requires one job per chain.",
+      "expected_verdict": "invalid",
+      "expected_failure": "mixes jobs",
+      "timeline": [
+        {
+          "id": "r-job-A-0",
+          "seq": 1,
+          "job_id": "job-A",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItQSIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-A-1",
+          "seq": 2,
+          "job_id": "job-A",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItQSIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "95fa74e90f9eeabe65e5842ab996c07da517d42498c88dbb37b5707ba8b74491"
+        },
+        {
+          "id": "r-job-B-2",
+          "seq": 3,
+          "job_id": "job-B",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItQiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "15569e30e8e7cd011b7bb69a3b01548d0878b63ee1d1cbbd1d5db59fb1a90630",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-bad-genesis",
+      "desc": "Entry 0 prev_digest is not the 64-zero genesis digest.",
+      "expected_verdict": "invalid",
+      "expected_failure": "not 64 zero characters",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-seq-gap",
+      "desc": "seq jumps 1,2,3,99,5. Contiguity from 1 is mandatory.",
+      "expected_verdict": "invalid",
+      "expected_failure": "breaks contiguity",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 99,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-mixed-job-id",
+      "desc": "Entry 3 carries a different job_id without re-linking; digest mismatch on the following entry.",
+      "expected_verdict": "invalid",
+      "expected_failure": "prev_digest does not match",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoyLCJ0YWciOiJyIn0=",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-other",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-bad-base64",
+      "desc": "Entry 2 canonical_bytes is not valid base64. Fail closed.",
+      "expected_verdict": "invalid",
+      "expected_failure": "not valid base64",
+      "timeline": [
+        {
+          "id": "r-job-7a1f-0",
+          "seq": 1,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjowLCJ0YWciOiJyIn0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-job-7a1f-1",
+          "seq": 2,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjoxLCJ0YWciOiJyIn0=",
+          "prev_digest": "380d45c6575bdb648e5723adee5a049ff212574d4c6d5dd8ad4cabcc54b6aa56"
+        },
+        {
+          "id": "r-job-7a1f-2",
+          "seq": 3,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "!!!not-base64!!!",
+          "prev_digest": "c225aa2256e7984575f5a664b690f2b06c86abddc528def6164fb1bbb0aa4cba"
+        },
+        {
+          "id": "r-job-7a1f-3",
+          "seq": 4,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5IjozLCJ0YWciOiJyIn0=",
+          "prev_digest": "4c56c96378cea5939ad61d082fff24d075649ca888b0c61308307d14034a204a"
+        },
+        {
+          "id": "r-job-7a1f-4",
+          "seq": 5,
+          "job_id": "job-7a1f",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItN2ExZiIsImVudHJ5Ijo0LCJ0YWciOiJyIn0=",
+          "prev_digest": "5dd618b1b3b904a92261bb747f8c4511b0882e1454fc41f20a59fa5bd0ded778",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-v06-chain-rejected",
+      "desc": "BREAKING CHANGE: a well-formed -06 chain (digest over canonical_bytes only, unbound metadata) is REJECTED under -07 rules. -06 chains verify only under the -06 verifier; they are historical, not current.",
+      "expected_verdict": "invalid",
+      "expected_failure": "missing tool",
+      "timeline": [
+        {
+          "id": "old-0",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItMDZsZWdhY3kiLCJlbnRyeSI6MH0=",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "old-1",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItMDZsZWdhY3kiLCJlbnRyeSI6MX0=",
+          "prev_digest": "323653ab20ee731bfc0ed73744e6b0a03fcc5308c4e6671ce9564b4a0680d877"
+        },
+        {
+          "id": "old-2",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItMDZsZWdhY3kiLCJlbnRyeSI6Mn0=",
+          "prev_digest": "535e7371a0491b3841bbdfdf518843a8ae645d28ea775c3a9fe4acd0a45ccd5f"
+        },
+        {
+          "id": "old-3",
+          "canonical_bytes": "eyJqb2IiOiJqb2ItMDZsZWdhY3kiLCJlbnRyeSI6M30=",
+          "prev_digest": "a2b56f996b461b4790265500c69692e4526616faccdb338daa2a06c50df2a6b1",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-seq-float-valid",
+      "desc": "seq as integer-valued floats (1.0, 2.0) is accepted; 1 and 1.0 are equivalent",
+      "expected_verdict": "valid",
+      "expected_failure": "",
+      "timeline": [
+        {
+          "id": "r-seq-0",
+          "seq": 1.0,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDB9",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-seq-1",
+          "seq": 2.0,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDF9",
+          "prev_digest": "5694646c0adbf0d9c13c2f2f713d8b6fe20e4f2f069050c93d31d08919832422",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-seq-bool-invalid",
+      "desc": "seq as boolean true is rejected",
+      "expected_verdict": "invalid",
+      "expected_failure": "seq is not an integer",
+      "timeline": [
+        {
+          "id": "r-seq-0",
+          "seq": true,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDB9",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-seq-1",
+          "seq": 2,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDF9",
+          "prev_digest": "92f167ca7327ed7905bd60c385d9f7184638e936a6be869094a5b7b33224583b",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-seq-fraction-invalid",
+      "desc": "seq as non-integer number 1.5 is rejected",
+      "expected_verdict": "invalid",
+      "expected_failure": "seq is not an integer",
+      "timeline": [
+        {
+          "id": "r-seq-0",
+          "seq": 1.5,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDB9",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-seq-1",
+          "seq": 2,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDF9",
+          "prev_digest": "8d81249a783225d3d70ea8b6f0bfcadf461ea2df901c27c5dcf21b5bc62bcd5f",
+          "close": true
+        }
+      ]
+    },
+    {
+      "name": "v07-seq-negative-invalid",
+      "desc": "seq as -1 breaks contiguity from 1",
+      "expected_verdict": "invalid",
+      "expected_failure": "breaks contiguity",
+      "timeline": [
+        {
+          "id": "r-seq-0",
+          "seq": -1,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDB9",
+          "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "id": "r-seq-1",
+          "seq": 2,
+          "job_id": "job-seq",
+          "tool": "price_lookup",
+          "provenance_class": "LOGGED BY AGENT",
+          "canonical_bytes": "eyJqb2IiOiAiam9iLXNlcSIsICJlbnRyeSI6IDF9",
+          "prev_digest": "f0166a61f83ab9f75adc7239eef6f0f195fd57464421b5ee9f77a68ab386821b",
+          "close": true
+        }
+      ]
+    }
+  ]
+}
