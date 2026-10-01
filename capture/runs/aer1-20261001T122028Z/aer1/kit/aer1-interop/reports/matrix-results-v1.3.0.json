@@ -1,0 +1,102 @@
+{
+  "available": 7,
+  "missing": [],
+  "matrix": {
+    "rust": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "go": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "typescript": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "python": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "java": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "csharp": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    },
+    "swift": {
+      "rust": true,
+      "go": true,
+      "typescript": true,
+      "python": true,
+      "java": true,
+      "csharp": true,
+      "swift": true
+    }
+  },
+  "matrix_pass": 49,
+  "matrix_total": 49,
+  "divergences": 0,
+  "divergence_cases": [],
+  "notes": {
+    "python": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/python",
+    "java": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/java",
+    "csharp": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/csharp",
+    "swift": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/swift",
+    "rust": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/rust",
+    "go": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/go",
+    "typescript": "discovered at /home/ubuntu/aer1-main-fresh/aer1-implementations/typescript"
+  },
+  "commands": [
+    "python3 run_matrix.py --repo /path/to/zambo --out interop-report.html",
+    "git clone https://gitlab.com/rambozambodotdev/zambo.git zambo"
+  ],
+  "report_label": "v1.4.0-requested",
+  "corpus_version": "1.3.0",
+  "spec_revision": "-03",
+  "vector_count": 43,
+  "repository_commit": "586dafd8b2458a5a789da1f69c8aaa1d2aaaf11c",
+  "generated_at_utc": "2026-09-29T22:12:36.396015+00:00",
+  "environment": {
+    "os": "Linux-6.18.38+-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "java": "openjdk version \"21.0.12.1\" 2026-08-18",
+    "dotnet": "8.0.131",
+    "go": "go version go1.22.2 linux/amd64",
+    "rust": "rustc 1.75.0 (82e1608df 2023-12-21) (built from a source tarball)",
+    "node": "v22.13.0",
+    "swift": "Swift 6.0.3"
+  }
+}

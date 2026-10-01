@@ -1,0 +1,1 @@
+import {emit} from "./aer1.js";console.log(JSON.stringify(emit("b6c63ac5-f324-4fa7-ad58-c4bf83faa86a","2026-09-27T09:00:00.000Z","demo_tool","1.0.0","public","EXECUTED BY TYPESCRIPT",'{"inputs":{"x":1},"outputs":{"ok":true}}'),null,2))
