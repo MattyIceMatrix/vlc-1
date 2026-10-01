@@ -1,0 +1,83 @@
+PASS anchored-bad-leaf-hash
+PASS anchored-bad-timestamp
+PASS anchored-missing-proof
+PASS anchored-valid
+PASS missing-inputs
+PASS bad-created-at
+PASS bad-id
+PASS bad-provenance
+PASS bytes-not-base64
+PASS hash-bad-format
+PASS hash-mismatch
+PASS impossible-date
+PASS missing-output-hash
+PASS non-utf8-bytes
+PASS tool-not-object
+PASS receipt-01
+PASS receipt-02
+PASS receipt-03-live
+PASS aer1-local-valid-01
+PASS aer1-local-valid-02
+PASS aer1-local-valid-03
+PASS aer1-local-valid-04
+PASS aer1-local-valid-05
+PASS aer1-local-invalid-schema
+PASS aer1-local-invalid-id
+PASS aer1-local-invalid-id-version
+PASS aer1-local-invalid-date-day
+PASS aer1-local-invalid-date-hour
+PASS aer1-local-invalid-date-zone
+PASS aer1-local-invalid-tool
+PASS aer1-local-invalid-tool-name
+PASS aer1-local-invalid-tool-version
+PASS aer1-local-invalid-tool-scope
+PASS aer1-local-invalid-provenance
+PASS aer1-local-invalid-status
+PASS aer1-local-invalid-missing-id
+PASS aer1-local-invalid-missing-tool
+PASS aer1-local-invalid-bytes-format
+PASS aer1-local-invalid-bytes-padding
+PASS aer1-local-invalid-bytes-utf8
+PASS aer1-local-invalid-hash-format
+PASS aer1-local-invalid-hash-mismatch
+PASS aer1-local-invalid-missing-hash
+PASS bad-verification-status
+PASS uppercase-id
+CONFORMANCE: 45/45
+[chain] PASS chain-valid-3
+[chain] PASS chain-single-entry-valid
+[chain] PASS chain-tampered-middle
+[chain] PASS chain-truncated-no-close
+[chain] PASS chain-reordered
+[chain] PASS chain-bad-genesis
+[chain] PASS chain-close-wrong-type
+CHAIN: 7/7
+[chain-v07] PASS v07-valid-5
+[chain-v07] PASS v07-valid-single
+[chain-v07] PASS v07-truncation-limit-prefix
+[chain-v07] PASS v07-relabel-provenance
+[chain-v07] PASS v07-relabel-tool-id
+[chain-v07] PASS v07-close-middle
+[chain-v07] PASS v07-close-wrong-type
+[chain-v07] PASS v07-delete-identical-pair
+[chain-v07] PASS v07-insert-duplicate
+[chain-v07] PASS v07-splice-cross-job
+[chain-v07] PASS v07-bad-genesis
+[chain-v07] PASS v07-seq-gap
+[chain-v07] PASS v07-mixed-job-id
+[chain-v07] PASS v07-bad-base64
+[chain-v07] PASS v07-v06-chain-rejected
+[chain-v07] FAIL v07-seq-float-valid
+[chain-v07] PASS v07-seq-bool-invalid
+[chain-v07] PASS v07-seq-fraction-invalid
+[chain-v07] PASS v07-seq-negative-invalid
+CHAIN-V07: 18/19
+[merkle] PASS canonical-5-step (verdict=valid, failures=[])
+[merkle] PASS legacy-construction-rejected (legacy_root=a4b2fcb4684cec481e4ece889ed15c7d9e47e58d9ba4fb02ea354c0cb2ca44c4)
+[merkle] PASS odd-duplication-3 ()
+[merkle] PASS ordering-matters ()
+[merkle] PASS single-leaf ()
+[merkle] PASS empty ()
+[merkle] PASS worked-example-byte-exact ()
+[merkle] PASS duplicate-receipt-id-collision (verdict=invalid, failures=['8.2 duplicate receipt_id: ae795bf0-27f8-4cf2-8aef-3f8142b77217'])
+MERKLE: 8/8
