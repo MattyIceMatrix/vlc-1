@@ -7,7 +7,8 @@ resealed) reports which requirement results changed. AER-1 is not a log; its sec
 shows the saved harness output from each kit commit tested.
 
 Usage, from the repository root:  python3 examples/third-party/demo.py
-Standard library only. Writes examples/third-party/DEMO.md and nothing else.
+Standard library only. Writes examples/third-party/DEMO.md and one animated SVG
+terminal recording per case under examples/third-party/demo/, and nothing else.
 """
 import json, os, subprocess, sys
 
@@ -69,10 +70,56 @@ CASES = [
 ]
 
 
+W, LH, PAD, COLS = 960, 19, 16, 118
+COL = {"cmd": "#e6edf3", "dim": "#8b949e", "del": "#ff7b72", "ok": "#3fb950", "bad": "#f85149",
+       "out": "#c9d1d9", "head": "#d2a8ff", "warn": "#e3b341"}
+
+
+def esc(t):
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def svg(title, lines, path):
+    """lines: [(kind, text)]; each line fades in after the previous, holds, and the scene loops."""
+    step, hold = 0.55, 6.0
+    n = len(lines); total = n * step + hold
+    h = PAD * 2 + 30 + n * LH
+    css, body = [], []
+    for i, (kind, text) in enumerate(lines):
+        t0 = i * step / total * 100
+        css.append(f"@keyframes k{i}{{0%,{t0:.2f}%{{opacity:0}}{t0 + 0.5:.2f}%,97%{{opacity:1}}100%{{opacity:0}}}}"
+                   f".l{i}{{animation:k{i} {total:.2f}s linear infinite}}")
+        text = text if len(text) <= COLS else text[:COLS - 1] + "…"
+        body.append(f'<text class="l{i}" x="{PAD}" y="{PAD + 42 + i * LH}" fill="{COL[kind]}">{esc(text)}</text>')
+    doc = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{h}" viewBox="0 0 {W} {h}" role="img">'
+           f'<title>{esc(title)}</title><style>text{{font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;'
+           f'white-space:pre}}{"".join(css)}</style>'
+           f'<rect width="{W}" height="{h}" rx="8" fill="#0d1117" stroke="#30363d"/>'
+           f'<circle cx="20" cy="18" r="5" fill="#ff5f57"/><circle cx="36" cy="18" r="5" fill="#febc2e"/>'
+           f'<circle cx="52" cy="18" r="5" fill="#28c840"/>'
+           f'<text x="72" y="22" fill="#8b949e">{esc(title)}</text>{"".join(body)}</svg>')
+    open(path, "w").write(doc)
+
+
+def slug(name):
+    base = name.split(" (")[0].lower()
+    out = "".join(c if c.isalnum() else "-" for c in base)
+    while "--" in out:
+        out = out.replace("--", "-")
+    return out.strip("-")
+
+
+def removed(a, b):
+    """records in file a that are not in file b, in file order"""
+    lb = set(open(os.path.join(ROOT, T, b + ".jsonl")).read().splitlines())
+    return [l for l in open(os.path.join(ROOT, T, a + ".jsonl")).read().splitlines() if l.strip() and l not in lb]
+
+
 def run(f, adapter, extra):
     cmd = [sys.executable, "conformance.py", "--log", T + f + ".jsonl", "--adapter", "adapters/" + adapter + ".json", "--json"] + extra
     r = json.loads(subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True).stdout)
     req = {k: v["status"] for k, v in r["requirements"].items()}
+    run.first = next((f"{k} {v['note']}" for k, v in r["requirements"].items() if v["status"] == "FAIL"), "")
     shown = "python3 conformance.py --log " + T + f + ".jsonl --adapter adapters/" + adapter + ".json" + "".join(
         " " + (a if a.startswith("--") else a[:12] + "…") for a in extra)
     return r["structural_level"], r["attested_level"], req, shown
@@ -90,8 +137,23 @@ def main():
     for name, how, shows, runs in CASES:
         out += ["## " + name, "", "*" + how + "*" + ((". Pair: " + shows + ".") if shows else "."), "",
                 "| file | structural | attested | failed requirements | compared with the first row |", "|---|---|---|---|---|"]
-        base = None; cmds = []
+        base = None; cmds = []; scene = []; first_file = runs[0][1]; shown_diff = {first_file}
         for label, f, ad, extra in runs:
+            if f not in shown_diff and base is not None:
+                shown_diff.add(f)
+                gone = removed(first_file, f)
+                added = removed(f, first_file)
+                scene.append(("cmd", f"$ diff {first_file}.jsonl {f}.jsonl"))
+                for l in gone[:2]:
+                    scene.append(("del", "- " + l))
+                if len(gone) > 2:
+                    scene.append(("del", f"  … and {len(gone) - 2} more record(s) removed"))
+                if added:
+                    scene.append(("warn", f"+ {len(added)} record(s) present only in the second file"))
+            elif base is None and len(runs) == 1:
+                rec = next(l for l in open(os.path.join(ROOT, T, f + ".jsonl")).read().splitlines() if l.strip())
+                scene.append(("cmd", f"$ head -1 {f}.jsonl"))
+                scene.append(("out", rec))
             s, a, req, shown = run(f, ad, extra)
             failed = sorted(k for k, v in req.items() if v == "FAIL")
             if base is None:
@@ -105,6 +167,24 @@ def main():
                     (f" (and {skipped} later checks no longer reached)" if skipped else "")
             out.append(f"| {label} | L{s} | L{a} | {len(failed)} | {cmp_} |")
             cmds.append(shown)
+            scene.append(("cmd", "$ " + shown.replace("examples/third-party/", "")))
+            scene.append(("out", f"  structural L{s}   attested L{a}   {len(failed)} of {len(req)} requirements fail"))
+            if base is req:
+                scene.append(("dim", f"  first failure: {run.first}"))
+            elif cmp_ == "**same result**" and f == first_file:
+                scene.append(("dim", f"  same result as '{runs[0][0]}'"))
+            elif cmp_ == "**same result**":
+                scene.append(("bad", f"  SAME RESULT as '{runs[0][0]}': the change is invisible to this check"))
+            else:
+                plain = cmp_.replace("**", "")
+                if plain.startswith("caught:"):
+                    scene.append(("ok", "  CAUGHT:" + plain[len("caught:"):]))
+                else:
+                    scene.append(("head", "  changed: " + plain))
+        os.makedirs(os.path.join(ROOT, T, "demo"), exist_ok=True)
+        svg(name, scene, os.path.join(ROOT, T, "demo", slug(name) + ".svg"))
+        i = out.index("## " + name) + 2
+        out[i + 1:i + 1] = ["", f"![{name}: recorded run](demo/{slug(name)}.svg)"]
         out += ["", "```sh"] + cmds + ["```", ""]
     out += ["## AER-1, IETF agent-receipt draft", "",
             "*Not a log: the draft's own reference verifier, run against the VLC-1 tamper cases",
@@ -117,6 +197,20 @@ def main():
         if os.path.exists(p):
             last = [l for l in open(p).read().splitlines() if l.strip()][-1]
             out.append(f"- kit `{c}`: {last} ([output](aer1-07/{f}))")
+    scene = [("dim", "AER-1 reference verifier (Python), VLC-1 tamper cases, saved output per kit commit")]
+    for c, f in [("aff1330", "results-kit-aff1330.txt"), ("4edbcbb", "results-kit-4edbcbb.txt")]:
+        p = os.path.join(ROOT, T, "aer1-07", f)
+        if not os.path.exists(p):
+            continue
+        scene.append(("cmd", f"$ python3 aer1-07/chain_attacks.py zambo@{c}/aer1-implementations/python"))
+        for l in open(p).read().splitlines():
+            if l.startswith("GAP") or "seq 1.0" in l:
+                scene.append(("bad" if l.startswith("GAP") else "ok", l.rstrip()))
+            elif " of 30 as expected" in l:
+                scene.append(("head", l.strip()))
+    svg("AER-1 cross-test", scene, os.path.join(ROOT, T, "demo", "aer-1.svg"))
+    i = out.index("## AER-1, IETF agent-receipt draft") + 1
+    out[i + 1:i + 1] = ["", "![AER-1: recorded runs](demo/aer-1.svg)"]
     out.append("")
     open(os.path.join(ROOT, T, "DEMO.md"), "w").write("\n".join(out))
     print("wrote", T + "DEMO.md")
