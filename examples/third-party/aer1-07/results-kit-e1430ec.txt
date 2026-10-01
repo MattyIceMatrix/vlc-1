@@ -1,0 +1,36 @@
+-- the 14 cases run against -06 (links not rebuilt by the attacker)
+ok   honest timeline                                                -> ACCEPTED  
+ok   edit a middle entry's bytes                                    -> rejected  ['entry 3 prev_digest does not match digest of entry 2']
+ok   delete a middle entry                                          -> rejected  ['entry 2 seq 4 breaks contiguity (expected 3)']
+ok   swap two entries                                               -> rejected  ['entry 1 seq 3 breaks contiguity (expected 2)']
+ok   drop newest two, no close                                      -> rejected  ['last entry does not carry close: true']
+ok   drop newest two, set close:true on new last                    -> ACCEPTED  
+ok   drop oldest two, zero the new first prev_digest                -> rejected  ['entry 0 seq 3 breaks contiguity (expected 1)']
+ok   relabel an entry's provenance_class                            -> rejected  ['entry 2 prev_digest does not match digest of entry 1']
+ok   relabel an entry's tool and id                                 -> rejected  ['entry 3 prev_digest does not match digest of entry 2']
+ok   set close:true on a middle entry                               -> rejected  ['entry 2 carries close:true before the last entry']
+ok   honest timeline with two identical outputs                     -> ACCEPTED  
+ok   delete one of two identical consecutive entries                -> rejected  ['entry 2 seq 4 breaks contiguity (expected 3)']
+ok   insert a copy of an entry next to itself                       -> rejected  ['entry 3 seq 3 breaks contiguity (expected 4)']
+ok   splice another job's prefix onto this job's suffix             -> rejected  ['entry 1 carries close:true before the last entry']
+-- new: the last entry, which no later entry links to
+GAP  edit the LAST entry's output bytes                             -> ACCEPTED  
+GAP  relabel the LAST entry's provenance_class                      -> ACCEPTED  
+GAP  relabel the LAST entry's tool and id                           -> ACCEPTED  
+-- new: attacker rebuilds the links (Section 7.3 says these verify)
+ok   rebuilt truncation from the end                                -> ACCEPTED  
+ok   rebuilt truncation from the start (seq renumbered)             -> ACCEPTED  
+-- new: Section 7.1 / 7.2 rules
+GAP  seq 1.0 on entry 0 (7.1: equivalent to 1, accepted)            -> rejected  ['entry 0 seq is not an integer']
+ok   seq true (7.1: MUST reject)                                    -> rejected  ['entry 0 seq is not an integer']
+ok   seq "1" (7.1: MUST reject)                                     -> rejected  ['entry 0 seq is not an integer']
+ok   seq gap, links rebuilt                                         -> rejected  ['entry 1 seq 3 breaks contiguity (expected 2)']
+ok   close as the string "false"                                    -> rejected  ['entry 2 close is not a boolean']
+ok   swap job_id on every entry, links not rebuilt                  -> rejected  ['entry 1 prev_digest does not match digest of entry 0']
+ok   job_id differs on entry 0, links rebuilt                       -> rejected  ['entry 1 job_id mixes jobs']
+ok   invalid base64 (fail closed)                                   -> rejected  ['entry 1 canonical_bytes is not valid base64']
+ok   base64 with padding stripped (strict decode)                   -> rejected  ['entry 1 canonical_bytes is not valid base64']
+ok   non-ASCII output and honest chain                              -> ACCEPTED  
+ok   valid -06 timeline must not verify as -07 (7.4)                -> rejected  ['entry 0 missing job_id']
+
+26 of 30 as expected; 4 gap(s)
