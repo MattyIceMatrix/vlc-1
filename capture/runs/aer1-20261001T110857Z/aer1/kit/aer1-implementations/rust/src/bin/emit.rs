@@ -1,0 +1,1 @@
+use aer1::emit; fn main(){let r=emit("b6c63ac5-f324-4fa7-ad58-c4bf83faa86a","2026-09-27T09:00:00.000Z","demo_tool","1.0.0","public","EXECUTED BY RUST","{\"inputs\":{\"x\":1},\"outputs\":{\"ok\":true}}");println!("{}",serde_json::to_string_pretty(&r).unwrap())}

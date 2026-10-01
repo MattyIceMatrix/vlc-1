@@ -1,0 +1,5 @@
+aer1_receipts:
+  image: python:3.12-slim
+  stage: test
+  script:
+    - python3 ci-templates/verify_receipts.py "${AER1_RECEIPTS_DIR:-receipts/}"

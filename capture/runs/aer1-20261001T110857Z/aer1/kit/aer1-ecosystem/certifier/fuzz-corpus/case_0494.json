@@ -1,0 +1,1 @@
+{"id":"b6c63ac5-f324-4fa7-ad58-c4bf83faa86a","receipt_schema_version":"0.3","created_at":"2026-09-27T09:00:00Z","tool":{"name":"fuzz_tool","version":"1.0.0","scope":"public"},"provenance_class":"EXECUTED BY FUZZ","canonical_bytes":"dW5pY29kZS3wn5iANDk0","output_hash":"sha256:a1225f1195c3e066623a39fcb0c1f2b18fa48765812a51eb53ebc14f3c70cf7d","verification_status":"verified"}
