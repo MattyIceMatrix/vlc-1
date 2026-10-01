@@ -1,5 +1,37 @@
 # Scoring other people's logs
 
+## In one minute
+
+What happened when VLC-1 was pointed at other people's work, newest first. Detail
+for each is further down this page.
+
+- **AER-1, an IETF agent-receipt draft (2026-09-30 to 10-01).** Three rounds of
+  tamper tests against the draft's own verifier found problems in -05, -06 and -07.
+  The author fixed every one, and the -07 and -08 drafts credit the testing.
+  [Details](#cross-testing-another-drafts-chain-aer-1)
+- **Five MCP/agent gateways (2026-09-29).** agentgateway, Docker MCP Gateway, IBM
+  ContextForge, Lasso and Bifrost, each from one live run: in every one, a refused
+  tool call could be removed from the log without changing what the log proves.
+  Each was reported upstream with a proposed fix. [Results](#results)
+- **Two ledgers offered by their operators (2026-09-28 to 30).** JIDEC and
+  invinoveritas asked to be scored. Both chains verified, and both reach L1 against a
+  head held outside the log (a Bitcoin stamp, a signed Nostr event). The
+  invinoveritas case added a new chain mechanism to VLC-1's own checker. [Results](#results)
+- **Agent SDKs, runtime tools and a transparency log (2026-09-29 to 30).** OpenAI Agents SDK,
+  OpenTelemetry GenAI, NVIDIA OpenShell, Falco and Trillian Tessera, from live runs.
+  [Results](#results)
+- **Six standard formats from public documentation.** OpenTelemetry, Kubernetes
+  audit, Linux auditd, AWS CloudTrail, MCP and fab equipment. None is badly
+  engineered; integrity was specified and completeness never was. [Results](#results)
+
+**See every run:** [`examples/third-party/DEMO.md`](examples/third-party/DEMO.md) rescores each
+case from the files in this repository and shows, per case, whether removing the
+refused or dropped records changed the score. CI regenerates it on every change.
+
+Want your own format scored? Field names are enough:
+[open an access request](https://github.com/MattyIceMatrix/vlc-1/issues/new?template=access-request.yml).
+
+
 **2026-09-12, revised 2026-09-27.** VLC-1 is only worth something if it can be
 applied to logs this project did not produce. This is that exercise, run against
 eight formats: six scored from their **open, public documentation**, one (NVIDIA
