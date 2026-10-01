@@ -47,3 +47,12 @@ from `6f6a060`, which was already in `e1430ec`), and passes `v07-seq-float-valid
 the seven-language set that this harness and its `conformance.py` use, still rejects
 1.0 (line 174) and fails that vector (18/19). The 11:56Z note above, that `6f6a060`
 was not on main, was wrong: it was on main, in the other file.
+
+## Recheck, 2026-10-01 12:42Z (kit `4edbcbb`): closed
+
+`aer1-implementations/python/verifier.py` now accepts `seq` 1.0, and an entry with
+`seq` 1.0 has the same digest as one with `seq` 1. Its conformance run is 19/19 on the
+-07 chain vectors (45/45 receipts, 7/7 -06 chain, 8/8 Merkle); `aer-1/conformance.py`
+reports no failures. This harness: 27 of 30 as the text specifies. The remaining 3 are
+the last-entry cases, which -08 Section 7.3 assigns to an outside commitment to the
+final entry digest. Output: `results-kit-4edbcbb.txt`.
