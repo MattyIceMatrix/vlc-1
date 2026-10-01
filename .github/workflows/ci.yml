@@ -190,7 +190,7 @@ jobs:
       - name: the case demo must match what the samples score today
         run: |
           python3 examples/third-party/demo.py
-          git diff --exit-code examples/third-party/DEMO.md
+          git diff --exit-code examples/third-party/DEMO.md examples/third-party/demo/scenes.json
 
   proof:
     name: Coq development

@@ -79,7 +79,11 @@ def esc(t):
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+SCENES = []
+
+
 def svg(title, lines, path):
+    SCENES.append({"title": title, "file": os.path.basename(path)[:-4], "lines": [list(x) for x in lines]})
     """lines: [(kind, text)]; each line fades in after the previous, holds, and the scene loops."""
     step, hold = 0.55, 6.0
     n = len(lines); total = n * step + hold
@@ -133,7 +137,8 @@ def main():
            "second file with records removed, cut or resealed, the table shows whether the",
            "score noticed. **Same result** means the removal is invisible to a reader holding",
            "only that file; **caught** means a check that passed now fails.", "",
-           "Rerun it yourself: `python3 examples/third-party/demo.py`", ""]
+           "Rerun it yourself: `python3 examples/third-party/demo.py`. The recordings are",
+           "rendered from the same output by `make_videos.py` (needs Pillow and ffmpeg).", ""]
     for name, how, shows, runs in CASES:
         out += ["## " + name, "", "*" + how + "*" + ((". Pair: " + shows + ".") if shows else "."), "",
                 "| file | structural | attested | failed requirements | compared with the first row |", "|---|---|---|---|---|"]
@@ -184,7 +189,8 @@ def main():
         os.makedirs(os.path.join(ROOT, T, "demo"), exist_ok=True)
         svg(name, scene, os.path.join(ROOT, T, "demo", slug(name) + ".svg"))
         i = out.index("## " + name) + 2
-        out[i + 1:i + 1] = ["", f"![{name}: recorded run](demo/{slug(name)}.svg)"]
+        out[i + 1:i + 1] = ["", f"![{name}: recorded run](demo/{slug(name)}.gif)", "",
+                            f"[MP4](demo/{slug(name)}.mp4) · [SVG](demo/{slug(name)}.svg)"]
         out += ["", "```sh"] + cmds + ["```", ""]
     out += ["## AER-1, IETF agent-receipt draft", "",
             "*Not a log: the draft's own reference verifier, run against the VLC-1 tamper cases",
@@ -210,9 +216,11 @@ def main():
                 scene.append(("head", l.strip()))
     svg("AER-1 cross-test", scene, os.path.join(ROOT, T, "demo", "aer-1.svg"))
     i = out.index("## AER-1, IETF agent-receipt draft") + 1
-    out[i + 1:i + 1] = ["", "![AER-1: recorded runs](demo/aer-1.svg)"]
+    out[i + 1:i + 1] = ["", "![AER-1: recorded runs](demo/aer-1.gif)", "", "[MP4](demo/aer-1.mp4) · [SVG](demo/aer-1.svg)"]
     out.append("")
     open(os.path.join(ROOT, T, "DEMO.md"), "w").write("\n".join(out))
+    with open(os.path.join(ROOT, T, "demo", "scenes.json"), "w") as fh:
+        json.dump(SCENES, fh, indent=1, ensure_ascii=False)
     print("wrote", T + "DEMO.md")
 
 
