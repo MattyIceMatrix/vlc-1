@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # aer1_fetch.sh -- fetch the AER-1 draft, its test vectors and the public receipt dataset.
-# rerun 2026-10-01 12:20Z: recheck seq 1.0 after author reports 6f6a060 and 1b3e3ee on main
+# rerun 2026-10-01 12:45Z: confirm 4edbcbb (verifier.py seq 1.0)
 # BLAST RADIUS: GitHub-hosted runner only; GET requests only; writes only under $OUT/aer1.
 set -u
 O="$OUT/aer1"; mkdir -p "$O"
