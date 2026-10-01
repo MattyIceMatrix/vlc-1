@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # aer1_fetch.sh -- fetch the AER-1 draft, its test vectors and the public receipt dataset.
-# rerun 2026-10-01: check kit 6f6a060 fixes (seq 1.0, index.json revision)
+# rerun 2026-10-01 12:20Z: recheck seq 1.0 after author reports 6f6a060 and 1b3e3ee on main
 # BLAST RADIUS: GitHub-hosted runner only; GET requests only; writes only under $OUT/aer1.
 set -u
 O="$OUT/aer1"; mkdir -p "$O"
@@ -12,7 +12,8 @@ get https://www.ietf.org/archive/id/draft-zambo-aer1-07.txt draft-zambo-aer1-07.
 get https://gitlab.com/rambozambodotdev/zambo/-/raw/main/aer-1/drafts/draft-zambo-aer1-08.txt draft-zambo-aer1-08.txt
 get https://www.ietf.org/archive/id/draft-zambo-aer1-08.txt draft-zambo-aer1-08-ietf.txt
 get https://zambo.dev/aer1/test-vectors/index.json tv-index.json
-git clone -q --depth 1 https://gitlab.com/rambozambodotdev/zambo.git /tmp/zk 2>&1 | tail -2
+git clone -q --depth 30 https://gitlab.com/rambozambodotdev/zambo.git /tmp/zk 2>&1 | tail -2
+git -C /tmp/zk log --format="%h %cI %s" -30 > "$O/kit-log.txt" 2>&1
 echo "kit commit $(git -C /tmp/zk rev-parse HEAD 2>/dev/null)" >> "$O/steps.txt"
 mkdir -p "$O/kit" && (cd /tmp/zk && tar cf - --exclude=.git --exclude=node_modules $(ls -d aer1* aer-1 test-vectors* vectors* conformance* spec* 2>/dev/null)) | tar xf - -C "$O/kit" 2>/dev/null
 (cd /tmp/zk && find . -maxdepth 3 -not -path "./.git*" | head -200) > "$O/kit-tree.txt"
