@@ -13,6 +13,8 @@ Rerun it yourself: `python3 examples/third-party/demo.py`
 
 *one live run on a GitHub-hosted runner, 2026-09-29*. Pair: the refused tool call removed.
 
+![agentgateway 1.5.0: recorded run](demo/agentgateway-1-5-0.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L0 | L0 | 12 | — |
@@ -26,6 +28,8 @@ python3 conformance.py --log examples/third-party/agentgateway-live-scrubbed.jso
 ## Docker MCP Gateway v0.44.1
 
 *one live run, 2026-09-29*. Pair: the refused calls removed.
+
+![Docker MCP Gateway v0.44.1: recorded run](demo/docker-mcp-gateway-v0-44-1.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -41,6 +45,8 @@ python3 conformance.py --log examples/third-party/docker-mcp-live-scrubbed.jsonl
 
 *one live run, 2026-09-29*. Pair: the refused calls removed.
 
+![IBM ContextForge 1.0.11: recorded run](demo/ibm-contextforge-1-0-11.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L0 | L0 | 12 | — |
@@ -54,6 +60,8 @@ python3 conformance.py --log examples/third-party/contextforge-live-scrubbed.jso
 ## Lasso MCP Gateway 1.2.1
 
 *one live run, 2026-09-29*. Pair: the refused call removed.
+
+![Lasso MCP Gateway 1.2.1: recorded run](demo/lasso-mcp-gateway-1-2-1.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -69,6 +77,8 @@ python3 conformance.py --log examples/third-party/lasso-live-scrubbed.jsonl --ad
 
 *one live run, 2026-09-29*. Pair: the refused call removed.
 
+![Bifrost 2.2.3: recorded run](demo/bifrost-2-2-3.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L0 | L0 | 13 | — |
@@ -83,6 +93,8 @@ python3 conformance.py --log examples/third-party/bifrost-live-scrubbed.jsonl --
 
 *one live run, one driver, 2026-09-29*. Pair: the six DENIED lines removed.
 
+![NVIDIA OpenShell 0.1.2: recorded run](demo/nvidia-openshell-0-1-2.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L0 | L0 | 12 | — |
@@ -96,6 +108,8 @@ python3 conformance.py --log examples/third-party/openshell-live-scrubbed.jsonl 
 ## OpenAI Agents SDK 0.22.3
 
 *one live run, mock model endpoint, 2026-09-30*. Pair: the guardrail-refused call removed, and 25 of 29 items dropped by a full queue.
+
+![OpenAI Agents SDK 0.22.3: recorded run](demo/openai-agents-sdk-0-22-3.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -113,6 +127,8 @@ python3 conformance.py --log examples/third-party/openai-agents-live-overflow.js
 
 *one live run, mock model endpoint, 2026-09-30*. Pair: the refused call removed.
 
+![OpenTelemetry GenAI spans: recorded run](demo/opentelemetry-genai-spans.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L0 | L0 | 13 | — |
@@ -126,6 +142,8 @@ python3 conformance.py --log examples/third-party/otel-genai-live-scrubbed.jsonl
 ## Falco 0.45.0
 
 *one live run per configuration, 2026-09-30*. Pair: a rule alert removed, and the default configuration that dropped 11694 syscalls with no drop alert.
+
+![Falco 0.45.0: recorded run](demo/falco-0-45-0.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -143,6 +161,8 @@ python3 conformance.py --log examples/third-party/falco-live-default.jsonl --ada
 
 *one live run, 2026-09-30*. Pair: one entry removed; then the full log against held checkpoints.
 
+![Trillian Tessera v1.0.4 (positive control): recorded run](demo/trillian-tessera-v1-0-4.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | as captured | L1 | L1 | 10 | — |
@@ -158,6 +178,8 @@ python3 conformance.py --log examples/third-party/tessera-live-full.jsonl --adap
 ## invinoveritas verdict ledger (positive control)
 
 *public API and Nostr relays, 2026-09-30*. Pair: the newest entry dropped, on the log alone and against the signed Nostr head.
+
+![invinoveritas verdict ledger (positive control): recorded run](demo/invinoveritas-verdict-ledger.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -177,6 +199,8 @@ python3 conformance.py --log examples/third-party/invinoveritas-ledger-live-trun
 
 *live export, 2026-09-30*. Pair: the same export cut at n 64 and resealed consistently, against the Bitcoin-stamped n 65 head.
 
+![JIDEC ledger, n 65 export (scored by its operator): recorded run](demo/jidec-ledger-n-65-export.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | log alone | L1 | L1 | 10 | — |
@@ -195,6 +219,8 @@ python3 conformance.py --log examples/third-party/jidec-ledger-chained-n65-resea
 
 *synthetic, shape-accurate*. Pair: the same session recorded by a host connected to one server.
 
+![MCP tool calls (from public documentation): recorded run](demo/mcp-tool-calls.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | full session | L0 | L0 | 13 | — |
@@ -208,6 +234,8 @@ python3 conformance.py --log examples/third-party/mcp-toolcall-partial-host.json
 ## Fab equipment, SECS-II/GEM (from public documentation)
 
 *synthetic, shape-accurate*. Pair: the same excursion under a sparse sampling plan.
+
+![Fab equipment, SECS-II/GEM (from public documentation): recorded run](demo/fab-equipment-secs-ii-gem.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -223,6 +251,8 @@ python3 conformance.py --log examples/third-party/fab-equipment-sampled.jsonl --
 
 *synthetic, shape-accurate*.
 
+![OpenTelemetry OTLP logs (from public documentation): recorded run](demo/opentelemetry-otlp-logs.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | sample | L0 | L0 | 13 | — |
@@ -234,6 +264,8 @@ python3 conformance.py --log examples/third-party/otlp-logs.jsonl --adapter adap
 ## Kubernetes audit (from public documentation)
 
 *synthetic, shape-accurate*.
+
+![Kubernetes audit (from public documentation): recorded run](demo/kubernetes-audit.svg)
 
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
@@ -247,6 +279,8 @@ python3 conformance.py --log examples/third-party/k8s-audit.jsonl --adapter adap
 
 *synthetic, shape-accurate*.
 
+![Linux auditd (from public documentation): recorded run](demo/linux-auditd.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | sample | L0 | L0 | 12 | — |
@@ -259,6 +293,8 @@ python3 conformance.py --log examples/third-party/linux-auditd.jsonl --adapter a
 
 *synthetic, shape-accurate*.
 
+![AWS CloudTrail digests (from public documentation): recorded run](demo/aws-cloudtrail-digests.svg)
+
 | file | structural | attested | failed requirements | compared with the first row |
 |---|---|---|---|---|
 | sample | L0 | L0 | 10 | — |
@@ -269,6 +305,8 @@ python3 conformance.py --log examples/third-party/cloudtrail-digests.jsonl --ada
 
 ## AER-1, IETF agent-receipt draft
 
+
+![AER-1: recorded runs](demo/aer-1.svg)
 *Not a log: the draft's own reference verifier, run against the VLC-1 tamper cases
 (`aer1-07/chain_attacks.py`). The kit is not in this repository, so this section
 shows the saved output from each kit commit tested.* Details: `THIRD-PARTY.md`,
