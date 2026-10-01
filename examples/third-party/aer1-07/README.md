@@ -37,3 +37,13 @@ confirmed by the author.
   `their-conformance-e1430ec.txt`). Commit `6f6a060`, named as the fix, is not what
   main serves. Once 1.0 is accepted, Section 7.1 also requires the digest to serialize
   it as `1`; Python's `json.dumps` writes `1.0`.
+
+## Recheck, 2026-10-01 12:20Z (kit `1b3e3ee`): two Python verifiers
+
+The kit has two Python implementations of the -07 chain check. `aer-1/conformance.py`
+accepts `seq` 1.0 and normalizes it to `1` before hashing (lines 244 and 414-415,
+from `6f6a060`, which was already in `e1430ec`), and passes `v07-seq-float-valid`
+(19/19, as the author reports). `aer1-implementations/python/verifier.py`, the one in
+the seven-language set that this harness and its `conformance.py` use, still rejects
+1.0 (line 174) and fails that vector (18/19). The 11:56Z note above, that `6f6a060`
+was not on main, was wrong: it was on main, in the other file.
