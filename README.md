@@ -31,6 +31,15 @@ each one necessary, and a **self-test that fails in both directions**.
 It is published without restriction. Cite it, implement it, fork it, or lift its
 clauses into a standard without asking.
 
+> **Want this run on your system?** Send the field names of your log format and get
+> back its level and the exact requirements it fails, free and without an NDA:
+> [open an access request](https://github.com/MattyIceMatrix/vlc-1/issues/new?template=access-request.yml).
+> Evaluation access, paid pilots and the OCTA tooling behind the reference
+> implementation are listed in [`ACCESS.md`](ACCESS.md). Anything confidential:
+> moorematthew131@gmail.com. For what this looks like in practice, see the
+> [cases in `THIRD-PARTY.md`](THIRD-PARTY.md), most recently a three-round
+> cross-test of the AER-1 IETF draft whose findings are now in the draft.
+
 ---
 
 ## The levels
