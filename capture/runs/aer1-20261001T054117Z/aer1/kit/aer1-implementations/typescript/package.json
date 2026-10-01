@@ -1,0 +1,1 @@
+{"name":"aer1-typescript","private":true,"type":"module","scripts":{"build":"tsc","conformance":"npm run build && node dist/conformance.js","emit":"npm run build && node dist/emit.js"},"devDependencies":{"@types/node":"^22.0.0","typescript":"^5.6.0"}}

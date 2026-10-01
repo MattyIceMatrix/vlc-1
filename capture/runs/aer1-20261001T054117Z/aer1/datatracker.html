@@ -1,0 +1,2293 @@
+
+<!DOCTYPE html>
+
+
+
+
+
+
+<html data-bs-theme="auto" lang="en" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <head>
+        
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>
+            
+    
+        draft-zambo-aer1-06 - AER-1: A Portable Execution Receipt for AI Agent Tool Calls
+    
+
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="traceparent" content="">
+        <link href="https://static.ietf.org/fonts/inter/import.css" rel="stylesheet">
+        <link href="https://static.ietf.org/fonts/noto-sans-mono/import.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://static.ietf.org/dt/12.79.0/ietf/css/ietf.css">
+        <link rel="stylesheet" href="https://static.ietf.org/dt/12.79.0/ietf/css/select2.css">
+        
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/theme.js"></script>
+        <style>
+            .inline { display: inline; }
+        </style>
+        
+        
+    
+
+
+
+
+<meta property="og:title" content="AER-1: A Portable Execution Receipt for AI Agent Tool Calls">
+<meta property="og:url" content="https://datatracker.ietf.org/doc/draft-zambo-aer1/">
+
+
+<link rel="canonical" href="https://datatracker.ietf.org/doc/draft-zambo-aer1/">
+
+<meta property="og:site_name" content="IETF Datatracker">
+<meta property="og:description" content="This document specifies AER-1, a small vocabulary for recording one AI agent tool call as a portable, independently checkable execution receipt. A receipt identifies the execution, records when it happened, preserves the canonical bytes used for the output commitment, names the tool and caller scope, carries a provenance class, and resolves at a stable public URL. The format separates what the system observed from claims about the outside world, and it separates provenance (who ran or reported the action) from the record itself. A reference implementation is deployed, and its receipts are publicly verifiable without an account or token. This revision adds workflow receipts: a verifiable record that binds an ordered sequence of step receipts to a single goal, with a Merkle root over the step sequence for tamper evidence. The worked workflow example&#x27;s Merkle root is computed with the Section 8.1 leaf construction.">
+<meta property="og:type" content="article">
+
+<meta property="article:section" content="Individual Internet-Draft">
+
+<meta property="article:author" content="Brennan Zambo">
+
+
+
+    <link rel="alternate"
+          type="application/atom+xml"
+          title="Document changes"
+          href="/feed/document-changes/draft-zambo-aer1/">
+    <meta name="description"
+          content="AER-1: A Portable Execution Receipt for AI Agent Tool Calls ">
+
+        <script type="module" crossorigin="" src="https://static.ietf.org/dt/12.79.0/assets/embedded-e0b3131f.js"></script>
+<link href="https://static.ietf.org/dt/12.79.0/assets/create-pinia-singleton-7db450a0.js" type="text/javascript" crossorigin="anonymous" rel="modulepreload" as="script" />
+<link href="https://static.ietf.org/dt/12.79.0/assets/Scrollbar-f724adb3.js" type="text/javascript" crossorigin="anonymous" rel="modulepreload" as="script" />
+        
+
+<link rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor-180.png">
+<link rel="icon"
+      sizes="32x32"
+      href="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor-32.png">
+<link rel="icon"
+      sizes="16x16"
+      href="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor-16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon"
+      href="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor-mask.svg"
+      color="#ffffff">
+<meta name="msapplication-TileColor"
+      content="#ffffff">
+<meta name="theme-color"
+      content="#ffffff">
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/ietf.js"></script>
+        
+    </head>
+    <body  class="navbar-offset position-relative"
+          data-group-menu-data-url="/group/groupmenu.json">
+        
+        <noscript><iframe class="status" title="Site status" src="/status/latest"></iframe></noscript>
+<div class="vue-embed" data-component="Status"></div>
+        <a class="visually-hidden visually-hidden-focusable" href="#content">Skip to main content</a>
+        <nav class="navbar navbar-expand-lg fixed-top bg-secondary-subtle">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    
+
+
+
+<img alt="IETF Logo"
+     class="d-lm-none me-2"
+     
+     
+        
+             src="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor-white.svg"
+        
+     
+     >
+
+<img alt="IETF Logo"
+     class="d-dm-none me-2"
+     
+     
+        
+             src="https://static.ietf.org/dt/12.79.0/ietf/images/ietf-logo-nor.svg"
+        
+     
+     >
+                    Datatracker
+                    
+                </a>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav flex-nowrap">
+                        
+
+
+
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Groups
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li class="dropdown-header">By area/parent</li>
+    
+
+
+
+    
+    <li class="dropend group-menu group-parent-2010">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#ART">
+            Apps &amp; Realtime
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1008">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#GEN">
+            General
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1052">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#INT">
+            Internet
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1193">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#OPS">
+            Ops &amp; Management
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1249">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#RTG">
+            Routing
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1260">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#SEC">
+            Security
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-2412">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#WIT">
+            Web and Internet Transport
+        </a>
+    </li>
+
+    
+        <li><a class="dropdown-item" href="/group/iesg/about/">IESG</a></li>
+    
+    <li class="dropend group-menu group-parent-7">
+        <a class="dropdown-item dropdown-toggle "
+           href="/program/">
+            IAB
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-3">
+        <a class="dropdown-item dropdown-toggle "
+           href="/rg/">
+            IRTF
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-2309">
+        <a class="dropdown-item dropdown-toggle "
+           href="/adm/">
+            IETF LLC
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1876">
+        <a class="dropdown-item dropdown-toggle "
+           href="/rfcedtyp/">
+            RFC Editor
+        </a>
+    </li>
+
+
+    <li class="dropend">
+        <a class="dropdown-item dropdown-toggle "
+           href="/group/">
+            Other
+        </a>
+        
+
+
+<ul class="dropdown-menu ms-n1">
+    
+        <li>
+            <a class="dropdown-item "
+               href="/ag/">Active AGs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/area/">Active Areas</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/dir/">Active Directorates</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/iabworkshop/">Active IAB Workshops</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/program/">Active Programs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/rag/">Active RAGs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/team/">Active Teams</a>
+        </li>
+    
+    
+</ul>
+
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="dropdown-header">New work</li>
+    <li>
+        <a class="dropdown-item"
+           href="/group/chartering/">
+            Chartering groups
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/wg/bofs/">
+            BOFs
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/bof-requests">
+            BOF Requests
+        </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="dropdown-header">Other groups</li>
+    <li>
+        <a class="dropdown-item"
+           href="/group/concluded/">
+            Concluded groups
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/list/nonwg">
+            Non-WG lists
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Documents
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/doc/search">
+            Search
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/recent">
+            Recent I-Ds
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/submit/">
+            Submit an Internet-Draft
+        </a>
+    </li>
+    
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li class="dropdown-header">
+        RFC streams
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/iab/">
+            IAB
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/irtf/">
+            IRTF
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/ise/">
+            ISE
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/editorial/">
+            Editorial
+        </a>
+    </li>
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li class="dropdown-header">
+        Subseries
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/std">
+            STD
+        </a>
+        <a class="dropdown-item"
+           href="/doc/bcp">
+            BCP
+        </a>
+        <a class="dropdown-item"
+           href="/doc/fyi">
+            FYI
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Meetings
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/agenda">
+            Agenda
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/materials">
+            Materials
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/floor-plan">
+            Floor plan
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="https://www.ietf.org/how/meetings/register/">
+            Registration
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/important-dates/">
+            Important dates
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/session/request/">
+            Request a session
+        </a>
+    </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/requests">
+            Session requests
+        </a>
+    </li>
+    
+    
+        
+            <li><hr class="dropdown-divider">
+            </li>
+        
+        <li class="dropdown-header">
+            Upcoming meetings
+        </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/upcoming">
+            Upcoming meetings
+        </a>
+    </li>
+    
+        
+            <li><hr class="dropdown-divider">
+            </li>
+        
+        <li class="dropdown-header">
+            Past meetings
+        </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/past">
+            Past meetings
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="https://www.ietf.org/how/meetings/past/">
+            Meeting proceedings
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Other
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/ipr/">
+            IPR disclosures
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/liaison/">
+            Liaison statements
+        </a>
+    </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/iesg/agenda/">
+            IESG agenda
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/nomcom/">
+            NomComs
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/downref">
+            Downref registry
+        </a>
+    </li>
+    <li class="dropend">
+        <a class="dropdown-item dropdown-toggle" href="#">
+            Statistics
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item"
+                   href="/stats/document/">
+                    I-Ds/RFCs
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
+                   href="/stats/meeting/">
+                    Meetings
+                </a>
+            </li>
+            
+            
+        </ul>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/api/">
+            API Help
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/release/">
+            Release notes
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           target="_blank" href="https://status.ietf.org">
+            System status
+        </a>
+    </li>
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li>
+        <a class="dropdown-item text-danger "
+           target="_blank" href="https://github.com/ietf-tools/datatracker/issues/new/choose">
+            <i class="bi bi-bug">
+            </i>
+            Report a bug
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+
+    
+
+
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            
+                User
+            
+        </a>
+        <ul class="dropdown-menu  mt-n1 ">
+        
+    
+    
+        
+            <li>
+                <a class="dropdown-item "
+                   rel="nofollow"
+                   href="/accounts/login/?next=/doc/draft-zambo-aer1/">
+                    Sign in
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                   rel="nofollow"
+                   href="/accounts/reset/">
+                    Password reset
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                   href="/accounts/settings/"
+                   rel="nofollow">
+                    Preferences
+                </a>
+            </li>
+        
+    
+    
+        <li>
+            <a class="dropdown-item "
+               href="/accounts/create/">
+                New account
+            </a>
+        </li>
+    
+    <li class="dropend">
+      <a class="dropdown-item dropdown-toggle" href="#">
+        List subscriptions
+      </a>
+      <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.ietf.org/mailman3/lists/">
+                    IETF Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.irtf.org/mailman3/lists/">
+                IRTF Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.iab.org/mailman3/lists/">
+                    IAB Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.rfc-editor.org/mailman3/lists/">
+                    RFC-Editor Lists
+                </a>
+            </li>
+        </ul>
+    </li>
+    
+    
+    
+    </ul></li>
+
+
+                    </ul>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a class="nav-link text-danger d-none d-xl-inline me-xl-4"
+                       target="_blank"
+                       href="https://github.com/ietf-tools/datatracker/issues/new/choose">
+                        Report a bug
+                        <i class="bi bi-bug"></i>
+                    </a>
+
+                    
+                        <a class="btn me-1  btn-warning  d-none d-sm-block"
+                           rel="nofollow"
+                           href="/accounts/login/?next=/doc/draft-zambo-aer1/">
+                            Sign in
+                        </a>
+                    
+
+                    <div class="d-none d-md-block dropdown" id="navbar-doc-search-wrapper">
+                        <input class="form-control"
+                               id="navbar-doc-search"
+                               type="text"
+                               placeholder="Document search"
+                               autocomplete="off"
+                               data-ajax-url="/doc/select2search/document/all/"
+                               aria-label="Document search">
+                        <ul class="dropdown-menu" id="navbar-doc-search-results">
+                        </ul>
+                    </div>
+                </div>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbar-collapse"
+                        aria-controls="navbar-collapse"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <i class="navbar-toggler-icon"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <main class="pt-3 container-fluid" id="main">
+            <div class="row">
+                
+                <div class="col mx-lg-3 ietf-auto-nav" id="content">
+                    <noscript data-nosnippet>
+                        <div class="alert alert-danger alert-ignore my-3">
+                            <b>Javascript disabled?</b> Like other modern websites, the IETF Datatracker relies on Javascript.
+                            Please enable Javascript for full functionality.
+                        </div>
+                    </noscript>
+                    
+                    
+    
+    
+
+
+
+<h1>
+    AER-1: A Portable Execution Receipt for AI Agent Tool Calls
+    <br>
+    <small class="text-body-secondary">draft-zambo-aer1-06</small>
+</h1>
+<ul class="nav nav-tabs my-3">
+    
+        <li  class="nav-item">
+            <a class="nav-link active"
+               href="/doc/draft-zambo-aer1/">
+                Status
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link "
+               href="/doc/draft-zambo-aer1/email/">
+                Email expansions
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link "
+               href="/doc/draft-zambo-aer1/history/">
+                History
+            </a>
+        </li>
+    
+</ul>
+
+    
+
+
+
+    <label class="my-1 fw-bold">Versions:</label>
+    <nav class="mb-3">
+
+    <ul class="revision-list pagination pagination-sm text-center flex-wrap">
+        
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/00/"
+                        >
+                            00
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/01/"
+                        rel="nofollow">
+                            01
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/02/"
+                        rel="nofollow">
+                            02
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/03/"
+                        rel="nofollow">
+                            03
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/04/"
+                        rel="nofollow">
+                            04
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/05/"
+                        rel="nofollow">
+                            05
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item active">
+                        <a class="page-link"
+                        href="/doc/draft-zambo-aer1/06/"
+                        >
+                            06
+                        </a>
+                    </li>
+                
+            
+            
+        
+    </ul>
+
+    </nav>
+
+    
+
+
+
+
+    <div class="alert alert-warning " role="alert">
+        This document is an Internet-Draft (I-D).
+        Anyone may submit an I-D to the IETF.
+        This I-D is <strong>not endorsed by the IETF</strong> and has <strong>no formal standing</strong> in the
+        <a href="/doc/rfc2026/">IETF standards process</a>.
+    </div>
+
+
+    <div id="doc-timeline"></div>
+    
+        
+    
+    <table class="table table-sm table-borderless">
+        
+
+
+
+
+
+
+
+<tbody class="meta align-top  border-top">
+    <tr>
+        <th scope="row">Document</th>
+        <th scope="row">Type</th>
+        <td class="edit"></td>
+        <td>
+            
+
+
+
+
+
+
+
+    <span class="text-success">Active Internet-Draft</span>
+    (individual)
+    
+
+            
+            
+            
+        </td>
+    </tr>
+    
+    <tr>
+        <td></td>
+        <th scope="row">Author</th>
+        <td class="edit">
+            
+        </td>
+        <td>
+            
+            
+                <span ><a 
+           title="Datatracker profile of Brennan Zambo"
+            href="/person/brennanzambo@zambo.dev" >Brennan Zambo</a> <a 
+               href="mailto:brennanzambo%40zambo.dev"
+               aria-label="Compose email to brennanzambo@zambo.dev"
+               title="Compose email to brennanzambo@zambo.dev">
+                <i class="bi bi-envelope"></i></a></span>
+            
+            
+        </td>
+    </tr>
+    
+    
+    <tr>
+        <td></td>
+        <th scope="row">Last updated</th>
+        <td class="edit"></td>
+        <td>
+            2026-09-30
+            
+        </td>
+    </tr>
+    
+    
+        
+        
+        
+    
+    <tr>
+        <td></td>
+        <th scope="row">
+            RFC stream
+        </th>
+        <td class="edit">
+            
+        </td>
+        <td class="text-body-secondary">
+            
+                (None)
+            
+        </td>
+    </tr>
+    
+        <tr>
+            <td></td>
+            <th scope="row">
+                Intended RFC status
+            </th>
+            <td class="edit">
+                
+            </td>
+            <td>
+                
+                    <span class="text-body-secondary">
+                        (None)
+                    </span>
+                
+            </td>
+        </tr>
+    
+    <tr>
+        <td></td>
+        <th scope="row">
+            Formats
+        </th>
+        <td class="edit">
+        </td>
+        <td>
+            
+                
+    <div class="buttonlist">
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="https://www.ietf.org/archive/id/draft-zambo-aer1-06.txt">
+            
+                <i class="bi bi-file-text"></i> txt
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          
+          href="/doc/html/draft-zambo-aer1-06">
+            
+                <i class="bi bi-file-code"></i> htmlized
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="/doc/draft-zambo-aer1/06/bibtex/">
+            
+                <i class="bi bi-file-ruled"></i> bibtex
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="/doc/bibxml3/draft-zambo-aer1-06.xml">
+            
+                <i class="bi bi-file-code"></i> bibxml
+            
+        </a>
+        
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+        
+    
+        
+    
+        
+            
+            
+        
+    
+    
+        
+    
+</tbody>
+        <tbody class="meta border-top">
+            <tr>
+                <th scope="row">
+                    Stream
+                </th>
+                
+                    <th scope="row">
+                        Stream state
+                    </th>
+                    <td class="edit">
+                    </td>
+                    <td>
+                        <span class="text-body-secondary">(No stream defined)</span>
+                    </td>
+                
+            </tr>
+            
+            
+                <tr>
+                    <td></td>
+                    <th scope="row">
+                        Consensus boilerplate
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        <span class="text-danger"
+                              title="Whether the document is the result of a community consensus process as defined in RFC 5741">
+                            Unknown
+                        </span>
+                    </td>
+                </tr>
+            
+            
+            
+                <tr>
+                    <td></td>
+                    <th scope="row">
+                        RFC Editor Note
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        
+                            <span class="text-body-secondary">
+                                (None)
+                            </span>
+                        
+                    </td>
+                </tr>
+            
+            
+        </tbody>
+        
+            <tbody class="meta border-top">
+                <tr>
+                    <th scope="row">
+                        IESG
+                    </th>
+                    <th scope="row">
+                        <a href="/doc/help/state/draft-iesg/">
+                            IESG state
+                        </a>
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        <span class="">
+                            
+                                I-D Exists
+                            
+                        </span>
+                    </td>
+                </tr>
+                
+                    
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Telechat date
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Responsible AD
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Send notices to
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            
+            
+                
+            
+            
+        </table>
+        <div class="buttonlist">
+            <a class="btn btn-primary btn-sm"
+               href="mailto:draft-zambo-aer1@ietf.org?subject=Mail%20regarding%20draft-zambo-aer1">
+                <i class="bi bi-envelope">
+                </i>
+                Email authors
+            </a>
+            
+            <a class="btn btn-primary btn-sm"
+               href="/ipr/search/?submit=draft&amp;id=draft-zambo-aer1"
+               rel="nofollow">
+                <i class="bi bi-lightning">
+                </i>
+                IPR
+                
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="/doc/draft-zambo-aer1/references/"
+               rel="nofollow">
+                <i class="bi bi-arrow-left">
+                </i>
+                References
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="/doc/draft-zambo-aer1/referencedby/"
+               rel="nofollow">
+                <i class="bi bi-arrow-right">
+                </i>
+                Referenced by
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="https://author-tools.ietf.org/api/idnits?url=https://www.ietf.org/archive/id/draft-zambo-aer1-06.txt"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-exclamation">
+                </i>
+                Nits
+            </a>
+             <a class="btn btn-primary btn-sm"
+               href="https://author-tools.ietf.org/idnits3/results?url=https://www.ietf.org/archive/id/draft-zambo-aer1-06.txt"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-exclamation-diamond">
+                </i>
+                Nits v3
+            </a>           
+            <a class="btn btn-primary btn-sm"
+               href="https://mailarchive.ietf.org/arch/search/?q=%22draft-zambo-aer1%22"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-search">
+                </i>
+                Search email archive
+            </a>
+            
+            
+            
+            
+        </div>
+        
+            <div class="card mt-5">
+                <div class="card-header">
+                    
+                        draft-zambo-aer1-06
+                    
+                </div>
+                <div class="card-body">
+                    <pre>Independent Submission                                          B. Zambo
+Internet-Draft                                                     Zambo
+Intended status: Informational                          1 October 2026
+Expires: 1 April 2027
+
+      AER-1: A Portable Execution Receipt for AI Agent Tool Calls
+                          draft-zambo-aer1-06
+
+<span>Abstract</span>
+
+   This document specifies AER-1, a small vocabulary for recording one
+   AI agent tool call as a portable, independently checkable execution
+   receipt.  A receipt identifies the execution, records when it
+   happened, preserves the canonical bytes used for the output
+   commitment, names the tool and caller scope, carries a provenance
+   class, and resolves at a stable public URL.  The format separates
+   what the system observed from claims about the outside world, and it
+   separates provenance (who ran or reported the action) from the record
+   itself.  A reference implementation is deployed, and its receipts are
+   publicly verifiable without an account or token.  This revision adds
+   workflow receipts: a verifiable record that binds an ordered
+   sequence of step receipts to a single goal, with a Merkle root over
+   the step sequence for tamper evidence.  The worked workflow
+   example&#x27;s Merkle root is computed with the Section 8.1 leaf
+   construction.
+
+<span>Status of This Memo</span>
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as &quot;work in progress.&quot;
+
+   This Internet-Draft will expire on 1 April 2027.
+
+<span>Copyright Notice</span>
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 1]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+Implementation Status
+
+   This section records the implementation status of the AER-1
+   vocabulary at the time of this revision, following [RFC7942].  It
+   will be removed before publication as an RFC.
+
+   Reference implementation.  Zambo (https://zambo.dev), operated by
+   the document author, is a deployed implementation of Sections 3
+   through 10.  Tool calls made over HTTPS as JSON-RPC to
+   https://zambo.dev/api/mcp receive a public receipt page at
+   https://zambo.dev/run/&lt;id&gt;, retrievable without an account, wallet,
+   or token.  A machine-readable verifier is exposed as described in
+   Section 7.  Receipts are anchored to public Nostr relays with an
+   envelope binding the receipt identifier, the output hash, and the
+   evidence hash (envelope &quot;zambo-receipt-anchor/1&quot;).
+
+   Workflow receipts (Section 8) are deployed in the reference
+   implementation.  Multi-step sessions receive a workflow receipt at
+   https://zambo.dev/workflow/&lt;workflow_id&gt; binding the ordered step
+   receipts with a Merkle root, and step receipt pages link to the
+   parent workflow (&quot;Part of workflow&quot;) while workflow pages link to
+   each step receipt.
+
+   Conformance kit.  An open conformance suite for this vocabulary is
+   maintained at https://gitlab.com/rambozambodotdev/zambo.  It ships
+   seven independent runners (Rust, Go, TypeScript, Python, Java, C#,
+   and Swift), each verified 45/45 against a corpus of 45 test
+   vectors covering valid receipts, invalid receipts, anchored
+   receipts, and reference-producer profile boundaries: the 43 vectors
+   of the frozen v1.4.0 corpus plus the uppercase-id and
+   bad-verification-status regression vectors added after -05.  Each runner
+   is zero-dependency within its language toolchain.  Running the
+   Python suite takes two steps and no dependencies beyond git and a
+   Python 3 interpreter:
+
+      git clone https://gitlab.com/rambozambodotdev/zambo.git
+      python3 aer1-implementations/python/conformance.py
+
+   An implementation is conformant when it produces byte-identical
+   verdicts to the reference runners across the full vector corpus.
+   The kit is versioned; the v1.4.0 release is the frozen reference
+   for this revision of the draft.
+
+   Independent verification.  The Section 6 verification procedure has
+   been exercised against live receipts by independent third parties:
+
+   *  On 2026-09-16, an independent agent (&quot;Merv&quot;, on the Clawstr
+      network) verified a live receipt
+      (id 0ec81343-cc1f-4c25-9c33-d76b5582406d) in three checks: the
+      SHA-256 of the decoded canonical bytes matched the output
+      commitment, the upstream evidence hash matched, and the anchor
+      event carried a valid signature retrievable on independent
+      relays.  The same party reported that the anchor envelope did
+      not then bind the evidence hash; the reference implementation
+      has since shipped the binding envelope described above.
+
+   *  On 2026-09-16, an independent agent (&quot;nilo_agent&quot;, on Nostr)
+      ran adversarial verification challenges against live receipts,
+      including a witness round and a strong-form Bitcoin-anchored
+      challenge (anchor block 967351, receipt 88094e26), each
+      answered with bytes the challenger could check independently.
+
+   *  On 2026-09-25 and 2026-09-26, an independent agent (&quot;Devan&quot;,
+      on Nostr) published timestamped probe receipts (v1 and v2)
+      exercising independent verification of agent work in the same
+      receipt model.
+
+   Seven independent implementations of Sections 3 through 6 are
+   maintained in the conformance kit repository (Rust, Go, TypeScript,
+   Python, Java, C#, and Swift), each verified 45/45 against the
+   vector corpus (the frozen v1.4.0 corpus plus the regression vectors
+   added after -05).  An independent second implementation
+   is under active development by a third party against the same
+   corpus.  Reports of additional implementations or independent
+   verification results are solicited; implementers are encouraged to
+   validate against the open conformance kit described above and to
+   report their results.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 2]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   This document is subject to BCP 78 and the IETF Trust&#x27;s Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.
+
+<span>Table of Contents</span>
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  The Receipt Record  . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Canonical Bytes and Output Commitment . . . . . . . . . . . .   5
+   5.  Provenance Classes  . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Verification Procedure  . . . . . . . . . . . . . . . . . . .   6
+   7.  Hash-Chained Job Timelines  . . . . . . . . . . . . . . . . .   7
+   8.  Workflow Receipts . . . . . . . . . . . . . . . . . . . . . .   8
+   9.  Public Resolution . . . . . . . . . . . . . . . . . . . . . .  10
+   10. External Anchoring  . . . . . . . . . . . . . . . . . . . . .  10
+   11. Reference Implementation  . . . . . . . . . . . . . . . . . .  11
+   12. Design Rationale  . . . . . . . . . . . . . . . . . . . . . .  11
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   14. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   15. Related Work  . . . . . . . . . . . . . . . . . . . . . . . .  13
+   16. Normative References  . . . . . . . . . . . . . . . . . . . .  13
+   17. Informative References  . . . . . . . . . . . . . . . . . . .  14
+   Author&#x27;s Address  . . . . . . . . . . . . . . . . . . . . . . . .  14
+
+1.  Introduction
+
+   AI agents increasingly act through tool calls: they query prices,
+   send messages, modify files, and invoke services on a principal&#x27;s
+   behalf.  When something later needs checking -- what happened, when
+   it happened, and what the system actually observed -- the parties
+   involved usually have only vendor-specific logs, screenshots, or the
+   agent&#x27;s own summary.  None of these is portable across
+   implementations, and none lets an independent third party recompute
+   what was recorded.
+
+   AER-1 (AI Agent Execution Receipt, version 1) defines a small,
+   portable vocabulary for recording one agent tool call as a verifiable
+   receipt.  The receipt answers a narrow question: what did this system
+   record for this execution?  It does not prove an external business
+   outcome the system did not observe, and it does not turn a planned,
+   blocked, or preview action into a completed execution.
+
+   This document is an open proposal authored by Brennan Zambo.  It is
+   not a claim to invent or own the broader execution-receipt category,
+   and it does not establish certification, registry membership,
+   universal adoption, or a finalized standards status.  It is intended
+
+<span>Zambo                     Expires 1 April 2027                 [Page 3]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   for discussion, implementation experiments, and interoperability
+   feedback.  A reference implementation is deployed at the time of
+   writing, and its receipts are publicly verifiable as described in
+   Section 11.
+
+2.  Terminology
+
+   The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+   &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;NOT RECOMMENDED&quot;, &quot;MAY&quot;, and
+   &quot;OPTIONAL&quot; in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   This document also uses the following terms:
+
+   Execution:  One invocation of one tool by or on behalf of an agent,
+      with its inputs, observed result, and timing.
+
+   Receipt:  A public record for one execution with a stable identifier,
+      execution metadata, canonical bytes, and an output commitment, as
+      defined in Section 3.
+
+   Canonical bytes:  The exact UTF-8 byte sequence over which the output
+      commitment was computed.  Verifiers MUST receive or reproduce the
+      same bytes before comparing hashes.
+
+   Observed result:  The result the implementation received and stored
+      for the execution.  A receipt reports observation, not an
+      unsupported claim about the world beyond the observation.
+
+   Output commitment:  A SHA-256 digest of the canonical bytes, written
+      &quot;sha256:&quot; followed by the lowercase hexadecimal digest.
+
+3.  The Receipt Record
+
+   A receipt is a JSON object with the following members.  This is the
+   smallest useful interoperable shape; implementations MAY add fields,
+   but additions MUST NOT make the core identity or verification fields
+   ambiguous.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 4]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | id                     | MUST     | Stable UUID                   |
+   |                        |          | identifying the               |
+   |                        |          | receipt.                      |
+   +------------------------+----------+-------------------------------+
+   | receipt_schema_version | MUST     | Schema version. &quot;0.3&quot;         |
+   |                        |          | in the reference              |
+   |                        |          | implementation.               |
+   +------------------------+----------+-------------------------------+
+   | created_at             | MUST     | Timestamp of record           |
+   |                        |          | creation, in RFC 3339         |
+   |                        |          | format.  The timestamp MUST   |
+   |                        |          | denote a valid calendar date  |
+   |                        |          | and time; a verifier MUST     |
+   |                        |          | reject values such as         |
+   |                        |          | February 30 that match the    |
+   |                        |          | RFC 3339 syntax but are not   |
+   |                        |          | real dates.                   |
+   +------------------------+----------+-------------------------------+
+   | tool                   | MUST     | Object naming the             |
+   |                        |          | tool: name, version,          |
+   |                        |          | and caller scope (for         |
+   |                        |          | example &quot;public&quot;).            |
+   +------------------------+----------+-------------------------------+
+   | provenance_class       | MUST     | One of the provenance         |
+   |                        |          | classes in Section 5.         |
+   +------------------------+----------+-------------------------------+
+   | canonical_bytes        | MUST     | Base64 encoding of            |
+   |                        |          | the exact UTF-8 bytes         |
+   |                        |          | hashed for the output         |
+   |                        |          | commitment.                   |
+   +------------------------+----------+-------------------------------+
+   | output_hash            | MUST     | &quot;sha256:&quot; plus the            |
+   |                        |          | lowercase hex digest          |
+   |                        |          | of the decoded                |
+   |                        |          | canonical_bytes.              |
+   +------------------------+----------+-------------------------------+
+   | verification_status    | MUST     | &quot;verified&quot; when the           |
+   |                        |          | stored record passes          |
+   |                        |          | the procedure in              |
+   |                        |          | Section 6.                    |
+   +------------------------+----------+-------------------------------+
+
+                       Table 1: Core receipt members
+
+   The public URL is not a stored member; it is a resolution rule.
+   Every receipt MUST be retrievable at a stable public URL without an
+   account, wallet, or token, as specified in Section 9.  In the
+   reference implementation the URL is https://zambo.dev/run/&lt;id&gt;.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 5]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   Deployed records carry additional members outside the interoperable
+   core (for example caller identity, evidence references, external
+   anchor data, per-check results, side-effect declarations, and a
+   result preview).  A verifier MUST NOT require them, and their
+   presence MUST NOT change the meaning of the core members.
+
+   Example: the following shows the core fields of a real receipt issued
+   by the reference implementation (id 130da435-e157-498e-
+   af90-605866a86a27, a live_price call).  The canonical bytes and
+   output hash are elided here to respect line-length limits; the
+   complete record is published at https://zambo.dev/run/130da435-e157-
+   498e-af90-605866a86a27, where the output hash was independently
+   recomputed from the decoded canonical bytes while preparing this
+   document and matches.
+
+   {
+     &quot;id&quot;: &quot;130da435-e157-498e-af90-605866a86a27&quot;,
+     &quot;receipt_schema_version&quot;: &quot;0.3&quot;,
+     &quot;created_at&quot;: &quot;2026-09-23T23:45:20.760Z&quot;,
+     &quot;tool&quot;: {
+       &quot;name&quot;: &quot;live_price&quot;,
+       &quot;version&quot;: &quot;4.0.0&quot;,
+       &quot;scope&quot;: &quot;public&quot;
+     },
+     &quot;provenance_class&quot;: &quot;EXECUTED BY ZAMBO&quot;,
+     &quot;canonical_bytes&quot;: &quot;(elided; full value at the URL above)&quot;,
+     &quot;output_hash&quot;: &quot;(elided; full value at the URL above)&quot;,
+     &quot;verification_status&quot;: &quot;verified&quot;
+   }
+
+4.  Canonical Bytes and Output Commitment
+
+   Interoperability fails when every implementation gives a different
+   name to the same boundary, so the checkable core of a receipt is
+   deliberately small: an identifier locates the record, a creation time
+   orders it, a tool and caller scope identify the execution context,
+   and canonical bytes plus an output hash make the stored
+   representation checkable.
+
+   The producer MUST preserve the exact UTF-8 byte sequence that was
+   hashed, and MUST expose it (directly, or in a form from which a
+   verifier can reproduce it byte for byte) so that any party can
+   recompute the digest.  The digest algorithm is SHA-256 [FIPS180-4].
+   A verifier that cannot obtain or reproduce the exact canonical bytes
+   MUST NOT report the output commitment as confirmed.  A verifier
+   MUST decode the canonical bytes as strict UTF-8 and MUST reject
+   the receipt if the bytes are not valid UTF-8, even when the
+   base64 decoding and hash comparison would otherwise succeed.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 6]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   A result preview MAY accompany the receipt to give a human reader a
+   useful first read.  A preview is not the source dataset, and a
+   verifier MUST NOT treat agreement with a preview as agreement with
+   the committed bytes.
+
+5.  Provenance Classes
+
+   A whole job can combine actions performed by the recording system
+   itself, actions observed through an integrated gateway, and actions
+   reported by another agent.  Those cases can all be useful, but they
+   do not support the same statement, so every receipt MUST name exactly
+   one provenance class.  Verification MUST NOT upgrade a report into an
+   observation.
+
+   The three classes are:
+
+   EXECUTED BY ZAMBO:  The recording system ran the tool and recorded
+      the returned result.  The receipt can attest to that execution and
+      its stored output commitment.
+
+   OBSERVED VIA GATEWAY:  The recording system observed the action
+      through an integrated gateway.  The receipt attests to the gateway
+      observation, not to facts beyond what the gateway returned.
+
+   LOGGED BY AGENT:  An external agent reported the action through a
+      journal interface.  The receipt attests that the report was
+      received, redacted, timestamped, and chained.  The recording
+      system does not claim it ran or observed the action.
+
+   The first label names the recording system; its interoperable content
+   is the definition, and another implementation substitutes its own
+   system name in that position.  The second and third labels are fixed
+   strings.
+
+   Provenance is a separate design axis from the receipt envelope.  Two
+   receipts with identical envelopes can carry different provenance, and
+   a verifier MUST surface the provenance class alongside every other
+   field when presenting a receipt.
+
+6.  Verification Procedure
+
+   To verify a receipt, a verifier performs the following steps:
+
+   1.  Resolve the public receipt URL and confirm the id in the
+       retrieved record matches the requested execution.
+
+   2.  Read the exact canonical bytes, or the representation needed to
+       reproduce them byte for byte.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 7]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   3.  Compute SHA-256 over those bytes and compare the result with
+       output_hash.
+
+   4.  Review the tool, timestamp, caller scope, observed result,
+       evidence, and anchor status separately from the hash check.
+
+   5.  Report only what the stored observation supports.  A passing hash
+       confirms the bytes match the commitment; it does not confirm
+       anything the system did not observe.
+
+   A machine-readable verifier SHOULD expose the same procedure over
+   HTTP, returning the receipt identifier, verification status, and
+   output hash, and signaling failure with a non-success status when the
+   record does not verify.  In the reference implementation, an HTTP GET
+   on https://zambo.dev/api/receipt/&lt;id&gt;/verify returns a JSON object
+   containing at least id, verification_status, and output_hash.
+
+7.  Hash-Chained Job Timelines
+
+   Entries for one job form an append-only hash chain.  Each entry
+   after the first carries a prev_digest member whose value is the
+   lowercase hex-encoded SHA-256 digest of the previous entry, so
+   insertion, deletion, or reordering of entries is detectable by
+   recomputation.  The conformance kit exposes this as a chain-validity
+   check alongside the other verification checks.
+
+   The digest of an entry is SHA-256 over the raw bytes obtained by
+   base64-decoding the entry&#x27;s canonical_bytes member.  This ties the
+   chain to the canonical bytes commitment already defined in
+   Section 4; no second canonicalization scheme is introduced.
+
+   The first entry in a timeline has no predecessor.  Its prev_digest
+   member MUST be 64 zero characters (&quot;0&quot; repeated 64 times), the
+   conventional zero digest.  A verifier MUST reject a first entry
+   carrying any other prev_digest value.
+
+   A timeline MUST end with a closing entry: the last entry in the
+   timeline carries a close member set to true.  The closing entry
+   chains like any other entry, carrying its own prev_digest that
+   links to the previous entry.  A verifier MUST fail a timeline
+   whose last entry is not a closing entry, since a timeline with its
+   newest entries removed would otherwise recompute clean.
+
+   To verify a timeline, a verifier performs the following steps:
+
+   1.  Confirm the first entry&#x27;s prev_digest is the zero digest, and
+       confirm each subsequent entry&#x27;s prev_digest equals the
+       recomputed digest of the entry before it.
+
+   2.  Confirm the last entry is a closing entry.
+
+   3.  Recompute the chain through the closing entry.  The resulting
+       final digest is the timeline&#x27;s head: the value the closing
+       entry asserts as final.  A timeline whose recomputed head is
+       not sealed by a closing entry fails verification.
+
+   4.  Report only what the stored observations support.  Chaining
+       provides tamper evidence for the sequence, not truth about the
+       world.  A chained entry with LOGGED BY AGENT provenance remains
+       a chained report; the chain upgrades nothing about what the
+       entry attests.
+
+   A public page resolving the whole timeline reports whether the
+   visible chain verifies.
+
+8.  Workflow Receipts
+
+   A single execution receipt (Section 3) records one tool call.  When
+   an agent performs several tool calls toward one goal, the sequence
+   itself needs a verifiable record.  A workflow receipt binds an
+   ordered list of step receipts to a single goal, with a Merkle root
+   over the step sequence and an output hash for the workflow&#x27;s final
+   result.
+
+   A workflow receipt is a JSON object with the following members.
+   This is the smallest useful interoperable shape; implementations MAY
+   add fields, but additions MUST NOT make the core identity or
+   verification fields ambiguous.
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | type                   | MUST     | &quot;verifiable-workflow-        |
+   |                        |          | receipt&quot;.                     |
+   +------------------------+----------+-------------------------------+
+   | version                | MUST     | Workflow receipt schema       |
+   |                        |          | version. &quot;1&quot; in the           |
+   |                        |          | reference implementation.     |
+   +------------------------+----------+-------------------------------+
+   | workflow_id            | MUST     | Stable UUID identifying the   |
+   |                        |          | workflow.                     |
+   +------------------------+----------+-------------------------------+
+   | receipt_id             | MUST     | Stable UUID identifying this  |
+   |                        |          | workflow receipt record.      |
+   |                        |          | Distinct from workflow_id.    |
+   +------------------------+----------+-------------------------------+
+   | session_id             | MUST     | Identifier for the session    |
+   |                        |          | that produced the workflow.   |
+   +------------------------+----------+-------------------------------+
+   | goal                   | MUST     | Human-readable description    |
+   |                        |          | of the goal the workflow      |
+   |                        |          | pursued.                      |
+   +------------------------+----------+-------------------------------+
+   | status                 | MUST     | Overall workflow status,      |
+   |                        |          | for example &quot;ok&quot; or &quot;error&quot;.  |
+   +------------------------+----------+-------------------------------+
+   | steps                  | MUST     | Ordered array of step         |
+   |                        |          | objects (see below), ordered  |
+   |                        |          | by execution sequence.        |
+   +------------------------+----------+-------------------------------+
+   | merkle_root            | MUST     | Hex-encoded SHA-256 Merkle    |
+   |                        |          | root over the ordered step    |
+   |                        |          | receipt identifiers           |
+   |                        |          | (Section 8.1).                |
+   +------------------------+----------+-------------------------------+
+   | output_hash            | MUST     | Hex-encoded SHA-256 digest    |
+   |                        |          | of the workflow&#x27;s final       |
+   |                        |          | output bytes                  |
+   |                        |          | (Section 8.1).                |
+   +------------------------+----------+-------------------------------+
+   | verify_url             | MUST     | Stable public URL where the   |
+   |                        |          | workflow receipt can be       |
+   |                        |          | retrieved and checked         |
+   |                        |          | without an account, wallet,   |
+   |                        |          | or token.                     |
+   +------------------------+----------+-------------------------------+
+
+                       Table 2: Workflow receipt members
+
+   Each step object in the steps array has the following members:
+
+   +========================+==========+===============================+
+   | Field                  | Required | Meaning                       |
+   +========================+==========+===============================+
+   | seq                    | MUST     | 1-based sequence number       |
+   |                        |          | within the workflow,          |
+   |                        |          | starting at 1 with no gaps.   |
+   +------------------------+----------+-------------------------------+
+   | tool                   | MUST     | Name of the tool invoked for  |
+   |                        |          | this step.                    |
+   +------------------------+----------+-------------------------------+
+   | receipt_id             | MUST     | UUID of the execution         |
+   |                        |          | receipt for this step         |
+   |                        |          | (Section 3).                  |
+   +------------------------+----------+-------------------------------+
+   | receipt_hash           | MUST     | Hex-encoded SHA-256 digest    |
+   |                        |          | bound to the step receipt at  |
+   |                        |          | workflow assembly time.       |
+   +------------------------+----------+-------------------------------+
+   | started_at             | MUST     | Timestamp when the step       |
+   |                        |          | began, in RFC 3339 format.    |
+   +------------------------+----------+-------------------------------+
+   | ended_at               | MUST     | Timestamp when the step       |
+   |                        |          | completed, in RFC 3339        |
+   |                        |          | format.                       |
+   +------------------------+----------+-------------------------------+
+   | status                 | MUST     | Step status, for example      |
+   |                        |          | &quot;ok&quot; or &quot;error&quot;.              |
+   +------------------------+----------+-------------------------------+
+
+                       Table 3: Workflow step members
+
+   The public URL is not a stored member beyond verify_url; it is a
+   resolution rule.  Every workflow receipt MUST be retrievable at its
+   verify_url without an account, wallet, or token, as specified for
+   execution receipts in Section 9.  In the reference implementation
+   the URL is https://zambo.dev/workflow/&lt;workflow_id&gt;.
+
+   Example: the following shows the core fields of a real workflow
+   receipt issued by the reference implementation (workflow_id
+   42a3c2cf-2cdd-5b8a-aced-016e5a2fb634, goal &quot;get BTC price&quot;, five
+   steps).  The complete record is published at
+   https://zambo.dev/workflow/42a3c2cf-2cdd-5b8a-aced-016e5a2fb634.
+
+   {
+     &quot;type&quot;: &quot;verifiable-workflow-receipt&quot;,
+     &quot;version&quot;: &quot;1&quot;,
+     &quot;workflow_id&quot;: &quot;42a3c2cf-2cdd-5b8a-aced-016e5a2fb634&quot;,
+     &quot;receipt_id&quot;: &quot;442243d2-9c32-53f7-817e-2def28fa5b07&quot;,
+     &quot;session_id&quot;: &quot;receipt-test-001&quot;,
+     &quot;goal&quot;: &quot;get BTC price&quot;,
+     &quot;status&quot;: &quot;ok&quot;,
+     &quot;steps&quot;: [
+       {
+         &quot;seq&quot;: 1,
+         &quot;tool&quot;: &quot;zambo_universal&quot;,
+         &quot;receipt_id&quot;: &quot;e80168eb-a6a1-4ec9-8478-ac108f9397ff&quot;,
+         &quot;receipt_hash&quot;: &quot;11c3a071051a42cbf5cf4da60a7577b1dffeb0419e6dd8a258b19c4c0d0d108e&quot;,
+         &quot;started_at&quot;: &quot;2026-09-29T10:57:40.911Z&quot;,
+         &quot;ended_at&quot;: &quot;2026-09-29T10:57:41.147Z&quot;,
+         &quot;status&quot;: &quot;ok&quot;
+       },
+       {
+         &quot;seq&quot;: 2,
+         &quot;tool&quot;: &quot;zambo_universal&quot;,
+         &quot;receipt_id&quot;: &quot;514fe841-bbdd-4804-9ef4-6828842d8763&quot;,
+         &quot;receipt_hash&quot;: &quot;68e3bcad3f46218672fd7ef7bf32f4a7089937dda2b8ade3cfe1050cec856285&quot;,
+         &quot;started_at&quot;: &quot;2026-09-29T10:57:42.920Z&quot;,
+         &quot;ended_at&quot;: &quot;2026-09-29T10:57:43.069Z&quot;,
+         &quot;status&quot;: &quot;ok&quot;
+       },
+       {
+         &quot;seq&quot;: 3,
+         &quot;tool&quot;: &quot;zambo_universal&quot;,
+         &quot;receipt_id&quot;: &quot;a090bdad-f2cf-48c9-bc89-e9e17700fb15&quot;,
+         &quot;receipt_hash&quot;: &quot;3da48b2d392fb79ed78f7ed0cc8e6c122fc1089947ff6d7f829748d7745840dd&quot;,
+         &quot;started_at&quot;: &quot;2026-09-29T10:57:45.415Z&quot;,
+         &quot;ended_at&quot;: &quot;2026-09-29T10:57:45.564Z&quot;,
+         &quot;status&quot;: &quot;ok&quot;
+       },
+       {
+         &quot;seq&quot;: 4,
+         &quot;tool&quot;: &quot;zambo_universal&quot;,
+         &quot;receipt_id&quot;: &quot;bf88a036-416b-456a-8e82-8c0991811d68&quot;,
+         &quot;receipt_hash&quot;: &quot;0f024f209392b918909df5478aadd3a9189520d74cfdf78e2ccf51b9f075f926&quot;,
+         &quot;started_at&quot;: &quot;2026-09-29T10:57:48.459Z&quot;,
+         &quot;ended_at&quot;: &quot;2026-09-29T10:57:48.605Z&quot;,
+         &quot;status&quot;: &quot;ok&quot;
+       },
+       {
+         &quot;seq&quot;: 5,
+         &quot;tool&quot;: &quot;zambo_universal&quot;,
+         &quot;receipt_id&quot;: &quot;ae795bf0-27f8-4cf2-8aef-3f8142b77217&quot;,
+         &quot;receipt_hash&quot;: &quot;f52d9c03605047ad0ac347e5e9cbc0e2e197a009d8ee5c7d775f86f360eca963&quot;,
+         &quot;started_at&quot;: &quot;2026-09-29T10:57:55.227Z&quot;,
+         &quot;ended_at&quot;: &quot;2026-09-29T10:57:55.434Z&quot;,
+         &quot;status&quot;: &quot;ok&quot;
+       }
+     ],
+     &quot;merkle_root&quot;: &quot;7c4817ca249edfeae259b98abf63ed38a31d9dbeebf5ee23139410a7a7f63b37&quot;,
+     &quot;output_hash&quot;: &quot;16566e46433dd9a00e4437873102531be71fbae3872db8888b7ddc9282d90f54&quot;,
+     &quot;verify_url&quot;: &quot;https://zambo.dev/workflow/42a3c2cf-2cdd-5b8a-aced-016e5a2fb634&quot;
+   }
+
+   The merkle_root above recomputes from the five step receipt_id
+   values with the Section 8.1 construction: the leaf for each step is
+   SHA-256 over the UTF-8 bytes of its receipt_id string, paired and
+   hashed up the tree with last-duplication on odd levels.  The
+   complete live record remains published at the verify_url above.
+
+8.1.  Merkle Root and Output Hash
+
+   The merkle_root binds the ordered step sequence so that insertion,
+   deletion, reordering, or substitution of steps is detectable by
+   recomputation.  It is a lowercase hex-encoded SHA-256 digest
+   computed over the ordered step receipt identifiers.
+
+   The RECOMMENDED construction is a binary Merkle tree:
+
+   1.  For each step in order, compute the leaf digest as SHA-256
+       over the UTF-8 bytes of the step&#x27;s receipt_id string.
+
+   2.  Pair adjacent digests in order; for each pair, compute SHA-256
+       over the concatenation of the two 32-byte digests.  If the
+       number of digests at any level is odd, duplicate the last
+       digest before pairing.
+
+   3.  Repeat step 2 on the resulting digests until one digest
+       remains.  Hex-encode that digest in lowercase; this is the
+       merkle_root.
+
+   An implementation MUST use the construction specified above.  The
+   alternative-construction permission from earlier revisions is
+   removed: permitting divergent constructions allows different
+   Merkle roots for the same workflow, which breaks
+   cross-implementation verification of the step sequence.  An
+   implementation MUST document the leaf encoding, hash function,
+   tree structure, and output encoding alongside the receipt (for
+   example, at the verify_url or in implementation documentation)
+   so that an independent verifier can recompute the root from the
+   steps array alone.  A verifier that cannot determine the
+   construction MUST NOT report the Merkle root as confirmed.
+
+   The output_hash is a lowercase hex-encoded SHA-256 digest of the
+   canonical bytes representing the workflow&#x27;s final output.  The exact
+   byte sequence hashed is implementation-defined and MUST be
+   documented alongside the receipt.  A verifier that cannot obtain or
+   reproduce those bytes MUST NOT report the output hash as confirmed.
+
+8.2.  Workflow Verification Procedure
+
+   To verify a workflow receipt, a verifier performs the following
+   steps:
+
+   1.  Resolve the verify_url and confirm the workflow_id in the
+       retrieved record matches the requested workflow.
+
+   2.  For each step in the steps array, in order, resolve the step&#x27;s
+       receipt_id at its public URL and run the Section 7 verification
+       procedure on the step receipt.  Every step receipt MUST verify
+       independently; a workflow receipt MUST NOT be reported as
+       verified if any constituent step receipt fails verification.
+
+   3.  Confirm the steps array is ordered by seq starting from 1 with
+       no gaps and no duplicate sequence numbers.  Confirm that no two
+       steps carry the same receipt_id value.  A verifier MUST reject
+       a workflow receipt whose steps array contains the same
+       receipt_id value more than once.
+
+       This rule is structural, not cosmetic.  With the Section 8.1
+       odd-level duplication rule, the step list [r1, r2, r3, r4, r5]
+       and the step list [r1, r2, r3, r4, r5, r5] recompute to the
+       identical Merkle root, so the root comparison in step 4 cannot
+       distinguish them.  Rejecting duplicate receipt_id values closes
+       this collision class at the verification layer.
+
+   4.  Recompute the merkle_root from the ordered step receipt_id
+       values using the construction documented for the receipt
+       (Section 8.1), and compare it to the published merkle_root.
+
+   5.  Review the goal, status, timestamps, and output hash separately
+       from the structural checks.
+
+   6.  Report only what the stored observations support.  A passing
+       Merkle root confirms the step sequence is intact as recorded;
+       it does not confirm anything the individual step receipts did
+       not observe.  Provenance classes (Section 6) apply per step;
+       the workflow receipt does not upgrade the provenance of its
+       steps.
+
+   A machine-readable verifier SHOULD expose the same procedure over
+   HTTP, returning the workflow identifier, verification status, the
+   per-step outcomes, and the Merkle root check result, and signaling
+   failure with a non-success status when the record does not verify.
+
+8.3.  Bidirectional Linking Between Steps and Workflows
+
+   When a step receipt belongs to a workflow, the step receipt&#x27;s
+   public page MUST reference the parent workflow, and the workflow
+   receipt MUST reference each constituent step receipt.  This lets a
+   reviewer start from any single action and reach the full goal
+   context, or start from the goal and drill into any individual
+   action, without needing session identifiers or internal system
+   knowledge.
+
+   Specifically:
+
+   *  The public page for a step receipt that is part of a workflow
+      MUST display a reference to the parent workflow, including a
+      link to the workflow&#x27;s verify_url.  In the reference
+      implementation this appears as &quot;Part of workflow&quot; with a link
+      to https://zambo.dev/workflow/&lt;workflow_id&gt;.
+
+   *  The workflow receipt&#x27;s steps array MUST include the receipt_id
+      of every step in the workflow, and the public workflow page
+      SHOULD link each step entry to its receipt page.
+
+   *  A step receipt that is not part of any workflow MUST NOT display
+      a workflow reference.  The absence of the link is not an error
+      and MUST NOT be treated as a verification failure.
+
+   Linking is presentational and navigational; it does not alter the
+   receipt bytes, the output commitment, or the Merkle root.  Adding or
+   removing a link MUST NOT invalidate verification.
+
+9.  Public Resolution
+
+   Every receipt MUST be retrievable at its public URL without an
+   account, wallet, or token.  The URL is stable: once published, the
+   record at that URL MUST NOT be altered.  Corrections are published as
+   new receipts that reference the superseded id; they MUST NOT rewrite
+   history at the original URL.
+
+   The public page SHOULD present the receipt fields, the provenance
+   class, the verification outcome, and the hash chain position in
+   human-readable form alongside the raw JSON.
+
+10.  External Anchoring
+
+   A receipt MAY be bound to one or more external timestamp anchors
+   after issuance.  Anchoring is additive: it does not alter the receipt
+   bytes and MUST NOT invalidate the output commitment.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 8]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   In the reference implementation, each receipt is anchored to public
+   Nostr relays.  The anchor object carries the relay event identifier,
+   the publisher key, the relay URLs, a published status, and the
+   publication time, plus an envelope binding the anchor to the receipt
+   id, the output hash, and the evidence hash.  Anchoring gives
+   verifiers a witness independent of the receipt publisher; it does not
+   change what the receipt attests.
+
+11.  Reference Implementation
+
+   A reference implementation of this vocabulary is deployed at the time
+   of writing, described at [AER-1-HOME].  The implementation exposes
+   the receipt contract through one MCP endpoint and gives successful
+   calls a public receipt page:
+
+   *  Tool calls are made over HTTPS as JSON-RPC to
+      https://zambo.dev/api/mcp using the tools/call method.  The
+      response contains the receipt identity and the public verification
+      link.
+
+   *  Each receipt resolves at https://zambo.dev/run/&lt;id&gt; and can be
+      opened and checked by anyone, with no account or token.
+
+   *  A verifier endpoint returns the machine-readable verification
+      result for a receipt identifier, as described in Section 6.
+
+   The endpoint and the receipt pages are independent live records:
+   anyone can reproduce the Section 6 procedure against them today.
+   Their availability is a deployment fact, not a standards claim; if
+   the deployment moves, the canonical home of this document&#x27;s latest
+   revision is updated accordingly.
+
+   Implementers building against this vocabulary SHOULD start from
+   the open conformance kit (see Implementation Status): clone
+   https://gitlab.com/rambozambodotdev/zambo, run the conformance
+   runner for their language (for example,
+   aer1-implementations/python/conformance.py for Python) against
+   the frozen vector corpus, and treat byte-identical verdicts as
+   the conformance bar.  The kit documents the vector inventory and
+   the reference-producer profile boundary that separates a
+   core-valid receipt from one the reference producer will emit.
+
+12.  Design Rationale
+
+   AER-1 starts with a narrow record rather than a universal theory of
+   agent behavior.  An agent may call several tools, receive information
+   from several providers, and hand work to another agent.  A reviewer
+   still needs a stable way to identify one execution, understand what
+   the system observed, and check whether the published bytes match the
+   stated commitment.  The draft keeps those needs separate from claims
+   about the outside world.
+
+<span>Zambo                     Expires 1 April 2027                 [Page 9]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   The vocabulary is intentionally small because interoperability fails
+   when every implementation gives a different name to the same
+   boundary.  An identifier locates the record.  A creation time orders
+   it.  A tool and caller scope identify the execution context.
+   Canonical bytes and an output hash make the stored representation
+   checkable.  A result preview gives a human a useful first read
+   without pretending that a preview is the entire source dataset.
+
+   Provenance is a separate design axis (Section 5).  A system can
+   execute a tool itself, observe an action through an integrated
+   gateway, or receive a report from another agent.  AER-1 treats these
+   as distinct attestations because they are distinct claims, and a
+   verifier that cannot tell them apart cannot report honestly.
+
+   On canonicalization: AER-1 preserves the producer&#x27;s exact bytes and
+   carries them explicitly, rather than mandating a canonicalization
+   scheme such as the JSON Canonicalization Scheme [RFC8785].  A
+   verifier MUST NOT re-serialize the record under a different scheme
+   and claim agreement with the commitment.  The cost of this choice is
+   stated plainly: digests computed under different canonicalizations do
+   not interoperate, so cross-implementation verification requires byte-
+   identical canonical content.
+
+   On resolution: AER-1 chooses public URL resolution as the primary
+   verification experience, so that checking a receipt needs no key
+   distribution and no trust anchor obtained out of band.  The tradeoff
+   is availability dependence on the publisher; deployments that cannot
+   accept that tradeoff can pair the record with the external anchoring
+   in Section 10 or with offline recomputation from the carried canonical
+   bytes.
+
+13.  Security Considerations
+
+   A receipt is evidence of what was recorded, not a security boundary
+   by itself.  The following considerations apply to implementations:
+
+   *  The output commitment binds the recorded bytes, not the real
+      world.  An implementation that records attacker-controlled input
+      produces a verifiable receipt of attacker-controlled input.
+      Verifiers MUST present the observed result as observed, never as
+      independently true.
+
+   *  Canonical bytes MUST be preserved exactly.  Any transformation
+      (re-encoding, whitespace normalization, character set conversion)
+      between recording and verification breaks the commitment and MUST
+      cause verification to fail closed.
+
+<span>Zambo                     Expires 1 April 2027                [Page 10]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   *  Public receipt URLs are stable and permanent.  Implementations
+      MUST consider privacy before publishing: a receipt that embeds
+      personal data, credentials, or confidential business information
+      in its canonical bytes publishes that data to everyone.  Redact
+      before recording; a receipt cannot be unpublished.
+
+   *  Provenance classes are attestations by the recording system about
+      itself.  A dishonest recorder can mislabel provenance.  Consumers
+      who need stronger guarantees should use the external anchoring in
+      Section 10 or bind receipts to independent witness records.
+
+   *  Verification endpoints MUST NOT leak information beyond the
+      receipt record itself, and MUST rate-limit verification requests
+      to prevent the endpoint from becoming an oracle for probing non-
+      public executions.
+
+14.  IANA Considerations
+
+   This document has no IANA actions.
+
+15.  Related Work
+
+   Action receipts for AI agents are an active area with multiple
+   concurrent individual proposals, including formats built around
+   signed envelopes bound to decision evidence, hash-chained action
+   records verifiable offline, and canonicalization-based offline
+   recomputation.  This document does not survey or endorse any of them
+   by name.
+
+   AER-1 differs in three ways.  First, the receipt is identified by a
+   UUID and resolved at a stable public URL, with verification offered
+   as a public HTTP endpoint rather than offline recomputation.  Second,
+   it carries provenance (executed, observed-via-gateway, logged-by-
+   agent) as a first-class field, so a verifier can distinguish what the
+   recording system did from what it merely recorded.  Third, a
+   reference implementation is deployed whose receipts are publicly
+   verifiable without an account, key, or token.  AER-1 standardizes the
+   narrow per-execution record and its public verification procedure,
+   leaving decision semantics, authorization, and settlement bindings to
+   other specifications.
+
+16.  Normative References
+
+   [FIPS180-4]
+              National Institute of Standards and Technology, &quot;Secure
+              Hash Standard&quot;, DOI 10.6028/NIST.FIPS.180-4, FIPS 180-4,
+              August 2015.
+
+<span>Zambo                     Expires 1 April 2027                [Page 11]</span>
+<span>Internet-Draft                    AER-1                    October 2026</span>
+
+   [RFC2119]  Bradner, S., &quot;Key words for use in RFCs to Indicate
+              Requirement Levels&quot;, BCP 14, RFC 2119, March 1997,
+              &lt;https://www.rfc-editor.org/rfc/rfc2119&gt;.
+
+   [RFC8174]  Leiba, B., &quot;Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words&quot;, BCP 14, RFC 8174, May 2017,
+              &lt;https://www.rfc-editor.org/rfc/rfc8174&gt;.
+
+17.  Informative References
+
+   [AER-1-HOME]
+              Zambo, B., &quot;AER-1: AI Agent Execution Receipt (open
+              draft)&quot;, https://zambo.dev/aer-1, September 2026.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, &quot;JSON
+              Canonicalization Scheme (JCS)&quot;, RFC 8785, June 2020,
+              &lt;https://www.rfc-editor.org/rfc/rfc8785&gt;.
+
+18.  Acknowledgments
+
+   Matthew Moore provided the first substantive independent technical
+   review of this draft on the agent2agent list, identifying the
+   duplicate receipt_id Merkle collision (Section 8.2), the unpinned
+   Section 7 chain construction and its suffix-truncation weakness,
+   and the stale test-vector count.  He additionally committed to
+   running VLC-1 truncation and relabel cases against the Section 7
+   construction.  The -06 revision folds his findings into the
+   specification and the conformance kit.
+
+<span>Author&#x27;s Address</span>
+
+   Brennan Zambo
+   Zambo
+   Email: brennanzambo@zambo.dev
+   URI:   https://zambo.dev/aer-1
+
+<span>Zambo                     Expires 1 April 2027                [Page 12]</span>
+</pre>
+                </div>
+            </div>
+            
+        
+    
+                    
+                </div>
+            </div>
+        </main>
+        
+            <footer class="col-md-12 col-sm-12 border-top mt-5 py-5 bg-light-subtle text-center position-sticky">
+                <a href="https://www.ietf.org/" class="p-3">IETF</a>
+                <a href="https://www.ietf.org/iesg/" class="p-3">IESG</a>
+                <a href="https://www.iab.org/" class="p-3">IAB</a>
+                <a href="https://www.irtf.org/" class="p-3">IRTF</a>
+                <a href="https://www.ietf.org/llc/" class="p-3 text-nowrap">IETF LLC</a>
+                <a href="https://trustee.ietf.org/" class="p-3 text-nowrap">IETF Trust</a>
+                <a href="https://www.rfc-editor.org/" class="p-3 text-nowrap">RFC Editor</a>
+                <a href="https://www.iana.org/" class="p-3">IANA</a>
+                <a href="https://www.ietf.org/privacy-statement/" class="p-3 text-nowrap">Privacy Statement</a>
+                <div class="small text-body-secondary py-3">
+                    
+                        <a class="mx-2" href="/release/about">About IETF Datatracker</a>
+                        <span class="mx-2">
+                            
+                                <a href="https://github.com/ietf-tools/datatracker/releases/tag/12.79.0">
+                            
+                            Version 12.79.0
+                            (release - 3966552)
+                            
+                                </a>
+                            
+                        </span>
+                    
+                    <a class="mx-2" href="https://status.ietf.org" target="_blank">System Status</a>
+                    <span class="mx-2 text-danger">
+                        <i class="bi bi-bug"></i>
+                        Report a bug:
+                        <a class="text-reset" target="_blank" href="https://github.com/ietf-tools/datatracker/issues/new/choose">GitHub</a>
+                        
+                            <a class="text-reset" href="mailto:tools-help@ietf.org">Email</a>
+                        
+                    </span>
+                    
+                </div>
+            </footer>
+        
+        
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/d3.js">
+        </script>
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/document_timeline.js">
+        </script>
+    
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/select2.js"></script>
+        <script src="https://static.ietf.org/dt/12.79.0/ietf/js/navbar-doc-search.js"></script>
+      
+<script>
+  var _paq = window._paq || [];
+  
+  _paq.push(['disableCookies']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.ietf.org/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analytics.ietf.org/matomo.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+    <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a43923172e35cb7e',t:'MTc5MDgzMzI3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

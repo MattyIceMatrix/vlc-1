@@ -1,0 +1,6 @@
+- id: aer1-verify-receipts
+  name: Verify AER-1 receipts
+  entry: python3 ci-templates/verify_receipts.py
+  language: system
+  pass_filenames: false
+  args: [receipts/]
