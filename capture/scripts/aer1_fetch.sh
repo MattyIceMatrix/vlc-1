@@ -7,7 +7,7 @@ note(){ echo "$*" | tee -a "$O/steps.txt"; }
 get(){ # url file
   code=$(curl -sSL -A "vlc-1-capture (github.com/MattyIceMatrix/vlc-1)" -o "$O/$2" -w '%{http_code}' "$1"); note "GET $1 -> $code ($(stat -c %s "$O/$2" 2>/dev/null) bytes)"
   [ "$code" = 200 ] || rm -f "$O/$2"; }
-get https://www.ietf.org/archive/id/draft-zambo-aer1-06.txt draft-zambo-aer1-06.txt
+get https://www.ietf.org/archive/id/draft-zambo-aer1-07.txt draft-zambo-aer1-07.txt
 get https://zambo.dev/aer1/test-vectors/index.json tv-index.json
 git clone -q --depth 1 https://gitlab.com/rambozambodotdev/zambo.git /tmp/zk 2>&1 | tail -2
 echo "kit commit $(git -C /tmp/zk rev-parse HEAD 2>/dev/null)" >> "$O/steps.txt"

@@ -1,5 +1,5 @@
 name: aer1-fetch
-# Fetch the AER-1 draft (draft-zambo-aer1-05), its test vectors and the public receipt
+# Fetch the AER-1 draft (draft-zambo-aer1-07), its test vectors and the public receipt
 # dataset for review and scoring against VLC-1. Runs ONLY on branch capture/aer1 on a
 # GitHub-hosted runner; GET requests only. Results are committed to capture/runs/.
 on:
