@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # aer1_fetch.sh -- fetch the AER-1 draft, its test vectors and the public receipt dataset.
+# rerun 2026-10-01: check kit 6f6a060 fixes (seq 1.0, index.json revision)
 # BLAST RADIUS: GitHub-hosted runner only; GET requests only; writes only under $OUT/aer1.
 set -u
 O="$OUT/aer1"; mkdir -p "$O"
