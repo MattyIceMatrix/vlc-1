@@ -13,7 +13,7 @@ the record comes from an agent framework.
 | Docker MCP Gateway | v0.44.1 | `--tools` allow-list; `--block-secrets` | `Calling tool convert_time` -- the line an executed call gets -- and, for the blocked secret, a scan with no outcome |
 | IBM ContextForge | 1.0.11 | PII filter plugin; token without `tools.execute` | in the audit database, `invocation failed` (not flagged as security) and `POST /rpc - 200` rows; the refusals are stated only in the text log |
 | Lasso MCP Gateway | 1.2.1 | basic guardrail (masks, does not block) | the masked text, stored as the tool's output, no marker field; a call that failed inside the gateway has no row |
-| Bifrost (Maxim AI) | 2.2.3 | `tools_to_execute` allow-list | a correct refusal record -- which the same caller then deleted through `DELETE /api/mcp-logs`, unauthenticated, with the dropped counter still at 0 |
+| Bifrost (Maxim AI) | 2.2.3 | `tools_to_execute` allow-list | a correct refusal record -- which the same caller then deleted through `DELETE /api/mcp-logs`, unauthenticated, with the dropped counter still at 0. Fixed upstream in [#7913](https://github.com/maximhq/bifrost/pull/7913) (merged 2026-10-04): the delete now needs authenticated management access |
 
 All five score **L0**. For each, `<gateway>-live-scrubbed.jsonl` is the record with the
 lines of a refused or altered call removed (rule per gateway in `convert.py`), and scores exactly as the full record does; CI asserts that.
