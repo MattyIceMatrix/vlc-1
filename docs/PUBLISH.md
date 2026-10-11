@@ -32,7 +32,7 @@ private tree next to it.
 ```
 
 Before it commits anything it checks the public tree against a list of private
-paths (the sensor, the policy engine, the rest of the proof estate, the OCTA
+paths (the sensor, the policy engine, the rest of the proof estate, the commercial
 review material), scans both trees for credential-shaped strings, runs this
 repository's own self-test, and — using `gh` — confirms the private remote is
 genuinely a private repository. Any one of those failing stops the whole run

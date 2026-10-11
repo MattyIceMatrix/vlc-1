@@ -34,7 +34,7 @@ clauses into a standard without asking.
 > **Want this run on your system?** Send the field names of your log format and get
 > back its level and the exact requirements it fails, free and without an NDA:
 > [open an access request](https://github.com/MattyIceMatrix/vlc-1/issues/new?template=access-request.yml).
-> Evaluation access, paid pilots and the OCTA tooling behind the reference
+> Evaluation access, paid pilots and the commercial tooling behind the reference
 > implementation are listed in [`ACCESS.md`](ACCESS.md). Anything confidential:
 > moorematthew131@gmail.com. For what this looks like in practice, see the
 > [cases in `THIRD-PARTY.md`](THIRD-PARTY.md), most recently a three-round
@@ -204,12 +204,11 @@ pass is a loosened checker, not an improved product.
 ## What you can get, and how to ask
 
 [`ACCESS.md`](ACCESS.md) names what is public, what you can request, and what is
-not distributed, across all three products. OCTA is **Observe · Connect ·
-Transform · Adapt**: **OCTA Observer** (governs what an agent *does* — the
-Observe surface), **OCTA Gateway** (governs what it *asks for*), and **MooreOS**
+not distributed, across the three commercial products: the **Observer** (governs what an agent *does*),
+the **Gateway** (governs what it *asks for*), and a **bare-metal edition**
 (the same decision function on bare metal).
 
-> **Renamed 2026-09-27.** The sensor was called *OCTA Sentinel* until this date.
+> **Renamed 2026-09-27.** The sensor was called *Sentinel* until this date.
 > Evidence, corrigenda and findings recorded before it keep the old name, because
 > the name is inside the hash chain in captured journals and because a corrigendum
 > is a record of what was written at the time. The proof files keep

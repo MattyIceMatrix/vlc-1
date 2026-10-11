@@ -30,9 +30,9 @@ body:
       label: Which product is this about?
       multiple: true
       options:
-        - OCTA Observer (syscall-boundary sensor)
-        - OCTA Gateway (tool authorisation)
-        - MooreOS (bare metal)
+        - Observer (syscall-boundary sensor)
+        - Gateway (tool authorisation)
+        - Bare-metal edition
         - Just the VLC-1 specification
     validations: { required: true }
   - type: textarea

@@ -12,11 +12,10 @@ right now, runs from a clean checkout, and needs no contact with anyone.
 
 ## The three products
 
-OCTA is **Observe · Connect · Transform · Adapt**. The sensor was called *OCTA
-Sentinel* until 2026-09-27; records produced before that date carry the old name
+The sensor was called *Sentinel* until 2026-09-27; records produced before that date carry the old name
 and are not rewritten.
 
-### 1. OCTA Observer — governs what an agent **does**
+### 1. Observer — governs what an agent **does**
 
 A runtime sensor that keeps an independent record of what a governed AI workload
 does.
@@ -27,7 +26,7 @@ does.
 | **ASK FOR** | the proof estate · `verify.sh`, the one-command re-verification you run from source on your own hardware · the live demonstration suite · the conformity pack, auditor runbook, ISO 42001 gap assessment and EU AI Act evidence mapping · the evidence verifier that recomputes each control rather than asserting it |
 | **PRIVATE** | sensor source |
 
-### 2. OCTA Gateway — governs what an agent **asks for**
+### 2. Gateway — governs what an agent **asks for**
 
 Tool authorisation for AI agents, the layer above the sensor.
 
@@ -37,7 +36,7 @@ Tool authorisation for AI agents, the layer above the sensor.
 | **ASK FOR** | the decision-function conformance pack · the gate composition proof · the written security review, with its reproductions and its fix |
 | **PRIVATE** | gateway source |
 
-### 3. MooreOS — the same decision function on **bare metal**
+### 3. Bare-metal edition — the same decision function on **bare metal**
 
 The same governance function in a bare-metal environment.
 
