@@ -20,12 +20,12 @@ Scored from live runs or public documentation and listed in `THIRD-PARTY.md`, ea
 stated: OpenTelemetry (OTLP logs and GenAI spans), Kubernetes audit, Linux auditd, AWS CloudTrail
 digests, MCP tool calls, NVIDIA OpenShell, agentgateway, Docker MCP Gateway, IBM ContextForge,
 Lasso MCP Gateway, Bifrost, OpenAI Agents SDK, Falco, Trillian Tessera, the invinoveritas ledger,
-and the JIDEC ledger. Four of these are positive or operator-scored controls; the rest are
-independent producers scored by this project, **not confirmed by their vendors**.
+and the JIDEC ledger. Tessera and invinoveritas are positive controls and the JIDEC ledger was scored by its own
+operator; the rest are independent producers scored by this project, **not confirmed by their vendors**.
 
 ## Upstream effects
 
-- **Bifrost** fixed an unauthenticated log delete upstream (maximhq/bifrost #7913) after it was
+- **Bifrost** fixed an unauthenticated log delete upstream (maximhq/bifrost PR #7913, from issue #7769) after it was
   reported from a VLC-1 scoring run.
 - The OpenShell finding is linked to NVIDIA/OpenShell #3817.
 
