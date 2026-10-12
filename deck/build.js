@@ -156,7 +156,7 @@ function stat(s, x, y, w, num, label, col, dk){
       color:r[4], fontFace:BODY, isTextBox:true, margin:0, valign:'middle' });
     y += 0.93;
   });
-  foot(s, 'VLC-1 §4–§7A · 26 machine-checked results, 0 admitted, 0 axioms. Every report gives TWO numbers — what the checker recomputed, and what the producer asserted (§8.4).');
+  foot(s, 'VLC-1 §4–§7A · 35 machine-checked results (26 in the level-lattice proof), 0 admitted, 0 axioms. Every report gives TWO numbers — what the checker recomputed, and what the producer asserted (§8.4).');
   s.addNotes('The claim to make here is the strictness: for every adjacent pair there is a log that '
     + 'satisfies the lower and not the higher, and an attack the higher refuses.');
 }
