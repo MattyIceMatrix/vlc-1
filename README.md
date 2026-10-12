@@ -246,8 +246,14 @@ docs/                    why this exists, and how to talk to us
 ```sh
 cd proofs && coqc -q sentinel_completeness.v   # Coq/Rocq >= 8.16
 ```
-For result counts, and for the check that none is admitted or rests on an axiom,
-see `proofs/` and the CI audit.
+Result count (2026-10-12): **35** results in two files, 26 in
+`proofs/sentinel_completeness.v` and 9 in `proofs/sentinel_interval.v`
+(`Qed.` per file; the same figure is in Corrigendum 5). CI (`ci.yml`) compiles
+both files, runs `Print Assumptions` on every theorem, lemma and corollary and
+requires each to be closed under the global context, and fails on any
+`Admitted`, `admit`, `Axiom` or `Parameter`: 0 admitted, 0 axioms. The three
+`Hypothesis` lines in `sentinel_completeness.v` are Section variables,
+discharged when their Section closes, which that audit confirms.
 
 ## Standards status (2026-09-27)
 
