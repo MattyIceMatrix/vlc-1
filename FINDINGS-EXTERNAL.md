@@ -43,8 +43,9 @@ restart, so the threat model listed a threat no requirement addressed.
 Proved as `producer_death_is_invisible` and `l2_cannot_detect_producer_loss` in
 `proofs/sentinel_interval.v`. That file was **absent from this repository for
 two weeks** while being cited here, and was recovered and committed on
-2026-09-27 (EXT-019). It compiles at 8 results, 0 admitted, 0 axioms — the
-count this ledger and the corrigendum claimed all along. Fixed by Corrigendum 1: §1 amended, and a new
+2026-09-27 (EXT-019). It compiled at 8 results, 0 admitted, 0 axioms when recovered, the
+count this ledger and the corrigendum claimed all along (9 results since
+1.4.1-draft, commit `8c2192b`; counted 2026-10-12). Fixed by Corrigendum 1: §1 amended, and a new
 level L3i requiring interval coverage witnessed by an attestor the producer does
 not control.
 
