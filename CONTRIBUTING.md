@@ -52,4 +52,4 @@ which used to fail is suspect until it explains which of those three it changed.
 cd proofs && coqc -q sentinel_completeness.v
 ```
 
-Questions, or a format you want scored: moorematthew131@gmail.com
+Questions, or a format you want scored: hello@moore-labs.com

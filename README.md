@@ -36,7 +36,7 @@ clauses into a standard without asking.
 > [open an access request](https://github.com/MattyIceMatrix/vlc-1/issues/new?template=access-request.yml).
 > Evaluation access, paid pilots and the commercial tooling behind the reference
 > implementation are listed in [`ACCESS.md`](ACCESS.md). Anything confidential:
-> moorematthew131@gmail.com. For what this looks like in practice, see the
+> hello@moore-labs.com. For what this looks like in practice, see the
 > [cases in `THIRD-PARTY.md`](THIRD-PARTY.md), most recently a three-round
 > cross-test of the AER-1 IETF draft whose findings are now in the draft.
 
@@ -308,4 +308,4 @@ what you can ask for and [`docs/OUTREACH.md`](docs/OUTREACH.md) for what the
 engagement looks like. The deck in [`deck/`](deck/) tells the same story in
 sixteen slides.
 
-**Matthew Moore** — moorematthew131@gmail.com
+**Matthew Moore** — hello@moore-labs.com

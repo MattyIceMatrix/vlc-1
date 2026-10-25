@@ -178,6 +178,6 @@ The most useful first message is one of these:
 - *"We have an assessment in <month> and we need to answer the completeness
   question."*
 
-**Matthew Moore** — moorematthew131@gmail.com
+**Matthew Moore** — hello@moore-labs.com
 
 Issues and adapter contributions: this repository.

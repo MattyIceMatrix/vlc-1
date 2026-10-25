@@ -128,4 +128,4 @@ a tested property, not a promise.
 - **Response time is a person, not a queue.** Expect a real answer within a few
   days, and expect it to include what we cannot do.
 
-**Matthew Moore** — moorematthew131@gmail.com
+**Matthew Moore** — hello@moore-labs.com

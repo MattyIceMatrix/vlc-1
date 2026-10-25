@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: Moore
     given-names: Matthew
-    email: moorematthew131@gmail.com
+    email: hello@moore-labs.com
 version: "1.4.4-draft"
 doi: 10.5281/zenodo.22728393
 repository-code: "https://github.com/MattyIceMatrix/vlc-1"

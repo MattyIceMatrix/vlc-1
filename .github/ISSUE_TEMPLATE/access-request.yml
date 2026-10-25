@@ -11,7 +11,7 @@ body:
 
         This issue is **public**. Do not paste log contents, hostnames, credentials or
         anything under NDA. Field *names* are fine and are usually all we need.
-        For anything confidential, email moorematthew131@gmail.com instead.
+        For anything confidential, email hello@moore-labs.com instead.
   - type: dropdown
     id: level
     attributes:
