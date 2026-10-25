@@ -1,0 +1,11 @@
+// Deploys the public VLC-1 page (docs/index.html) as a static Worker.
+// Cloudflare Workers Builds runs `npx wrangler deploy` on every push to main.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vlc-1",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./docs"
+  },
+  "workers_dev": true
+}
