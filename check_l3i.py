@@ -27,6 +27,17 @@
 # ===========================================================================
 
 
+def _h(x):
+    """Normalise a hash for comparison.
+
+    A binding names a hash, so it is compared as a hash. Comparing the raw
+    string refused a legitimate log that wrote its hex in uppercase -- an
+    over-refusal, and the kind that makes an adopter conclude the checker is
+    broken rather than that their log is. Found 2026-11-21.
+    """
+    return x.strip().lower() if isinstance(x, str) else x
+
+
 def check_l3i(recs, ad, res):
     """Score interval coverage. Returns a summary dict, or None if L3i is not
     claimed by this adapter.
@@ -124,15 +135,44 @@ def check_l3i(recs, ad, res):
     # backwards as n increases, and the last tick must reach the end of what
     # was delivered -- otherwise the witnesses cover a prefix and the records
     # after it are unwitnessed while the interval reads as complete.
-    order = {r.hash: i for i, r in enumerate(recs) if r.hash}
-    tick_hashes = {t.hash for t in ticks if t.hash}
+    order = {_h(r.hash): i for i, r in enumerate(recs) if r.hash}
+    tick_hashes = {_h(t.hash) for t in ticks if t.hash}
     witnessable = [i for i, r in enumerate(recs)
                    if r.cls not in (tc, dc) and r.cls not in ad.get("marker_classes", [])]
     last_witnessable = max(witnessable) if witnessable else None
     bound_pos, high_water = {}, None
 
-    heads = {r.hash for r in recs if r.hash}
+    heads = {_h(r.hash) for r in recs if r.hash}
     seen, problems = {}, []
+
+    # bound_field is MANDATORY for L3i-3, and its absence is a refusal rather
+    # than a skip.
+    #
+    # This is the defect an audit found on 2026-11-21. `bf = iv.get("bound_field")`
+    # was read inside the loop and `if bf:` guarded all three binding clauses --
+    # unbound, lifted-from-elsewhere, self-anchored -- AND the assignment to
+    # `bound_pos`. With the key absent, `bound_pos` stayed empty, so the
+    # ordering loop iterated over nothing, the end-of-log coverage check was
+    # skipped because it tests `if bound_pos`, and the clause fell through to
+    # res.ok(). All three of this repo's own attack fixtures PASSED.
+    #
+    # One omitted adapter key turned the clause that the whole L3i level exists
+    # to supply into a no-op that reported PASS -- and an adapter is a
+    # configuration file, not reviewed code. A checker that answers "conforms"
+    # when it has not looked is worse than one that answers nothing, because the
+    # output is indistinguishable from a real result.
+    bf = iv.get("bound_field")
+    if not bf:
+        res.fail("VLC-L3i-3",
+                 "the adapter declares no bound_field, so no witness can be checked "
+                 "against a position in this log. L3i-3 is the clause the level "
+                 "exists to supply; without it the level is not being tested. "
+                 "Declare bound_field, or do not claim L3i.")
+        # Deliberately NOT an early return: L3i-4 still reports, so the row is
+        # present and the report's shape does not change. `bf` is falsy, so the
+        # loop below records no bindings -- which is now a reported failure
+        # rather than a silent pass.
+        mine = []
     for t in mine:
         n = _int(_dig(t, iv.get("tick_index_field")))
         if n is None:
@@ -147,9 +187,8 @@ def check_l3i(recs, ad, res):
         if not t.hash:
             problems.append(f"tick {n} is not integrity-bound")
             continue
-        bf = iv.get("bound_field")
         if bf:
-            b = _dig(t, bf)
+            b = _h(_dig(t, bf))
             if b is None:
                 # An unbound witness is liftable: it names no position, so it
                 # verifies equally in any log. Annex J.4. Found by the fuzz
@@ -196,6 +235,47 @@ def check_l3i(recs, ad, res):
                         f"not counted toward this one")
     if problems:
         res.fail("VLC-L3i-3", "; ".join(problems[:4]))
+    elif len(set(bound_pos.values())) == 1 and expected >= 2 and len(bound_pos) >= 2:
+        # EIGHT SIGNATURES, ONE OBSERVED POSITION.
+        #
+        # The existing checks caught this only when the single position was not
+        # the last: the coverage test is `high_water < last_witnessable`, so a
+        # replay pinned to the END of the log satisfied it, and equal positions
+        # are deliberately allowed because a quiet stretch leaves the head where
+        # it was. So the attack this level exists to catch passed by moving the
+        # anchor from the first record to the last. An audit found this on
+        # 2026-11-21; `l3i-anchor-replayed` binds prod[0] and FAILS, while the
+        # same attack binding prod[-1] PASSED.
+        #
+        # This is reported as unestablished rather than failed, and the reason
+        # matters: from the log alone, N ticks all binding one position is
+        # genuinely indistinguishable from an honest interval in which nothing
+        # was appended between the first tick and the last. Failing it would
+        # refuse honest quiet logs. What IS establishable, and what the reader
+        # needs, is that this witness set carries ONE observation however many
+        # signatures it holds -- so it cannot evidence coverage of an interval
+        # declaring several ticks. Saying that is the honest verdict; a clean
+        # PASS was not.
+        _na(res, "VLC-L3i-3",
+            f"{len(bound_pos)} witnesses all bind the same position "
+            f"({sorted(set(bound_pos.values()))[0]}) across an interval declaring "
+            f"{expected} ticks: one observed point, so the set cannot evidence "
+            f"coverage of the interval however many signatures it carries. From "
+            f"the log alone this is indistinguishable from an interval in which "
+            f"nothing was appended, so it is not scored as a defect -- but it is "
+            f"not coverage either")
+    elif not seen:
+        # An empty witness set satisfied every test in the loop above, because
+        # the loop did not run, and the clause then reported
+        # "0 witness(es) bound ... and to a position in this log" as a PASS --
+        # a positive statement about nothing. L3i-2 does catch the wholesale
+        # drop, so the LEVEL was never wrongly awarded; but a PASS row for a
+        # clause that examined no witness is the kind of line that gets quoted
+        # out of a report, and it is not true.
+        _na(res, "VLC-L3i-3",
+            f"no witness names interval {ivid!r}, so there was nothing to bind. "
+            f"Whether each witness is bound cannot be established from a log that "
+            f"contains none; see VLC-L3i-2 for the coverage verdict")
     else:
         res.ok("VLC-L3i-3", f"{len(seen)} witness(es) bound to {ivid!r} and to a "
                             f"position in this log")

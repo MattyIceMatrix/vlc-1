@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
 
-*Current version **1.4.4-draft** ([10.5281/zenodo.23067353](https://doi.org/10.5281/zenodo.23067353)). The badge is the concept DOI and always resolves to
+*Current version **1.4.5-draft** ([10.5281/zenodo.23067353](https://doi.org/10.5281/zenodo.23067353)). The badge is the concept DOI and always resolves to
 the newest; [`SPEC.md` Annex F](SPEC.md) is the revision history, with a version DOI
 for each published version.*
 
@@ -208,7 +208,7 @@ not distributed, across the three commercial products: the **Observer** (governs
 the **Gateway** (governs what it *asks for*), and a **bare-metal edition**
 (the same decision function on bare metal).
 
-**Eight corrigenda** have been published against this specification, numbered
+**Nine corrigenda** have been published against this specification, numbered
 01 to 08 as `CORRIGENDUM-<date>-<nn>.md` in this directory. Each records a
 defect in the specification as written, what it permitted, and the repair. A
 specification that has never been corrected has either not been read or not

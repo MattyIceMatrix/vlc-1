@@ -739,14 +739,51 @@ l3i_worst() {
 try: r=json.load(sys.stdin)["requirements"]
 except Exception: print("CRASH"); raise SystemExit
 v=[x["status"] for k,x in r.items() if k.startswith("VLC-L3i")]
-print("CRASH" if not v else ("FAIL" if "FAIL" in v else "PASS"))'
+# n/a must be reported, not folded into PASS. Two verdicts added on 2026-11-21
+# are deliberately UNESTABLISHED rather than failures -- a witness set that
+# carries one observation, and an interval with no witness at all -- and an
+# earlier version of this line printed PASS for both, which is the error the
+# n/a channel exists to prevent.
+print("CRASH" if not v else ("FAIL" if "FAIL" in v
+      else ("NA" if any(x.lower() in ("n/a","na","unestablished") for x in v) else "PASS")))'
 }
+
+# The adapter with bound_field REMOVED. This is the Critical an audit found on
+# 2026-11-21: `if bf:` guarded all three binding clauses and the assignment to
+# bound_pos, so with the key absent the ordering loop ran over nothing, the
+# end-of-log coverage test was skipped because it tests `if bound_pos`, and the
+# clause fell through to a PASS. Every one of the attack fixtures above passed.
+# One omitted key in a configuration file turned the clause the whole level
+# exists to supply into a no-op that reported conformance.
+python3 - "$L3D" <<'PYEOF'
+import json, sys
+p = sys.argv[1] + "/l3i.adapter.json"
+a = json.load(open(p))
+a["interval"] = {k: v for k, v in a["interval"].items() if k != "bound_field"}
+json.dump(a, open(sys.argv[1] + "/l3i-nobind.adapter.json", "w"))
+PYEOF
+for CASE in l3i-honest l3i-anchor-replayed l3i-anchor-replayed-at-end l3i-self-anchored; do
+  GOT=$(python3 conformance.py --log "$L3D/$CASE.jsonl" \
+          --adapter "$L3D/l3i-nobind.adapter.json" --json 2>/dev/null \
+        | python3 -c 'import sys,json
+try: r=json.load(sys.stdin)["requirements"]
+except Exception: print("CRASH"); raise SystemExit
+v=[x["status"] for k,x in r.items() if k=="VLC-L3i-3"]
+print("CRASH" if not v else v[0])')
+  case "$GOT" in
+    FAIL) ok "$CASE with no bound_field -> FAIL: an unchecked clause is not a passing clause" ;;
+    *)    bad "$CASE with no bound_field gave $GOT; L3i-3 must refuse an adapter that gives it nothing to check" ;;
+  esac
+done
 for spec in "l3i-honest PASS a complete window, each tick binding a later producer record" \
             "l3i-producer-died FAIL the producer stopped mid-interval: the absent ticks are the evidence (EXT-002)" \
             "l3i-attestor-dropped FAIL attestor traffic dropped wholesale -- EXT-002 reporter question 1" \
             "l3i-anchor-replayed FAIL one anchor replayed across every tick -- EXT-002 reporter question 2 (EXT-018)" \
             "l3i-self-anchored FAIL a witness set anchored to itself binds no producer record (EXT-018)" \
-            "l3i-reversed-binding FAIL ticks bound in reverse: observation order contradicts tick order (EXT-018)"; do
+            "l3i-reversed-binding FAIL ticks bound in reverse: observation order contradicts tick order (EXT-018)" \
+            "l3i-anchor-replayed-at-end NA the same replay pinned to the LAST record: one observation, so not coverage" \
+            "l3i-anchored-to-the-declaration FAIL every tick binds the interval declaration rather than a producer record" \
+            "l3i-uppercase-binding PASS an honest log writing uppercase hex must not be refused as a forgery"; do
   set -- $spec; CASE=$1; WANT=$2; shift 2
   GOT=$(l3i_worst "$CASE")
   if [ "$GOT" = "$WANT" ]; then ok "$CASE -> $WANT: $*"; else bad "$CASE expected $WANT, got $GOT"; fi

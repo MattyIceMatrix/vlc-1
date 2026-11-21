@@ -138,6 +138,35 @@ def main(out):
     write(out, "l3i-reversed-binding",
           build(tick_binds=lambda n, prod, ticks: prod[LAST - n]))
 
+    # ---- added 2026-11-21 after an audit of this checker ----------------
+    #
+    # G. THE SAME REPLAY, PINNED TO THE END OF THE LOG.
+    #    Case D above binds prod[0] and is caught. The coverage test is
+    #    `high_water < last_witnessable`, and equal positions are allowed
+    #    because a quiet stretch leaves the head where it was -- so the
+    #    identical attack binding prod[-1] PASSED. Eight signatures, one
+    #    observed position, scored as a covered window. The level's own
+    #    headline attack, defeated by moving the anchor.
+    write(out, "l3i-anchor-replayed-at-end",
+          build(tick_binds=lambda n, prod, ticks: prod[-1]))
+
+    # H. every tick binds the INTERVAL DECLARATION rather than a producer
+    #    record. The self-anchor check excluded the tick class only, so the
+    #    declaration was a legal bind target. Caught here by the coverage
+    #    test because the declaration sits early, but it is caught for the
+    #    wrong reason, and a declaration late in a log would not be.
+    _recs = build()
+    _decl = [r["hash"] for r in _recs if r.get("class") == "IVAL"]
+    write(out, "l3i-anchored-to-the-declaration",
+          build(tick_binds=lambda n, prod, ticks: _decl[0]))
+
+    # I. a legitimate log that writes its hex in UPPERCASE. Not an attack --
+    #    the opposite. `binds` was compared as a raw string, so an honest log
+    #    was refused with "binds a position absent from this log", which reads
+    #    as an accusation of forgery. An over-refusal is also a defect.
+    write(out, "l3i-uppercase-binding",
+          build(tick_binds=lambda n, prod, ticks: prod[n - 1].upper()))
+
     print(f"l3i fixtures written to {out}")
 
 
