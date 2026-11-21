@@ -208,6 +208,13 @@ not distributed, across the three commercial products: the **Observer** (governs
 the **Gateway** (governs what it *asks for*), and a **bare-metal edition**
 (the same decision function on bare metal).
 
+**Eight corrigenda** have been published against this specification, numbered
+01 to 08 as `CORRIGENDUM-<date>-<nn>.md` in this directory. Each records a
+defect in the specification as written, what it permitted, and the repair. A
+specification that has never been corrected has either not been read or not
+been tested; the count is published here so it can be checked rather than
+inferred from a directory listing.
+
 > **Renamed 2026-09-27.** The sensor was called *Sentinel* until this date.
 > Evidence, corrigenda and findings recorded before it keep the old name, because
 > the name is inside the hash chain in captured journals and because a corrigendum

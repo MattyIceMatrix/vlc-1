@@ -1169,6 +1169,42 @@ grep -q '^DONE|' "$U20F" || bad "section block U20 did not run to completion"
 while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U20F"; rm -f "$U20F"
 
 hr
+# ---------------------------------------------------------------------------
+# The README's published counts must match the repository.
+#
+# The corrigenda count was stated nowhere, so a real number -- eight
+# corrigenda, numbered 01 to 08 -- looked like an unsupported one to anything
+# checking the specification's claims from outside. Published now, and held
+# here because this script is what CI runs.
+# ---------------------------------------------------------------------------
+CORR_FILES=$(ls CORRIGENDUM-*.md 2>/dev/null | wc -l | tr -d ' ')
+CORR_SAID=$(python3 - <<'PYC'
+import re
+t = open("README.md", encoding="utf-8").read()
+w = {"one":1,"two":2,"three":3,"four":4,"five":5,"six":6,"seven":7,"eight":8,
+     "nine":9,"ten":10,"eleven":11,"twelve":12}
+m = re.search(r"\*\*(\w+) corrigenda\*\*", t)
+print(w.get(m.group(1).lower(), -1) if m else -1)
+PYC
+)
+if [ "$CORR_SAID" = "$CORR_FILES" ]; then
+  ok "README says $CORR_SAID corrigenda and $CORR_FILES are published"
+else
+  bad "README says $CORR_SAID corrigenda, $CORR_FILES CORRIGENDUM-*.md files exist"
+fi
+
+# The numbering must be contiguous from 01, or the count hides a gap.
+CORR_SEQ=$(ls CORRIGENDUM-*.md 2>/dev/null | sed 's/.*-\([0-9][0-9]\)\.md/\1/' | sort -n | tr -d '\n')
+# `seq -w` pads to the width of the LARGEST value, which is one digit for 8,
+# so it yields 1..8 rather than 01..08. Pad explicitly.
+CORR_WANT=$(seq 1 "$CORR_FILES" | awk '{printf "%02d", $1}')
+if [ "$CORR_SEQ" = "$CORR_WANT" ]; then
+  ok "corrigenda are numbered 01 to $(printf '%02d' "$CORR_FILES") with no gaps"
+else
+  bad "corrigenda numbering is $CORR_SEQ, expected $CORR_WANT"
+fi
+
+hr
 [ "$XFAIL" -gt 0 ] && echo "$XFAIL expected failure(s), each disclosed above with its reason"
 if [ "$FAIL" = "0" ]; then echo "SELFTEST PASS"; else echo "SELFTEST FAIL"; fi
 exit $FAIL
