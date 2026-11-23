@@ -1568,6 +1568,22 @@ class Results:
     def fail(self, rid, note=""):
         self.r[rid] = (FAIL, note)          # failure always wins
 
+    def unestablished(self, rid, note=""):
+        """A requirement that was not tested, reported as neither pass nor fail.
+
+        Added 2026-11-21. `_na` in check_l3i.py looks for this channel and, not
+        finding it, fell back to `ok(rid, "unestablished: ...")` -- so every
+        requirement the checker could not establish was scored as a PASS, and
+        the run's PASS count included rows nothing had examined. The fallback
+        was written to avoid scoring an honest absence as a defect, which is
+        right, but with no third channel to fall back TO it produced the
+        opposite error: an absence scored as conformance.
+
+        Never upgrades a FAIL, and never overwrites a real PASS."""
+        if rid in self.r and self.r[rid][0] in (FAIL, PASS):
+            return
+        self.r[rid] = (NA, note)
+
     def attach_evidence(self, ad):
         """Record, per attested requirement, whether a reproducible artefact
         was supplied. Never upgrades a FAIL; evidence for a claim the log

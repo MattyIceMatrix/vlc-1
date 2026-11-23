@@ -825,3 +825,88 @@ log's I-JSON rules. Full file L0 on the log alone and L1 with its signed head;
 truncated L0 with VLC-L1-1 failed. The checker does not recompute each digest from
 its full record; the capture run did. Control: `selftest.sh` §2b (10 vectors); CI
 asserts the levels.
+
+---
+## EXT-028 — the EXT-018 repair was skippable by omitting one adapter key
+
+*Source: an independent audit of `check_l3i.py` commissioned against the EXT-018
+repair, 2026-11-21. Fixed in 1.4.5-draft, Corrigendum 9.*
+
+**Critical.** EXT-018 tightened VLC-L3i-3 so a bound position must be a producer
+record, must not move backwards, and must reach the end of what was delivered.
+That repair is the reason L3i exists as a level.
+
+`bound_field` was read inside the per-tick loop and `if bf:` guarded all three
+binding clauses *and* the assignment to `bound_pos`. With the key absent,
+`bound_pos` stayed empty, the ordering loop iterated over nothing, the
+end-of-log coverage test was skipped because it tests `if bound_pos`, and the
+clause fell through to `res.ok`. Every attack fixture in this repository passed,
+including all three EXT-002 reporter questions that Corrigendum 6 was issued to
+answer.
+
+An omitted key in a configuration file — not reviewed code — turned the clause
+the whole level exists to supply into a no-op that reported conformance, and the
+output was indistinguishable from a real result. This is the defect this
+specification was written about, occurring inside its own checker. Every L3i
+verdict issued before 1.4.5-draft should be treated as unestablished unless the
+adapter can be shown to have declared `bound_field`.
+
+Control: `selftest.sh` §14 runs four fixtures against an adapter with
+`bound_field` removed and requires FAIL from each.
+
+---
+## EXT-029 — a replayed anchor pinned to the end of the log scored as coverage
+
+*Source: the same audit, 2026-11-21. Fixed in 1.4.5-draft, Corrigendum 9.*
+
+**High.** The coverage test is `high_water < last_witnessable`, and equal
+positions are allowed because a quiet stretch honestly leaves the head where it
+was. Eight ticks all binding the *last* record satisfied both: one observed
+point, scored as a covered window. `l3i-anchor-replayed` binds the *first*
+record and was caught; the identical attack moved to the end was not.
+
+Reported as unestablished rather than failed. From the log alone, N ticks
+binding one position is indistinguishable from an honest interval in which
+nothing was appended between the first tick and the last, so failing it would
+refuse honest quiet logs. What is establishable is that such a witness set
+carries one observation however many signatures it holds, and therefore cannot
+evidence coverage of an interval declaring several ticks.
+
+Control: fixture `l3i-anchor-replayed-at-end`, expected `n/a` in the §14 matrix.
+
+---
+## EXT-030 — an empty witness set passed, and every unestablished requirement was scored as a pass
+
+*Source: the same audit, 2026-11-21. Fixed in 1.4.5-draft, Corrigendum 9.*
+
+**Medium**, in two parts.
+
+With no tick naming the interval, the L3i-3 loop did not run, no problem was
+recorded, and the clause reported `0 witness(es) bound ... and to a position in
+this log` as a pass — a positive statement about nothing. VLC-L3i-2 catches the
+wholesale drop, so no level was wrongly awarded, but a pass row for a clause
+that examined no witness is a line that gets quoted out of a report.
+
+Worse, in the result collector: `_na` looked for an `unestablished` channel, did
+not find one, and fell back to `ok(rid, "unestablished: ...")`. Every
+requirement the checker could not establish was counted as a pass, and a run's
+pass count included rows nothing had examined. The fallback was written to avoid
+scoring an honest absence as a defect, which is right; with no third channel to
+fall back *to*, it produced the opposite error.
+
+Control: `Results.unestablished` exists and never upgrades a failure; the §14
+matrix reports `n/a` as itself rather than folding it into PASS.
+
+---
+## EXT-031 — an honest log writing uppercase hex was refused as a forgery
+
+*Source: the same audit, 2026-11-21. Fixed in 1.4.5-draft, Corrigendum 9.*
+
+**Medium.** `binds` was compared as a raw string, so a log writing its hex in
+uppercase was refused with `binds a position absent from this log: a witness
+lifted from elsewhere`. A binding names a hash and is now compared as one.
+
+An over-refusal is also a defect, and this one accuses the adopter of forgery
+for a formatting choice no requirement constrains.
+
+Control: fixture `l3i-uppercase-binding`, expected PASS in the §14 matrix.
