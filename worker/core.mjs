@@ -98,11 +98,17 @@ export async function check(journalText, ad) {
   for (const [i, raw] of lines.entries()) {
     let obj;
     try { obj = JSON.parse(raw); }
-    catch { return { verdict: "UNREADABLE", results: [{ check: "parse", ok: false, note: `line ${i + 1} is not JSON` }] }; }
+    catch {
+      return { verdict: "UNREADABLE", records: i, head: null,
+               results: [{ check: "parse", ok: false, note: `line ${i} is not parseable as JSON (lines numbered from 0, like the reference checker's records)` }],
+               caveats: [] };
+    }
     if (hasFloat(obj)) floats = true;
     recs.push({ obj, raw, hash: dig(obj, hf) == null ? null : String(dig(obj, hf)), cls: String(dig(obj, cf) ?? "") });
   }
-  if (!recs.length) return { verdict: "EMPTY", results: [] };
+  if (!recs.length) return { verdict: "EMPTY", records: 0, head: null,
+    results: [{ check: "input", ok: false, note: "the journal is empty - paste JSONL records or load a demo journal" }],
+    caveats: [] };
 
   // ---- VLC-L1-1: every record chains from the declared root -------------
   let prev = await chainRoot(recs, ad);
