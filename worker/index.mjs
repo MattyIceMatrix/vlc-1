@@ -134,6 +134,33 @@ const ADAPTERS = {
 };
 const MAX_BYTES = 2_000_000;
 
+// 2026-11-25 hostile review, additive:
+// * adminOk compares SHA-256 digests byte-for-byte instead of a string !=,
+//   so the comparison's timing does not depend on how much of the key
+//   matches;
+// * tooLarge rejects oversized bodies from the content-length header BEFORE
+//   anything is read or parsed (the in-body checks remain as the backstop
+//   for requests that omit the header).
+async function adminOk(request, env) {
+  const key = request.headers.get("x-admin-key");
+  if (!env.ADMIN_KEY || !key) return false;
+  const te = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", te.encode(key)),
+    crypto.subtle.digest("SHA-256", te.encode(env.ADMIN_KEY)),
+  ]);
+  const x = new Uint8Array(a), y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+function tooLarge(request, cap) {
+  const cl = Number(request.headers.get("content-length") ?? 0);
+  if (Number.isFinite(cl) && cl > cap)
+    return Response.json({ error: `body over ${cap} bytes` }, { status: 413, headers: CORS });
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // 2026-11-25, additive: per-IP token buckets. Per-isolate and in-memory, so
 // they reset when the isolate recycles -- a first line against curl loops,
@@ -192,6 +219,7 @@ export default {
         return Response.json({ error: "POST a JSONL journal as the request body" }, { status: 405, headers: CORS });
       const retry = rateLimited(ip, "check", 2_000, 30); // ~30 burst, 1 per 2s sustained
       if (retry) return tooMany(retry);
+      const big = tooLarge(request, MAX_BYTES); if (big) return big;
       try {
         const [err, out] = await buildReport(request, url);
         if (err) return err;
@@ -213,8 +241,8 @@ export default {
       // tools/issue_verified_report.py drives the whole flow.
       if (request.method !== "POST")
         return Response.json({ error: "POST a conformance.py report as JSON" }, { status: 405 });
-      const key = request.headers.get("x-admin-key");
-      if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
+      { const big = tooLarge(request, MAX_BYTES); if (big) return big; }
+      if (!(await adminOk(request, env)))
         return Response.json({ error: "verified reports are issued by the operator" }, { status: 403 });
       try {
         const body = await request.json();
@@ -253,8 +281,8 @@ export default {
       // (tools/verify_report.py), but only the operator can issue one.
       if (request.method !== "POST")
         return Response.json({ error: "POST a JSONL journal as the request body" }, { status: 405 });
-      const key = request.headers.get("x-admin-key");
-      if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
+      { const big = tooLarge(request, MAX_BYTES); if (big) return big; }
+      if (!(await adminOk(request, env)))
         return Response.json({ error: "verified reports are issued by the operator; join the list on /checker.html for launch" }, { status: 403 });
       try {
         const [err, out] = await buildReport(request, url);
@@ -294,8 +322,7 @@ export default {
       return stub.fetch("https://do/pubkey");
     }
     if (url.pathname === "/api/stats") {
-      const key = request.headers.get("x-admin-key");
-      if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
+      if (!(await adminOk(request, env)))
         return Response.json({ error: "admin only" }, { status: 403 });
       const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
       return stub.fetch("https://do/stats");
@@ -308,6 +335,7 @@ export default {
       try { body = await request.json(); } catch { body = {}; }
       const retry = rateLimited(ip, "signup", 720_000, 5); // 5 burst, ~5/hour sustained
       if (retry) return tooMany(retry);
+      const big = tooLarge(request, 16_384); if (big) return big;
       const email = String(body.email ?? "").trim().toLowerCase();
       if (!EMAIL_RE.test(email) || email.length > 254)
         return Response.json({ error: "that does not look like an email address" }, { status: 400, headers: CORS });
@@ -361,8 +389,7 @@ export default {
       return Response.redirect(url.origin + "/checker.html#confirmed", 302);
     }
     if (url.pathname === "/api/signups") {
-      const key = request.headers.get("x-admin-key");
-      if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
+      if (!(await adminOk(request, env)))
         return Response.json({ error: "admin only; set ADMIN_KEY in the Worker's variables and send it as x-admin-key" }, { status: 403 });
       const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
       return stub.fetch("https://do/export");

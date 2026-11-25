@@ -114,10 +114,20 @@ document.getElementById("go").onclick = async () => {
     document.getElementById("dl").hidden = !lastReport;
     s.textContent = "";
     out.hidden = false;
-    out.innerHTML = d.error ? `<span class="fail">${d.error}</span>` :
-      `verdict: <span class="${String(d.verdict).includes("PASS") ? "ok" : "fail"}">${d.verdict}</span>  (${d.records ?? 0} records${d.head ? ", head " + String(d.head).slice(0,16) + "…" : ""})\n\n` +
-      (d.results ?? []).map(x => `${x.ok ? '<span class="ok">ok  </span>' : '<span class="fail">FAIL</span>'} ${x.check}  ${x.note}`).join("\n") +
-      "\n\n" + (d.caveats ?? []).map(c => "note: " + c).join("\n");
+    // DOM-built, never innerHTML: notes can carry journal-derived strings
+    // (e.g. a record's class value), and a crafted journal must render as
+    // text, not markup (hostile review, 2026-11-25)
+    out.replaceChildren();
+    const span = (cls, text) => { const el = document.createElement("span"); el.className = cls; el.textContent = text; return el; };
+    const txt = (t) => document.createTextNode(t);
+    if (d.error) out.append(span("fail", d.error));
+    else {
+      out.append(txt("verdict: "), span(String(d.verdict).includes("PASS") ? "ok" : "fail", String(d.verdict)),
+        txt(`  (${d.records ?? 0} records${d.head ? ", head " + String(d.head).slice(0, 16) + "…" : ""})\n\n`));
+      for (const x of d.results ?? [])
+        out.append(x.ok ? span("ok", "ok  ") : span("fail", "FAIL"), txt(` ${x.check}  ${x.note}\n`));
+      out.append(txt("\n" + (d.caveats ?? []).map(c => "note: " + c).join("\n")));
+    }
   } catch (e) { lastReport = null; document.getElementById("dl").hidden = true;
     s.textContent = ""; out.hidden = false; out.textContent = "request failed: " + e; }
 };

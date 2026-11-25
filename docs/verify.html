@@ -48,22 +48,30 @@ document.getElementById("go").onclick = async () => {
     if (!doc.report || !doc.signature?.sig_hex) throw new Error("expected {report, signature:{sig_hex}}");
     const pub = await fetch("/api/pubkey").then(r => r.json());
     out.hidden = false; s.textContent = "";
+    // DOM-built output, never innerHTML: every value here comes from PASTED
+    // JSON and must render as text, not markup (hostile review, 2026-11-25)
+    const span = (cls, text) => { const el = document.createElement("span"); el.className = cls; el.textContent = text; return el; };
+    const txt = (t) => document.createTextNode(t);
     if (doc.signature.key_id && doc.signature.key_id !== pub.key_id) {
-      out.innerHTML = `<span class="fail">INVALID</span> — the report names signing key ${doc.signature.key_id}, but this service's current key is ${pub.key_id}. If the key was rotated, verify offline against the archived key in the repository.`;
+      out.replaceChildren(span("fail", "INVALID"), txt(` — the report names signing key ${String(doc.signature.key_id)}, but this service's current key is ${pub.key_id}. If the key was rotated, verify offline against the archived key in the repository.`));
       return;
     }
     const key = await crypto.subtle.importKey("spki", b64ToBytes(pub.public_key_spki_b64), { name: "Ed25519" }, false, ["verify"]);
     const good = await crypto.subtle.verify({ name: "Ed25519" }, key,
       hexToBytes(doc.signature.sig_hex), new TextEncoder().encode(canon(doc.report)));
     const r = doc.report;
-    out.innerHTML = good
-      ? `<span class="ok">VALID</span> — Ed25519 signature by key ${pub.key_id} over this exact report.\n\n` +
-        `verdict:   ${r.verdict}\nrecords:   ${r.records}\nhead:      ${String(r.head ?? "").slice(0, 32)}…\n` +
-        `issued at: ${r.issued_at}\nissuer:    ${r.issuer}\nchecker:   ${r.checker}`
-      : `<span class="fail">INVALID</span> — the signature does not match this report's content. The report was altered after signing, or it was not issued by this service.`;
+    if (good) {
+      const inner = r.result ?? r; // reference-checker reports nest under .result
+      out.replaceChildren(span("ok", "VALID"), txt(` — Ed25519 signature by key ${pub.key_id} over this exact report.\n\n` +
+        `verdict:   ${String(r.verdict ?? ("structural L" + inner.structural_level + ", attested L" + inner.attested_level))}\n` +
+        `records:   ${String(r.records ?? inner.log ?? "")}\nhead:      ${String(r.head ?? inner.head ?? "").slice(0, 32)}…\n` +
+        `issued at: ${String(r.issued_at)}\nissuer:    ${String(r.issuer)}\nchecker:   ${String(r.checker)}`));
+    } else {
+      out.replaceChildren(span("fail", "INVALID"), txt(" — the signature does not match this report's content. The report was altered after signing, or it was not issued by this service."));
+    }
   } catch (e) {
     out.hidden = false; s.textContent = "";
-    out.innerHTML = `<span class="fail">could not verify:</span> ${String(e.message ?? e)}`;
+    out.replaceChildren((() => { const el = document.createElement("span"); el.className = "fail"; el.textContent = "could not verify:"; return el; })(), document.createTextNode(" " + String(e.message ?? e)));
   }
 };
 </script>
