@@ -118,6 +118,26 @@ python3 conformance.py --log examples/L2-looks-complete.jsonl \
                        --adapter adapters/generic-appjsonl.json
 ```
 
+## In your CI, in three lines (added 2026-11-25)
+
+```yaml
+- uses: MattyIceMatrix/vlc-1@main
+  with:
+    journal: logs/agent-journal.jsonl     # adapter: / expect: optional
+```
+
+Or as a command: `pip install git+https://github.com/MattyIceMatrix/vlc-1`
+puts `vlc-check` on the path — it *is* `conformance.py`'s own entry point,
+stdlib only, nothing to drift from the reference. Exit codes per EXT-023, so
+`--expect 2` fails the pipeline when level 2 is not demonstrated.
+
+The port serving the [live checker](https://vlc-1.moorematthew131.workers.dev/checker.html)
+is held to the reference two ways: a fixed parity matrix
+(`worker/parity.test.mjs`) and a differential fuzzer
+(`tools/fuzz_differential.py`, in CI on every push) that generates fresh
+adversarial journals and fails on any grading disagreement. Verified
+(Ed25519-signed) reports: see `VERIFIED-REPORTS.md`.
+
 ## The pair that is the whole argument
 
 `examples/L2-looks-complete.jsonl` and `examples/L3-coverage.jsonl` are the same

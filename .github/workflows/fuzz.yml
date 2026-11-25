@@ -1,0 +1,29 @@
+# 2026-11-25, additive: differential fuzzing on every push. The fixed parity
+# matrix freezes known cases; this generates new ones. Seed = run number, so
+# every CI run explores different journals and a disagreement anywhere turns
+# the build red with the reproducing journal in the log.
+name: differential-fuzz
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"   # weekly deep run
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Differential fuzz (JS worker core vs Python reference)
+        run: |
+          python3 tools/fuzz_differential.py 300 "${{ github.run_number }}"
+      - name: Upload repro journals on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-repro
+          path: fuzz_repro_*.jsonl

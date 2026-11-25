@@ -1,0 +1,34 @@
+# 2026-11-25, additive: makes the reference checker pip-installable so CI
+# pipelines can grade journals with one command. No new logic -- the console
+# script IS conformance.py's own main(); nothing to drift from the reference.
+#
+#   pip install git+https://github.com/MattyIceMatrix/vlc-1
+#   vlc-check --log journal.jsonl --adapter adapters/generic-appjsonl.json --json
+#
+# Adapters are data files in the repo (adapters/); pass your own with
+# --adapter. The GitHub Action (action.yml) resolves bundled adapter names
+# from its own checkout.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vlc-check"
+version = "1.0.0"
+description = "VLC-1 conformance checker: grades agentic-workflow logs against the Verifiable Log Checker completeness spec (CC0). Checker MIT."
+readme = { text = "Reference checker for the VLC-1 spec: https://github.com/MattyIceMatrix/vlc-1", content-type = "text/markdown" }
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Matthew Moore" }]
+keywords = ["audit", "logging", "conformance", "ai-agents", "verifiable-logs"]
+
+[project.urls]
+Homepage = "https://github.com/MattyIceMatrix/vlc-1"
+Spec = "https://github.com/MattyIceMatrix/vlc-1/blob/main/SPEC.md"
+"Live checker" = "https://vlc-1.moorematthew131.workers.dev/checker.html"
+
+[project.scripts]
+vlc-check = "conformance:main"
+
+[tool.setuptools]
+py-modules = ["conformance"]

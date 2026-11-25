@@ -1,0 +1,9 @@
+{
+  "purpose": "Verifies signatures on VLC verified reports issued by vlc-1.moorematthew131.workers.dev",
+  "alg": "Ed25519",
+  "key_id": "6ae13193a5cdd9cf",
+  "public_key_raw_hex": "82f6e6f6794b50c0193b678d6778f66edde3c65a92ef48ac017bb28b328ced29",
+  "public_key_spki_b64": "MCowBQYDK2VwAyEAgvbm9nlLUMAZO2eNZ3j2bt3jxlqS70isAXuyizKM7Sk=",
+  "created": "2026-11-25",
+  "verify_with": "tools/verify_report.py (stdlib only) or any Ed25519 implementation over the canonical JSON of .report"
+}

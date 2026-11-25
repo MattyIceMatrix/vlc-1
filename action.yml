@@ -1,0 +1,54 @@
+# 2026-11-25, additive: GitHub Action wrapping the reference checker, so any
+# repo grades its agent journals in CI with three lines:
+#
+#   - uses: MattyIceMatrix/vlc-1@main
+#     with:
+#       journal: logs/agent-journal.jsonl
+#
+# Runs conformance.py from this action's own checkout -- the exact reference
+# checker, stdlib only, nothing to install. Fails the job per conformance.py's
+# documented exit codes (EXT-023): non-zero when --expect is not met or no
+# verdict was possible.
+name: "VLC-1 conformance check"
+description: "Grade an agentic-workflow log against the Verifiable Log Checker (VLC-1) completeness spec. Stdlib-only, no dependencies."
+author: "Matthew Moore"
+branding:
+  icon: "check-circle"
+  color: "green"
+
+inputs:
+  journal:
+    description: "Path to the JSONL journal to grade (in your repo's checkout)."
+    required: true
+  adapter:
+    description: "Adapter: a bundled name (e.g. generic-appjsonl) or a path to your own adapter JSON in your repo."
+    required: false
+    default: "generic-appjsonl"
+  expect:
+    description: "Fail the job unless this attested level is demonstrated (e.g. 2). Empty: report only."
+    required: false
+    default: ""
+  expect-structural:
+    description: "Fail the job unless this structural level is demonstrated. Empty: report only."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run the VLC-1 reference checker
+      shell: bash
+      env:
+        VLC_JOURNAL: ${{ inputs.journal }}
+        VLC_ADAPTER: ${{ inputs.adapter }}
+        VLC_EXPECT: ${{ inputs.expect }}
+        VLC_EXPECT_STRUCTURAL: ${{ inputs['expect-structural'] }}
+      run: |
+        set -eu
+        AD="$VLC_ADAPTER"
+        # a bare name resolves to the adapter bundled with the spec repo
+        case "$AD" in */*|*.json) : ;; *) AD="${{ github.action_path }}/adapters/${AD}.json" ;; esac
+        ARGS=""
+        [ -n "$VLC_EXPECT" ] && ARGS="$ARGS --expect $VLC_EXPECT"
+        [ -n "$VLC_EXPECT_STRUCTURAL" ] && ARGS="$ARGS --expect-structural $VLC_EXPECT_STRUCTURAL"
+        python3 "${{ github.action_path }}/conformance.py" --log "$VLC_JOURNAL" --adapter "$AD" $ARGS

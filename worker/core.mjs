@@ -16,10 +16,21 @@ export async function sha256Hex(data) {
 // Python json.dumps(obj, sort_keys=True, separators=(",", ":")) parity.
 // Integers and strings round-trip identically; a non-integer number may not
 // (Python writes 1.0, JS writes 1), so the caller flags any float it sees.
+// Python json.dumps(ensure_ascii=True) escapes every code unit >= 0x7F as
+// \uXXXX (DEL included; astral chars as two surrogate escapes). JSON.stringify
+// leaves them raw, so without this a journal with one accented character
+// hashes differently here than in the reference checker and the chain
+// falsely "breaks" (found by tools/fuzz_differential.py, 2026-11-25).
+function asciiJson(s) {
+  return JSON.stringify(s).replace(/[\u007f-￿]/g,
+    c => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+}
+
 export function canon(obj) {
+  if (typeof obj === "string") return asciiJson(obj);
   if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
   if (Array.isArray(obj)) return "[" + obj.map(canon).join(",") + "]";
-  return "{" + Object.keys(obj).sort().map(k => JSON.stringify(k) + ":" + canon(obj[k])).join(",") + "}";
+  return "{" + Object.keys(obj).sort().map(k => asciiJson(k) + ":" + canon(obj[k])).join(",") + "}";
 }
 
 export function dig(rec, path) {
@@ -98,12 +109,30 @@ export async function check(journalText, ad) {
   for (const [i, raw] of lines.entries()) {
     let obj;
     try { obj = JSON.parse(raw); }
-    catch {
+    catch { obj = undefined; }
+    // A line that parses to null, an array, a number or a string is valid
+    // JSON but not a record; the reference grades such a journal L0 ("not a
+    // log"), it never crashes on it (fuzzer-found, 2026-11-25).
+    if (obj === undefined || obj === null || typeof obj !== "object" || Array.isArray(obj)) {
       return { verdict: "UNREADABLE", records: i, head: null,
-               results: [{ check: "parse", ok: false, note: `line ${i} is not parseable as JSON (lines numbered from 0, like the reference checker's records)` }],
+               results: [{ check: "parse", ok: false, note: `line ${i} is not a JSON object record (lines numbered from 0, like the reference checker's records)` }],
                caveats: [] };
     }
     if (hasFloat(obj)) floats = true;
+    // Integers beyond 2^53 lose precision in JSON.parse, so the recomputed
+    // canonical form would differ from the producer's bytes and every grade
+    // after that would be wrong (found by tools/fuzz_differential.py,
+    // 2026-11-25; nanosecond timestamps are exactly this class). The live
+    // subset discloses instead of guessing; the reference checker (Python
+    // arbitrary-precision ints) grades these fine.
+    for (const m of raw.matchAll(/(?<=[\s{\[,:])-?\d{16,}(?=[\s,}\]]|$)/g)) {
+      if (String(Number(m[0])) !== String(BigInt(m[0]))) {
+        return { verdict: "NOT GRADABLE LIVE", records: i, head: null,
+                 results: [{ check: "precision", ok: false,
+                   note: `record ${i} carries an integer beyond 2^53 (${m[0].slice(0, 25)}…); JavaScript cannot hold it exactly, so this endpoint will not grade the journal rather than grade it wrongly` }],
+                 caveats: ["Run the reference checker (conformance.py, arbitrary-precision) for this journal."] };
+      }
+    }
     recs.push({ obj, raw, hash: dig(obj, hf) == null ? null : String(dig(obj, hf)), cls: String(dig(obj, cf) ?? "") });
   }
   if (!recs.length) return { verdict: "EMPTY", records: 0, head: null,
@@ -132,6 +161,10 @@ export async function check(journalText, ad) {
     return p;
   };
   if (!end) fail("VLC-L1-3", "no end marker record found");
+  // Reference semantics: a chain break stops check_l1 before the end-marker
+  // comparison ever runs, so a broken chain never yields a PASS on VLC-L1-3
+  // (fuzzer-found divergence, 2026-11-25: duplicate-record journals).
+  else if (broken >= 0) fail("VLC-L1-3", `not evaluated: the chain binding is broken at record ${broken}, before the end marker could be checked`);
   else {
     let headField = em.head_field ?? "head";
     let claimed = dig(end.obj, headField);
@@ -164,7 +197,14 @@ export async function check(journalText, ad) {
       if (v == null) { badCount = true; break; }
       declared += v;
     }
-    const l1ok = res.find(x => x.check === "VLC-L1-1")?.ok && res.find(x => x.check === "VLC-L1-3")?.ok;
+    // EXT-022, upstream rule exactly: the produced count is established iff
+    // the end marker's OWN binding verifies in the chain (conformance.py
+    // ctx.end_bound). A bound END whose head CLAIM names the wrong value
+    // fails VLC-L1-3 but its counts are still chain-protected, so VLC-L2-5
+    // still evaluates. (Fuzzer-found divergence, 2026-11-25: the earlier
+    // gate wrongly required L1-3 too.)
+    const endIdx = end ? recs.indexOf(end) : -1;
+    const endBound = end != null && end.hash != null && (broken === -1 || broken > endIdx);
     let produced = null;
     if (end && lo.produced?.kind === "sum_of_end_marker_fields" && !badCount) {
       let sum = 0, allInt = true;
@@ -177,7 +217,7 @@ export async function check(journalText, ad) {
     }
     if (badCount) fail("VLC-L2-5", "a count field is not a non-negative JSON integer");
     else if (produced == null) fail("VLC-L2-5", "no produced count is available from the end marker");
-    else if (!l1ok) fail("VLC-L2-5", "the end marker is not bound by the chain, so the produced count is not established");
+    else if (!endBound) fail("VLC-L2-5", "the end marker is not bound by the chain, so the produced count is not established");
     else if (delivered.length + declared !== produced)
       fail("VLC-L2-5", `identity does not close: ${delivered.length} delivered + ${declared} declared != ${produced} produced`);
     else ok("VLC-L2-5", `${delivered.length} delivered + ${declared} declared lost == ${produced} produced`);

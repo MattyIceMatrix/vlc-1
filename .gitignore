@@ -16,3 +16,7 @@ deck/node_modules/
 # checker scratch
 *.mutated.*
 __pycache__/
+build/
+*.egg-info/
+__pycache__/
+fuzz_repro_*.jsonl
