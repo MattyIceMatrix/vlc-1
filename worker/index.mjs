@@ -278,7 +278,8 @@ export default {
         return Response.json({ ok: true, state: "confirmation sent" }, { headers: CORS });
       } catch (e) {
         bump("signup_mail_error");
-        return Response.json({ ok: false, error: "could not send the confirmation mail; try again later" }, { status: 502, headers: CORS });
+        return Response.json({ ok: false, error: "could not send the confirmation mail; try again later",
+          detail: String(e?.message ?? e).slice(0, 200), code: e?.code ?? null }, { status: 502, headers: CORS });
       }
     }
     if (url.pathname === "/api/confirm") {
