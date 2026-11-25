@@ -36,6 +36,30 @@ Nothing you paste is stored.</p>
 <textarea id="journal" placeholder='{"class":"EPOCH_START", ...}'></textarea>
 <p><button id="go">Check</button> <span id="status" class="muted"></span></p>
 <pre id="out" hidden></pre>
+<hr style="margin:2rem 0; border:0; border-top:1px solid #ddd">
+<div id="signup">
+<h2 style="font-size:1.1rem">Get notified when advanced services launch</h2>
+<p class="muted">Conformance marks, verified runs, levels 3–5 as a service. Your email is stored
+for launch notifications only — nothing else, no sharing, unsubscribe by replying to the first mail.</p>
+<p>
+  <input id="email" type="email" placeholder="you@example.com" style="font-size:1rem; padding:.45rem; width:16rem; max-width:70%">
+  <button id="join">Notify me</button>
+  <span id="joinmsg" class="muted"></span>
+</p>
+</div>
+<script>
+document.getElementById("join").onclick = async () => {
+  const m = document.getElementById("joinmsg");
+  m.textContent = "…";
+  try {
+    const r = await fetch("/api/signup", { method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: document.getElementById("email").value, source: "checker" }) });
+    const d = await r.json();
+    m.textContent = d.ok ? "You're on the list." : (d.error || "that didn't work");
+  } catch { m.textContent = "request failed — try again"; }
+};
+</script>
 <script>
 for (const b of document.querySelectorAll("button.demo")) b.onclick = async () => {
   const r = await fetch(b.dataset.src);

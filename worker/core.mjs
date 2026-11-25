@@ -112,7 +112,9 @@ export async function check(journalText, ad) {
     if (want == null || r.hash !== want) { broken = i; break; }
     prev = r.hash;
   }
-  if (broken >= 0) fail("VLC-L1-1", `record ${broken + 1} does not chain (recomputed binding differs)`);
+  // Record numbering follows the reference checker: records are indexed from 0
+  // in file order (conformance.py enumerates lines from 0).
+  if (broken >= 0) fail("VLC-L1-1", `binding broken at record ${broken}`);
   else ok("VLC-L1-1", `${recs.length} records chain from the declared root`);
 
   // ---- VLC-L1-3: the end marker carries the chain head -------------------
