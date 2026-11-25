@@ -116,6 +116,27 @@ a tested property, not a promise.
 
 ---
 
+## The live service (added 2026-11-25)
+
+The checker also runs as a public service at
+<https://vlc-1.moorematthew131.workers.dev> — all of it **PUBLIC**, none of it
+required (everything grades identically from a clean checkout):
+
+- `/checker.html` — paste a journal, get the L1/L2 subset verdict in the
+  browser, download your own report. Nothing pasted is stored.
+- `/verify.html` — check the Ed25519 signature on an operator-issued
+  **verified report** against the published key (`keys/vlc-report-signing.pub.json`,
+  `GET /api/pubkey`). Offline equivalent: `tools/verify_report.py`. What a
+  verified report is and is not: `VERIFIED-REPORTS.md`.
+- **CI**: `uses: MattyIceMatrix/vlc-1@main` in a GitHub workflow, or
+  `pip install git+https://github.com/MattyIceMatrix/vlc-1` → `vlc-check`.
+  Both run the reference checker itself.
+- The live subset is held to the reference by a fixed parity matrix, a
+  differential fuzzer and a full parity sweep (journal × adapter × Annex A
+  mutation), all in CI on every push.
+- **ASK FOR**: verified (signed) reports — issued by the operator, announced
+  through the signup list on the checker page.
+
 ## What we will tell you before you ask
 
 - **No SOC 2, no ISO 27001, no E&O insurance yet.** Level 4 is what we offer
