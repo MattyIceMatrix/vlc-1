@@ -11,6 +11,10 @@
     "run_worker_first": ["/api/*"]
   },
   "workers_dev": true,
+  // 2026-11-25, additive: outbound mail via Cloudflare Email Sending
+  // (sending domain mail.moore-labs.com, onboarded in the dashboard).
+  // Used for double opt-in confirmations and operator notifications.
+  "send_email": [{ "name": "EMAIL" }],
   "durable_objects": {
     "bindings": [{ "name": "SIGNUPS", "class_name": "Signups" }]
   },

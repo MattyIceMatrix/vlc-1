@@ -56,9 +56,15 @@ document.getElementById("join").onclick = async () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ email: document.getElementById("email").value, source: "checker" }) });
     const d = await r.json();
-    m.textContent = d.ok ? "You're on the list." : (d.error || "that didn't work");
+    m.textContent = d.ok ? (d.state === "already confirmed" ? "You're already on the list."
+      : "Almost there — check your inbox and click the confirmation link.")
+      : (d.error || "that didn't work");
   } catch { m.textContent = "request failed — try again"; }
 };
+if (location.hash === "#confirmed") {
+  document.getElementById("joinmsg").textContent = "Confirmed — you're on the list.";
+  document.getElementById("signup").scrollIntoView();
+}
 </script>
 <script>
 let lastReport = null;

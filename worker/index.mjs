@@ -19,6 +19,13 @@ export class Signups {
     this.sql = state.storage.sql;
     this.sql.exec(`CREATE TABLE IF NOT EXISTS signups (
       email TEXT PRIMARY KEY, ts TEXT NOT NULL, source TEXT NOT NULL)`);
+    // 2026-11-25, additive: double opt-in. New columns via guarded ALTER
+    // (SQLite has no IF NOT EXISTS for columns); rows from before double
+    // opt-in carry confirmed=1 so the existing list is not invalidated.
+    try {
+      this.sql.exec("ALTER TABLE signups ADD COLUMN confirmed INTEGER NOT NULL DEFAULT 1");
+      this.sql.exec("ALTER TABLE signups ADD COLUMN token TEXT");
+    } catch { /* columns already exist */ }
     // 2026-11-25, additive: usage counters. COUNTS ONLY -- event type, day,
     // verdict family. No journal content, no emails, no IPs: the page's
     // "nothing you paste is stored" promise holds.
@@ -77,16 +84,33 @@ export class Signups {
       return Response.json({ signups_total: total, events: rows });
     }
     if (request.method === "POST") {
-      const { email, source } = await request.json();
+      const { email, source, token } = await request.json();
+      // double opt-in: a new address is stored unconfirmed with its token; an
+      // already-confirmed address is left alone; re-signup of an unconfirmed
+      // address refreshes the token (new confirmation mail)
       this.sql.exec(
-        "INSERT INTO signups (email, ts, source) VALUES (?, ?, ?) ON CONFLICT(email) DO NOTHING",
-        email, new Date().toISOString(), source ?? "checker");
-      const n = this.sql.exec("SELECT COUNT(*) AS n FROM signups").one().n;
-      return Response.json({ ok: true, total: n });
+        `INSERT INTO signups (email, ts, source, confirmed, token) VALUES (?, ?, ?, 0, ?)
+         ON CONFLICT(email) DO UPDATE SET token = excluded.token, ts = excluded.ts
+         WHERE signups.confirmed = 0`,
+        email, new Date().toISOString(), source ?? "checker", token ?? null);
+      const row = this.sql.exec("SELECT confirmed FROM signups WHERE email = ?", email).one();
+      return Response.json({ ok: true, already_confirmed: row.confirmed === 1 });
+    }
+    if (url.pathname === "/confirm" && request.method === "PUT") {
+      const token = url.searchParams.get("token") ?? "";
+      const rows = token ? this.sql.exec("SELECT email FROM signups WHERE token = ? AND confirmed = 0", token).toArray() : [];
+      if (!rows.length) return Response.json({ ok: false });
+      this.sql.exec("UPDATE signups SET confirmed = 1, token = NULL WHERE token = ?", token);
+      return Response.json({ ok: true, email: rows[0].email });
     }
     if (request.method === "GET") {
-      const rows = this.sql.exec("SELECT email, ts, source FROM signups ORDER BY ts").toArray();
-      return Response.json({ count: rows.length, signups: rows });
+      const rows = this.sql.exec("SELECT email, ts, source, confirmed FROM signups ORDER BY ts").toArray();
+      return Response.json({
+        count: rows.length,
+        confirmed: rows.filter(r => r.confirmed === 1).length,
+        pending: rows.filter(r => r.confirmed !== 1).length,
+        signups: rows,
+      });
     }
     return new Response("method", { status: 405 });
   }
@@ -229,13 +253,52 @@ export default {
       if (!EMAIL_RE.test(email) || email.length > 254)
         return Response.json({ error: "that does not look like an email address" }, { status: 400, headers: CORS });
       const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
+      // double opt-in (2026-11-25): store unconfirmed with a token, email the
+      // address a confirmation link; the address only joins the list when its
+      // owner clicks. Stops typo'd and third-party addresses cold.
+      const token = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
       const r = await stub.fetch("https://do/signup", {
         method: "POST",
-        body: JSON.stringify({ email, source: String(body.source ?? "checker").slice(0, 40) }),
+        body: JSON.stringify({ email, source: String(body.source ?? "checker").slice(0, 40), token }),
       });
       const out = await r.json();
-      if (out.ok === true) bump("signup");
-      return Response.json({ ok: out.ok === true }, { headers: CORS });
+      if (out.ok !== true) return Response.json({ ok: false }, { headers: CORS });
+      if (out.already_confirmed === true) {
+        bump("signup_repeat");
+        return Response.json({ ok: true, state: "already confirmed" }, { headers: CORS });
+      }
+      try {
+        await env.EMAIL.send({
+          from: { email: "updates@mail.moore-labs.com", name: "Verifiable Log Checker" },
+          to: { email },
+          subject: "Confirm your signup — Verifiable Log Checker",
+          text: `You (or someone typing your address) asked for launch notifications from the Verifiable Log Checker.\n\nConfirm here:\n${url.origin}/api/confirm?token=${token}\n\nIf this wasn't you, ignore this mail and nothing is stored as confirmed.\nSpec: https://github.com/MattyIceMatrix/vlc-1\n`,
+        });
+        bump("signup_pending");
+        return Response.json({ ok: true, state: "confirmation sent" }, { headers: CORS });
+      } catch (e) {
+        bump("signup_mail_error");
+        return Response.json({ ok: false, error: "could not send the confirmation mail; try again later" }, { status: 502, headers: CORS });
+      }
+    }
+    if (url.pathname === "/api/confirm") {
+      const token = (url.searchParams.get("token") ?? "").slice(0, 80);
+      const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
+      const r = await stub.fetch("https://do/confirm?token=" + encodeURIComponent(token), { method: "PUT" });
+      const out = await r.json();
+      if (out.ok !== true)
+        return new Response("That confirmation link is not valid (already used, or expired by a newer signup).", { status: 410 });
+      bump("signup_confirmed");
+      // tell the operator the list grew; never let notification failure break the confirm
+      try {
+        await env.EMAIL.send({
+          from: { email: "updates@mail.moore-labs.com", name: "Verifiable Log Checker" },
+          to: { email: "moorematthew131@gmail.com" },
+          subject: "VLC list: new confirmed signup",
+          text: `${out.email} confirmed on ${new Date().toISOString()}.\nExport: GET ${url.origin}/api/signups (x-admin-key).\n`,
+        });
+      } catch { /* counted below either way */ }
+      return Response.redirect(url.origin + "/checker.html#confirmed", 302);
     }
     if (url.pathname === "/api/signups") {
       const key = request.headers.get("x-admin-key");
