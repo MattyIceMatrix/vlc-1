@@ -37,6 +37,19 @@ stated time.* What it does not attest: anything about the journal's producer,
 or any level the live subset does not grade (levels 3–5 need the reference
 checker).
 
+## Two issuing paths
+
+`POST /api/verify` signs a verdict the live subset computed itself
+(canonical- and prefix-chain journals). For everything else — merkle-tlog,
+`sha256-canonical-fields`, `hex-join`, the full adapter set — the operator
+runs the reference checker locally and `POST /api/sign-report` signs the
+submitted result; the signed wrapper states that division of labour plainly
+(`"checker": "conformance.py reference checker, run by the operator; this
+service signed the operator-submitted result"`). `tools/issue_verified_report.py`
+drives that flow and refuses to save anything it has not re-verified offline
+first. Either way, the verification story for the holder is identical:
+`tools/verify_report.py`, this repo's public key, no network.
+
 ## Issuing one (operator)
 
 `POST /api/verify` with the journal as the body requires the `x-admin-key`
