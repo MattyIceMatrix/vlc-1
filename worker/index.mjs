@@ -270,7 +270,7 @@ export default {
       try {
         await env.EMAIL.send({
           from: { email: "updates@mail.moore-labs.com", name: "Verifiable Log Checker" },
-          to: { email },
+          to: { email, name: email },
           subject: "Confirm your signup — Verifiable Log Checker",
           text: `You (or someone typing your address) asked for launch notifications from the Verifiable Log Checker.\n\nConfirm here:\n${url.origin}/api/confirm?token=${token}\n\nIf this wasn't you, ignore this mail and nothing is stored as confirmed.\nSpec: https://github.com/MattyIceMatrix/vlc-1\n`,
         });
@@ -294,7 +294,7 @@ export default {
       try {
         await env.EMAIL.send({
           from: { email: "updates@mail.moore-labs.com", name: "Verifiable Log Checker" },
-          to: { email: "moorematthew131@gmail.com" },
+          to: { email: "moorematthew131@gmail.com", name: "Matthew Moore" },
           subject: "VLC list: new confirmed signup",
           text: `${out.email} confirmed on ${new Date().toISOString()}.\nExport: GET ${url.origin}/api/signups (x-admin-key).\n`,
         });
