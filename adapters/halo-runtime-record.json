@@ -1,0 +1,11 @@
+{
+  "name": "halo-runtime-record",
+  "_basis": "Written 2026-11-25 from the public halo-record repository (bkuan001/halo-record): src/halo_record/canon.py (RFC 8785 + SHA-256, GENESIS_PREV of 64 zeros, compute_hash sets integrity.prev_hash and drops integrity.hash), src/halo_record/verify.py (chain walk, separate prev-link check), and halo-record.schema.json (integrity{alg, canon, prev_hash, hash} required; action.type as the event kind). NOT yet confirmed by the halo-record maintainer; offered on bkuan001/halo-record#15. Completeness fields are deliberately absent: halo-record states itself that the chain is integrity, not completeness, and holds completeness in an external witness -- so on the log alone this adapter can establish L1 at most, which is the honest ceiling of the format as shipped.",
+  "record_class_field": "action.type",
+  "integrity": {
+    "mechanism": "sha256-chain-jcs-nested",
+    "hash_field": "integrity.hash",
+    "prev_field": "integrity.prev_hash",
+    "root": {"kind": "constant", "value": "0000000000000000000000000000000000000000000000000000000000000000"}
+  }
+}

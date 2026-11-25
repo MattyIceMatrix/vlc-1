@@ -278,6 +278,60 @@ def main(out):
     dup_head = {"class": "HEAD", "content": '{"head": "%s", "head": "%s"}' % ("0" * 64, gh), "sig": "not-checked"}
     case("hex-join-end-marker-duplicate-head-name", good + [dup_head], hja, "VLC-L1-1", "FAIL")
 
+    # --- sha256-chain-jcs-nested (1.4.5-draft): RFC 8785, nested hash, ------
+    # --- carried prev link (the halo-record Runtime Record family) ----------
+    jc = copy.deepcopy(base)
+    jc["name"] = "jcs-nested-case"
+    jc["record_class_field"] = "class"
+    jc["integrity"] = {"mechanism": "sha256-chain-jcs-nested",
+                       "hash_field": "integrity.hash",
+                       "prev_field": "integrity.prev_hash",
+                       "root": {"kind": "constant", "value": "0" * 64},
+                       "end_marker": {"class": "END", "head_field": "head",
+                                      "self_bound": True}}
+    jca = os.path.join(out, "jcs-nested.adapter.json")
+    json.dump(jc, open(jca, "w"))
+
+    def jcs_canon(o):
+        return json.dumps(o, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+    def jcs_seal(body, prev_hex):
+        r = json.loads(json.dumps(body))
+        integ = r.setdefault("integrity", {})
+        integ["prev_hash"] = prev_hex
+        integ.pop("hash", None)
+        h = sha(jcs_canon(r).encode("utf-8"))
+        integ["hash"] = h
+        return r, h
+
+    prev, jrecs = "0" * 64, []
+    bodies = [{"class": "EPOCH_START", "producer": "jcs/1.0"}] + \
+             [{"class": "inference", "seq": i, "note": "héllo ☃ %d" % i}
+              for i in range(6)]
+    for b in bodies:
+        r, prev = jcs_seal(b, prev)
+        jrecs.append(r)
+    jend, jhead = jcs_seal({"class": "END", "records": 6, "lost_total": 0,
+                            "head": prev}, prev)
+    jcs_honest = jrecs + [jend]
+    # the non-ASCII notes above pin the ensure_ascii=False serialization: under
+    # sha256-chain-canonical these same records would hash differently
+    case("jcs-nested-honest", jcs_honest, jca, "VLC-L1-1", "PASS")
+    case("jcs-nested-honest-end-bound", jcs_honest, jca, "VLC-L1-3", "PASS")
+    jt = copy.deepcopy(jcs_honest)
+    jt[3]["note"] = "tampered"
+    case("jcs-nested-field-tampered", jt, jca, "VLC-L1-1", "FAIL")
+    jp = copy.deepcopy(jcs_honest)
+    jp[4]["integrity"]["prev_hash"] = "ab" * 32
+    case("jcs-nested-prev-link-edited", jp, jca, "VLC-L1-1", "FAIL")
+    js = copy.deepcopy(jcs_honest)
+    js[2], js[4] = js[4], js[2]
+    case("jcs-nested-reordered", js, jca, "VLC-L1-1", "FAIL")
+    jd = copy.deepcopy(jcs_honest)
+    del jd[3]
+    case("jcs-nested-interior-deleted", jd, jca, "VLC-L1-1", "FAIL")
+    case("jcs-nested-tail-truncated", jcs_honest[:-1], jca, "VLC-L1-3", "FAIL")
+
     for c in cases:
         print(" ".join(c))
 

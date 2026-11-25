@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.4-draft"
+VERSION = "VLC-1 1.4.5-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -194,6 +194,70 @@ def strip_hash_suffix(raw, hexhash):
     return raw[: m.start()]
 
 
+# --- RFC 8785 (JCS) canonicalization, guarded subset (1.4.5-draft) -----------
+# For JSON limited to: integers within +/-(2^53-1), no other numbers, and
+# object keys with no character above U+FFFF, Python's
+# json.dumps(sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+# emits exactly the RFC 8785 serialization: the escape set and shorthands
+# match ECMAScript's JSON.stringify, BMP-only keys make code-point order equal
+# UTF-16 order, and bounded integers print identically. Outside that subset
+# the equality is NOT guaranteed, so the checker refuses to recompute rather
+# than risk a wrong grade -- producers in this family (halo-record's recorder
+# among them) refuse to seal such values themselves, so a conforming log
+# never contains them.
+
+def jcs_guard(value, path="record"):
+    """None if canon_jcs() is exact RFC 8785 for value; else the first reason."""
+    if isinstance(value, bool) or value is None or isinstance(value, str):
+        return None
+    if isinstance(value, int):
+        return f"{path}: integer beyond 2^53-1" if abs(value) > 2 ** 53 - 1 else None
+    if isinstance(value, float):
+        return f"{path}: non-integer number"
+    if isinstance(value, dict):
+        for k, v in value.items():
+            if any(ord(c) > 0xFFFF for c in k):
+                return f"{path}: object key outside the BMP (JCS sorts keys by UTF-16 units)"
+            bad = jcs_guard(v, f"{path}.{k}")
+            if bad:
+                return bad
+        return None
+    if isinstance(value, list):
+        for i, v in enumerate(value):
+            bad = jcs_guard(v, f"{path}[{i}]")
+            if bad:
+                return bad
+        return None
+    return f"{path}: value of unserializable type"
+
+
+def canon_jcs(obj):
+    """RFC 8785 serialization of obj, valid only where jcs_guard(obj) is None."""
+    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
+def _put_path(d, path, value):
+    parts = str(path).split(".")
+    cur = d
+    for p in parts[:-1]:
+        nxt = cur.get(p)
+        if not isinstance(nxt, dict):
+            nxt = {}
+            cur[p] = nxt
+        cur = nxt
+    cur[parts[-1]] = value
+
+
+def _drop_path(d, path):
+    parts = str(path).split(".")
+    cur = d
+    for p in parts[:-1]:
+        cur = cur.get(p)
+        if not isinstance(cur, dict):
+            return
+    cur.pop(parts[-1], None)
+
+
 def rec_hash(prev, r, ad, prev_raw=b""):
     """Recompute the binding for one record. Returns hex or None."""
     mech = ad["integrity"]["mechanism"]
@@ -236,6 +300,29 @@ def rec_hash(prev, r, ad, prev_raw=b""):
         if not isinstance(v, str) or not HEX64.match(v):
             return None
         return sha256_hex((v + ad["integrity"].get("separator", "|") + prev.hex()).encode())
+    if mech == "sha256-chain-jcs-nested":
+        # The halo-record Runtime Record family (1.4.5-draft): RFC 8785 (JCS)
+        # canonicalization, SHA-256, with the hash at a NESTED path (e.g.
+        # integrity.hash) and the record CARRYING its predecessor link inside
+        # the hashed body (e.g. integrity.prev_hash). Recompute exactly as the
+        # producer's own verifier does: deep-copy the record, set the prev
+        # field to the recomputed predecessor's hex, drop the hash member,
+        # serialize per JCS, SHA-256. A record whose stored prev link
+        # disagrees with the true predecessor therefore recomputes to a
+        # different digest -- link breaks and content edits fail the same
+        # check. Values outside the guarded JCS subset return None ("no
+        # recomputable binding") rather than risk a wrong grade.
+        # The record is hashed AS DELIVERED (its carried prev link included),
+        # exactly the producer's sealing formula; whether that carried link
+        # names the true predecessor is the separate EXT-013 link check in
+        # check_l1, which this mechanism is registered for. (First cut here
+        # overwrote the link before hashing, which made an edited prev_hash
+        # invisible -- caught by the jcs-nested-prev-link-edited vector.)
+        if not r.hash or jcs_guard(r.obj) is not None:
+            return None
+        clone = json.loads(json.dumps(r.obj))
+        _drop_path(clone, hf)
+        return sha256_hex(canon_jcs(clone).encode("utf-8"))
     raise AdapterError(f"unknown integrity.mechanism {mech!r}")
 
 
@@ -734,7 +821,8 @@ def check_l1(recs, ad, res, ctx):
     # compared it with the hash of the record actually before it, so deleting
     # or reordering records left every hash valid. The link is checked here.
     link_field = (ad["integrity"].get("prev_field")
-                  if mech in ("sha256-prev-field", "sha256-canonical-fields", "sha256-hex-join") else None)
+                  if mech in ("sha256-prev-field", "sha256-canonical-fields", "sha256-hex-join",
+                              "sha256-chain-jcs-nested") else None)
     for r in body:
         if link_field is not None and str(dig(r.obj, link_field) or "") != prev.hex():
             res.fail("VLC-L1-1", f"record {r.i} does not link to its predecessor")
@@ -1674,7 +1762,8 @@ def mutate(lines, how, ad):
 # adapter validation -- a malformed adapter is an error, not a verdict
 # ===========================================================================
 MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-prev-raw",
-              "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join")
+              "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join",
+              "sha256-chain-jcs-nested")
 ROOT_KINDS = ("zero", "constant", "field_of_first_record")
 LOSS_MODES = ("none", "declaration", "ordinal")
 PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
@@ -1759,7 +1848,7 @@ def validate_adapter(ad):
             need(isinstance(v, str) and HEX64.match(v.lower()), "integrity.root.value must be 64 hex characters")
         if root.get("kind") == "field_of_first_record":
             need(isinstance(root.get("field"), str), "integrity.root.field (a string) is required")
-        if integ["mechanism"] in ("sha256-prev-field", "sha256-canonical-fields"):
+        if integ["mechanism"] in ("sha256-prev-field", "sha256-canonical-fields", "sha256-chain-jcs-nested"):
             need(isinstance(integ.get("prev_field"), str), "integrity.prev_field (a string) is required")
         if integ["mechanism"] == "sha256-hex-join":
             need(isinstance(integ.get("content_field"), str), "integrity.content_field (a string) is required")
