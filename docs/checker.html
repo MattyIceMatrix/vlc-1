@@ -20,13 +20,24 @@
 mechanism, in parity with the reference checker — the parity test ships in the repo
 (<code>worker/parity.test.mjs</code>). Levels 3–5, the other mechanisms and the full 25-adapter set need
 <a href="https://github.com/MattyIceMatrix/vlc-1">the reference checker</a> (<code>conformance.py</code>, MIT; spec CC0).
-Nothing you paste is stored.</p>
+Nothing you paste is stored. Holding a <strong>signed report</strong> from the operator?
+<a href="verify.html">Verify its signature here</a>.</p>
 <p>
   <label>Adapter:
     <select id="adapter">
       <option value="generic-appjsonl">generic-appjsonl</option>
       <option value="generic-appjsonl-policy">generic-appjsonl-policy</option>
     </select>
+    <script>
+    // keep the menu in step with the endpoint; the two options above are the
+    // no-JS fallback
+    fetch("/api/adapters").then(r => r.json()).then(d => {
+      const sel = document.getElementById("adapter");
+      for (const name of d.adapters ?? []) if (![...sel.options].some(o => o.value === name)) {
+        const o = document.createElement("option"); o.value = o.textContent = name; sel.appendChild(o);
+      }
+    }).catch(() => {});
+    </script>
   </label>
 </p>
 <p class="muted">No journal handy? Load one:

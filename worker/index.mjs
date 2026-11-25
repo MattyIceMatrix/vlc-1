@@ -121,6 +121,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ADAPTERS = {
   "generic-appjsonl": genericAdapter,
   "generic-appjsonl-policy": genericPolicyAdapter,
+  // 2026-11-25: the observer prefix-chain adapters were staged here and
+  // PULLED before deploy: a parity spot check against the reference showed
+  // the core's sha256-chain-prefix path grades them wrongly (the mechanism's
+  // real semantics live in check_l1's structure, not just rec_hash). They
+  // return when the port is proven, not before.
 };
 const MAX_BYTES = 2_000_000;
 
@@ -227,6 +232,11 @@ export default {
       } catch (e) {
         return Response.json({ error: String(e?.message ?? e) }, { status: 422 });
       }
+    }
+    if (url.pathname === "/api/adapters") {
+      // public: which adapters this live subset serves (the full 25-adapter
+      // set needs the reference checker)
+      return Response.json({ adapters: Object.keys(ADAPTERS) }, { headers: CORS });
     }
     if (url.pathname === "/api/pubkey") {
       // public: the key anyone verifies reports against; also committed to

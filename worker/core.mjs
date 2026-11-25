@@ -64,8 +64,14 @@ export async function chainRoot(recs, ad) {
 }
 
 function stripHashSuffix(raw, hexhash) {
-  const i = raw.lastIndexOf(hexhash);
-  return i < 0 ? null : raw.slice(0, i);
+  // Reference semantics exactly (conformance.py strip_hash_suffix): the
+  // chained text is the record minus its whole trailing hash MEMBER --
+  // comma, key, value and the closing brace stay out of the hash input.
+  // The earlier port cut at the hash VALUE, leaving `,"h":"` in the text,
+  // which broke every prefix-chain grade (caught by the observer-adapter
+  // parity spot check, 2026-11-25). hexhash is hex, so no regex escaping.
+  const m = raw.match(new RegExp(',\\s*"[A-Za-z0-9_]+"\\s*:\\s*"' + hexhash + '"\\s*\\}\\s*$'));
+  return m ? raw.slice(0, m.index) : null;
 }
 
 export async function recHash(prevHex, r, ad) {
@@ -230,7 +236,7 @@ export async function check(journalText, ad) {
     records: recs.length,
     head: prev,
     caveats: [
-      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain and prefix-chain mechanisms only.",
+      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain (sha256-chain-canonical) mechanism only.",
       "Levels 3-5, the other mechanisms and the full 25-adapter set need the reference checker: conformance.py in the repository.",
       ...(floats ? ["A record contains a non-integer number; canonical-JSON parity with the reference checker is not guaranteed for floats."] : []),
     ],

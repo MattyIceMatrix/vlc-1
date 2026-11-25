@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify a signed report — Verifiable Log Checker</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.5rem; } code, textarea, pre { font-family: ui-monospace, monospace; }
+  textarea { width: 100%; height: 14rem; font-size: 13px; }
+  button { font-size: 1rem; padding: .5rem 1.2rem; cursor: pointer; }
+  .ok { color: #0a7a2f; font-weight: 600; } .fail { color: #b00020; font-weight: 600; } .muted { color: #666; font-size: .9rem; }
+  pre { background: #f6f6f6; padding: 1rem; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>Verify a signed report</h1>
+<p>Paste a <strong>verified report</strong> — the JSON file issued by the Verifiable Log Checker
+operator (<code>{"report": …, "signature": …}</code>). Your browser recomputes the Ed25519
+signature over the report's canonical JSON against the service's published public key.
+<strong>Nothing you paste leaves this page</strong>: the only request made is fetching the public
+key, and the same check runs offline with
+<a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/tools/verify_report.py">tools/verify_report.py</a>
+(stdlib-only Python) against
+<a href="https://github.com/MattyIceMatrix/vlc-1/blob/main/keys/vlc-report-signing.pub.json">the key committed in the spec repository</a>.</p>
+<p class="muted">What a valid signature attests: this exact verdict, over a journal with this head
+hash and record count, was computed by the operator's checker at the stated time. A report anyone
+edited afterwards — a flipped verdict, a changed count — fails.</p>
+<textarea id="doc" placeholder='{"report": {...}, "signature": {"alg": "Ed25519", ...}}'></textarea>
+<p><button id="go">Verify</button> <span id="status" class="muted"></span></p>
+<pre id="out" hidden></pre>
+<p class="muted"><a href="checker.html">← back to the live checker</a></p>
+<script>
+// Python-json.dumps-parity canonicalization (sorted keys, compact separators,
+// ensure_ascii) — identical to worker/core.mjs canon(), which the service signs with.
+const aj = s => JSON.stringify(s).replace(/[\u007f-￿]/g, c => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+const canon = o => typeof o === "string" ? aj(o) : (o === null || typeof o !== "object") ? JSON.stringify(o)
+  : Array.isArray(o) ? "[" + o.map(canon).join(",") + "]"
+  : "{" + Object.keys(o).sort().map(k => aj(k) + ":" + canon(o[k])).join(",") + "}";
+const hexToBytes = h => new Uint8Array((h.match(/../g) ?? []).map(x => parseInt(x, 16)));
+const b64ToBytes = b => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+
+document.getElementById("go").onclick = async () => {
+  const s = document.getElementById("status"), out = document.getElementById("out");
+  out.hidden = true; s.textContent = "verifying…";
+  try {
+    const doc = JSON.parse(document.getElementById("doc").value);
+    if (!doc.report || !doc.signature?.sig_hex) throw new Error("expected {report, signature:{sig_hex}}");
+    const pub = await fetch("/api/pubkey").then(r => r.json());
+    out.hidden = false; s.textContent = "";
+    if (doc.signature.key_id && doc.signature.key_id !== pub.key_id) {
+      out.innerHTML = `<span class="fail">INVALID</span> — the report names signing key ${doc.signature.key_id}, but this service's current key is ${pub.key_id}. If the key was rotated, verify offline against the archived key in the repository.`;
+      return;
+    }
+    const key = await crypto.subtle.importKey("spki", b64ToBytes(pub.public_key_spki_b64), { name: "Ed25519" }, false, ["verify"]);
+    const good = await crypto.subtle.verify({ name: "Ed25519" }, key,
+      hexToBytes(doc.signature.sig_hex), new TextEncoder().encode(canon(doc.report)));
+    const r = doc.report;
+    out.innerHTML = good
+      ? `<span class="ok">VALID</span> — Ed25519 signature by key ${pub.key_id} over this exact report.\n\n` +
+        `verdict:   ${r.verdict}\nrecords:   ${r.records}\nhead:      ${String(r.head ?? "").slice(0, 32)}…\n` +
+        `issued at: ${r.issued_at}\nissuer:    ${r.issuer}\nchecker:   ${r.checker}`
+      : `<span class="fail">INVALID</span> — the signature does not match this report's content. The report was altered after signing, or it was not issued by this service.`;
+  } catch (e) {
+    out.hidden = false; s.textContent = "";
+    out.innerHTML = `<span class="fail">could not verify:</span> ${String(e.message ?? e)}`;
+  }
+};
+</script>
+</body>
+</html>
