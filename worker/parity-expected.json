@@ -1,0 +1,32 @@
+{
+ "L0-plain.jsonl": {
+  "VLC-L1-1": false,
+  "VLC-L1-3": false,
+  "VLC-L2-5": false
+ },
+ "L1-hashchain.jsonl": {
+  "VLC-L1-1": true,
+  "VLC-L1-3": true,
+  "VLC-L2-5": false
+ },
+ "L2-accounted.jsonl": {
+  "VLC-L1-1": true,
+  "VLC-L1-3": true,
+  "VLC-L2-5": true
+ },
+ "L2-looks-complete.jsonl": {
+  "VLC-L1-1": true,
+  "VLC-L1-3": true,
+  "VLC-L2-5": true
+ },
+ "L3-coverage.jsonl": {
+  "VLC-L1-1": true,
+  "VLC-L1-3": true,
+  "VLC-L2-5": true
+ },
+ "L4-policybound.jsonl": {
+  "VLC-L1-1": false,
+  "VLC-L1-3": false,
+  "VLC-L2-5": false
+ }
+}

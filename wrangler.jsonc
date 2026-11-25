@@ -4,8 +4,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vlc-1",
   "compatibility_date": "2026-10-19",
+  "main": "worker/index.mjs",
   "assets": {
-    "directory": "./docs"
+    "directory": "./docs",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
   },
   "workers_dev": true
 }

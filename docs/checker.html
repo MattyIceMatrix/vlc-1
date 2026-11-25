@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verifiable Log Checker — live</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.5rem; } code, textarea, pre { font-family: ui-monospace, monospace; }
+  textarea { width: 100%; height: 14rem; font-size: 13px; }
+  button { font-size: 1rem; padding: .5rem 1.2rem; cursor: pointer; }
+  .ok { color: #0a7a2f; } .fail { color: #b00020; } .muted { color: #666; font-size: .9rem; }
+  pre { background: #f6f6f6; padding: 1rem; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>Verifiable Log Checker <span class="muted">— live subset</span></h1>
+<p>Paste a JSONL journal. This endpoint grades <strong>VLC-L1-1</strong> (chain), <strong>VLC-L1-3</strong>
+(bound end marker) and <strong>VLC-L2-5</strong> (the completeness identity) for the canonical-chain
+mechanism, in parity with the reference checker — the parity test ships in the repo
+(<code>worker/parity.test.mjs</code>). Levels 3–5, the other mechanisms and the full 25-adapter set need
+<a href="https://github.com/MattyIceMatrix/vlc-1">the reference checker</a> (<code>conformance.py</code>, MIT; spec CC0).
+Nothing you paste is stored.</p>
+<p>
+  <label>Adapter:
+    <select id="adapter">
+      <option value="generic-appjsonl">generic-appjsonl</option>
+      <option value="generic-appjsonl-policy">generic-appjsonl-policy</option>
+    </select>
+  </label>
+</p>
+<textarea id="journal" placeholder='{"class":"EPOCH_START", ...}'></textarea>
+<p><button id="go">Check</button> <span id="status" class="muted"></span></p>
+<pre id="out" hidden></pre>
+<script>
+document.getElementById("go").onclick = async () => {
+  const s = document.getElementById("status"), out = document.getElementById("out");
+  s.textContent = "checking…"; out.hidden = true;
+  try {
+    const r = await fetch("/api/check?adapter=" + encodeURIComponent(document.getElementById("adapter").value),
+      { method: "POST", body: document.getElementById("journal").value });
+    const d = await r.json();
+    s.textContent = "";
+    out.hidden = false;
+    out.innerHTML = d.error ? `<span class="fail">${d.error}</span>` :
+      `verdict: <span class="${d.verdict.includes("PASS") ? "ok" : "fail"}">${d.verdict}</span>  (${d.records} records, head ${String(d.head).slice(0,16)}…)\n\n` +
+      d.results.map(x => `${x.ok ? '<span class="ok">ok  </span>' : '<span class="fail">FAIL</span>'} ${x.check}  ${x.note}`).join("\n") +
+      "\n\n" + d.caveats.map(c => "note: " + c).join("\n");
+  } catch (e) { s.textContent = ""; out.hidden = false; out.textContent = "request failed: " + e; }
+};
+</script>
+</body>
+</html>
