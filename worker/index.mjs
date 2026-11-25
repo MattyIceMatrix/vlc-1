@@ -7,6 +7,7 @@ import genericAdapter from "../adapters/generic-appjsonl.json";
 import genericPolicyAdapter from "../adapters/generic-appjsonl-policy.json";
 import observerAdapter from "../adapters/observer.json";
 import observerLegacyAdapter from "../adapters/observer-legacy.json";
+import haloAdapter from "../adapters/halo-runtime-record.json";
 
 // ---------------------------------------------------------------------------
 // Signups: a mailing list for future advanced services (conformance marks,
@@ -131,6 +132,9 @@ const ADAPTERS = {
   // mutation agrees with the reference (208 pairs at porting time).
   "observer": observerAdapter,
   "observer-legacy": observerLegacyAdapter,
+  // 2026-11-25: the RFC 8785 family (1.4.5-draft), served once the parity
+  // sweep covered it -- same proof-before-serving rule as the prefix pair.
+  "halo-runtime-record": haloAdapter,
 };
 const MAX_BYTES = 2_000_000;
 

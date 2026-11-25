@@ -92,7 +92,54 @@ export async function recHash(prevHex, r, ad) {
     for (const k of Object.keys(r.obj)) if (k !== hf) body[k] = r.obj[k];
     return sha256Hex(prevHex + canon(body));
   }
+  if (mech === "sha256-chain-jcs-nested") {
+    // 1.4.5-draft, halo-record family: SHA-256 over the RFC 8785 (JCS)
+    // serialization of the record AS DELIVERED minus its nested hash member;
+    // the carried prev link is checked separately (EXT-013) in the walk.
+    // ECMAScript's JSON.stringify IS the JCS string/number serializer, and
+    // native sort is UTF-16 code-unit order -- exactly RFC 8785's key order
+    // -- so this port is exact wherever the guard passes. Floats make the
+    // record unrecomputable, as in the reference (producers in this family
+    // refuse to seal them); ints beyond 2^53 never reach here (the loader
+    // already answers NOT GRADABLE LIVE for those).
+    // An object key above the BMP: this port could grade it exactly, but the
+    // reference checker's guarded subset refuses it, and parity with the
+    // reference outranks capability -- both graders must say the same thing.
+    if (!r.hash || hasFloat(r.obj) || hasAstralKey(r.obj)) return null;
+    const clone = JSON.parse(JSON.stringify(r.obj));
+    dropPath(clone, hf);
+    return sha256Hex(canonJcs(clone));
+  }
   throw new Error(`mechanism ${mech} needs the reference checker`);
+}
+
+// RFC 8785 serialization: JSON.stringify's escaping and number forms are the
+// JCS rules; all that is added is recursive key sorting (default sort =
+// UTF-16 code-unit order, which is what RFC 8785 specifies).
+export function canonJcs(obj) {
+  if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
+  if (Array.isArray(obj)) return "[" + obj.map(canonJcs).join(",") + "]";
+  return "{" + Object.keys(obj).sort().map(k => JSON.stringify(k) + ":" + canonJcs(obj[k])).join(",") + "}";
+}
+
+function dropPath(d, path) {
+  const parts = String(path).split(".");
+  let cur = d;
+  for (const p of parts.slice(0, -1)) {
+    cur = cur?.[p];
+    if (cur == null || typeof cur !== "object") return;
+  }
+  if (cur && typeof cur === "object") delete cur[parts[parts.length - 1]];
+}
+
+function hasAstralKey(x) {
+  if (Array.isArray(x)) return x.some(hasAstralKey);
+  if (x === null || typeof x !== "object") return false;
+  for (const k of Object.keys(x)) {
+    for (const c of k) if (c.codePointAt(0) > 0xFFFF) return true;
+    if (hasAstralKey(x[k])) return true;
+  }
+  return false;
 }
 
 function hasFloat(x) {
@@ -183,8 +230,20 @@ export async function check(journalText, ad) {
   if (!l1Done) {
     const start = skipFirst ? 1 : 0;
     const stop = end ? recs.length - 1 : recs.length; // end marker walked separately
+    // EXT-013, as in the reference: where the mechanism's records CARRY their
+    // predecessor link inside the hashed body, each body record's carried
+    // link must equal the recomputed predecessor -- a record is
+    // self-consistent whatever its link says, so without this check deleting
+    // or reordering records leaves every hash valid.
+    const linkField = ad.integrity.mechanism === "sha256-chain-jcs-nested"
+      ? ad.integrity.prev_field : null;
     for (let i = start; i < stop; i++) {
       const r = recs[i];
+      if (linkField != null && String(dig(r.obj, linkField) ?? "") !== prev) {
+        fail("VLC-L1-1", `record ${i} does not link to its predecessor`);
+        fail("VLC-L1-3", `not evaluated: the chain binding is broken at record ${i}, before the end marker could be checked`);
+        l1Done = true; break;
+      }
       const want = await recHash(prev, r, ad);
       if (want == null) {
         fail("VLC-L1-1", `record ${i} carries no recomputable binding`);
@@ -286,7 +345,7 @@ export async function check(journalText, ad) {
     records: recs.length,
     head: prev,
     caveats: [
-      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain and prefix-chain mechanisms only.",
+      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain, prefix-chain and jcs-nested mechanisms only.",
       "Levels 3-5, the other mechanisms and the full 25-adapter set need the reference checker: conformance.py in the repository.",
       ...(floats ? ["A record contains a non-integer number; canonical-JSON parity with the reference checker is not guaranteed for floats."] : []),
     ],

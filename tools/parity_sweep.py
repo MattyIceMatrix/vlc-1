@@ -34,11 +34,13 @@ HARNESS = os.path.join(REPO, "worker", "fuzz_harness.mjs")
 CHECKS = ("VLC-L1-1", "VLC-L1-3", "VLC-L2-5")
 
 # exactly the set the live endpoint serves (worker/index.mjs ADAPTERS)
-SERVED = ["generic-appjsonl", "generic-appjsonl-policy", "observer", "observer-legacy"]
+SERVED = ["generic-appjsonl", "generic-appjsonl-policy", "observer", "observer-legacy",
+          "halo-runtime-record"]
 
 MUTATIONS = ["flip-byte", "drop-interior", "truncate-tail"]
 
-JOURNAL_DIRS = ["examples", os.path.join("examples", "reference-impl")]
+JOURNAL_DIRS = ["examples", os.path.join("examples", "reference-impl"),
+                os.path.join("examples", "third-party", "halo-record-synthetic")]
 
 
 def journals():
