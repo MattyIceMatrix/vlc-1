@@ -29,10 +29,19 @@ Nothing you paste is stored.</p>
     </select>
   </label>
 </p>
+<p class="muted">No journal handy? Load one:
+  <button type="button" class="demo" data-src="examples/demo-accounted.jsonl">a compliant journal</button>
+  <button type="button" class="demo" data-src="examples/demo-tampered.jsonl">the same journal, one record tampered</button>
+</p>
 <textarea id="journal" placeholder='{"class":"EPOCH_START", ...}'></textarea>
 <p><button id="go">Check</button> <span id="status" class="muted"></span></p>
 <pre id="out" hidden></pre>
 <script>
+for (const b of document.querySelectorAll("button.demo")) b.onclick = async () => {
+  const r = await fetch(b.dataset.src);
+  document.getElementById("journal").value = await r.text();
+  document.getElementById("go").click();
+};
 document.getElementById("go").onclick = async () => {
   const s = document.getElementById("status"), out = document.getElementById("out");
   s.textContent = "checking…"; out.hidden = true;
