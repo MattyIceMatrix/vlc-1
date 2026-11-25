@@ -5,7 +5,6 @@ import { check } from "./core.mjs";
 import { signReport } from "./signing.mjs";
 import genericAdapter from "../adapters/generic-appjsonl.json";
 import genericPolicyAdapter from "../adapters/generic-appjsonl-policy.json";
-import pubKey from "../keys/vlc-report-signing.pub.json";
 
 // ---------------------------------------------------------------------------
 // Signups: a mailing list for future advanced services (conformance marks,
@@ -26,6 +25,30 @@ export class Signups {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS events (
       day TEXT NOT NULL, type TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (day, type))`);
+    // 2026-11-25, additive: the report-signing key. Generated INSIDE this
+    // Durable Object on first use and never exported -- no human ever sees
+    // the private key, there is nothing to paste into a dashboard and
+    // nothing to leak from a laptop or a transcript. Only the PUBLIC half
+    // leaves (via /pubkey), to be committed to the spec repo.
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS signing_keys (
+      key_id TEXT PRIMARY KEY, pkcs8_b64 TEXT NOT NULL, spki_b64 TEXT NOT NULL,
+      raw_hex TEXT NOT NULL, created TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1)`);
+  }
+  async _activeKey() {
+    const rows = this.sql.exec("SELECT * FROM signing_keys WHERE active = 1 ORDER BY created DESC LIMIT 1").toArray();
+    if (rows.length) return rows[0];
+    const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]);
+    const pkcs8 = new Uint8Array(await crypto.subtle.exportKey("pkcs8", pair.privateKey));
+    const spki = new Uint8Array(await crypto.subtle.exportKey("spki", pair.publicKey));
+    const raw = spki.slice(spki.length - 32);
+    const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", raw));
+    const hex = (a) => Array.from(a).map(b => b.toString(16).padStart(2, "0")).join("");
+    const b64 = (a) => btoa(String.fromCharCode(...a));
+    const row = { key_id: hex(digest).slice(0, 16), pkcs8_b64: b64(pkcs8), spki_b64: b64(spki),
+                  raw_hex: hex(raw), created: new Date().toISOString(), active: 1 };
+    this.sql.exec("INSERT INTO signing_keys (key_id, pkcs8_b64, spki_b64, raw_hex, created, active) VALUES (?, ?, ?, ?, ?, 1)",
+      row.key_id, row.pkcs8_b64, row.spki_b64, row.raw_hex, row.created);
+    return row;
   }
   async fetch(request) {
     const url = new URL(request.url);
@@ -36,6 +59,17 @@ export class Signups {
         "INSERT INTO events (day, type, n) VALUES (?, ?, 1) ON CONFLICT(day, type) DO UPDATE SET n = n + 1",
         day, type);
       return Response.json({ ok: true });
+    }
+    if (url.pathname === "/pubkey" && request.method === "GET") {
+      const k = await this._activeKey();
+      return Response.json({ alg: "Ed25519", key_id: k.key_id, public_key_raw_hex: k.raw_hex,
+                             public_key_spki_b64: k.spki_b64, created: k.created });
+    }
+    if (url.pathname === "/sign" && request.method === "POST") {
+      const { report } = await request.json();
+      const k = await this._activeKey();
+      const sig = await signReport(report, k.pkcs8_b64);
+      return Response.json({ sig_hex: sig, key_id: k.key_id });
     }
     if (url.pathname === "/stats" && request.method === "GET") {
       const rows = this.sql.exec("SELECT day, type, n FROM events ORDER BY day, type").toArray();
@@ -144,30 +178,37 @@ export default {
       const key = request.headers.get("x-admin-key");
       if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
         return Response.json({ error: "verified reports are issued by the operator; join the list on /checker.html for launch" }, { status: 403 });
-      if (!env.SIGNING_KEY)
-        return Response.json({ error: "SIGNING_KEY not set in the Worker's variables" }, { status: 503 });
       try {
         const [err, out] = await buildReport(request, url);
         if (err) return err;
+        const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
+        const pub = await (await stub.fetch("https://do/pubkey")).json();
         const report = {
           report: "VLC verified report",
           issued_at: new Date().toISOString(),
           issuer: "vlc-1.moorematthew131.workers.dev",
           checker: "vlc-1 live subset (VLC-L1-1, VLC-L1-3, VLC-L2-5; canonical-chain)",
-          key_id: pubKey.key_id,
+          key_id: pub.key_id,
           spec: "https://github.com/MattyIceMatrix/vlc-1",
           ...out,
         };
-        const sig = await signReport(report, env.SIGNING_KEY);
+        const signed = await (await stub.fetch("https://do/sign", {
+          method: "POST", body: JSON.stringify({ report }) })).json();
         bump("verify_issued");
         return Response.json({
           report,
-          signature: { alg: "Ed25519", key_id: pubKey.key_id, signed: "canonical JSON of .report (sorted keys, compact separators)", sig_hex: sig },
+          signature: { alg: "Ed25519", key_id: signed.key_id, signed: "canonical JSON of .report (sorted keys, compact separators)", sig_hex: signed.sig_hex },
           verify_with: "tools/verify_report.py in the spec repo, against keys/vlc-report-signing.pub.json",
         });
       } catch (e) {
         return Response.json({ error: String(e?.message ?? e) }, { status: 422 });
       }
+    }
+    if (url.pathname === "/api/pubkey") {
+      // public: the key anyone verifies reports against; also committed to
+      // the spec repo (keys/vlc-report-signing.pub.json)
+      const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
+      return stub.fetch("https://do/pubkey");
     }
     if (url.pathname === "/api/stats") {
       const key = request.headers.get("x-admin-key");

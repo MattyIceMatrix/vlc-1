@@ -10,8 +10,10 @@ a JSON file.
 
 A **verified report** closes that gap. It is the same server-computed verdict,
 issued by the operator through `POST /api/verify`, signed with an Ed25519 key
-that exists only inside the Worker (Cloudflare secret `SIGNING_KEY`; it is in
-no repository and no backup). The matching public key is committed here:
+that is **generated inside the Worker's Durable Object on first use and never
+exported**: no dashboard paste, no laptop copy, no transcript, no backup — the
+private key has never existed anywhere but Cloudflare's storage. Only the
+public half leaves, via `GET /api/pubkey`, and is committed here:
 
 - `keys/vlc-report-signing.pub.json` — key id, raw public key (hex), SPKI (base64)
 
@@ -47,7 +49,8 @@ tampered-report rejection.
 
 ## Key rotation
 
-Rotation = new keypair, new `key_id`, a new entry committed to `keys/`, old
-public keys left in place so old reports stay verifiable. A report's
-`signature.key_id` names the key that signed it; `tools/verify_report.py`
-refuses a key-id mismatch rather than guessing.
+Rotation = mark the active row inactive in the Durable Object's
+`signing_keys` table (a fresh key generates on the next issue), commit the
+new public key to `keys/`, and leave old public keys in place so old reports
+stay verifiable. A report's `signature.key_id` names the key that signed it;
+`tools/verify_report.py` refuses a key-id mismatch rather than guessing.
