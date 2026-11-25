@@ -5,6 +5,8 @@ import { check } from "./core.mjs";
 import { signReport } from "./signing.mjs";
 import genericAdapter from "../adapters/generic-appjsonl.json";
 import genericPolicyAdapter from "../adapters/generic-appjsonl-policy.json";
+import observerAdapter from "../adapters/observer.json";
+import observerLegacyAdapter from "../adapters/observer-legacy.json";
 
 // ---------------------------------------------------------------------------
 // Signups: a mailing list for future advanced services (conformance marks,
@@ -121,11 +123,14 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ADAPTERS = {
   "generic-appjsonl": genericAdapter,
   "generic-appjsonl-policy": genericPolicyAdapter,
-  // 2026-11-25: the observer prefix-chain adapters were staged here and
-  // PULLED before deploy: a parity spot check against the reference showed
-  // the core's sha256-chain-prefix path grades them wrongly (the mechanism's
-  // real semantics live in check_l1's structure, not just rec_hash). They
-  // return when the port is proven, not before.
+  // 2026-11-25: the prefix-chain adapters. First staged and PULLED when a
+  // parity spot check showed wrong grades; served now that the chain walk is
+  // ported structurally from check_l1 (root-from-first-record, last-record
+  // end marker, separate end-marker binding) and proven by
+  // tools/parity_sweep.py: every repo journal x served adapter x Annex A
+  // mutation agrees with the reference (208 pairs at porting time).
+  "observer": observerAdapter,
+  "observer-legacy": observerLegacyAdapter,
 };
 const MAX_BYTES = 2_000_000;
 

@@ -18,6 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Parity sweep (every served journal x adapter x mutation)
+        run: |
+          python3 tools/parity_sweep.py
       - name: Differential fuzz (JS worker core vs Python reference)
         run: |
           python3 tools/fuzz_differential.py 300 "${{ github.run_number }}"

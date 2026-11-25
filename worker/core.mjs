@@ -145,40 +145,91 @@ export async function check(journalText, ad) {
     results: [{ check: "input", ok: false, note: "the journal is empty - paste JSONL records or load a demo journal" }],
     caveats: [] };
 
-  // ---- VLC-L1-1: every record chains from the declared root -------------
-  let prev = await chainRoot(recs, ad);
-  let broken = -1;
-  for (const [i, r] of recs.entries()) {
-    const want = await recHash(prev, r, ad);
-    if (want == null || r.hash !== want) { broken = i; break; }
-    prev = r.hash;
-  }
-  // Record numbering follows the reference checker: records are indexed from 0
-  // in file order (conformance.py enumerates lines from 0).
-  if (broken >= 0) fail("VLC-L1-1", `binding broken at record ${broken}`);
-  else ok("VLC-L1-1", `${recs.length} records chain from the declared root`);
+  // ---- VLC-L1-1 and VLC-L1-3: the chain walk, reference semantics ---------
+  // Ported structurally from conformance.py check_l1 (2026-11-25, after the
+  // observer-adapter parity check exposed the old walk):
+  //  * root kind field_of_first_record: record 0 IS the root statement -- its
+  //    own hash must EQUAL the derived root, and the walk starts at record 1;
+  //  * only the LAST record can be the end marker (an end-class record in the
+  //    middle is just a record);
+  //  * the end marker is walked separately: its head CLAIM is compared with
+  //    the head of what precedes it, then its OWN binding is recomputed --
+  //    which can still fail VLC-L1-1 after a clean body walk (EXT-022);
+  //  * a broken chain returns before VLC-L1-3 is ever evaluated.
+  // Record numbering follows the reference: file order, from 0.
+  const rootHex = await chainRoot(recs, ad);
+  const em = ad.integrity.end_marker ?? null;
+  let endBound = false;
+  let end = null;       // only meaningful when the LAST record carries the class
+  let prev = rootHex;   // the recomputed head as the walk advances
+  let l1Done = false;   // true once L1-1/L1-3 verdicts are emitted
 
-  // ---- VLC-L1-3: the end marker carries the chain head -------------------
-  const em = ad.integrity.end_marker ?? {};
-  const end = [...recs].reverse().find(r => r.cls === em.class) ?? null;
-  const headBeforeEnd = async () => {
-    let p = await chainRoot(recs, ad);
-    for (const r of recs) { if (r === end) break; const w = await recHash(p, r, ad); if (w == null || r.hash !== w) return null; p = r.hash; }
-    return p;
-  };
-  if (!end) fail("VLC-L1-3", "no end marker record found");
-  // Reference semantics: a chain break stops check_l1 before the end-marker
-  // comparison ever runs, so a broken chain never yields a PASS on VLC-L1-3
-  // (fuzzer-found divergence, 2026-11-25: duplicate-record journals).
-  else if (broken >= 0) fail("VLC-L1-3", `not evaluated: the chain binding is broken at record ${broken}, before the end marker could be checked`);
-  else {
-    let headField = em.head_field ?? "head";
-    let claimed = dig(end.obj, headField);
-    if (claimed == null && em.head_field_fallback) { headField = em.head_field_fallback; claimed = dig(end.obj, headField); }
-    const expected = em.self_bound === false || headField === em.head_field_fallback ? await headBeforeEnd() : await headBeforeEnd();
-    if (claimed == null) fail("VLC-L1-3", "end marker carries no head value");
-    else if (String(claimed) !== expected && String(claimed) !== prev) fail("VLC-L1-3", "end marker head does not match the recomputed binding");
-    else ok("VLC-L1-3");
+  if (rootHex == null) {
+    fail("VLC-L1-1", "chain root not derivable from the delivered set");
+    fail("VLC-L1-3", "not evaluated: no chain root");
+    l1Done = true;
+  }
+  const skipFirst = (ad.integrity.root?.kind === "field_of_first_record");
+  if (!l1Done && skipFirst && recs[0].hash && recs[0].hash !== rootHex) {
+    fail("VLC-L1-1", "root record hash does not equal the derived root");
+    fail("VLC-L1-3", "not evaluated: the chain binding is broken at record 0, before the end marker could be checked");
+    l1Done = true;
+  }
+  let endClassMismatch = false;
+  if (!l1Done && em) {
+    const last = recs[recs.length - 1];
+    if (last.cls === em.class) end = last; else endClassMismatch = true;
+  }
+  if (!l1Done) {
+    const start = skipFirst ? 1 : 0;
+    const stop = end ? recs.length - 1 : recs.length; // end marker walked separately
+    for (let i = start; i < stop; i++) {
+      const r = recs[i];
+      const want = await recHash(prev, r, ad);
+      if (want == null) {
+        fail("VLC-L1-1", `record ${i} carries no recomputable binding`);
+        fail("VLC-L1-3", `not evaluated: the chain binding is broken at record ${i}, before the end marker could be checked`);
+        l1Done = true; break;
+      }
+      if (r.hash !== want) {
+        fail("VLC-L1-1", `binding broken at record ${i}`);
+        fail("VLC-L1-3", `not evaluated: the chain binding is broken at record ${i}, before the end marker could be checked`);
+        l1Done = true; break;
+      }
+      prev = r.hash;
+    }
+  }
+  if (!l1Done) {
+    if (!em) {
+      ok("VLC-L1-1", `${recs.length} records chain from the declared root`);
+      fail("VLC-L1-3", "the adapter declares no end marker");
+    } else if (endClassMismatch) {
+      ok("VLC-L1-1", `${recs.length} records chain from the declared root`);
+      fail("VLC-L1-3", `last record class is ${recs[recs.length - 1].cls}, expected ${em.class}: truncation undetectable`);
+    } else {
+      // head claim is judged against the head of what PRECEDES the marker
+      let headField = em.head_field ?? "head";
+      let claimed = dig(end.obj, headField);
+      if (claimed == null && em.head_field_fallback) { headField = em.head_field_fallback; claimed = dig(end.obj, headField); }
+      const headOk = claimed != null && String(claimed) === prev;
+      // then the marker's own binding (EXT-022): recomputed only when it
+      // carries a hash; a mismatch is a chain failure, not a head failure
+      if (em.self_bound !== false && end.hash) {
+        const h = await recHash(prev, end, ad);
+        if (h != null && h !== end.hash) {
+          fail("VLC-L1-1", "end marker binding broken");
+          fail("VLC-L1-3", "not evaluated: the end marker's own binding is broken");
+          l1Done = true;
+        } else if (h != null) { endBound = true; prev = end.hash; }
+      }
+      if (!l1Done) {
+        ok("VLC-L1-1", `${recs.length} records chain from the declared root`);
+        if (claimed == null) fail("VLC-L1-3", "end marker carries no head value");
+        else if (!headOk) fail("VLC-L1-3", "end marker head does not match the recomputed binding");
+        else if (endBound) ok("VLC-L1-3", "end marker is bound by the chain and names the recomputed head");
+        else fail("VLC-L1-3", "not established: the end marker names the recomputed head but carries no recomputable binding of its own; records dropped from the tail are undetectable on the log alone");
+      }
+    }
   }
 
   // ---- VLC-L2-5: delivered + declared-lost == produced --------------------
@@ -209,8 +260,7 @@ export async function check(journalText, ad) {
     // fails VLC-L1-3 but its counts are still chain-protected, so VLC-L2-5
     // still evaluates. (Fuzzer-found divergence, 2026-11-25: the earlier
     // gate wrongly required L1-3 too.)
-    const endIdx = end ? recs.indexOf(end) : -1;
-    const endBound = end != null && end.hash != null && (broken === -1 || broken > endIdx);
+    // endBound comes from the chain walk above (reference ctx.end_bound)
     let produced = null;
     if (end && lo.produced?.kind === "sum_of_end_marker_fields" && !badCount) {
       let sum = 0, allInt = true;
@@ -236,7 +286,7 @@ export async function check(journalText, ad) {
     records: recs.length,
     head: prev,
     caveats: [
-      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain (sha256-chain-canonical) mechanism only.",
+      "This endpoint grades VLC-L1-1, VLC-L1-3 and VLC-L2-5 for the canonical-chain and prefix-chain mechanisms only.",
       "Levels 3-5, the other mechanisms and the full 25-adapter set need the reference checker: conformance.py in the repository.",
       ...(floats ? ["A record contains a non-integer number; canonical-JSON parity with the reference checker is not guaranteed for floats."] : []),
     ],
