@@ -201,6 +201,50 @@ export default {
         return Response.json({ error: String(e?.message ?? e) }, { status: 422, headers: CORS });
       }
     }
+    if (url.pathname === "/api/sign-report") {
+      // 2026-11-25, additive: sign a REFERENCE-CHECKER report. The live
+      // subset grades two mechanisms; conformance.py grades all of them.
+      // For a journal the live endpoint cannot grade (merkle-tlog,
+      // sha256-canonical-fields, hex-join...), the operator runs the
+      // reference checker locally and submits its report JSON here to be
+      // wrapped and signed. Admin-gated: the signature means "the operator
+      // vouches this is the reference checker's verdict", and the wrapper
+      // says so explicitly -- it does not claim this service computed it.
+      // tools/issue_verified_report.py drives the whole flow.
+      if (request.method !== "POST")
+        return Response.json({ error: "POST a conformance.py report as JSON" }, { status: 405 });
+      const key = request.headers.get("x-admin-key");
+      if (!env.ADMIN_KEY || !key || key !== env.ADMIN_KEY)
+        return Response.json({ error: "verified reports are issued by the operator" }, { status: 403 });
+      try {
+        const body = await request.json();
+        if (!body || typeof body !== "object" || !body.requirements)
+          return Response.json({ error: "expected a conformance.py report object (with .requirements)" }, { status: 422 });
+        if (JSON.stringify(body).length > MAX_BYTES)
+          return Response.json({ error: "report too large" }, { status: 413 });
+        const stub = env.SIGNUPS.get(env.SIGNUPS.idFromName("list"));
+        const pub = await (await stub.fetch("https://do/pubkey")).json();
+        const report = {
+          report: "VLC verified report (reference checker)",
+          issued_at: new Date().toISOString(),
+          issuer: "vlc-1.moorematthew131.workers.dev",
+          checker: "conformance.py reference checker, run by the operator; this service signed the operator-submitted result",
+          key_id: pub.key_id,
+          spec: "https://github.com/MattyIceMatrix/vlc-1",
+          result: body,
+        };
+        const signed = await (await stub.fetch("https://do/sign", {
+          method: "POST", body: JSON.stringify({ report }) })).json();
+        bump("verify_external_issued");
+        return Response.json({
+          report,
+          signature: { alg: "Ed25519", key_id: signed.key_id, signed: "canonical JSON of .report (sorted keys, compact separators)", sig_hex: signed.sig_hex },
+          verify_with: "tools/verify_report.py in the spec repo, against keys/vlc-report-signing.pub.json",
+        });
+      } catch (e) {
+        return Response.json({ error: String(e?.message ?? e) }, { status: 422 });
+      }
+    }
     if (url.pathname === "/api/verify") {
       // 2026-11-25, additive: VERIFIED (signed) reports. Admin-gated: this is
       // the paid tier's instrument -- the operator runs the check and issues a
