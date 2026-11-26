@@ -26,6 +26,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -41,6 +42,10 @@ ADAPTER = os.path.join(HERE, "..", "..", "adapters", "invinoveritas-ledger-live.
 os.makedirs(OUT, exist_ok=True)
 
 INCIDENT = list(range(264, 270))     # the six forward-verdict entries written off-chain
+# What the operator stated on vlc-1 PR #3, 2026-11-26, checked against what is served.
+STATED = {"fix_commit": "f211fe9f", "fix_date": "2026-09-21",
+          "relay_fix_commit": "a3527263",
+          "source": "babyblueviper1, vlc-1 PR #3, 2026-11-26"}
 STEPS = os.path.join(OUT, "steps.txt")
 
 PROVENANCE = {
@@ -226,6 +231,61 @@ def main():
             "statement": f"Entries {unlabelled} are chained but carry neither chain_backfilled_at "
                          f"nor chain_note as served, so the backfill is not visible on them. The "
                          f"operator's description says all six were labelled.",
+        })
+
+    # ------------------------------- 2b. does the description reproduce in the served data?
+    import datetime
+    stamps = sorted(v["chain_backfilled_at"] for v in disclosure.values()
+                    if isinstance(v["chain_backfilled_at"], int))
+    served_days = sorted({datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
+                          .strftime("%Y-%m-%d") for t in stamps})
+    upstream_path = os.path.join(OUT, "upstream-%s.txt" % STATED["fix_commit"])
+    upstream = open(upstream_path, encoding="utf-8").read() if os.path.exists(upstream_path) else ""
+    fix_resolves = bool(upstream) and "Not a valid object name" not in upstream
+    relay_fix_resolves = bool(re.search(r"^%s\w* " % STATED["relay_fix_commit"], upstream, re.M))
+    described = {
+        "source": STATED["source"],
+        "stated_fix_commit": STATED["fix_commit"],
+        "stated_fix_commit_resolves_in_public_repo": fix_resolves if upstream else None,
+        "stated_relay_fix_commit": STATED["relay_fix_commit"],
+        "stated_relay_fix_commit_resolves_in_public_repo": relay_fix_resolves if upstream else None,
+        "stated_fix_date": STATED["fix_date"],
+        "served_chain_backfilled_at_days": served_days,
+        "served_chain_backfilled_at_utc": [datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
+                                           .isoformat() for t in stamps],
+        "effect_reproduces": not unlabelled and all(
+            disclosure[str(n)]["head_recomputes"] for n in INCIDENT),
+        "note": "The effect the operator described -- the six entries chained, labelled as "
+                "backfilled, recomputing -- is checked against the served data. The commit "
+                "reference and the date are checked against the public repository and the "
+                "served chain_backfilled_at values.",
+    }
+    dump("described-vs-served.json", described)
+    if upstream and not fix_resolves:
+        findings.append({
+            "id": "F-FIX-COMMIT-UNRESOLVED", "severity": "finding (citation, not chain)",
+            "statement": f"The fix is cited as {STATED['fix_commit']}, which does not resolve in "
+                         f"the public repository babyblueviper1/invinoveritas; "
+                         f"{STATED['relay_fix_commit']}, cited for the relay widening in the same "
+                         f"comment, does. The fix may live in a repository that is not public "
+                         f"(the chain_note names ledger_forward_verdict.py, which is not in the "
+                         f"public tree). The effect is checked against the served data "
+                         f"separately and is not in question here; only the citation is.",
+            "detail": "described-vs-served.json",
+        })
+    if served_days and STATED["fix_date"] not in served_days:
+        findings.append({
+            "id": "F-FIX-DATE-MISMATCH", "severity": "finding (description, not chain)",
+            "statement": f"The fix is dated {STATED['fix_date']}, but every one of the six "
+                         f"entries carries chain_backfilled_at on {', '.join(served_days)} "
+                         f"({described['served_chain_backfilled_at_utc'][0]} to "
+                         f"{described['served_chain_backfilled_at_utc'][-1]}), and their "
+                         f"chain_note says 'chained late (2026-09-30)'. The served data is "
+                         f"self-consistent; the date in the description is not what the ledger "
+                         f"says. On the served dates the backfill landed roughly three quarters "
+                         f"of an hour before this project's first fetch of the ledger, which "
+                         f"matches 'found while preparing the earlier snapshot for you'.",
+            "detail": "described-vs-served.json",
         })
 
     # ------------------------------------------------------- 3. relay coverage finding

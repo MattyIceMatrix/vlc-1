@@ -24,6 +24,17 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
 
+      - name: grade with the released checker, not this branch's older copy
+        run: |
+          git fetch --depth 1 origin main
+          git checkout FETCH_HEAD -- conformance.py tools
+          mkdir -p out/incident
+          { echo "checker overlaid from origin/main $(git rev-parse FETCH_HEAD)";
+            grep -m1 '^VERSION' conformance.py;
+            echo "adapter sha256 $(sha256sum adapters/invinoveritas-ledger-live.json | cut -d' ' -f1)";
+            echo "branch checker was $(git show HEAD:conformance.py | grep -m1 '^VERSION')";
+          } | tee out/incident/checker-provenance.txt
+
       - name: capture the live ledger
         env: { OUT: '${{ github.workspace }}/out' }
         run: |
