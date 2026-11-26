@@ -1,0 +1,4 @@
+/ledger: 278 entries, verifier_pubkey pinned-match=True
+chained entries: 239 (40..278); recompute failures: []
+nostr: 401 distinct head events, 401 valid
+verify: ok=True findings=[]

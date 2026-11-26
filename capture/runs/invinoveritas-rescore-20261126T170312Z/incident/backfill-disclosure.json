@@ -1,0 +1,52 @@
+{
+  "claim": "f211fe9f chained entries 264-269, labelled them as backfilled, and broadcast their heads (operator, vlc-1 PR #3, 2026-11-26)",
+  "entries_labelled_backfilled": [
+    264,
+    265,
+    266,
+    267,
+    268,
+    269
+  ],
+  "entries_not_labelled": [],
+  "other_entries_carrying_a_backfill_label": [],
+  "per_entry": {
+    "264": {
+      "chain_backfilled_at": 1790773129,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    },
+    "265": {
+      "chain_backfilled_at": 1790773131,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    },
+    "266": {
+      "chain_backfilled_at": 1790773133,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    },
+    "267": {
+      "chain_backfilled_at": 1790773135,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    },
+    "268": {
+      "chain_backfilled_at": 1790773137,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    },
+    "269": {
+      "chain_backfilled_at": 1790773139,
+      "chain_note": "chained late (2026-09-30): ledger_forward_verdict.py did not chain at creation. content_hash is over this record as it stood at backfill; its Bitcoin/OTS anchor on event_id is unchanged and still predates it.",
+      "content_hash_matches_index": true,
+      "head_recomputes": true
+    }
+  },
+  "reproduces_as_described": true
+}

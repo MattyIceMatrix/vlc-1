@@ -1,0 +1,19 @@
+invinoveritas HEAD 96799592a5c582acda179060ed689e47c26252c4
+--- f211fe9f exists and is reachable from main:
+fatal: Not a valid object name f211fe9f
+NO
+--- commit:
+fatal: ambiguous argument 'f211fe9f': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+--- files it touched:
+fatal: ambiguous argument 'f211fe9f': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+--- does its diff name entries 264-269?
+--- a3527263 (the relay widening):
+a3527263379ca627d4746055f48504cfd2668ae4 Wed Sep 30 18:21:44 2026 +0000 recompute_ledger: cross-check the recomputed chain against the newest signed broadcast head
+--- their own recompute over the live chain:
+exit 0 (0 = all verified, 1 = a failure, 124 = timed out)
+{"total": 278, "verified": 244, "failed": 0}
+{"chain_total": 239, "chain_verified": 239, "chain_failed": 0}

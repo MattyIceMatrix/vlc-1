@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "findings": [],
+  "facts": {
+    "first": 40,
+    "last": 278,
+    "count": 239,
+    "final_head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab",
+    "head_event": "40210150741ee19a447c0d3fe6e0e4a4655f1acbffbfc8861f80659eb7b49ba8",
+    "head_event_created_at": 1794432170,
+    "head_event_entry": 278,
+    "head_event_head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab",
+    "head_event_id_ok": true,
+    "head_event_sig_ok": true,
+    "head_event_pubkey_ok": true
+  },
+  "mutations": {
+    "remove-middle-entry (with the Nostr head)": {
+      "detected": true,
+      "first_finding": "entry 160: follows entry 158 (gap or reorder)"
+    },
+    "remove-middle-entry (chain alone)": {
+      "detected": true,
+      "first_finding": "entry 160: follows entry 158 (gap or reorder)"
+    },
+    "edit-one-content-hash (with the Nostr head)": {
+      "detected": true,
+      "first_finding": "entry 45: head_hash does not recompute"
+    },
+    "edit-one-content-hash (chain alone)": {
+      "detected": true,
+      "first_finding": "entry 45: head_hash does not recompute"
+    },
+    "swap-two-entries (with the Nostr head)": {
+      "detected": true,
+      "first_finding": "entry 44: follows entry 42 (gap or reorder)"
+    },
+    "swap-two-entries (chain alone)": {
+      "detected": true,
+      "first_finding": "entry 44: follows entry 42 (gap or reorder)"
+    },
+    "truncate-newest-entry (with the Nostr head)": {
+      "detected": true,
+      "first_finding": "head event states entry 278, which the log does not reach (truncated) or whose recomputed head differs"
+    },
+    "truncate-newest-entry (chain alone)": {
+      "detected": false,
+      "first_finding": null
+    },
+    "rewrite-whole-chain-consistently (with the Nostr head)": {
+      "detected": true,
+      "first_finding": "head event: stated head differs from the recomputed final head"
+    },
+    "rewrite-whole-chain-consistently (chain alone)": {
+      "detected": false,
+      "first_finding": null
+    }
+  }
+}
