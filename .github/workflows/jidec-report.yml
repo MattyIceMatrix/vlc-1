@@ -1,0 +1,29 @@
+name: jidec-report
+# Fetch the current JIDEC export + head and grade them with the reference checker,
+# for the signed report requested in vlc-1 issue #12. Runs ONLY on branch
+# capture/jidec-signed-report on a GitHub-hosted runner; GET requests only.
+on:
+  push:
+    branches: [capture/jidec-signed-report]
+    paths: ['.github/workflows/jidec-report.yml', 'capture/scripts/jidec_report.sh']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: fetch and grade
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: bash capture/scripts/jidec_report.sh || true
+      - name: commit
+        if: always()
+        run: |
+          D=capture/runs/jidec-report-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"; cp -r out/. "$D/"
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "jidec-report"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: jidec report $(basename "$D")" && git push -q origin HEAD:capture/jidec-signed-report
