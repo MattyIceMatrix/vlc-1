@@ -27,7 +27,7 @@ jobs:
       - name: grade with the released checker, not this branch's older copy
         run: |
           git fetch --depth 1 origin main
-          git checkout FETCH_HEAD -- conformance.py tools
+          git checkout FETCH_HEAD -- conformance.py tools keys
           mkdir -p out/incident
           { echo "checker overlaid from origin/main $(git rev-parse FETCH_HEAD)";
             grep -m1 '^VERSION' conformance.py;
