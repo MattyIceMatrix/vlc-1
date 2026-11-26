@@ -1,0 +1,9 @@
+{
+  "class": "_provenance",
+  "reconstructed": true,
+  "note": "NOT CAPTURED. Derived on the runner from the served post-fix chain plus the operator's description of the pre-fix state on vlc-1 PR #3 (2026-11-26) and commit f211fe9f (2026-09-21). The fix predates this project's first fetch of the ledger (2026-09-30), so no pre-fix bytes exist in this repository and none are claimed to.",
+  "log": "prefix-forked-segment.jsonl",
+  "rows": 9,
+  "derived_from": "../ledger/chain.jsonl",
+  "method": "entries 264-269 removed from the chain; the first entry after them re-rooted at sha256('invinoveritas-ledger-genesis:before-entry-40') and every later head recomputed from its served content_hash"
+}

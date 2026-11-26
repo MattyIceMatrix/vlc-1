@@ -1,0 +1,21 @@
+{
+  "source": "babyblueviper1, vlc-1 PR #3, 2026-11-26",
+  "stated_fix_commit": "f211fe9f",
+  "stated_fix_commit_resolves_in_public_repo": false,
+  "stated_relay_fix_commit": "a3527263",
+  "stated_relay_fix_commit_resolves_in_public_repo": true,
+  "stated_fix_date": "2026-09-21",
+  "served_chain_backfilled_at_days": [
+    "2026-09-30"
+  ],
+  "served_chain_backfilled_at_utc": [
+    "2026-09-30T12:58:49+00:00",
+    "2026-09-30T12:58:51+00:00",
+    "2026-09-30T12:58:53+00:00",
+    "2026-09-30T12:58:55+00:00",
+    "2026-09-30T12:58:57+00:00",
+    "2026-09-30T12:58:59+00:00"
+  ],
+  "effect_reproduces": true,
+  "note": "The effect the operator described -- the six entries chained, labelled as backfilled, recomputing -- is checked against the served data. The commit reference and the date are checked against the public repository and the served chain_backfilled_at values."
+}
