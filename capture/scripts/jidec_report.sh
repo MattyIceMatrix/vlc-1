@@ -12,7 +12,7 @@ get $L/ledger/head head.json
 [ -f "$O/export.jsonl" ] || { note "no export; abort"; exit 0; }
 sha256sum "$O/export.jsonl" "$O/head.json" | tee -a "$O/steps.txt"
 note "head body: $(cat "$O/head.json")"
-EXPECT_HEAD=$(python3 -c "import json,sys;d=json.load(open('$O/head.json'));print(d.get('head') or d.get('ledger_head') or '')" 2>/dev/null)
+EXPECT_HEAD=$(python3 -c "import json;d=json.load(open('$O/head.json'));print(d.get('entry_sha256') or '')" 2>/dev/null)  # the end marker's own hash is the chain's final head
 note "expect-head: $EXPECT_HEAD"
 if [ -n "$EXPECT_HEAD" ]; then
   python3 conformance.py --log "$O/export.jsonl" --adapter adapters/jidec-ledger-chained.json --expect-head "$EXPECT_HEAD" > "$O/grade.txt" 2>&1; note "grade (with --expect-head) exit $?"
