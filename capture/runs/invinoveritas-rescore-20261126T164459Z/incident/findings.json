@@ -1,0 +1,20 @@
+[
+  {
+    "id": "F-FIX-COMMIT-UNRESOLVED",
+    "severity": "finding (citation, not chain)",
+    "statement": "The fix is cited as f211fe9f, which does not resolve in the public repository babyblueviper1/invinoveritas; a3527263, cited for the relay widening in the same comment, does. The fix may live in a repository that is not public (the chain_note names ledger_forward_verdict.py, which is not in the public tree). The effect is checked against the served data separately and is not in question here; only the citation is.",
+    "detail": "described-vs-served.json"
+  },
+  {
+    "id": "F-FIX-DATE-MISMATCH",
+    "severity": "finding (description, not chain)",
+    "statement": "The fix is dated 2026-09-21, but every one of the six entries carries chain_backfilled_at on 2026-09-30 (2026-09-30T12:58:49+00:00 to 2026-09-30T12:58:59+00:00), and their chain_note says 'chained late (2026-09-30)'. The served data is self-consistent; the date in the description is not what the ledger says. On the served dates the backfill landed roughly three quarters of an hour before this project's first fetch of the ledger, which matches 'found while preparing the earlier snapshot for you'.",
+    "detail": "described-vs-served.json"
+  },
+  {
+    "id": "F-RELAY-COVERAGE",
+    "severity": "coverage finding (not a chain defect)",
+    "statement": "Signed heads were found on 5 of 9 relays queried (7 reachable), covering 35 of 239 chained entries. Heads are the only anchor that catches a consistently rewritten chain, so an entry with no head on any relay a reader queries has no anchor for that reader. This is the finding the operator raised as fixed in a3527263; it is measured, not assumed.",
+    "detail": "relay-coverage.json"
+  }
+]

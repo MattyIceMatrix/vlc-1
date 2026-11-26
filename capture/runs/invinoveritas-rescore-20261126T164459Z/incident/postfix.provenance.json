@@ -1,0 +1,7 @@
+{
+  "class": "_provenance",
+  "reconstructed": false,
+  "log": "postfix.jsonl",
+  "rows": 240,
+  "note": "Served by https://api.babyblueviper.com at this run's capture time and recomputed on the runner; see ../ledger/."
+}

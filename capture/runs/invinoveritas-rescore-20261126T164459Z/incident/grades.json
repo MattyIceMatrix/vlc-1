@@ -1,0 +1,879 @@
+{
+  "current_log_alone": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/ledger/ledger-live-full.jsonl",
+    "mutation": null,
+    "level_demonstrated": 0,
+    "structural_level": 0,
+    "attested_level": 0,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": null,
+      "head": null
+    },
+    "head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab",
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "PASS",
+        "note": "chain consistent from the root the log states; a complete rewrite is detectable only against an independently held root or head (--expect-root / --expect-head)",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-2": {
+        "status": "PASS",
+        "note": "chain_spec served in the GET /ledger index; recompute_ledger.py in the operator's public repo",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-3": {
+        "status": "FAIL",
+        "note": "not established: the end marker names the recomputed head, but the adapter declares it not self-bound, so records dropped from the tail with the marker's head rewritten are undetectable on the log alone; supply --expect-head (a head obtained independently of the log)",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-4": {
+        "status": "PASS",
+        "note": "primitive SHA-256",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L0: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  },
+  "current_with_signed_head": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/ledger/ledger-live-full.jsonl",
+    "mutation": null,
+    "level_demonstrated": 1,
+    "structural_level": 1,
+    "attested_level": 1,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": null,
+      "head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab"
+    },
+    "head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab",
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "PASS",
+        "note": "chain consistent AND its head equal the value(s) supplied independently of the log",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-2": {
+        "status": "PASS",
+        "note": "chain_spec served in the GET /ledger index; recompute_ledger.py in the operator's public repo",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-3": {
+        "status": "PASS",
+        "note": "end marker is not bound by the chain; the tail is anchored by the head supplied independently of the log",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-4": {
+        "status": "PASS",
+        "note": "primitive SHA-256",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L1: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  },
+  "prefix_whole_log_alone": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/incident/prefix-whole.jsonl",
+    "mutation": null,
+    "level_demonstrated": 0,
+    "structural_level": 0,
+    "attested_level": 0,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": null,
+      "head": null
+    },
+    "head": null,
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "FAIL",
+        "note": "record 224 does not link to its predecessor",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-3": {
+        "status": "FAIL",
+        "note": "last record class is 'ledger-entry', expected 'chain-head': truncation undetectable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L0: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  },
+  "prefix_forked_segment_log_alone": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/incident/prefix-forked-segment.jsonl",
+    "mutation": null,
+    "level_demonstrated": 0,
+    "structural_level": 0,
+    "attested_level": 0,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": null,
+      "head": null
+    },
+    "head": "f68d903935f467867f8838e4596ecd2ec7a8172e4d86a121e60861b2c512de5d",
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "PASS",
+        "note": "chain consistent from the root the log states; a complete rewrite is detectable only against an independently held root or head (--expect-root / --expect-head)",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-2": {
+        "status": "PASS",
+        "note": "chain_spec served in the GET /ledger index; recompute_ledger.py in the operator's public repo",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-3": {
+        "status": "FAIL",
+        "note": "last record class is 'ledger-entry', expected 'chain-head': truncation undetectable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-4": {
+        "status": "PASS",
+        "note": "primitive SHA-256",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L0: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  },
+  "prefix_forked_segment_against_earlier_head": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/incident/prefix-forked-segment.jsonl",
+    "mutation": null,
+    "level_demonstrated": 0,
+    "structural_level": 0,
+    "attested_level": 0,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": "c6ad355b28943898e3a4788224175222c928caf5e24d83071f2d0efe89e8b22d",
+      "head": null
+    },
+    "head": null,
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "FAIL",
+        "note": "chain root 09c790b34b51e22a... does not equal the independently supplied root c6ad355b28943898...: the log was re-rooted or is a different log",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L0: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  },
+  "postfix": {
+    "spec": "VLC-1 1.4.5-draft",
+    "adapter": "invinoveritas-ledger-live",
+    "adapter_sha256": "8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4",
+    "log": "/home/runner/work/vlc-1/vlc-1/out/incident/postfix.jsonl",
+    "mutation": null,
+    "level_demonstrated": 1,
+    "structural_level": 1,
+    "attested_level": 1,
+    "attested_requirements_with_evidence": 0,
+    "attested_requirements_total": 16,
+    "anchors": {
+      "root": null,
+      "head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab"
+    },
+    "head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab",
+    "requirements": {
+      "VLC-L1-1": {
+        "status": "PASS",
+        "note": "chain consistent AND its head equal the value(s) supplied independently of the log",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-2": {
+        "status": "PASS",
+        "note": "chain_spec served in the GET /ledger index; recompute_ledger.py in the operator's public repo",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-3": {
+        "status": "PASS",
+        "note": "end marker is not bound by the chain; the tail is anchored by the head supplied independently of the log",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L1-4": {
+        "status": "PASS",
+        "note": "primitive SHA-256",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-1": {
+        "status": "FAIL",
+        "note": "adapter declares no production count or ordinal",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L2-5": {
+        "status": "FAIL",
+        "note": "no completeness identity is computable",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-1a": {
+        "status": "FAIL",
+        "note": "adapter declares no coverage declaration",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3-6": {
+        "status": "FAIL",
+        "note": "observation surface is not enumerable and is not declared as such",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-1": {
+        "status": "n/a",
+        "note": "adapter declares no interval attestation; L3i is not claimed by this producer",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-2": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-3": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L3i-4": {
+        "status": "n/a",
+        "note": "no interval declared",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L4-1": {
+        "status": "FAIL",
+        "note": "adapter declares no policy binding",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-1": {
+        "status": "FAIL",
+        "note": "producer declared 'self_reported': the audited process writes its own record, so the record is a claim",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-2": {
+        "status": "PASS",
+        "note": "The operator writes the entries, runs the API and holds the key that signs the head events. The relays are held by third",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-3": {
+        "status": "FAIL",
+        "note": "reconciliation reports one direction only: half a substitution is not a detection",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-4": {
+        "status": "FAIL",
+        "note": "the witnessing log itself is only L1: a witness with an undeclared coverage gap agrees with a lie honestly",
+        "class": "structural",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-5": {
+        "status": "FAIL",
+        "note": "reconciliation scope not recorded with the result",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      },
+      "VLC-L5-6": {
+        "status": "FAIL",
+        "note": "the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything",
+        "class": "attested",
+        "evidence": null,
+        "evidence_cited": false
+      }
+    }
+  }
+}

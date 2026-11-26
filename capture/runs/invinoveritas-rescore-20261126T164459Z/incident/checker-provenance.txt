@@ -1,0 +1,4 @@
+checker overlaid from origin/main 37ab9fbb821dc0447dc94cf79f5835018478f17b
+VERSION = "VLC-1 1.4.5-draft"
+adapter sha256 8e36534a8e51b19688f249559505de7aba788bf1942db677320bed0d0391a7f4
+branch checker was VERSION = "VLC-1 1.4.4-draft"
