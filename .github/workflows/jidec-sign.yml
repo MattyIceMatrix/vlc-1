@@ -1,0 +1,32 @@
+name: jidec-sign
+# Issue the signed VERIFIED REPORT for the JIDEC export captured on branch
+# capture/jidec-signed-report (issue #12). Manual dispatch only; needs the
+# repo secret VLC_ADMIN_KEY (operator-set). One POST to the issuing service;
+# the tool re-verifies the signature offline before saving; the result is
+# committed to the capture branch so the operator's tooling can read it.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: capture/jidec-signed-report }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: issue signed report
+        env:
+          VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
+        run: |
+          test -n "$VLC_ADMIN_KEY" || { echo "secret VLC_ADMIN_KEY not set"; exit 1; }
+          D=$(ls -d capture/runs/jidec-report-* | tail -1)
+          HEAD_HEX=$(python3 -c "import json;print(json.load(open('$D/jidec/head.json'))['entry_sha256'])")
+          python3 tools/issue_verified_report_head.py "$D/jidec/export.jsonl" adapters/jidec-ledger-chained.json "$HEAD_HEX" "$D/jidec/verified-report.json" --note "entry_sha256 of the jidec-head-v1 marker from GET /ledger/head at capture time; the same value the stamped nenrin checkpoint entries carry"
+          python3 tools/verify_report.py "$D/jidec/verified-report.json"
+      - name: commit
+        run: |
+          git config user.name "jidec-sign"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: signed JIDEC verified report" && git push -q origin HEAD:capture/jidec-signed-report
