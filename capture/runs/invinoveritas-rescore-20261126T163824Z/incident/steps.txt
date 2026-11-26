@@ -1,0 +1,13 @@
+chain as served: 239 entries, 40..278
+current chain:
+  ledger-live-full.jsonl             the live chain, no anchor held             structural L0 / attested L0
+  ledger-live-full.jsonl             the live chain against the signed head for structural L1 / attested L1
+the incident, pre-fix (RECONSTRUCTED):
+  prefix-whole.jsonl                 pre-fix chain, both segments, no anchor he structural L0 / attested L0
+  prefix-forked-segment.jsonl        the forked segment alone, no anchor held - structural L0 / attested L0
+  prefix-forked-segment.jsonl        the forked segment against the head held f structural L0 / attested L0
+the incident, post-fix (as served):
+  postfix.jsonl                      the chain as served today, backfill includ structural L1 / attested L1
+relays: heads on 6 of 9 queried; 35 of 239 entries covered
+findings: ['F-RELAY-COVERAGE']
+runner: Linux 7.0.0-1020-azure x86_64; 2026-11-26T16:38:24Z
