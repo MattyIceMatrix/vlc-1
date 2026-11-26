@@ -1,0 +1,50 @@
+VLC-1 1.4.5-draft — conformance report
+  log      : /home/runner/work/vlc-1/vlc-1/out/jidec/export.jsonl
+  adapter  : jidec-ledger-chained — The JIDEC ledger after jidec-chain-v1 with its end marker bound (2026-09-29), exported live from GET https://ledger.horizonshield.dev/ledger/export.jsonl. Each entry carries prev_entry_sha256 and entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})). The export ends in a jidec-head-v1 marker that links to the last entry and carries its own entry_sha256 = sha256(canon({n, schema, prev_entry_sha256, head})), the same recipe over the fields it has, so the EXT-022 tail cut breaks a hash. The marker hash is a function of (n, head), which the daily witness batch stamps to Bitcoin as ledger_head, so the stamped value still serves --expect-head. Loss, coverage and policy are unchanged.
+  adapter sha256: 5c6d1c9c7ffb746af4d99d1ceb0a23ba413e50f55eb9910ce0232f5181eee5e3
+  producer : JIDEC public verification ledger (HORIZON SHIELD), entries as served at GET https://ledger.horizonshield.dev/ledger/{n}?format=json
+
+  [S] structural — recomputed from the delivered evidence
+  [A] attested   — asserted by the producer through the adapter
+  [A+]           — attested AND carrying a reproducible evidence artefact
+
+  FAIL [S]  VLC-L1-1     final head de59d020e3bddc90... does not equal the independently supplied head 25b3ca6ad544ff4d...
+  FAIL [A]  VLC-L1-2     not evaluated
+  ok   [S]  VLC-L1-3     end marker is bound by the chain and names the recomputed head
+  FAIL [A]  VLC-L1-4     not evaluated
+
+  FAIL [S]  VLC-L2-1     adapter declares no production count or ordinal
+  FAIL [S]  VLC-L2-2     not evaluated
+  FAIL [S]  VLC-L2-3     not evaluated
+  FAIL [A]  VLC-L2-4     not evaluated
+  FAIL [S]  VLC-L2-5     no completeness identity is computable
+  FAIL [S]  VLC-L2-6     not evaluated
+
+  FAIL [S]  VLC-L3-1a    adapter declares no coverage declaration
+  FAIL [A]  VLC-L3-1b    not evaluated
+  FAIL [A]  VLC-L3-1d    not evaluated
+  FAIL [S]  VLC-L3-2     not evaluated
+  FAIL [S]  VLC-L3-3     not evaluated
+  FAIL [A]  VLC-L3-4     not evaluated
+  FAIL [A]  VLC-L3-5     not evaluated
+  FAIL [S]  VLC-L3-6     observation surface is not enumerable and is not declared as such
+
+  FAIL [S]  VLC-L4-1     adapter declares no policy binding
+  FAIL [S]  VLC-L4-2     not evaluated
+  FAIL [A]  VLC-L4-3     not evaluated
+  FAIL [A]  VLC-L4-4     not evaluated
+
+  FAIL [A]  VLC-L5-1     producer declared 'self_reported': the audited process writes its own record, so the record is a claim
+  ok   [A]  VLC-L5-2     The ledger is operated by the same company whose specifications, datasets and gate measurements appear in it, and the op
+  FAIL [A]  VLC-L5-3     no reconciliation against a self-reported record declared
+  FAIL [S]  VLC-L5-4     the witnessing log itself is only L0: a witness with an undeclared coverage gap agrees with a lie honestly
+  FAIL [A]  VLC-L5-5     no reconciliation scope to declare
+  FAIL [A]  VLC-L5-6     the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything
+
+  LEVEL DEMONSTRATED
+    structural : L0   recomputed from the log under this adapter's mapping;
+                        no adapter assertion can raise this number
+    attested   : L0   the above, plus what the producer asserts
+                        0 of 16 attested requirements carry a reproducible evidence artefact
+    structural blocked from L1 by: VLC-L1-1
+    attested blocked from L1 by: VLC-L1-1, VLC-L1-2, VLC-L1-4
