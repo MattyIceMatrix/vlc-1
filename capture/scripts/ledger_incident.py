@@ -303,18 +303,23 @@ def main():
     reachable = [u for u in queried if not relay_summary[u].get("error")]
     carrying = sorted(relays_with_heads)
     chained_entries = set(nums)
-    covered = {int(k) for k in per_entry if per_entry[k]["valid"]}
+    claimed = {int(k) for k in per_entry if per_entry[k]["valid"]}
+    covered = sorted(claimed & chained_entries)          # heads for entries the log chains
+    outside = sorted(claimed - chained_entries)          # heads for entries it does not
+    uncovered = sorted(chained_entries - claimed)
     coverage = {
         "requirement_context": "VLC-L1-3 / VLC-L5-1: the signed head is the only thing that "
                                "catches a consistently rewritten chain, so how many independent "
-                               "relays carry it is the breadth of that anchor.",
+                               "relays carry it, and which entries it reaches, is the breadth of "
+                               "that anchor.",
         "relays_queried": len(queried), "relays_reachable": len(reachable),
         "relays_carrying_a_head_event": len(carrying), "which": carrying,
         "unreachable": {u: relay_summary[u].get("error") for u in queried
                         if relay_summary[u].get("error")},
         "entries_in_chain": len(chained_entries),
-        "entries_with_a_valid_signed_head": sorted(covered),
-        "entries_without_one": len(chained_entries - covered),
+        "chained_entries_with_a_valid_signed_head": covered,
+        "chained_entries_without_one": len(uncovered),
+        "valid_heads_for_entries_the_served_chain_does_not_chain": outside,
         "per_entry": per_entry,
         "prior_measurements": {
             "2026-09-30T13:43Z": "heads for entries 264-269 on 2 of 6 relays queried",
@@ -326,16 +331,41 @@ def main():
     findings.append({
         "id": "F-RELAY-COVERAGE",
         "severity": "coverage finding (not a chain defect)",
-        "statement": f"Signed heads were found on {len(carrying)} of {len(queried)} relays queried "
-                     f"({len(reachable)} reachable), covering {len(covered)} of "
-                     f"{len(chained_entries)} chained entries. Heads are the only anchor that "
-                     f"catches a consistently rewritten chain, so an entry with no head on any "
-                     f"relay a reader queries has no anchor for that reader. This is the finding "
-                     f"the operator raised as fixed in a3527263; it is measured, not assumed.",
+        "statement": f"Signed heads were found on {len(carrying)} of {len(queried)} relays "
+                     f"queried ({len(reachable)} reachable), and they cover {len(covered)} of "
+                     f"{len(chained_entries)} chained entries"
+                     + (f" ({covered[0]}-{covered[-1]})" if covered else "")
+                     + f"; {len(uncovered)} chained entries have no signed head on any relay "
+                       f"queried. A head is the only anchor that catches a consistently "
+                       f"rewritten chain, so a reader who holds no head for the range they care "
+                       f"about has nothing to hold the chain to. The relay set itself is wider "
+                       f"than it was: the gap the operator raised as fixed in a3527263 is "
+                       f"measured here, not assumed.",
         "detail": "relay-coverage.json",
     })
+    if outside:
+        findings.append({
+            "id": "F-HEADS-OUTSIDE-CHAIN",
+            "severity": "finding",
+            "statement": f"{len(outside)} valid signed head events on public relays -- same "
+                         f"ledger key, same schema invinoveritas.ledger_chain_head.v1, same d-tag "
+                         f"family -- claim entries {outside[0]}-{outside[-1]}, which the served "
+                         f"ledger does not chain: chain_spec says the chain starts at entry 40 "
+                         f"and GET /ledger carries chain blocks only from there. The head for "
+                         f"entry {outside[0]} gives prev_head_hash as the published genesis "
+                         f"constant, so on the relays alone those events read as a second chain "
+                         f"rooted at the same genesis. They do not affect the grade below -- the "
+                         f"chain 40-{max(chained_entries)} recomputes and matches the head for "
+                         f"{max(chained_entries)} -- but a verifier that picks 'the newest signed "
+                         f"head under this key and schema' can pick from the wrong series, which "
+                         f"is the ambiguity the 264-269 incident was about, moved from the chain "
+                         f"into the head namespace. Pinning the d tag, or putting a chain "
+                         f"identifier in the signed content, would close it.",
+            "detail": "relay-coverage.json",
+        })
     log(f"relays: heads on {len(carrying)} of {len(queried)} queried; "
-        f"{len(covered)} of {len(chained_entries)} entries covered")
+        f"{len(covered)} of {len(chained_entries)} chained entries covered; "
+        f"{len(outside)} heads for entries not in the chain")
 
     # ------------------------------------------------------------------- 4. the verdict
     summary = {
