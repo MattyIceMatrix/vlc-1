@@ -119,4 +119,5 @@ jobs:
           D=capture/runs/invinoveritas-rescore-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"; cp -r out/. "$D/"
           find "$D" -type f -size +5M -print -delete
           git config user.name "invinoveritas-rescore"; git config user.email "actions@users.noreply.github.com"
+          git reset -q   # the checker overlay staged conformance.py/tools/keys; results only
           git add capture/runs && git commit -q -m "capture: invinoveritas re-score + 264-269 incident grade $(basename "$D")" && git push -q origin HEAD:capture/invinoveritas-ledger
