@@ -17,6 +17,18 @@ jobs:
         with: { ref: capture/jidec-signed-report }
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
+      - name: diagnose (no secret values printed)
+        env:
+          VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
+        run: |
+          echo "key length: ${#VLC_ADMIN_KEY}"
+          printf %s "$VLC_ADMIN_KEY" | sha256sum | cut -c1-12 | sed 's/^/key fingerprint: /'
+          echo "--- probe with deliberately wrong key (reachability test):"
+          curl -sS -o /tmp/body -w 'status=%{http_code} content-type=%{content_type}\n' -X POST https://vlc-1.moorematthew131.workers.dev/api/sign-report -H 'content-type: application/json' -H 'x-admin-key: wrong-key-probe' -d '{"requirements":[]}' || true
+          head -c 300 /tmp/body; echo
+          echo "--- probe with the real secret:"
+          curl -sS -o /tmp/body2 -w 'status=%{http_code} content-type=%{content_type}\n' -X POST https://vlc-1.moorematthew131.workers.dev/api/sign-report -H 'content-type: application/json' -H "x-admin-key: $VLC_ADMIN_KEY" -d '{"requirements":[]}' || true
+          head -c 300 /tmp/body2; echo
       - name: issue signed report
         env:
           VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
