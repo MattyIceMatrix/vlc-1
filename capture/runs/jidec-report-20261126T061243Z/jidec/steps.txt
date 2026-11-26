@@ -1,0 +1,67 @@
+GET https://ledger.horizonshield.dev/ledger/export.jsonl -> 200 (124413 bytes)
+GET https://ledger.horizonshield.dev/ledger/head -> 200 (1782 bytes)
+5f8d10db59b73d112c5257e356471fad5afd128fc47dd6a02f780bccd9181f05  /home/runner/work/vlc-1/vlc-1/out/jidec/export.jsonl
+3ed0e6a081b35e85e8418fc1e666ddaecd00acb37bf3e22f97c9c6f281957785  /home/runner/work/vlc-1/vlc-1/out/jidec/head.json
+head body: {
+  "schema": "jidec-head-v1",
+  "n": 388,
+  "head": "25b3ca6ad544ff4d8ac293cc159258c64dcddbc90fcca6b52ed0b85e90043f0f",
+  "root": "0000000000000000000000000000000000000000000000000000000000000000",
+  "chain": "jidec-chain-v1",
+  "prev_entry_sha256": "25b3ca6ad544ff4d8ac293cc159258c64dcddbc90fcca6b52ed0b85e90043f0f",
+  "entry_sha256": "de59d020e3bddc909de8d58de55dca406ece8e169919f17fe420639b958e02b4",
+  "recipe": "entry_sha256 = sha256(canon({n, schema, claim_sha256, created_at, prev_entry_sha256})); canon = keys sorted, separators , and : without spaces, non-ASCII escaped (json.dumps sort_keys=True, separators=(',',':'), ensure_ascii=True); an absent schema or created_at is omitted, never null; entry 1 links to 64 zeros",
+  "fields": [
+    "n",
+    "schema",
+    "claim_sha256",
+    "created_at",
+    "prev_entry_sha256"
+  ],
+  "marker_recipe": "marker entry_sha256 = sha256(canon({n, schema: \"jidec-head-v1\", prev_entry_sha256: head, head})), the same canon as entries; prev_entry_sha256 and head are both the last entry_sha256",
+  "marker_fields": [
+    "n",
+    "schema",
+    "prev_entry_sha256",
+    "head"
+  ],
+  "export": "https://ledger.horizonshield.dev/ledger/export.jsonl",
+  "anchored_in": "the head as it stood is written into each daily nenrin-witness-batch-v1 entry (ledger_head) and, at the end of any daily run that added entries, into a nenrin-head-checkpoint-v1 entry with the end marker hash; their claim_sha256 are stamped to Bitcoin; compare a head you hold with the one a stamped entry carries",
+  "does_not_establish": [
+    "that every submission the ledger received was appended; the chain covers what was appended",
+    "that the head served now equals a head you did not obtain independently; hold one, or read one from a stamped batch"
+  ]
+}
+expect-head: de59d020e3bddc909de8d58de55dca406ece8e169919f17fe420639b958e02b4
+grade (with --expect-head) exit 0
+  FAIL [S]  VLC-L2-6     not evaluated
+
+  FAIL [S]  VLC-L3-1a    adapter declares no coverage declaration
+  FAIL [A]  VLC-L3-1b    not evaluated
+  FAIL [A]  VLC-L3-1d    not evaluated
+  FAIL [S]  VLC-L3-2     not evaluated
+  FAIL [S]  VLC-L3-3     not evaluated
+  FAIL [A]  VLC-L3-4     not evaluated
+  FAIL [A]  VLC-L3-5     not evaluated
+  FAIL [S]  VLC-L3-6     observation surface is not enumerable and is not declared as such
+
+  FAIL [S]  VLC-L4-1     adapter declares no policy binding
+  FAIL [S]  VLC-L4-2     not evaluated
+  FAIL [A]  VLC-L4-3     not evaluated
+  FAIL [A]  VLC-L4-4     not evaluated
+
+  FAIL [A]  VLC-L5-1     producer declared 'self_reported': the audited process writes its own record, so the record is a claim
+  ok   [A]  VLC-L5-2     The ledger is operated by the same company whose specifications, datasets and gate measurements appear in it, and the op
+  FAIL [A]  VLC-L5-3     no reconciliation against a self-reported record declared
+  FAIL [S]  VLC-L5-4     the witnessing log itself is only L1: a witness with an undeclared coverage gap agrees with a lie honestly
+  FAIL [A]  VLC-L5-5     no reconciliation scope to declare
+  FAIL [A]  VLC-L5-6     the witness gives no basis for its coverage being exhaustive: it can corroborate what it observed, not that it observed everything
+
+  LEVEL DEMONSTRATED
+    structural : L1   recomputed from the log under this adapter's mapping;
+                        no adapter assertion can raise this number
+    attested   : L1   the above, plus what the producer asserts
+                        0 of 16 attested requirements carry a reproducible evidence artefact
+    structural blocked from L2 by: VLC-L2-1, VLC-L2-2, VLC-L2-3, VLC-L2-5, VLC-L2-6
+    attested blocked from L2 by: VLC-L2-1, VLC-L2-2, VLC-L2-3, VLC-L2-4, VLC-L2-5, VLC-L2-6
+done 2026-11-26T06:12:43Z
