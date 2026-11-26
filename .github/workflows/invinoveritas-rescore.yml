@@ -1,0 +1,111 @@
+name: invinoveritas-rescore
+# Re-score the invinoveritas verdict ledger and grade the 264-269 chain incident,
+# at the operator's request on vlc-1 PR #3 (babyblueviper1, 2026-11-26). Runs ONLY on
+# branch capture/invinoveritas-ledger and ONLY on a GitHub-hosted runner. It sends GET
+# requests to api.babyblueviper.com, REQ subscriptions to public Nostr relays, and one
+# POST to this project's own signing service; it publishes nothing to the operator's
+# systems. Results are committed to capture/runs/ on this branch, because job logs and
+# artifacts are not readable from the maintainer's tooling.
+#
+# Adds to ledger-capture.yml; that workflow and its script are left exactly as they were.
+on:
+  push:
+    branches: [capture/invinoveritas-ledger]
+    paths: ['.github/workflows/invinoveritas-rescore.yml', 'capture/scripts/ledger_incident.py']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rescore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - name: capture the live ledger
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: |
+          pip install -q websockets
+          mkdir -p out/ledger
+          timeout 900 python capture/scripts/ledger_capture.py || echo "capture exit $?" >> out/ledger/steps.txt
+
+      - name: check the operator's account of f211fe9f against their public repo
+        continue-on-error: true
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: |
+          set +e
+          mkdir -p out/incident
+          U=out/incident/upstream-f211fe9f.txt
+          git clone -q https://github.com/babyblueviper1/invinoveritas /tmp/inv
+          echo "invinoveritas HEAD $(git -C /tmp/inv rev-parse HEAD)" > $U
+          echo "--- f211fe9f exists and is reachable from main:" >> $U
+          git -C /tmp/inv cat-file -t f211fe9f >> $U 2>&1
+          git -C /tmp/inv merge-base --is-ancestor f211fe9f origin/main && echo "yes" >> $U || echo "NO" >> $U
+          echo "--- commit:" >> $U
+          git -C /tmp/inv log -1 --format='%H%n%ad%n%s%n%n%b' f211fe9f >> $U 2>&1
+          echo "--- files it touched:" >> $U
+          git -C /tmp/inv show --stat --format= f211fe9f >> $U 2>&1
+          echo "--- does its diff name entries 264-269?" >> $U
+          git -C /tmp/inv show f211fe9f | grep -nE '26[4-9]' | head -40 >> $U 2>&1
+          echo "--- a3527263 (the relay widening):" >> $U
+          git -C /tmp/inv log -1 --format='%H %ad %s' a3527263 >> $U 2>&1
+          echo "--- their own recompute over the live chain:" >> $U
+          timeout 600 python /tmp/inv/integrations/verify-proof/python/recompute_ledger.py --json > /tmp/theirs.json 2>/tmp/theirs.err
+          echo "exit $? (0 = all verified, 1 = a failure, 124 = timed out)" >> $U
+          tail -3 /tmp/theirs.err >> $U
+          python - <<'PY' >> $U
+          import json
+          try:
+              d = json.load(open('/tmp/theirs.json')); c = d.get('chain', {})
+              print(json.dumps({k: d.get(k) for k in ('total', 'verified', 'failed')}))
+              print(json.dumps({'chain_total': c.get('total'), 'chain_verified': c.get('verified'),
+                                'chain_failed': c.get('failed')}))
+          except Exception as e:
+              print('could not read their json:', e)
+          PY
+
+      - name: grade the incident, pre-fix and post-fix
+        env: { OUT: '${{ github.workspace }}/out' }
+        run: timeout 900 python capture/scripts/ledger_incident.py
+
+      - name: issue the signed verified report
+        env:
+          OUT: '${{ github.workspace }}/out'
+          VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
+        run: |
+          test -n "$VLC_ADMIN_KEY" || { echo "secret VLC_ADMIN_KEY not set"; exit 1; }
+          python - <<'PY'
+          import json, os, sys
+          sys.path.insert(0, ".")
+          from conformance import check
+          out = os.environ["OUT"]
+          s = json.load(open(f"{out}/incident/summary.json"))
+          head = s["signed_head"]["head_hash"]
+          rep = check(f"{out}/ledger/ledger-live-full.jsonl",
+                      "adapters/invinoveritas-ledger-live.json", expect_head=head)
+          rep["expected_head"] = {
+              "value": head,
+              "source_note": "head_hash inside the newest valid signed Nostr head event "
+                             "(kind 30078, schema invinoveritas.ledger_chain_head.v1) found on "
+                             "public relays at capture time, for entry %s; NIP-01 id and BIP-340 "
+                             "signature verified against the verifier_pubkey that GET /ledger "
+                             "publishes" % s["signed_head"]["entry"]}
+          json.dump(rep, open("/tmp/rep.json", "w"))
+          print("graded: structural L%s attested L%s" % (rep.get("structural_level"), rep.get("attested_level")))
+          PY
+          code=$(curl -sS -o /tmp/signed.json -w '%{http_code}' -X POST https://vlc-1.moorematthew131.workers.dev/api/sign-report -H 'content-type: application/json' -H "x-admin-key: $VLC_ADMIN_KEY" --data-binary @/tmp/rep.json)
+          echo "sign-report status: $code"; test "$code" = 200 || { head -c 300 /tmp/signed.json; exit 1; }
+          # never hand over a report we have not verified ourselves, offline
+          python3 tools/verify_report.py /tmp/signed.json
+          cp /tmp/signed.json "$OUT/incident/verified-report.json"
+
+      - name: commit results
+        if: always()
+        run: |
+          echo "runner: $(uname -srm); $(date -u +%FT%TZ)" >> out/incident/steps.txt
+          D=capture/runs/invinoveritas-rescore-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$D"; cp -r out/. "$D/"
+          find "$D" -type f -size +5M -print -delete
+          git config user.name "invinoveritas-rescore"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: invinoveritas re-score + 264-269 incident grade $(basename "$D")" && git push -q origin HEAD:capture/invinoveritas-ledger
