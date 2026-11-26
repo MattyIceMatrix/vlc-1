@@ -34,6 +34,9 @@ jobs:
           VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
         run: |
           test -n "$VLC_ADMIN_KEY" || { echo "secret VLC_ADMIN_KEY not set"; exit 1; }
+          # trim stray whitespace from the pasted secret: curl strips it in
+          # headers, Python sends it raw -- the 200-vs-403 split of run 4
+          export VLC_ADMIN_KEY="$(printf '%s' "$VLC_ADMIN_KEY" | tr -d '[:space:]')"
           D=$(ls -d capture/runs/jidec-report-* | tail -1)
           HEAD_HEX=$(python3 -c "import json;print(json.load(open('$D/jidec/head.json'))['entry_sha256'])")
           python3 tools/issue_verified_report_head.py "$D/jidec/export.jsonl" adapters/jidec-ledger-chained.json "$HEAD_HEX" "$D/jidec/verified-report.json" --note "entry_sha256 of the jidec-head-v1 marker from GET /ledger/head at capture time; the same value the stamped nenrin checkpoint entries carry"
