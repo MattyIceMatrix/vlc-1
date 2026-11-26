@@ -359,8 +359,12 @@ def main():
                          f"{max(chained_entries)} -- but a verifier that picks 'the newest signed "
                          f"head under this key and schema' can pick from the wrong series, which "
                          f"is the ambiguity the 264-269 incident was about, moved from the chain "
-                         f"into the head namespace. Pinning the d tag, or putting a chain "
-                         f"identifier in the signed content, would close it.",
+                         f"into the head namespace. chain_spec states that entries 1-39 are not "
+                         f"retroactively chained, and gives the reason, so these heads also "
+                         f"contradict the published spec; and its head_broadcast clause puts "
+                         f"chain heads under the same invinoveritas-proof-* tag family as the "
+                         f"proof events, so the d tag cannot separate the two series either. A "
+                         f"chain identifier inside the signed content would close it.",
             "detail": "relay-coverage.json",
         })
     log(f"relays: heads on {len(carrying)} of {len(queried)} queried; "
