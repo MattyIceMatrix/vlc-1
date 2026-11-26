@@ -1,0 +1,330 @@
+{
+  "requirement_context": "VLC-L1-3 / VLC-L5-1: the signed head is the only thing that catches a consistently rewritten chain, so how many independent relays carry it is the breadth of that anchor.",
+  "relays_queried": 9,
+  "relays_reachable": 8,
+  "relays_carrying_a_head_event": 6,
+  "which": [
+    "wss://nos.lol",
+    "wss://nostr.mom",
+    "wss://offchain.pub",
+    "wss://relay.damus.io",
+    "wss://relay.nostr.net",
+    "wss://relay.primal.net"
+  ],
+  "unreachable": {
+    "wss://relay.nostr.band": "TimeoutError: timed out during opening handshake"
+  },
+  "entries_in_chain": 239,
+  "entries_with_a_valid_signed_head": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    264,
+    265,
+    266,
+    267,
+    268,
+    269,
+    270,
+    271,
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278
+  ],
+  "entries_without_one": 224,
+  "per_entry": {
+    "264": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "265": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "266": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "267": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "268": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "269": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "270": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "271": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom"
+      ]
+    },
+    "272": {
+      "valid": true,
+      "relays": [
+        "wss://nos.lol",
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.primal.net"
+      ]
+    },
+    "1": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "2": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "3": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "4": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "5": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "6": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "7": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "8": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "9": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "10": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "11": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "12": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "13": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "14": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "15": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "16": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "17": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "18": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "19": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://relay.nostr.net"
+      ]
+    },
+    "273": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.primal.net"
+      ]
+    },
+    "274": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.damus.io",
+        "wss://relay.primal.net"
+      ]
+    },
+    "275": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.primal.net"
+      ]
+    },
+    "20": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom"
+      ]
+    },
+    "276": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.damus.io",
+        "wss://relay.nostr.net",
+        "wss://relay.primal.net"
+      ]
+    },
+    "277": {
+      "valid": true,
+      "relays": [
+        "wss://nostr.mom",
+        "wss://offchain.pub",
+        "wss://relay.damus.io",
+        "wss://relay.nostr.net",
+        "wss://relay.primal.net"
+      ]
+    },
+    "278": {
+      "valid": true,
+      "relays": [
+        "wss://offchain.pub",
+        "wss://relay.damus.io",
+        "wss://relay.nostr.net"
+      ]
+    }
+  },
+  "prior_measurements": {
+    "2026-09-30T13:43Z": "heads for entries 264-269 on 2 of 6 relays queried",
+    "2026-09-30T18:52Z": "heads for entries 263-270 on 6 of 9 relays queried, after a3527263"
+  },
+  "fixed_in": "https://github.com/babyblueviper1/invinoveritas/commit/a3527263379ca627d4746055f48504cfd2668ae4"
+}

@@ -1,0 +1,145 @@
+{
+  "produced_by": "capture/scripts/ledger_incident.py",
+  "capture": {
+    "fetched_at": "2026-11-26T16:46:34Z",
+    "sha256_of_ledger_response": "9f9176b76fde1704ca92110ff8aa59c28ca7caba9925550bc5f0f3da4df91abe",
+    "entries_in_index": 278,
+    "chained": 239,
+    "range": [
+      40,
+      278
+    ]
+  },
+  "signed_head": {
+    "entry": 278,
+    "head_hash": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab"
+  },
+  "grades": {
+    "current_log_alone": {
+      "structural_level": 0,
+      "attested_level": 0,
+      "note": "the live chain, no anchor held",
+      "anchors": {
+        "expect_root": null,
+        "expect_head": null
+      },
+      "first_failures": {
+        "VLC-L1-3": "not established: the end marker names the recomputed head, but the adapter declares it not self-bound, so records dropped from the tail with the marker's head rewritten are undetectable on the log alone; supply --expect-head (a head obtained independently of the log)",
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable",
+        "VLC-L3-1a": "adapter declares no coverage declaration"
+      }
+    },
+    "current_with_signed_head": {
+      "structural_level": 1,
+      "attested_level": 1,
+      "note": "the live chain against the signed head for entry 278",
+      "anchors": {
+        "expect_root": null,
+        "expect_head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab"
+      },
+      "first_failures": {
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable",
+        "VLC-L3-1a": "adapter declares no coverage declaration",
+        "VLC-L3-6": "observation surface is not enumerable and is not declared as such"
+      }
+    },
+    "prefix_whole_log_alone": {
+      "structural_level": 0,
+      "attested_level": 0,
+      "note": "pre-fix chain, both segments, no anchor held",
+      "anchors": {
+        "expect_root": null,
+        "expect_head": null
+      },
+      "first_failures": {
+        "VLC-L1-1": "record 224 does not link to its predecessor",
+        "VLC-L1-3": "last record class is 'ledger-entry', expected 'chain-head': truncation undetectable",
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable"
+      }
+    },
+    "prefix_forked_segment_log_alone": {
+      "structural_level": 0,
+      "attested_level": 0,
+      "note": "the forked segment alone, no anchor held -- the silent fork",
+      "anchors": {
+        "expect_root": null,
+        "expect_head": null
+      },
+      "first_failures": {
+        "VLC-L1-3": "last record class is 'ledger-entry', expected 'chain-head': truncation undetectable",
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable",
+        "VLC-L3-1a": "adapter declares no coverage declaration"
+      }
+    },
+    "prefix_forked_segment_against_earlier_head": {
+      "structural_level": 0,
+      "attested_level": 0,
+      "note": "the forked segment against the head held for entry 263",
+      "anchors": {
+        "expect_root": "c6ad355b28943898e3a4788224175222c928caf5e24d83071f2d0efe89e8b22d",
+        "expect_head": null
+      },
+      "first_failures": {
+        "VLC-L1-1": "chain root 09c790b34b51e22a... does not equal the independently supplied root c6ad355b28943898...: the log was re-rooted or is a different log",
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable",
+        "VLC-L3-1a": "adapter declares no coverage declaration"
+      }
+    },
+    "postfix": {
+      "structural_level": 1,
+      "attested_level": 1,
+      "note": "the chain as served today, backfill included",
+      "anchors": {
+        "expect_root": null,
+        "expect_head": "2f1e3af64e160179330728762872712283b9d5a0857328a18254962dffcc69ab"
+      },
+      "first_failures": {
+        "VLC-L2-1": "adapter declares no production count or ordinal",
+        "VLC-L2-5": "no completeness identity is computable",
+        "VLC-L3-1a": "adapter declares no coverage declaration",
+        "VLC-L3-6": "observation surface is not enumerable and is not declared as such"
+      }
+    }
+  },
+  "incident": {
+    "entries": [
+      264,
+      265,
+      266,
+      267,
+      268,
+      269
+    ],
+    "state": "reconstructed, not captured",
+    "provenance": "NOT CAPTURED. Derived on the runner from the served post-fix chain plus the operator's description of the pre-fix state on vlc-1 PR #3 (2026-11-26) and commit f211fe9f (2026-09-21). The fix predates this project's first fetch of the ledger (2026-09-30), so no pre-fix bytes exist in this repository and none are claimed to.",
+    "earlier_head_held": {
+      "entry": 263,
+      "head_hash": "c6ad355b28943898e3a4788224175222c928caf5e24d83071f2d0efe89e8b22d"
+    }
+  },
+  "findings": [
+    {
+      "id": "F-FIX-COMMIT-UNRESOLVED",
+      "severity": "finding (citation, not chain)",
+      "statement": "The fix is cited as f211fe9f, which does not resolve in the public repository babyblueviper1/invinoveritas; a3527263, cited for the relay widening in the same comment, does. The fix may live in a repository that is not public (the chain_note names ledger_forward_verdict.py, which is not in the public tree). The effect is checked against the served data separately and is not in question here; only the citation is.",
+      "detail": "described-vs-served.json"
+    },
+    {
+      "id": "F-FIX-DATE-MISMATCH",
+      "severity": "finding (description, not chain)",
+      "statement": "The fix is dated 2026-09-21, but every one of the six entries carries chain_backfilled_at on 2026-09-30 (2026-09-30T12:58:49+00:00 to 2026-09-30T12:58:59+00:00), and their chain_note says 'chained late (2026-09-30)'. The served data is self-consistent; the date in the description is not what the ledger says. On the served dates the backfill landed roughly three quarters of an hour before this project's first fetch of the ledger, which matches 'found while preparing the earlier snapshot for you'.",
+      "detail": "described-vs-served.json"
+    },
+    {
+      "id": "F-RELAY-COVERAGE",
+      "severity": "coverage finding (not a chain defect)",
+      "statement": "Signed heads were found on 6 of 9 relays queried (8 reachable), covering 35 of 239 chained entries. Heads are the only anchor that catches a consistently rewritten chain, so an entry with no head on any relay a reader queries has no anchor for that reader. This is the finding the operator raised as fixed in a3527263; it is measured, not assumed.",
+      "detail": "relay-coverage.json"
+    }
+  ]
+}
