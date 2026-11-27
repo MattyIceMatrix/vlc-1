@@ -27,9 +27,15 @@ jobs:
       - name: Differential fuzz, jcs-nested family (incl. guarded-subset refusals)
         run: |
           python3 tools/fuzz_differential_jcs.py 300 "${{ github.run_number }}"
+      - name: Differential fuzz, prefix-chain family (raw-text mechanism)
+        run: |
+          python3 tools/fuzz_differential_prefix.py 300 "${{ github.run_number }}"
       - name: Upload repro journals on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: fuzz-repro
-          path: fuzz_repro_*.jsonl
+          path: |
+            fuzz_repro_*.jsonl
+            fuzz_jcs_repro_*.jsonl
+            fuzz_prefix_repro_*.jsonl
