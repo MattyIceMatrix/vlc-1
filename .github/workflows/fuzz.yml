@@ -24,6 +24,9 @@ jobs:
       - name: Differential fuzz (JS worker core vs Python reference)
         run: |
           python3 tools/fuzz_differential.py 300 "${{ github.run_number }}"
+      - name: Differential fuzz, jcs-nested family (incl. guarded-subset refusals)
+        run: |
+          python3 tools/fuzz_differential_jcs.py 300 "${{ github.run_number }}"
       - name: Upload repro journals on failure
         if: failure()
         uses: actions/upload-artifact@v4

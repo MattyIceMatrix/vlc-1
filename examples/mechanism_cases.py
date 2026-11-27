@@ -331,6 +331,15 @@ def main(out):
     del jd[3]
     case("jcs-nested-interior-deleted", jd, jca, "VLC-L1-1", "FAIL")
     case("jcs-nested-tail-truncated", jcs_honest[:-1], jca, "VLC-L1-3", "FAIL")
+    # -0.0 is a float to the reference (refused: no recomputable binding) but
+    # parses to -0 in ECMAScript, where Number.isInteger(-0) is true -- the
+    # one JSON number that slips a post-parse float check. The live core now
+    # scans the raw line for float SYNTAX. Frozen from fuzz_differential_jcs
+    # case 53 (2026-11-27), where the live endpoint graded L1-1 PASS on a
+    # journal the reference fails.
+    jf = copy.deepcopy(jcs_honest)
+    jf[3]["negzero"] = -0.0
+    case("jcs-nested-negzero-float-syntax", jf, jca, "VLC-L1-1", "FAIL")
 
     for c in cases:
         print(" ".join(c))

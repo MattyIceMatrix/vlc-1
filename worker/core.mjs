@@ -105,7 +105,7 @@ export async function recHash(prevHex, r, ad) {
     // An object key above the BMP: this port could grade it exactly, but the
     // reference checker's guarded subset refuses it, and parity with the
     // reference outranks capability -- both graders must say the same thing.
-    if (!r.hash || hasFloat(r.obj) || hasAstralKey(r.obj)) return null;
+    if (!r.hash || hasFloat(r.obj) || hasFloatSyntax(r.raw) || hasAstralKey(r.obj)) return null;
     const clone = JSON.parse(JSON.stringify(r.obj));
     dropPath(clone, hf);
     return sha256Hex(canonJcs(clone));
@@ -140,6 +140,17 @@ function hasAstralKey(x) {
     if (hasAstralKey(x[k])) return true;
   }
   return false;
+}
+
+// Float SYNTAX in the raw line. JSON.parse erases it: "-0.0" parses to -0
+// (Number.isInteger(-0) is true) and "1.0" parses to 1, so a post-parse check
+// cannot see them -- but the reference checker (Python) types both as float
+// and refuses the record as unrecomputable. Same raw-text approach as the
+// big-integer scan in the loader; a lookalike inside a string value can only
+// false-positive toward "unrecomputable", never toward a wrong grade.
+// Found by tools/fuzz_differential_jcs.py case 53 (-0.0), 2026-11-27.
+function hasFloatSyntax(raw) {
+  return /(?<=[\s{\[,:])-?\d+(?:\.\d+(?:[eE][-+]?\d+)?|[eE][-+]?\d+)(?=[\s,}\]]|$)/.test(raw);
 }
 
 function hasFloat(x) {
