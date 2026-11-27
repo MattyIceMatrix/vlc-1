@@ -67,3 +67,16 @@ Rotation = mark the active row inactive in the Durable Object's
 new public key to `keys/`, and leave old public keys in place so old reports
 stay verifiable. A report's `signature.key_id` names the key that signed it;
 `tools/verify_report.py` refuses a key-id mismatch rather than guessing.
+
+## Issued reports
+
+| # | Issued (UTC) | Subject | Export sha256 | n | Grade | Key | Where |
+|---|---|---|---|---|---|---|---|
+| 001 | 2026-11-26 10:04 | Operator of a public, Bitcoin-anchored verification ledger ([issue #12](https://github.com/MattyIceMatrix/vlc-1/issues/12)) | `5f8d10db59b73d112c5257e356471fad5afd128fc47dd6a02f780bccd9181f05` | 388 | structural L1 / attested L1 | `1850088997f1bb4c` | [`capture/jidec-signed-report`](https://github.com/MattyIceMatrix/vlc-1/tree/capture/jidec-signed-report) branch |
+
+Report 001's holder re-verified the signature **with their own Ed25519
+implementation**, not this repo's verifier — the strongest acceptance a
+signed report can receive, since it rests on the math alone and not on the
+issuer's tooling. The expected head was taken from the subject's own
+published marker and is recorded, with its provenance, inside the signed
+report itself.
