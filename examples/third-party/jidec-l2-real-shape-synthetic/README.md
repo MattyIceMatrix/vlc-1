@@ -19,6 +19,7 @@ All opt-in; an adapter without these blocks grades exactly as before.
 | adapter block | what the checker verifies |
 |---|---|
 | `record_binding` | sha256 of `record_canonical`, **as delivered** (no re-canonicalization), equals `claim_sha256`; only then is the record read under `@record`. A mismatch is L0. `@record.…` counts as anchored only while `claim_sha256` is in `hash_fields`. |
+| `record_binding.non_object` (1.4.8-draft, EXT-034) | `"bind_only"`: a record that is not a JSON object (the live ledger's Markdown notes, schema `v0-plain`) is still byte-checked, but not lifted; the line is classed by `unbound_class_field`. Default `"refuse"`. This adapter sets `"bind_only"`. |
 | `signatures` (`key_statement_hop`) | a key statement signed by the operator key, **pinned out of band** with `--operator-key`, names a ledger key; every checkpoint is signed by a ledger key named earlier in the chain. Fails VLC-L2-3 otherwise. |
 | `loss.head_n_field`, `loss.head_hash_field` | the head a checkpoint seals is entry `to` of the window it declares: `ledger_head.n == to`, and `ledger_head.entry_sha256` is the hash of entry `to`. Fails VLC-L2-2 otherwise. |
 
@@ -53,6 +54,13 @@ Controls in the same script: no pinned key, or a different one, fails VLC-L2-3;
 dropping `claim_sha256` from `hash_fields`, or the `record_binding` block, leaves
 `@record` fields unanchored (L0); a line carrying its own `@record` member is
 refused; record bytes re-serialized in sorted key order fail the binding.
+
+EXT-034 controls (1.4.8-draft), built from the honest trail by swapping entry
+20's record and re-chaining it and the end marker with the operator's recipe:
+a Markdown record grades L2 with `"bind_only"` and L0 without it (the
+operator's report, reproduced); the Markdown edited with its digest kept is L0;
+a JSON array record is L2; duplicate member names are still refused; an
+unlifted line classed as the declaration class does not grade L2.
 
 ## `horizons/`
 

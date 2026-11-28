@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.7-draft"
+VERSION = "VLC-1 1.4.8-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -203,14 +203,27 @@ def _bind_record(o, i, rb):
     if sha256_hex(text.encode("utf-8")) != want:
         raise LogError(f"record {i}: record binding: sha256 of {rf!r} as delivered "
                        f"does not equal {df!r}; the record was changed after it was bound")
+    # EXT-034 (opt-in): a ledger may bind records that are not JSON at all (a
+    # Markdown note, say) the same way. With non_object "bind_only" such a
+    # record stays BOUND -- the byte check above has already run -- but is not
+    # lifted: no @record, and the line is classed by unbound_class_field, as
+    # the end marker is. Nothing is read from it, so a declaration whose bytes
+    # do not parse is simply absent, and its window fails tiling or the tail
+    # check. JSON that is ambiguous (duplicate names, non-finite numbers) is
+    # still refused in either mode. Default "refuse" grades exactly as before.
+    bind_only = rb.get("non_object", "refuse") == "bind_only"
     try:
         rec = json.loads(text, object_pairs_hook=_no_duplicate_names,
                          parse_constant=_reject_nonfinite)
     except LogError as e:
         raise LogError(f"record {i}: record binding: {e}")
     except Exception:
+        if bind_only:
+            return
         raise LogError(f"record {i}: record binding: {rf!r} is not parseable as JSON")
     if not isinstance(rec, dict):
+        if bind_only:
+            return
         raise LogError(f"record {i}: record binding: {rf!r} is not a JSON object")
     o[RECORD_KEY] = rec
 
@@ -2309,6 +2322,8 @@ def validate_adapter(ad):
         need(rb.get("primitive", "SHA-256") == "SHA-256", "record_binding.primitive must be SHA-256")
         need(rb.get("unbound_class_field") is None or isinstance(rb["unbound_class_field"], str),
              "record_binding.unbound_class_field must be a string when present")
+        need(rb.get("non_object", "refuse") in ("refuse", "bind_only"),
+             "record_binding.non_object must be 'refuse' or 'bind_only'")
         need(RECORD_KEY not in (integ.get("hash_fields") or []),
              f"{RECORD_KEY} is the lifted record, not a hashed field")
     sg = ad.get("signatures")

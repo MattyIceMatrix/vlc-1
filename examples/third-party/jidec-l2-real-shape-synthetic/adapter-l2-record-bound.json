@@ -13,7 +13,8 @@
     "record_field": "record_canonical",
     "digest_field": "claim_sha256",
     "primitive": "SHA-256",
-    "unbound_class_field": "schema"
+    "unbound_class_field": "schema",
+    "non_object": "bind_only"
   },
   "signatures": {
     "mode": "key_statement_hop",

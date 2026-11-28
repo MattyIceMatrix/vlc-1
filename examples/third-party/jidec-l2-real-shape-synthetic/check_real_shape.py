@@ -154,6 +154,82 @@ def main():
         t("record bytes re-canonicalized: the binding is by the bytes as delivered",
           rep["structural_level"] == 0)
 
+        # EXT-034: the live ledger binds plain-text records too (entry 399, a
+        # Markdown note, schema v0-plain). Entry 20 of the honest trail sits in
+        # the undeclared tail, so its record can be swapped and only entry 20
+        # and the end marker re-chained, by the operator's own recipe (sorted,
+        # compact JSON over n, schema, claim_sha256, created_at,
+        # prev_entry_sha256; the marker over n, schema, prev_entry_sha256,
+        # head). The recipe is checked first against the honest bytes.
+        def canon(d):
+            return json.dumps(d, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+        def sha(s):
+            return hashlib.sha256(s.encode("utf-8")).hexdigest()
+
+        ENTRY = ("n", "schema", "claim_sha256", "created_at", "prev_entry_sha256")
+        MARK = ("n", "schema", "prev_entry_sha256", "head")
+        base = [json.loads(x) for x in open(honest, encoding="utf-8").read().splitlines()]
+        t("the operator's entry recipe reproduces every honest hash",
+          all(sha(canon({k: o[k] for k in (MARK if o["schema"] == "jidec-head-v1" else ENTRY)}))
+              == o["entry_sha256"] for o in base))
+
+        def tail_variant(name, record, schema="v0-plain", claim=None):
+            L = copy.deepcopy(base)
+            e, m = L[-2], L[-1]
+            e["schema"], e["record_canonical"] = schema, record
+            e.pop("record_sig", None)
+            e["claim_sha256"] = claim or sha(record)
+            e["entry_sha256"] = sha(canon({k: e[k] for k in ENTRY}))
+            m["head"] = m["prev_entry_sha256"] = e["entry_sha256"]
+            m["entry_sha256"] = sha(canon({k: m[k] for k in MARK}))
+            p = os.path.join(td, name + ".jsonl")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write("\n".join(json.dumps(o, ensure_ascii=False, separators=(",", ":"))
+                                  for o in L) + "\n")
+            return p, m["entry_sha256"]
+
+        def run_h(adapter, log, h):
+            ap = os.path.join(td, "a.json")
+            with open(ap, "w") as f:
+                json.dump(adapter, f)
+            return C.check(log, ap, expect_head=h, operator_key=op)
+
+        md = "# souba-split-count-tool-v7\n\nA plain note, not JSON. SYNTHETIC.\n"
+        mdp, mdh = tail_variant("markdown", md)
+        rep = run_h(ad, mdp, mdh)
+        t("a Markdown record, bound, bind_only: structural L2, tail unchanged",
+          rep["structural_level"] == 2)
+
+        a4 = copy.deepcopy(ad)
+        del a4["record_binding"]["non_object"]
+        rep = run_h(a4, mdp, mdh)
+        t("the same trail without non_object reproduces the operator's report (L0, not JSON)",
+          rep["structural_level"] == 0
+          and "not parseable as JSON" in rep["requirements"]["VLC-L1-1"]["note"])
+
+        L = [json.loads(x) for x in open(mdp, encoding="utf-8").read().splitlines()]
+        L[-2]["record_canonical"] = md.replace("plain note", "plain n0te")
+        ed = os.path.join(td, "markdown-edited.jsonl")
+        with open(ed, "w", encoding="utf-8") as f:
+            f.write("\n".join(json.dumps(o, ensure_ascii=False) for o in L) + "\n")
+        rep = run_h(ad, ed, mdh)
+        t("a Markdown record edited, digest kept: the byte check still runs, L0",
+          rep["structural_level"] == 0 and "record binding" in rep["requirements"]["VLC-L1-1"]["note"])
+
+        arp, arh = tail_variant("json-array", '["not", "an", "object"]')
+        t("a JSON record that is not an object, bind_only: L2",
+          run_h(ad, arp, arh)["structural_level"] == 2)
+
+        dup, duph = tail_variant("duplicate-names", '{"schema":"x","schema":"y"}')
+        rep = run_h(ad, dup, duph)
+        t("ambiguous JSON (duplicate names) is still refused under bind_only",
+          rep["structural_level"] == 0 and "duplicate member name" in rep["requirements"]["VLC-L1-1"]["note"])
+
+        cp, cph = tail_variant("unlifted-as-declaration", md, schema="nenrin-head-checkpoint-v2")
+        t("an unlifted line classed as the declaration class does not grade L2",
+          run_h(ad, cp, cph)["structural_level"] < 2)
+
     print(f"all {n_ok} assertions hold: the JIDEC real export shape grades natively "
           f"(record binding, signature hop, head cross-check)")
 

@@ -968,3 +968,36 @@ fourteen trails, byte for byte, grade as their independent verifier does on
 thirteen; the fourteenth (a refusal list one line short) grades L2 by design,
 because the list is a separate file and the export carries only its hash — the
 operator's own table says the same. No adapter without the new blocks moves.
+
+## EXT-034 — one plain-text record made the whole export unreadable under record binding
+
+*Source: the JIDEC operator (ogasurfproject-jpg), reading the 1.4.7-draft
+adapter against the live ledger, PR #12, 2026-11-28. Fixed in 1.4.8-draft.*
+
+**Medium.** The live ledger binds every entry's record the same way, and many
+records are not JSON: entry 399 is a Markdown note (schema `v0-plain`). The
+1.4.7-draft `record_binding` refused any record that was not a JSON object, and
+refused it for the whole delivered set, so one note turned an honest export
+into L0 (`VLC-L1-1 delivered set unreadable: record 0: record binding:
+'record_canonical' is not parseable as JSON`). An over-refusal, and on the
+producer's ordinary output.
+
+Fixed with an opt-in key, as the operator suggested: `record_binding.non_object:
+"bind_only"`. The byte check still runs on every line, so the Markdown records
+are bound too and an edit to one is L0. A record that is not a JSON object is
+then left unlifted: no `@record`, classed by `unbound_class_field` like the end
+marker, and nothing is read from it. Nothing gets weaker: a declaration whose
+bytes do not parse is simply absent, and the window it should close fails
+tiling or the tail check. Ambiguous JSON (duplicate member names, non-finite
+numbers) is still refused in either mode. The default, `"refuse"`, grades
+exactly as 1.4.7-draft did.
+
+Controls in `examples/third-party/jidec-l2-real-shape-synthetic/check_real_shape.py`,
+built from the honest trail by swapping the tail entry's record and re-chaining
+it and the end marker with the operator's own recipe (checked first against the
+honest bytes): a Markdown record grades structural L2 with `"bind_only"` and
+reproduces the operator's L0 without it; the same record edited with its digest
+kept is L0; a JSON array record is L2; a record with duplicate member names is
+still refused; an unlifted line whose own class is the declaration class does
+not grade L2. The adapter in that directory now sets `"bind_only"`; its
+fourteen trails grade as before.
