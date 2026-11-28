@@ -1,0 +1,87 @@
+{
+  "name": "octa-audit-export-v1",
+  "producer": "OCTA governance gateway (PRIVATE -- this adapter does not ship in the public vlc-1 repo)",
+  "description": "Maps GET /api/govern/audit-export to VLC-1. Each line of the JSONL is one audit entry exactly as the server serialized it; hash = SHA-256(hex(prev) + '|' + raw entry minus its trailing hash and signature members); every entry additionally carries an Ed25519 signature over its hash, and the export carries a signed head marker binding genesis, head, entry_count and pruned_total (verify the marker per docs/AUDIT-EXPORT.md, then pass its genesis/head as --expect-root/--expect-head).",
+  "integrity": {
+    "mechanism": "sha256-prev-join-raw",
+    "hash_field": "hash",
+    "prev_field": "prevHash",
+    "seal_fields": [
+      "hash",
+      "signature"
+    ],
+    "separator": "|",
+    "root": {
+      "kind": "zero"
+    },
+    "primitive": "SHA-256",
+    "documented": true,
+    "primitive_documented": true,
+    "end_marker": {
+      "class": "audit.export.marker",
+      "head_field": "chain_head",
+      "self_bound": true,
+      "note": "The export seal is an ordinary chained, Ed25519-signed entry (sealAndExportAuditChain): its binding is recomputed like any other record, so the counts it carries cannot be rewritten to hide a drop (EXT-022). The envelope's out-of-band signed marker additionally supplies the independent expect_head/expect_root."
+    },
+    "note": "No in-chain end marker: the end is bound by the Ed25519-signed export marker, supplied to the checker as the independent expect_head. Root: an unpruned chain starts at 64 zero bytes (kind zero); once the pruner has run, genesis advances, and the grading pipeline must set root to {kind: constant, value: <marker.genesis>} from the verified marker, which is also the independent expect_root."
+  },
+  "loss": {
+    "mode": "declaration",
+    "declaration_class": "audit.pruned",
+    "count_field": "lost",
+    "interval_fields": [
+      "from",
+      "to"
+    ],
+    "produced": {
+      "kind": "field_of_end_marker",
+      "field": "produced"
+    },
+    "note": "The pruner keeps the last 10,000 entries and counts what it drops; pending pruning is declared in-chain at seal time as one batched audit.pruned record (from/to ordinals, lost count). The sealed end marker states produced = delivered + pruned_total.",
+    "overflow_behaviour": "drop_counted",
+    "boundary_note": "At the 10,000-entry cap the oldest entries are dropped and counted (pruned_total; genesis advances to the last pruned hash). Nothing is dropped uncounted; the count is declared in-chain at seal time."
+  },
+  "coverage": {
+    "mode": "enumerated",
+    "declaration_class": "coverage.declaration",
+    "attached_field": "attached",
+    "unattached_field": "unattached",
+    "by_design_field": "by_design",
+    "basis_field": "basis",
+    "bidirectional_test": {
+      "exists": true,
+      "negative_control": true,
+      "ref": "tests/coverage-bidirectional.test.js: every attached source family, exercised, writes an entry; declared-unattached reads write nothing (negative control)"
+    },
+    "note": "Declared as the chain's first record (declareCoverage, boot): sources enumerated from a code audit of every appendAudit call site."
+  },
+  "policy": {
+    "mode": "per_record",
+    "digest_field": "policy_sha256",
+    "change_class": "policy.changed",
+    "change_before_field": "before",
+    "change_after_field": "after",
+    "note": "Every entry carries the digest of the active 18-check pipeline (per check: id, name, category, enforcement, sha256 of the check function's source; digest = sha256 of the JSON descriptor, served at GET /api/govern/policy). policy.changed entries record before/after digests at boot when the policy differs.",
+    "replay": {
+      "deterministic": true,
+      "reference": "GET /api/govern/policy: the full descriptor (per check: id, name, category, enforcement, sha256 of the check function's source); digest = sha256(JSON.stringify(descriptor)). Checks are pure functions of the input payload (see server/lib/governance.js header); re-run the pipeline on the recorded input to replay a verdict."
+    }
+  },
+  "independence": {
+    "mode": "self_reported",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The gateway writes and signs its own trail with its ledger key; no operator statement yet names that key (planned, L3). The export marker is signed by the same key that signs entries."
+  },
+  "sources": [
+    "server/lib/database.js appendAudit()/exportAuditChain(); server/lib/crypto.js chainHash(); docs/AUDIT-EXPORT.md"
+  ],
+  "record_class_field": "event",
+  "marker_classes": [
+    "audit.export.marker"
+  ],
+  "non_event_classes": [
+    "audit.export.marker",
+    "audit.pruned",
+    "coverage.declaration"
+  ]
+}

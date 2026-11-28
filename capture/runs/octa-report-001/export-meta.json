@@ -1,0 +1,16 @@
+{
+  "format": "octa-audit-export-v1",
+  "hash_rule": "sha256(prev + '|' + JSON.stringify(entry minus hash,signature))",
+  "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEATind6T8WV5CspTD5MfX9DXswCYg+0USfny7KtHnuJSk=\n-----END PUBLIC KEY-----\n",
+  "key_is_ephemeral": false,
+  "marker": {
+    "type": "octa-audit-head-marker-v1",
+    "event": "octa-audit-head-marker-v1",
+    "genesis": "0000000000000000000000000000000000000000000000000000000000000000",
+    "head": "35ae78572dcc001a2af15d1431a3e40e2f60e20e8b4b6b94d70d26fbb498d139",
+    "entry_count": 6,
+    "pruned_total": 0,
+    "exported_at": "2026-11-28T07:28:35.970Z"
+  },
+  "marker_signature": "+LHsLWN6iNvPQ/dXbvADU76NKObN8jY8uMQbmTUsB5wvRu0aM3bN8rTphRBv7WgZZOp+EngVUTvlhqvabMsbDA=="
+}
