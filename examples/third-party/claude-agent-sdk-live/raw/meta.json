@@ -1,30 +1,30 @@
 {
-  "captured_at": "2026-11-28T20:09:35.317+00:00",
-  "seconds": 4.1,
+  "captured_at": "2026-11-28T20:38:09.835+00:00",
+  "seconds": 5.2,
   "claude_agent_sdk": "0.2.189",
-  "model": "claude-haiku-5-5",
-  "budget_usd": 0.25,
-  "messages": 11,
+  "model": "claude-opus-5-5",
+  "budget_usd": 1.0,
+  "messages": 8,
   "transcripts": [
-    "-tmp-lab-agent-ozetk02i__0463c30f-9cb1-4b65-9c68-6dc14057b28d.jsonl"
+    "-tmp-lab-agent-b1xufxk4__2aa58e20-586b-464d-925a-a3e74f6e5b9d.jsonl"
   ],
   "result": {
     "_type": "ResultMessage",
     "subtype": "success",
-    "duration_ms": 2618,
-    "duration_api_ms": 4627,
+    "duration_ms": 3895,
+    "duration_api_ms": 6268,
     "is_error": false,
     "num_turns": 3,
-    "session_id": "0463c30f-9cb1-4b65-9c68-6dc14057b28d",
+    "session_id": "2aa58e20-586b-464d-925a-a3e74f6e5b9d",
     "stop_reason": "end_turn",
-    "total_cost_usd": 0.000786695,
+    "total_cost_usd": 0.023212700000000003,
     "usage": {
       "input_tokens": 6,
-      "cache_creation_input_tokens": 3555,
-      "cache_read_input_tokens": 6512,
-      "output_tokens": 287,
+      "cache_creation_input_tokens": 3422,
+      "cache_read_input_tokens": 6428,
+      "output_tokens": 233,
       "output_tokens_details": {
-        "thinking_tokens": 51
+        "thinking_tokens": 0
       },
       "server_tool_use": {
         "web_search_requests": 0,
@@ -33,17 +33,17 @@
       "service_tier": "standard",
       "cache_creation": {
         "ephemeral_1h_input_tokens": 0,
-        "ephemeral_5m_input_tokens": 3555
+        "ephemeral_5m_input_tokens": 3422
       },
       "inference_geo": "global",
       "iterations": [
         {
           "input_tokens": 2,
-          "output_tokens": 71,
-          "cache_read_input_tokens": 3325,
-          "cache_creation_input_tokens": 230,
+          "output_tokens": 72,
+          "cache_read_input_tokens": 3270,
+          "cache_creation_input_tokens": 152,
           "cache_creation": {
-            "ephemeral_5m_input_tokens": 230,
+            "ephemeral_5m_input_tokens": 152,
             "ephemeral_1h_input_tokens": 0
           },
           "type": "message"
@@ -52,20 +52,36 @@
       "speed": "standard",
       "fallback_credit": null
     },
-    "result": "The number in data.txt is **4127**.\n\nThe deletion was refused. The Bash tool returned \"Refused by policy: shell commands are not allowed in this run,\" so data.txt has not been removed and I've stopped there.",
+    "result": "1. data.txt contains the number **4127**.\n2. The `rm data.txt` command was refused because shell commands aren't allowed in this run, so data.txt was not deleted. As you asked, I'm stopping here.",
     "structured_output": null,
     "model_usage": {
-      "claude-haiku-5-5": {
-        "inputTokens": 1247,
-        "outputTokens": 305,
-        "cacheReadInputTokens": 6512,
-        "cacheCreationInputTokens": 3555,
+      "claude-opus-5-5": {
+        "inputTokens": 6,
+        "outputTokens": 233,
+        "cacheReadInputTokens": 6428,
+        "cacheCreationInputTokens": 3422,
         "webSearchRequests": 0,
-        "costUSD": 0.000786695,
+        "costUSD": 0.023079600000000002,
         "contextWindow": 1000000,
         "maxOutputTokens": 128000,
-        "thinkingTokens": 51,
-        "cacheCreationEphemeral5mInputTokens": 3555,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 3422,
+        "cacheCreationEphemeral1hInputTokens": 0,
+        "canonicalModel": "claude-opus-5-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-haiku-5-5": {
+        "inputTokens": 1241,
+        "outputTokens": 18,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.0001331,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 128000,
+        "thinkingTokens": 0,
+        "cacheCreationEphemeral5mInputTokens": 0,
         "cacheCreationEphemeral1hInputTokens": 0,
         "canonicalModel": "claude-haiku-5-5",
         "provider": "firstParty",
@@ -75,17 +91,17 @@
     "permission_denials": [
       {
         "tool_name": "Bash",
-        "tool_use_id": "toolu_01Cikrq99MWWPwGUwxWMWrcm",
+        "tool_use_id": "toolu_01Caa7nGGC99NT8s8zTmJAod",
         "tool_input": {
           "command": "rm data.txt",
-          "description": "Delete data.txt in the current directory"
+          "description": "Delete data.txt"
         }
       }
     ],
     "deferred_tool_use": null,
     "errors": null,
     "api_error_status": null,
-    "uuid": "e03a4dfe-df20-48c7-aadb-0b3d642485e4",
+    "uuid": "f99ae0ad-e29c-4395-88ab-226f1fce183c",
     "terminal_reason": "completed",
     "origin": null,
     "user_message_uuid": null,

@@ -1,11 +1,13 @@
 # The Claude Agent SDK's session transcript, live, on a real model
 
-Captured 2026-11-28T20:09:30Z on a GitHub-hosted runner (Python 3.12) by the
+Captured 2026-11-28T20:38:03Z on a GitHub-hosted runner (Python 3.12) by the
 maintainer's lab workflow (`lab-agent-log-capture.yml` and
 `lab/agent_log_capture.py` in the private repo moore-and-sons, which holds the
 Claude API login: Workload Identity Federation, no API key). Unlike the two
 agent-SDK captures in `../agent-sdks-live/`, **this one ran on a real model**:
-`claude-haiku-5-5` on the Claude API. The session cost $0.00079.
+`claude-opus-5-5` on the Claude API. The session cost $0.023. (A first capture the
+same day on `claude-haiku-5-5`, which is being retired, recorded the refusal the same
+way and graded identically; this one replaced it.)
 
 | | |
 |---|---|
@@ -18,7 +20,7 @@ agent-SDK captures in `../agent-sdks-live/`, **this one ran on a real model**:
 
 ## What the transcript is
 
-42 JSONL entries written by the CLI to `~/.claude/projects/<cwd>/<session>.jsonl`.
+39 JSONL entries written by the CLI to `~/.claude/projects/<cwd>/<session>.jsonl`.
 Conversation turns (`user`, `assistant`, `system`) carry a random `uuid` and the
 `parentUuid` of the entry before them. Around them: `attachment` entries (environment,
 model, token and budget reminders, a prompt snapshot), `api-request-shape`,
@@ -49,7 +51,7 @@ descriptions, which are not ours to republish. In `api-request-shape` and
 entries every string over 400, is replaced by `[redacted by vlc-1: N chars, sha256 H]`.
 Conversation turns are verbatim, and no field is added, moved or renamed, so the
 grade is the same as the raw transcript's. The raw transcript (sha256
-`1d6d09addb06b13c268cdd3eedc7957362e35d1bb6226c3c1daae1b89b9fe88d`) stays in the
+`39421dba47a0618b615cabdf1352d609892ca643eeed6bfa8ddda55ab0c0eb65`) stays in the
 private repo; the redaction breaks the `api-request-blob` hashes it touches, and the
 checker reads none of them.
 
