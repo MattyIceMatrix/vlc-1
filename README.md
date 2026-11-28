@@ -304,6 +304,26 @@ adopted before the obligation it would serve takes effect.
 with the caveat — stated in the file — that the drafts must be read in full
 through a national standards body before anything is filed.
 
+**Update 2026-11-28:** contact established with the DIN national committee
+responsible for ISO/IEC 24970 (weeks from publication at last word); the
+prEN 18229-1 comment is in that channel. A second IETF draft in this space,
+draft-sharif-agent-audit-trail, was cross-tested on 2026-11-28 — four
+findings with a runnable kit ([`crosstest/aat/`](crosstest/aat/)) sent to
+its author, the same way the AER-1 findings were. Distribution since
+2026-11-25: [PyPI (`vlc-check`)](https://pypi.org/project/vlc-check/) and
+the [GitHub Marketplace Action](https://github.com/marketplace/actions/vlc-1-conformance-check).
+
+## The story, the record, the receipts
+
+- [docs/HISTORY.md](docs/HISTORY.md) — the whole arc in one dated page.
+- [docs/posts/](docs/posts/) — milestone write-ups, starting with the first
+  signed verification report (2026-11-26).
+- [VERIFIED-REPORTS.md](VERIFIED-REPORTS.md) — the registry of issued signed
+  reports.
+- [docs/CORRECTIONS.md](docs/CORRECTIONS.md) — every defect that could have
+  produced a wrong grade on a reachable surface, published with its window.
+- [THIRD-PARTY.md](THIRD-PARTY.md) — every outside contact, with receipts.
+
 ## Licence
 
 - **Specification text** (`SPEC.md`, `THIRD-PARTY.md`, `COMMENT-*.md`): [CC0 1.0](LICENSE-SPEC) — public domain. Standards bodies may lift clauses verbatim.
