@@ -194,6 +194,23 @@ def strip_hash_suffix(raw, hexhash):
     return raw[: m.start()]
 
 
+def strip_trailing_members(raw, names):
+    """For prev-join-raw logs: the hashed text is the raw record minus its
+    trailing seal members (its own hash, and any signature over that hash),
+    stripped by NAME from the end in reverse declared order. The family's
+    contract is that the producer appends the seal members last, so stripping
+    them textually reproduces the exact bytes the producer hashed -- no
+    parse/re-serialize round trip to diverge on. A member that is absent or
+    not trailing returns None: no recomputable binding, never a guessed one."""
+    text = raw.rstrip()
+    for name in reversed(names):
+        m = re.search(r',\s*"' + re.escape(name) + r'"\s*:\s*(?:"(?:[^"\\]|\\.)*"|null)\s*\}\s*$', text)
+        if not m:
+            return None
+        text = text[: m.start()] + "}"
+    return text
+
+
 # --- RFC 8785 (JCS) canonicalization, guarded subset (1.4.5-draft) -----------
 # For JSON limited to: integers within +/-(2^53-1), no other numbers, and
 # object keys with no character above U+FFFF, Python's
@@ -323,6 +340,28 @@ def rec_hash(prev, r, ad, prev_raw=b""):
         clone = json.loads(json.dumps(r.obj))
         _drop_path(clone, hf)
         return sha256_hex(canon_jcs(clone).encode("utf-8"))
+    if mech == "sha256-prev-join-raw":
+        # A chain over each record's own raw text joined to its predecessor's
+        # hex digest: hash = SHA-256(hex(prev) + separator + text), where text
+        # is the raw record minus its trailing seal members (declared in
+        # integrity.seal_fields: the record's own hash, and any signature over
+        # that hash). The shape of a producer that serializes the record once,
+        # hashes prev + separator + that serialization, then appends the hash
+        # and signature as the trailing members -- common in JavaScript
+        # ledgers built on JSON.stringify, whose key order is insertion order
+        # and therefore NOT canonical: only the raw bytes are authoritative,
+        # which is why this family strips text rather than re-serializing.
+        # The record's carried prev-link field sits INSIDE text, so it is
+        # hashed as delivered; the EXT-013 link check in check_l1 compares it
+        # with the true predecessor, and a re-linked record also changes the
+        # join prefix and so fails the recompute.
+        if not r.hash:
+            return None
+        text = strip_trailing_members(r.raw, ad["integrity"]["seal_fields"])
+        if text is None:
+            return None
+        sep = ad["integrity"].get("separator", "|")
+        return sha256_hex((prev.hex() + sep).encode() + text.encode())
     raise AdapterError(f"unknown integrity.mechanism {mech!r}")
 
 
@@ -822,7 +861,7 @@ def check_l1(recs, ad, res, ctx):
     # or reordering records left every hash valid. The link is checked here.
     link_field = (ad["integrity"].get("prev_field")
                   if mech in ("sha256-prev-field", "sha256-canonical-fields", "sha256-hex-join",
-                              "sha256-chain-jcs-nested") else None)
+                              "sha256-chain-jcs-nested", "sha256-prev-join-raw") else None)
     for r in body:
         if link_field is not None and str(dig(r.obj, link_field) or "") != prev.hex():
             res.fail("VLC-L1-1", f"record {r.i} does not link to its predecessor")
@@ -1926,7 +1965,7 @@ def mutate(lines, how, ad):
 # ===========================================================================
 MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-prev-raw",
               "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join",
-              "sha256-chain-jcs-nested")
+              "sha256-chain-jcs-nested", "sha256-prev-join-raw")
 ROOT_KINDS = ("zero", "constant", "field_of_first_record")
 LOSS_MODES = ("none", "declaration", "ordinal", "windowed_declaration")
 PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
@@ -2013,6 +2052,14 @@ def validate_adapter(ad):
             need(isinstance(root.get("field"), str), "integrity.root.field (a string) is required")
         if integ["mechanism"] in ("sha256-prev-field", "sha256-canonical-fields", "sha256-chain-jcs-nested"):
             need(isinstance(integ.get("prev_field"), str), "integrity.prev_field (a string) is required")
+        if integ["mechanism"] == "sha256-prev-join-raw":
+            need(isinstance(integ.get("prev_field"), str), "integrity.prev_field (a string) is required")
+            sf = integ.get("seal_fields")
+            need(isinstance(sf, list) and sf and all(isinstance(x, str) and x.isascii() for x in sf),
+                 "integrity.seal_fields must be a non-empty list of ASCII field names")
+            need(not isinstance(sf, list) or integ.get("hash_field") in sf,
+                 "integrity.seal_fields must include integrity.hash_field (the hash is not under itself)")
+            need(isinstance(integ.get("separator", "|"), str), "integrity.separator must be a string")
         if integ["mechanism"] == "sha256-hex-join":
             need(isinstance(integ.get("content_field"), str), "integrity.content_field (a string) is required")
             need(isinstance(integ.get("separator", "|"), str), "integrity.separator must be a string")

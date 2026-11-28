@@ -341,6 +341,86 @@ def main(out):
     jf[3]["negzero"] = -0.0
     case("jcs-nested-negzero-float-syntax", jf, jca, "VLC-L1-1", "FAIL")
 
+    # --- sha256-prev-join-raw (1.4.6-draft): prev hex joined to the raw ------
+    # record minus its trailing seal members (its own hash, and a signature
+    # over that hash). The JavaScript-ledger shape: JSON.stringify key order
+    # is insertion order, NOT canonical, so only the raw bytes are
+    # authoritative and the checker strips text instead of re-serializing.
+    # The end marker is a separate record the chain does not bind; the tail
+    # is anchored by an independently held head (the producer's signed export
+    # marker), which is the --expect-head case below.
+    ja = copy.deepcopy(base)
+    ja["record_class_field"] = "type"
+    ja["marker_classes"] = ["HEAD"]
+    ja["non_event_classes"] = []
+    ja["integrity"] = {
+        "mechanism": "sha256-prev-join-raw", "hash_field": "hash",
+        "prev_field": "prevHash", "seal_fields": ["hash", "signature"],
+        "separator": "|", "root": {"kind": "zero"},
+        "primitive": "SHA-256", "documented": True, "primitive_documented": True,
+        "end_marker": {"class": "HEAD", "head_field": "head", "self_bound": False},
+    }
+    ja["loss"] = {"mode": "none", "note": "L1 mechanism cases only"}
+    ja["coverage"] = {"mode": "none", "note": "L1 mechanism cases only"}
+    ja["policy"] = {"mode": "none", "note": "L1 mechanism cases only"}
+    ja["independence"] = {"mode": "self_reported",
+                          "audited_process_can_write_records": True,
+                          "boundary_statement": "synthetic"}
+    jaa = os.path.join(out, "prev-join-raw.adapter.json")
+    json.dump(ja, open(jaa, "w"))
+
+    def rawcase(name, lines, adapter, req, expect, mode="check", anchor=None):
+        p = os.path.join(out, name + ".jsonl")
+        with open(p, "w", newline="\n") as f:
+            f.write("\n".join(lines) + "\n")
+        cases.append((p, adapter, req, expect, mode) + ((anchor,) if anchor else ()))
+
+    def join_line(body_text, h):
+        # the producer appends the seal members last, textually
+        return body_text[:-1] + ', "hash": "' + h + '", "signature": "c2lnbmF0dXJl"}'
+
+    jprev, jlines = "00" * 32, []
+    for i in range(6):
+        body = {"id": "E-%03d" % i, "event": "inference",
+                "detail": "verdict allow %d" % i, "prevHash": jprev}
+        bt = json.dumps(body)
+        h = sha((jprev + "|" + bt).encode())
+        jlines.append(join_line(bt, h))
+        jprev = h
+    jmarker = json.dumps({"type": "HEAD", "head": jprev, "entry_count": 6})
+    jhonest = jlines + [jmarker]
+
+    rawcase("join-raw-honest", jhonest, jaa, "VLC-L1-1", "PASS")
+    # the marker is unbound; the independently held head is what binds the tail
+    rawcase("join-raw-honest-anchored", jhonest, jaa, "VLC-L1-3", "PASS",
+            anchor="--expect-head=" + jprev)
+    rawcase("join-raw-unanchored-tail", jhonest, jaa, "VLC-L1-3", "FAIL")
+    edited = jhonest[:]
+    edited[2] = edited[2].replace("verdict allow 2", "verdict allow 9")
+    rawcase("join-raw-edited", edited, jaa, "VLC-L1-1", "FAIL")
+    rawcase("join-raw-interior-deleted", jhonest[:3] + jhonest[4:], jaa,
+            "VLC-L1-1", "FAIL")
+    # EXT-013 shape: record 3 self-consistent with a wrong link -- its hash
+    # recomputed over the wrong predecessor, downstream re-derived
+    wprev = "ab" * 32
+    relinked = jhonest[:3]
+    for i in range(3, 6):
+        body = {"id": "E-%03d" % i, "event": "inference",
+                "detail": "verdict allow %d" % i, "prevHash": wprev}
+        bt = json.dumps(body)
+        h = sha((wprev + "|" + bt).encode())
+        relinked.append(join_line(bt, h))
+        wprev = h
+    relinked.append(json.dumps({"type": "HEAD", "head": wprev, "entry_count": 6}))
+    rawcase("join-raw-relinked-resealed", relinked, jaa, "VLC-L1-1", "FAIL")
+    # EXT-022 shape: tail dropped, marker head rewritten to the new last hash
+    # -- every surviving link holds; only the independent head catches it
+    cut = jhonest[:4]
+    cuthead = json.loads(cut[-1])["hash"]
+    rawcase("join-raw-truncated-marker-rewritten",
+            cut + [json.dumps({"type": "HEAD", "head": cuthead, "entry_count": 4})],
+            jaa, "VLC-L1-1", "FAIL", anchor="--expect-head=" + jprev)
+
     for c in cases:
         print(" ".join(c))
 
