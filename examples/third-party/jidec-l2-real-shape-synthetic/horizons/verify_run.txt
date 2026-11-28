@@ -1,0 +1,14 @@
+JIDEC_L2_VERIFY_OK L2
+JIDEC_L2_VERIFY_OK L2
+JIDEC_L2_VERIFY_NG L1 entry 13: window 7..12 does not close: 5 written + 1 refused + 1 lost != 6 received
+JIDEC_L2_VERIFY_NG L1 entry 13: window 7..12 does not close: 4 written + 1 refused + 1 lost != 7 received
+JIDEC_L2_VERIFY_NG L1 the undeclared tail 18.. has an ordinal gap: a loss no declaration covers
+JIDEC_L2_VERIFY_NG L0 entry 13: record_canonical is missing or does not hash to claim_sha256
+JIDEC_L2_VERIFY_NG L1 entry 13 names its signer 049bfe3eab62 but carries no Ed25519 record_sig by it
+JIDEC_L2_VERIFY_NG L1 entry 13: the checkpoint's signer is not a ledger key named by the operator before it
+JIDEC_L2_VERIFY_NG L1 entry 1 names its signer 15c2df3465d6 but carries no Ed25519 record_sig by it
+JIDEC_L2_VERIFY_NG L1 entry 13: ledger_head.n is 11, not the window's to 12
+JIDEC_L2_VERIFY_NG L1 entry 13: ledger_head.entry_sha256 is not the hash of entry 12
+JIDEC_L2_VERIFY_NG L1 entry 18: the window starts at 12, not 13 (an overlap)
+JIDEC_L2_VERIFY_NG L1 entry 18: the window starts at 14, not 13 (a gap)
+JIDEC_L2_VERIFY_NG L1 entry 7: no refusal list in the folder hashes to refusals_sha256

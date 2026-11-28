@@ -1206,6 +1206,16 @@ grep -q '^DONE|' "$U20F" || bad "section block U20 did not run to completion"
 while IFS='|' read -r V M; do case "$V" in DONE) ;; OK) ok "$M" ;; *) bad "$M" ;; esac; done < "$U20F"; rm -f "$U20F"
 
 hr
+echo "21. RECORD BINDING, SIGNED DECLARATIONS, HEAD CROSS-CHECK -- an operator's real export shape (1.4.7-draft, EXT-033)"
+# The JIDEC operator's fourteen synthetic trails, byte for byte, graded by
+# vlc-1's own code (their builder and verifier are kept, never run here).
+R21=$(python3 examples/third-party/jidec-l2-real-shape-synthetic/check_real_shape.py 2>&1 | tr -d '\r') || true
+case "$R21" in
+  "all "*" assertions hold"*) ok "$R21" ;;
+  *) bad "jidec-l2-real-shape-synthetic: $R21" ;;
+esac
+
+hr
 # ---------------------------------------------------------------------------
 # The README's published counts must match the repository.
 #

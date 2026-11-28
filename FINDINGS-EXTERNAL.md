@@ -930,4 +930,41 @@ with only the marker's numbering changed), expected structural L2.
 
 A second finding from the same run — the declaration lives in the record
 behind `claim_sha256`, bound one step removed, so record edits are not yet
-examined — is open and tracked on PR #12.
+examined — was open and tracked on PR #12; it is closed as EXT-033 below.
+
+## EXT-033 — a record bound one step removed could be edited without the checker seeing it
+
+*Source: the JIDEC operator (ogasurfproject-jpg), from the same synthetic run
+in the ledger's real export shape, PR #12, 2026-11-28; builder, independent
+verifier and fourteen trails sent the same day under the MIT licence. Fixed in
+1.4.7-draft.*
+
+**Medium.** The JIDEC ledger's entry hash covers `claim_sha256`, and
+`claim_sha256` is the sha256 of the record's bytes, carried on the export line
+as `record_canonical`. The chain binds the record one step removed. The
+checker did not verify that step, so an edit to the record bytes with the
+digest kept passed: the operator's `unbound_edit` trail graded L1 when it is
+L0. Nor could it read a declaration from the record at all, so the honest
+trails graded L1 ("no declaration records found").
+
+Fixed with an opt-in `record_binding` adapter block: sha256 of the record
+string's UTF-8 bytes **exactly as delivered** (no re-canonicalization; the
+producer's key order is kept) must equal the digest field, or the delivered
+set is not the bound set and the verdict is L0. Only then is the parsed record
+read under `@record`, and the coverage guard counts `@record.…` fields as
+anchored only while the digest field is itself in `hash_fields`. A line that
+carries an `@record` member of its own is refused.
+
+Two further checks the same run asked for came with it, both opt-in:
+`signatures.mode: "key_statement_hop"` (a checkpoint is the producer's word
+only if it is signed by a ledger key that a statement signed by the operator
+key, pinned out of band with `--operator-key`, named earlier in the chain) and
+the head cross-check in windowed mode (`loss.head_n_field`,
+`loss.head_hash_field`: the head a checkpoint seals is entry `to` of the window
+it declares).
+
+Control: `examples/third-party/jidec-l2-real-shape-synthetic/`. The operator's
+fourteen trails, byte for byte, grade as their independent verifier does on
+thirteen; the fourteenth (a refusal list one line short) grades L2 by design,
+because the list is a separate file and the export carries only its hash — the
+operator's own table says the same. No adapter without the new blocks moves.

@@ -1,0 +1,84 @@
+{
+  "name": "jidec-ledger-chained-l2-record-bound",
+  "description": "SYNTHETIC: the JIDEC ledger's real export shape with the December L2 checkpoint (nenrin-head-checkpoint-v2), record-bound and signed. Built against the HORIZONs synthetic trails of 2026-11-28; not served by the live checker.",
+  "producer": "SYNTHETIC trails from The HORIZONs Co., Ltd. (vlc-1 PR #12)",
+  "record_class_field": "@record.schema",
+  "marker_classes": [
+    "jidec-head-v1"
+  ],
+  "non_event_classes": [
+    "nenrin-head-checkpoint-v2"
+  ],
+  "record_binding": {
+    "record_field": "record_canonical",
+    "digest_field": "claim_sha256",
+    "primitive": "SHA-256",
+    "unbound_class_field": "schema"
+  },
+  "signatures": {
+    "mode": "key_statement_hop",
+    "sig_field": "record_sig",
+    "statement_class": "nenrin-key-statement-v1",
+    "statement_operator_key_id_field": "@record.operator_key_id",
+    "statement_key_field": "@record.ledger_key",
+    "signed_classes": [
+      "nenrin-head-checkpoint-v2"
+    ],
+    "signer_key_id_field": "@record.signer_key_id"
+  },
+  "integrity": {
+    "mechanism": "sha256-canonical-fields",
+    "hash_field": "entry_sha256",
+    "prev_field": "prev_entry_sha256",
+    "hash_fields": [
+      "n",
+      "schema",
+      "claim_sha256",
+      "created_at",
+      "prev_entry_sha256",
+      "head"
+    ],
+    "root": {
+      "kind": "constant",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "primitive": "SHA-256",
+    "documented": true,
+    "primitive_documented": true,
+    "end_marker": {
+      "class": "jidec-head-v1",
+      "head_field": "head",
+      "self_bound": true
+    }
+  },
+  "loss": {
+    "mode": "windowed_declaration",
+    "declaration_class": "nenrin-head-checkpoint-v2",
+    "interval_fields": [
+      "@record.production_count.from",
+      "@record.production_count.to"
+    ],
+    "received_field": "@record.production_count.received",
+    "refused_field": "@record.production_count.refused",
+    "lost_field": "@record.production_count.lost",
+    "head_n_field": "@record.ledger_head.n",
+    "head_hash_field": "@record.ledger_head.entry_sha256",
+    "event_ordinal_field": "n",
+    "ordinal_start": 1,
+    "overflow_behaviour": "drop_counted"
+  },
+  "coverage": {
+    "mode": "none"
+  },
+  "policy": {
+    "mode": "none"
+  },
+  "independence": {
+    "mode": "self_reported",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "SYNTHETIC"
+  },
+  "sources": [
+    "SYNTHETIC: jidec_l2_synth.py, The HORIZONs Co., Ltd., MIT"
+  ]
+}

@@ -1,0 +1,16 @@
+vlc-1 checkout at 344e12b5bdcc
+{"variant":"honest","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"declared_loss","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"undercount","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 record 11: window 7..12 does not close: 5 written + 1 refused + 1 lost != 6 received; duplicate event ordinal(","bound":"L1 | VLC-L2-2 record 11: window 7..12 does not close: 5 written + 1 refused + 1 lost != 6 received"}
+{"variant":"hidden_drop","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 record 10: window 7..12 does not close: 4 written + 1 refused + 1 lost != 7 received; duplicate event ordinal(","bound":"L1 | VLC-L2-2 record 10: window 7..12 does not close: 4 written + 1 refused + 1 lost != 7 received"}
+{"variant":"tail_gap","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]; undeclared tail 18.. has ordinal gap(s) [19]: a loss no declaration covers","bound":"L1 | VLC-L2-2 undeclared tail 18.. has ordinal gap(s) [19]: a loss no declaration covers"}
+{"variant":"unbound_edit","as_is":"L1 | VLC-L2-1 no declaration records found","bound":"L0 (record binding: entry 13: record_canonical does not hash to claim_sha256)","bound-1":"L0 (record binding: entry 13: record_canonical does not hash to claim_sha256)"}
+{"variant":"sig_stripped","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"wrong_key","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"statement_not_operator","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"head_mismatch","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"head_hash_mismatch","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+{"variant":"window_overlap","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]; record 16: window starts at 12, expected 13 (overlap in the declared span)","bound":"L1 | VLC-L2-2 record 16: window starts at 12, expected 13 (overlap in the declared span)"}
+{"variant":"window_gap","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]; record 16: window starts at 14, expected 13 (gap in the declared span)","bound":"L1 | VLC-L2-2 record 16: window starts at 14, expected 13 (gap in the declared span)"}
+{"variant":"refusal_list_short","as_is":"L1 | VLC-L2-1 no declaration records found","bound-1":"L1 | VLC-L2-2 duplicate event ordinal(s): [20]","bound":"L2 (tail 18..20)"}
+VLC_BOUND_RUN_OK 168645b460d574f3dbe3fdcdc044fd11a5639f4fa417071cb88603625ffd140f

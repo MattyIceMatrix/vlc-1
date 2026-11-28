@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.6-draft"
+VERSION = "VLC-1 1.4.7-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -155,11 +155,64 @@ def load(path, ad):
             raise LogError(f"record {i} is not parseable as JSON")
         if not isinstance(o, dict):
             raise LogError(f"record {i} is not a JSON object")
+        rb = ad.get("record_binding")
+        if rb:
+            _bind_record(o, i, rb)
         h = dig(o, hf)
         # a hash that is not a string is no binding; it used to reach re.escape
         # and dict keys and crash the checker (EXT-023)
-        out.append(Rec(i, l, o, str(dig(o, cf)) if cf else "?", h if isinstance(h, str) else None))
+        cls = dig(o, cf) if cf else "?"
+        if rb and cf and cls is None and rb.get("unbound_class_field"):
+            # a line that carries no bound record (the end marker) is classed by
+            # a field of the line itself
+            cls = dig(o, rb["unbound_class_field"])
+        out.append(Rec(i, l, o, str(cls) if cf else "?", h if isinstance(h, str) else None))
     return out
+
+
+# 1.4.7-draft -- record binding (vlc-1 PR #12, with the JIDEC operator's
+# synthetic run in the ledger's real export shape, 2026-11-28). A ledger may
+# bind its records ONE STEP REMOVED: the entry hash covers a digest field
+# (claim_sha256), and the digest is sha256 of the record's bytes, carried on
+# the export line as a string (record_canonical). Nothing in the chain changes
+# when the record is read this way. The checker verifies the step: sha256 of
+# the record string's UTF-8 bytes, EXACTLY AS DELIVERED (no re-canonicalization;
+# the producer's key order is kept), must equal the digest field. Only then is
+# the parsed record lifted to "@record", where later requirements may read it.
+# A record whose bytes do not hash to the digest is an edit the chain cannot
+# see: the delivered set is not the bound set, and the verdict is L0.
+# Opt-in: an adapter without a record_binding block grades exactly as before.
+RECORD_KEY = "@record"
+
+
+def _bind_record(o, i, rb):
+    rf, df = rb["record_field"], rb["digest_field"]
+    # checked on EVERY line, record or not: a line could otherwise carry an
+    # unbound "@record" of its own and have later requirements read it
+    if RECORD_KEY in o:
+        raise LogError(f"record {i}: carries a {RECORD_KEY!r} member of its own; "
+                       f"that name is reserved for the bound record")
+    if rf not in o:
+        return
+    text = o[rf]
+    if not isinstance(text, str):
+        raise LogError(f"record {i}: record binding: {rf!r} is not a string of record bytes")
+    want = o.get(df)
+    if not (isinstance(want, str) and HEX64.match(want)):
+        raise LogError(f"record {i}: record binding: {df!r} is not 64 lowercase hex")
+    if sha256_hex(text.encode("utf-8")) != want:
+        raise LogError(f"record {i}: record binding: sha256 of {rf!r} as delivered "
+                       f"does not equal {df!r}; the record was changed after it was bound")
+    try:
+        rec = json.loads(text, object_pairs_hook=_no_duplicate_names,
+                         parse_constant=_reject_nonfinite)
+    except LogError as e:
+        raise LogError(f"record {i}: record binding: {e}")
+    except Exception:
+        raise LogError(f"record {i}: record binding: {rf!r} is not parseable as JSON")
+    if not isinstance(rec, dict):
+        raise LogError(f"record {i}: record binding: {rf!r} is not a JSON object")
+    o[RECORD_KEY] = rec
 
 
 # ===========================================================================
@@ -380,6 +433,12 @@ def _read_fields(ad):
                 p = f"{path}.{k}" if path else k
                 if p in ("integrity.hash_field", "integrity.end_marker.head_field"):
                     continue
+                # 1.4.7-draft: the record string is anchored by the binding
+                # load() verifies (its sha256 must equal the hashed digest
+                # field), and a signature authenticates itself against a key
+                # the verifier pins; neither needs to be in hash_fields
+                if p in ("record_binding.record_field", "signatures.sig_field"):
+                    continue
                 if (k == "field" or k.endswith("_field")) and isinstance(v, str):
                     out.append((p, v))
                 elif (k == "fields" or k.endswith("_fields")) and isinstance(v, list) \
@@ -411,7 +470,15 @@ def check_canonical_fields_adapter(recs, ad):
         return "prev_field must be declared and listed in hash_fields (the link is part of the hashed object)"
     if hf in hfs:
         return f"hash_field {hf!r} cannot be an input to its own hash"
-    unanchored = sorted({(p, f) for p, f in _read_fields(ad) if f.split(".")[0] not in hfs})
+    # 1.4.7-draft: a field under the bound record ("@record.…") is anchored
+    # when, and only when, the record binding is declared and its digest field
+    # is itself covered by hash_fields -- then the chain binds the digest, the
+    # digest binds the bytes, and load() has verified the step.
+    rb = ad.get("record_binding") or {}
+    rec_anchored = bool(rb) and rb.get("digest_field") in hfs
+    unanchored = sorted({(p, f) for p, f in _read_fields(ad)
+                         if f.split(".")[0] not in hfs
+                         and not (rec_anchored and f.split(".")[0] == RECORD_KEY)})
     if unanchored:
         return ("fields read by later requirements are not covered by hash_fields (unanchored): " +
                 ", ".join(f"{f} (via {p})" for p, f in unanchored))
@@ -449,9 +516,12 @@ class Ctx:
     signature: merkle-tlog only -- whether the checkpoint's signature was
     verified; None for every other mechanism (and then not reported)."""
 
-    def __init__(self, expect_root=None, expect_head=None):
+    def __init__(self, expect_root=None, expect_head=None, operator_key=None):
         self.expect_root = expect_root.lower() if expect_root else None
         self.expect_head = expect_head.lower() if expect_head else None
+        # 1.4.7-draft: the operator's Ed25519 public key (64 hex), pinned by
+        # the verifier out of band, for signatures.mode "key_statement_hop"
+        self.operator_key = operator_key.lower() if operator_key else None
         self.end_bound = False
         self.signature = None
 
@@ -984,7 +1054,76 @@ def _l1_declared(ad, res):
 # ===========================================================================
 # LEVEL 2 -- windowed declarations (1.4.6-draft)
 # ---------------------------------------------------------------------------
-def check_l2_windowed(recs, ad, res, lo, delivered):
+def check_signature_hop(recs, ad, ctx):
+    """1.4.7-draft, signatures.mode "key_statement_hop" (vlc-1 PR #12): a
+    declaration is the PRODUCER's word only if the producer signed it. Two
+    tiers, one hop. The operator key stays cold and is pinned by the verifier
+    out of band (--operator-key); it signs key statements, each naming a
+    working ledger key. Every record of a signed class must be signed by a
+    ledger key that a valid key statement named EARLIER in the delivered set.
+
+    The signature is Ed25519 (RFC 8032) over the bound record's bytes exactly
+    as delivered (record_binding.record_field), carried on the line in
+    sig_field as {alg, key_id, sig}. A key id is sha256 of the 32 public key
+    bytes. Returns a list of problems; empty when every hop verifies."""
+    sg = ad["signatures"]
+    rf = (ad.get("record_binding") or {}).get("record_field")
+    sf = sg["sig_field"]
+    op_hex = ctx.operator_key if ctx else None
+    if not op_hex:
+        return ["the adapter declares signed declarations, but no operator key was pinned "
+                "(--operator-key): the hop cannot be checked from the log alone"]
+    op_pub = bytes.fromhex(op_hex)
+    op_kid = sha256_hex(op_pub)
+    stmt_cls, signed = sg["statement_class"], set(sg["signed_classes"])
+    ledger = {}                 # key_id -> public key bytes, named so far
+    problems = []
+
+    def sig_ok(r, kid, pub):
+        s = r.obj.get(sf)
+        if not isinstance(s, dict) or s.get("alg") != "Ed25519" or s.get("key_id") != kid:
+            return f"record {r.i}: carries no Ed25519 {sf} by key {str(kid)[:12]}"
+        raw = s.get("sig")
+        if not (isinstance(raw, str) and re.fullmatch(r"[0-9a-f]{128}", raw)):
+            return f"record {r.i}: {sf}.sig is not 64 bytes of lowercase hex"
+        msg = r.obj.get(rf)
+        if not isinstance(msg, str):
+            return f"record {r.i}: no bound record bytes to verify the signature over"
+        if not ed25519_verify(pub, msg.encode("utf-8"), bytes.fromhex(raw)):
+            return f"record {r.i}: the signature does not verify"
+        return None
+
+    for r in recs:                      # delivered order is chain order
+        if r.cls == stmt_cls:
+            if dig(r.obj, sg["statement_operator_key_id_field"]) != op_kid:
+                problems.append(f"record {r.i}: the key statement names an operator key "
+                                f"other than the pinned one")
+                continue
+            why = sig_ok(r, op_kid, op_pub)
+            if why:
+                problems.append(why + " (key statement, operator key)")
+                continue
+            lk = dig(r.obj, sg["statement_key_field"])
+            lpub = lk.get("public_key") if isinstance(lk, dict) else None
+            if not (isinstance(lpub, str) and re.fullmatch(r"[0-9a-f]{64}", lpub)) \
+                    or lk.get("alg") != "Ed25519" or lk.get("key_id") != sha256_hex(bytes.fromhex(lpub)):
+                problems.append(f"record {r.i}: the named key is not an Ed25519 key whose id "
+                                f"is the sha256 of its bytes")
+                continue
+            ledger[lk["key_id"]] = bytes.fromhex(lpub)
+        elif r.cls in signed:
+            kid = dig(r.obj, sg["signer_key_id_field"])
+            if kid not in ledger:
+                problems.append(f"record {r.i}: its signer is not a key the operator named "
+                                f"before it")
+                continue
+            why = sig_ok(r, kid, ledger[kid])
+            if why:
+                problems.append(why)
+    return problems
+
+
+def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
     """loss.mode "windowed_declaration": the producer declares production per
     window, inside chained declaration records (checkpoints). Designed with
     the first L2 walk (issue #12): each declaration carries an ordinal window
@@ -1076,6 +1215,25 @@ def check_l2_windowed(recs, ad, res, lo, delivered):
         if got + ref_v + lost_v != rec_v:
             problems.append(f"record {r.i}: window {a}..{b} does not close: {got} written "
                             f"+ {ref_v} refused + {lost_v} lost != {rec_v} received")
+        # 1.4.7-draft, head cross-check (PR #12): a checkpoint seals the head
+        # through `to`, so its declaration may cover exactly that span. The
+        # sealed head's ordinal must equal `to`, and the sealed entry hash
+        # must be the hash of the delivered entry at `to`. Otherwise a window
+        # could be declared over a span its own seal does not cover.
+        hnf, hhf = lo.get("head_n_field"), lo.get("head_hash_field")
+        if hnf:
+            hn = dig(r.obj, hnf)
+            if type(hn) is not int or hn != b:
+                problems.append(f"record {r.i}: the sealed head is n={hn!r}, but the "
+                                f"window it declares ends at {b}")
+        if hhf:
+            hh, at_to = dig(r.obj, hhf), by_ord.get(b)
+            if at_to is None:
+                problems.append(f"record {r.i}: entry {b}, the end of the declared window, "
+                                f"is not delivered, so the sealed head cannot be checked")
+            elif hh != at_to.hash:
+                problems.append(f"record {r.i}: the sealed head hash is not the hash of "
+                                f"entry {b}, the end of the declared window")
         produced += rec_v
         declared += ref_v + lost_v
         windows.append((a, b, r.i))
@@ -1125,7 +1283,19 @@ def check_l2_windowed(recs, ad, res, lo, delivered):
         res.fail("VLC-L2-3", "no integrity binding, so declarations are removable")
     else:
         bound = all(r.hash for r in recs if r.cls == dc)
-        res.ok("VLC-L2-3") if bound else             res.fail("VLC-L2-3", "a window declaration carries no binding")
+        sig_problems = check_signature_hop(recs, ad, ctx) if ad.get("signatures") else []
+        if not bound:
+            res.fail("VLC-L2-3", "a window declaration carries no binding")
+        elif sig_problems:
+            # 1.4.7-draft: a declaration the producer did not sign is not the
+            # producer's declaration, however well it is chained
+            res.fail("VLC-L2-3", "signed declarations: " + "; ".join(sig_problems[:3]) +
+                     (f" (+{len(sig_problems) - 3} more)" if len(sig_problems) > 3 else ""))
+        elif ad.get("signatures"):
+            res.ok("VLC-L2-3", "every declaration is bound, and signed by a ledger key the "
+                               "pinned operator key named before it")
+        else:
+            res.ok("VLC-L2-3")
 
     ob = lo.get("overflow_behaviour")
     if ob in ("block", "drop_oldest", "drop_newest", "drop_counted"):
@@ -1182,7 +1352,7 @@ def check_l2(recs, ad, res, ctx):
     delivered = [r for r in recs if r.cls not in markers and r.cls not in non_event]
 
     if mode == "windowed_declaration":
-        return check_l2_windowed(recs, ad, res, lo, delivered)
+        return check_l2_windowed(recs, ad, res, lo, delivered, ctx)
 
     # --- produced ---------------------------------------------------------
     # EXT-022. The produced count is the producer's independent figure, and the
@@ -2127,16 +2297,47 @@ def validate_adapter(ad):
             need(obj(po.get("replay")), "policy.replay must be an object")
     ind = ad.get("independence") or {}
     need(obj(ind.get("reconciliation")), "independence.reconciliation must be an object")
+    # 1.4.7-draft: record binding and the signed-declaration hop (PR #12)
+    rb = ad.get("record_binding")
+    need(obj(rb), "record_binding must be an object")
+    if rb:
+        need(integ["mechanism"] == "sha256-canonical-fields",
+             "record_binding is defined for sha256-canonical-fields only (the hash must read "
+             "named fields, so the lifted @record is never an input to it)")
+        for k in ("record_field", "digest_field"):
+            need(isinstance(rb.get(k), str) and rb[k], f"record_binding.{k} (a string) is required")
+        need(rb.get("primitive", "SHA-256") == "SHA-256", "record_binding.primitive must be SHA-256")
+        need(rb.get("unbound_class_field") is None or isinstance(rb["unbound_class_field"], str),
+             "record_binding.unbound_class_field must be a string when present")
+        need(RECORD_KEY not in (integ.get("hash_fields") or []),
+             f"{RECORD_KEY} is the lifted record, not a hashed field")
+    sg = ad.get("signatures")
+    need(obj(sg), "signatures must be an object")
+    if sg:
+        need(sg.get("mode") == "key_statement_hop", "signatures.mode must be key_statement_hop")
+        need(bool(rb), "signatures needs record_binding: the signature is over the bound record bytes")
+        for k in ("sig_field", "statement_class", "statement_operator_key_id_field",
+                  "statement_key_field", "signer_key_id_field"):
+            need(isinstance(sg.get(k), str) and sg[k], f"signatures.{k} (a string) is required")
+        need(isinstance(sg.get("signed_classes"), list) and sg["signed_classes"]
+             and all(isinstance(x, str) for x in sg["signed_classes"]),
+             "signatures.signed_classes must be a non-empty list of strings")
+    lo2 = ad.get("loss") or {}
+    for k in ("head_n_field", "head_hash_field"):
+        need(lo2.get(k) is None or (isinstance(lo2[k], str) and lo2.get("mode") == "windowed_declaration"),
+             f"loss.{k} is a string, for windowed_declaration only")
 
 
 # ===========================================================================
 # the programmatic entry point
 # ===========================================================================
-def _check(log_path, ad, adapter_sha256, expect_root=None, expect_head=None, mutation=None):
-    for name, v in (("expect_root", expect_root), ("expect_head", expect_head)):
+def _check(log_path, ad, adapter_sha256, expect_root=None, expect_head=None, mutation=None,
+           operator_key=None):
+    for name, v in (("expect_root", expect_root), ("expect_head", expect_head),
+                    ("operator_key", operator_key)):
         if v is not None and not (isinstance(v, str) and HEX64.match(v.lower())):
             raise UsageError(f"{name} must be 64 hex characters")
-    ctx = Ctx(expect_root, expect_head)
+    ctx = Ctx(expect_root, expect_head, operator_key)
     path, tmpdir = log_path, None
     if mutation:
         try:
@@ -2199,7 +2400,7 @@ def _check(log_path, ad, adapter_sha256, expect_root=None, expect_head=None, mut
     }
 
 
-def check(log_path, adapter_path, expect_root=None, expect_head=None):
+def check(log_path, adapter_path, expect_root=None, expect_head=None, operator_key=None):
     """Score one JSONL log against one adapter and return the report.
 
     The return value is exactly the object `conformance.py --json` prints:
@@ -2219,9 +2420,14 @@ def check(log_path, adapter_path, expect_root=None, expect_head=None):
     adapter, and UsageError (a ValueError) for a log file that cannot be opened
     or an anchor that is not 64 hex characters. Standard library only; no
     global state, so it may be called repeatedly in one process.
+
+    operator_key (1.4.7-draft): the operator's Ed25519 public key, 64 hex,
+    obtained out of band. Needed only by adapters that declare
+    signatures.mode "key_statement_hop"; without it their declarations cannot
+    be shown to be the producer's, and VLC-L2-3 fails saying so.
     """
     ad, digest = load_adapter(adapter_path)
-    return _check(log_path, ad, digest, expect_root, expect_head)
+    return _check(log_path, ad, digest, expect_root, expect_head, operator_key=operator_key)
 
 
 def render_text(rep, ad):
@@ -2286,13 +2492,17 @@ def main(argv=None):
                     "(under merkle-tlog, the tree root of the held checkpoint); "
                     "VLC-L1-1 fails if the recomputed head differs (detects a rewritten, re-sealed log); "
                     "also anchors the tail when the end marker is not bound by the chain (VLC-L1-3)")
+    ap.add_argument("--operator-key", help="the operator's Ed25519 public key (64 hex), obtained "
+                    "independently of the log; adapters declaring signatures.mode key_statement_hop "
+                    "verify the key-statement hop under it (1.4.7-draft)")
     ap.add_argument("--mutate", help="apply an Annex A mutation before checking")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
 
     try:
         ad, digest = load_adapter(a.adapter)
-        rep = _check(a.log, ad, digest, a.expect_root, a.expect_head, a.mutate)
+        rep = _check(a.log, ad, digest, a.expect_root, a.expect_head, a.mutate,
+                     operator_key=a.operator_key)
     except (AdapterError, UsageError) as e:
         kind = "adapter" if isinstance(e, AdapterError) else "usage"
         print(f"conformance.py: {kind} error: {e}", file=sys.stderr)

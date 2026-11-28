@@ -1,0 +1,100 @@
+[
+ {
+  "variant": "honest",
+  "expect": "L2",
+  "what": "three windows, a declared lost ordinal, refusals by class, a contiguous tail",
+  "export_sha256": "c7f00118913e614a9091fc602462c4f98d4edf8ebc4d21bbbdd387d888c53d81",
+  "marker_sha256": "68c45e39405a9a01859fb6727df429c75bc22142cf74fb932f404de6871d730d"
+ },
+ {
+  "variant": "declared_loss",
+  "expect": "L2",
+  "what": "an entry lost after its ordinal and declared: a declared loss is not a hidden one",
+  "export_sha256": "702fa481be78f0851c73191083f75bfb3aa64d8465eb0c88b9990d14de9814a3",
+  "marker_sha256": "2600b0591a92eb88e37586e5c22f1f0c564d3ad67d0aa98289094500fc797c1c"
+ },
+ {
+  "variant": "undercount",
+  "expect": "L1",
+  "what": "window 2 declares one fewer received; re-signed by the ledger key",
+  "export_sha256": "ab5247e1ec9ccde7e5a869871284dfdb75efc26d55d4cabd0453aa824d6d79da",
+  "marker_sha256": "933d759823e64aa8749dde6164e4aa3a5704a066aafef059a04a7db1193b78a1"
+ },
+ {
+  "variant": "hidden_drop",
+  "expect": "L1",
+  "what": "an entry of window 2 removed after the window was declared; the chain and later checkpoints rewritten and re-signed",
+  "export_sha256": "cf1e1927ceea40e72ef75968cf8b17953093c37109039522e135356fa1e1d5f9",
+  "marker_sha256": "d4e62e395fe9a61ed6c5790fb46db5a1918a9cd0acba72044cc355c5e441e1d7"
+ },
+ {
+  "variant": "tail_gap",
+  "expect": "L1",
+  "what": "an ordinal gap after the last checkpoint",
+  "export_sha256": "0dbef780444bebee529a635443edac690902fe84c693a94a95681b8e2f41eaf2",
+  "marker_sha256": "75b3de264b8c4747376534d924f50212789d59f111e3da06b7b4d00680e01a90"
+ },
+ {
+  "variant": "unbound_edit",
+  "expect": "L0",
+  "what": "checkpoint bytes edited, claim_sha256 left as it was",
+  "export_sha256": "aad8c3bc0d797a1a7b4ee19eb30feceb98c835d195804a9fa2c12fcbc81ef22c",
+  "marker_sha256": "68c45e39405a9a01859fb6727df429c75bc22142cf74fb932f404de6871d730d"
+ },
+ {
+  "variant": "sig_stripped",
+  "expect": "L1",
+  "what": "the checkpoint's signature removed",
+  "export_sha256": "8012859590d9ae59234f549185054c34f1543fd4db9199cd2455c1c3fd8a47e2",
+  "marker_sha256": "68c45e39405a9a01859fb6727df429c75bc22142cf74fb932f404de6871d730d"
+ },
+ {
+  "variant": "wrong_key",
+  "expect": "L1",
+  "what": "a checkpoint signed by a key the key history does not name",
+  "export_sha256": "3d05b06cdec3068076d6baab790b509481d814a288a6f054e125098e3f6e84e7",
+  "marker_sha256": "c23c5d6fade6e07744fc3eea2acea864a071b8c72a2904b0fc77ccf66ab93661"
+ },
+ {
+  "variant": "statement_not_operator",
+  "expect": "L1",
+  "what": "the key statement signed by a key that is not the operator's",
+  "export_sha256": "f402a1ca4e0e1a3ac924234bfc5b92879eca117bdc521ce9d9bbeae16bc1b17a",
+  "marker_sha256": "68c45e39405a9a01859fb6727df429c75bc22142cf74fb932f404de6871d730d"
+ },
+ {
+  "variant": "head_mismatch",
+  "expect": "L1",
+  "what": "ledger_head.n is not the window's `to`",
+  "export_sha256": "c43ff48da48ef0cc102b1f3307c9ed049c8322451fc33bca82ceb5abe881a049",
+  "marker_sha256": "7da9ca748b34bfcc9b733ea1c2f009ec516cd4cbacc25727328ec634285bfb9d"
+ },
+ {
+  "variant": "head_hash_mismatch",
+  "expect": "L1",
+  "what": "ledger_head.entry_sha256 is not the hash of entry `to`",
+  "export_sha256": "f465b163b422a5ff31022b716e94a8c1e08b97fd76fc82dea7141d810f804b2b",
+  "marker_sha256": "9ecaf1f80e789a2cf57b476c4596515237ba728bd2ff9d4aa4d76ebabb974195"
+ },
+ {
+  "variant": "window_overlap",
+  "expect": "L1",
+  "what": "window 3 starts inside window 2, counts adjusted to close",
+  "export_sha256": "0cde2cc711e316817d41b7941049ddba2489c8dd1b6e4b198f24ef4793eb68da",
+  "marker_sha256": "529626f396c75504db1674df1083328f20b29b5fa995d5c8e5671829d2ec3bf4"
+ },
+ {
+  "variant": "window_gap",
+  "expect": "L1",
+  "what": "window 3 starts one past where window 2 ended, counts adjusted to close",
+  "export_sha256": "956ef865e6e06a679171d0d1bc4b478ba8d09c0e94e931f390b47973b41c8c0b",
+  "marker_sha256": "554fd97bdfa9f0b33394cf74ce0c60c46db92e8a02904281ac7a07c9a6fbd303"
+ },
+ {
+  "variant": "refusal_list_short",
+  "expect": "L1",
+  "what": "the refusal list behind refusals_sha256 lost a line",
+  "export_sha256": "c7f00118913e614a9091fc602462c4f98d4edf8ebc4d21bbbdd387d888c53d81",
+  "marker_sha256": "68c45e39405a9a01859fb6727df429c75bc22142cf74fb932f404de6871d730d"
+ }
+]
