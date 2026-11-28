@@ -2,9 +2,11 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22728393.svg)](https://doi.org/10.5281/zenodo.22728393)
 
-*Current version **1.4.5-draft** ([10.5281/zenodo.23067353](https://doi.org/10.5281/zenodo.23067353)). The badge is the concept DOI and always resolves to
-the newest; [`SPEC.md` Annex F](SPEC.md) is the revision history, with a version DOI
-for each published version.*
+*Current version **1.4.9-draft**, packaged as `vlc-check` 1.1.0 on PyPI. The newest
+version with a DOI is 1.4.4-draft ([10.5281/zenodo.23067353](https://doi.org/10.5281/zenodo.23067353));
+1.4.5 to 1.4.9 are pending deposit. The badge is the concept DOI and always resolves to
+the newest deposited version; [`SPEC.md` Annex F](SPEC.md) is the revision history, with
+a version DOI for each deposited version.*
 
 **Every AI logging standard now in preparation specifies what to log. None of
 the drafts reviewed provides a machine-checkable way for a reader to establish
