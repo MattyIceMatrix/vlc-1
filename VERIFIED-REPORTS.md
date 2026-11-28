@@ -74,6 +74,21 @@ stay verifiable. A report's `signature.key_id` names the key that signed it;
 |---|---|---|---|---|---|---|---|
 | 001 | 2026-11-26 10:04 | Operator of a public, Bitcoin-anchored verification ledger ([issue #12](https://github.com/MattyIceMatrix/vlc-1/issues/12)) | `5f8d10db59b73d112c5257e356471fad5afd128fc47dd6a02f780bccd9181f05` | 388 | structural L1 / attested L1 | `1850088997f1bb4c` | [`capture/jidec-signed-report`](https://github.com/MattyIceMatrix/vlc-1/tree/capture/jidec-signed-report) branch |
 
+| 002 | 2026-11-28 07:32 | **OCTA AI-governance gateway** — the issuer's own enforcement product (first-party; disclosed) | `c81c5f118f9a6b462043709b7454f787cb2c07c4ed815f9069bb1223f6c7a80f` | 6 | **structural L4 / attested L4** | `1850088997f1bb4c` | [`capture/octa-signed-report`](https://github.com/MattyIceMatrix/vlc-1/tree/capture/octa-signed-report) branch |
+
+**Report 002 is the registry's first L4 (policy-bound) grade.** The export was
+sealed on the operator's machine with a durable Ed25519 ledger key; that key is
+named in a signed operator statement (`keys/matthew-moore-operator-statement.json`),
+so the trail traces entry → ledger key → operator key in verifiable hops. The chain
+opens with a coverage declaration, carries a per-record policy digest (committing to
+the source of all 18 governance checks), and closes with a chain-bound sealed end
+marker, so `delivered + declared-lost == produced` is recomputable and the counts
+cannot be rewritten without breaking the binding. VLC-L5 fails, as it must: the
+gateway writes its own record, and a self-reported log tops out at L4 — the grade
+says exactly that, no more. First-party note: the report's subject is the issuer's
+own product, stated here so the reader weighs it; the signed report, export, adapter
+and attestation trace are all on the capture branch for independent re-verification.
+
 Report 001's holder re-verified the signature **with their own Ed25519
 implementation**, not this repo's verifier — the strongest acceptance a
 signed report can receive, since it rests on the math alone and not on the
