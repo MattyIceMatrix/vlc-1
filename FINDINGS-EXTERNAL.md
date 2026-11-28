@@ -910,3 +910,24 @@ An over-refusal is also a defect, and this one accuses the adopter of forgery
 for a formatting choice no requirement constrains.
 
 Control: fixture `l3i-uppercase-binding`, expected PASS in the §14 matrix.
+
+## EXT-032 — windowed declarations counted the end marker as a record of the chain
+
+*Source: the JIDEC operator (ogasurfproject-jpg), from a synthetic run in the
+ledger's real export shape, PR #12, 2026-11-28. Fixed in 1.4.6-draft.*
+
+**Medium.** `check_l2_windowed` built its ordinal set from every record, the
+end marker included, while the delivered set already left marker classes out.
+A marker carrying the `n` of the head it binds — the live ledger's numbering —
+read as a duplicate ordinal and failed an honest trail at L1. The template's
+own marker, numbered `n + 1`, hid this but was then reported as a tail record
+awaiting declaration. Marker classes are now left out of the ordinal set, as
+the delivered set does: the marker is the frame, not a record of the chain.
+
+Control: `examples/third-party/jidec-l2-checkpoint-shape-synthetic/`, trail
+`trail-live-marker.jsonl` (the operator's reproduction: the honest template
+with only the marker's numbering changed), expected structural L2.
+
+A second finding from the same run — the declaration lives in the record
+behind `claim_sha256`, bound one step removed, so record edits are not yet
+examined — is open and tracked on PR #12.

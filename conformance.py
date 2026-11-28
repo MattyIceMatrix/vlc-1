@@ -1033,9 +1033,19 @@ def check_l2_windowed(recs, ad, res, lo, delivered):
     # (issue #12), which counts checkpoints and batch records like any other
     # entry -- so the verifier's window count does too. The adapter's boundary
     # note says what the unit means operationally.
+    # EXT-027 (2026-11-28, reported by the JIDEC operator from their synthetic
+    # run in the ledger's real export shape): the end marker is the FRAME, not
+    # a record of the chain, exactly as the delivered set already treats it.
+    # Counting it here broke both ways: a marker carrying the n of the head it
+    # binds (the live ledger's numbering) read as a duplicate ordinal, and a
+    # marker numbered n+1 (the template's) was reported as a tail record
+    # awaiting declaration. Marker classes are left out of the ordinal set.
+    markers = set(ad.get("marker_classes", []))
     by_ord = {}
     dup_ord = []
     for r in recs:
+        if r.cls in markers:
+            continue
         o = dig(r.obj, ordf)
         if type(o) is int:
             if o in by_ord:

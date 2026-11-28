@@ -23,7 +23,7 @@ gives the honest answer for the operational reality their lag find exposed:
 entries written after the last checkpoint form a contiguous TAIL, reported
 as awaiting declaration -- while an ordinal gap in that tail fails L2.
 
-Self-check builds five trails and asserts the verdicts:
+Self-check builds six trails and asserts the verdicts:
   trail.jsonl               honest, two windows            -> structural L2
   trail-tail.jsonl          honest + 3 entries after the
                             last checkpoint (pre-December
@@ -32,6 +32,9 @@ Self-check builds five trails and asserts the verdicts:
   trail-hidden-drop.jsonl   entry silently removed inside
                             a declared window              -> window does not close, L1
   trail-tail-gap.jsonl      ordinal gap in the tail        -> undeclared loss, L1
+  trail-live-marker.jsonl   honest + tail, marker carrying
+                            the n of the head it binds
+                            (live numbering, EXT-032)      -> structural L2
 
 Run:  python3 examples/third-party/jidec-l2-checkpoint-shape-synthetic/build_and_check.py
 Blast radius: writes only into this example's own directory.
@@ -80,8 +83,10 @@ class Builder:
                          "refusals_sha256": sha256_hex(b"synthetic refusal list"),
                          "chain_head": self.prev})
 
-    def marker(self):
-        m = {"schema": "jidec-head-v1", "n": self.n + 1,
+    def marker(self, live_numbering=False):
+        # the live ledger's /ledger/head marker carries the n of the head it
+        # binds; this template originally numbered it n+1 (EXT-032)
+        m = {"schema": "jidec-head-v1", "n": self.n if live_numbering else self.n + 1,
              "prev_entry_sha256": self.prev, "head": self.prev}
         m["entry_sha256"] = entry_hash(m, self.hf)
         self.recs.append(m)
@@ -179,6 +184,18 @@ def main():
     s, fails, _ = grade(out("trail-tail-gap.jsonl"), h)
     print(f"tail gap:      structural L{s}  (fails: {sorted(f for f in fails if 'L2' in f)})")
     assert s < 2, "an ordinal gap in the undeclared tail must fail"
+
+    # EXT-032 reproduction, from the operator's synthetic run: the same honest
+    # trail with the marker numbered as the live ledger numbers it (the n of
+    # the head it binds). Before the fix this read as a duplicate ordinal and
+    # graded L1; the marker is the frame, not a record of the chain.
+    b = honest(tail_entries=3)
+    h = b.marker(live_numbering=True)
+    b.write(out("trail-live-marker.jsonl"))
+    s, fails, rep = grade(out("trail-live-marker.jsonl"), h)
+    print(f"live marker n: structural L{s}")
+    assert s >= 2, "a marker carrying the n of the head it binds must not read as a duplicate " \
+        "ordinal: " + rep["requirements"].get("VLC-L2-5", {}).get("note", "")
 
     print("all assertions hold: the settled checkpoint design grades end to end")
 
