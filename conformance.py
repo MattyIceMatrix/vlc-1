@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.5-draft"
+VERSION = "VLC-1 1.4.6-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -943,6 +943,166 @@ def _l1_declared(ad, res):
 
 
 # ===========================================================================
+# LEVEL 2 -- windowed declarations (1.4.6-draft)
+# ---------------------------------------------------------------------------
+def check_l2_windowed(recs, ad, res, lo, delivered):
+    """loss.mode "windowed_declaration": the producer declares production per
+    window, inside chained declaration records (checkpoints). Designed with
+    the first L2 walk (issue #12): each declaration carries an ordinal window
+    [from, to] and the counts {received, refused, lost} for that window, with
+    received = written-in-window + refused + lost. The verifier:
+
+      * closes the identity PER WINDOW against its own count of delivered
+        records whose ordinal lies in the window,
+      * requires the windows to tile the ordinal line from the declared start
+        with no gap and no overlap,
+      * allows an undeclared TAIL after the last window only if its ordinals
+        are contiguous -- records awaiting their window's declaration. A gap
+        in the tail is a loss nobody has declared. What a tail CANNOT show is
+        a drop before an ordinal was assigned; that stays invisible until the
+        window's declaration closes over it, and the note says so.
+
+    produced (global) = sum of received over the declarations; the identity
+    closes as delivered + declared(refused+lost) == produced over the
+    declared span, with the tail reported alongside.
+
+    Adapter keys (under "loss"): declaration_class, interval_fields
+    [from_field, to_field], received_field, lost_field, refused_field
+    (optional: omit to keep refusals out of scope), event_ordinal_field,
+    ordinal_start (integer, default 1).
+    """
+    def count(v, where):
+        # EXT-023 discipline: a count is a non-negative JSON integer or nothing
+        return v if type(v) is int and v >= 0 else None
+
+    dc = lo.get("declaration_class")
+    iv = lo.get("interval_fields")
+    rf = lo.get("received_field")
+    lf = lo.get("lost_field")
+    ff = lo.get("refused_field")          # optional: refusals in scope or not
+    ordf = lo.get("event_ordinal_field")
+    start = lo.get("ordinal_start", 1)
+    if not dc or not iv or not rf or not lf or not ordf or type(start) is not int:
+        res.fail("VLC-L2-1", "windowed_declaration needs declaration_class, interval_fields, "
+                             "received_field, lost_field, event_ordinal_field and an integer "
+                             "ordinal_start")
+        res.fail("VLC-L2-5", "no completeness identity is computable")
+        return None
+
+    # The unit is the BOUND RECORD, whatever its class: in this mode the
+    # producer's written_in_window is to-from+1 "read from the chain itself"
+    # (issue #12), which counts checkpoints and batch records like any other
+    # entry -- so the verifier's window count does too. The adapter's boundary
+    # note says what the unit means operationally.
+    by_ord = {}
+    dup_ord = []
+    for r in recs:
+        o = dig(r.obj, ordf)
+        if type(o) is int:
+            if o in by_ord:
+                dup_ord.append(o)
+            by_ord[o] = r
+
+    produced = 0
+    declared = 0
+    n_decls = 0
+    problems = []
+    windows = []
+    for r in recs:
+        if r.cls != dc:
+            continue
+        n_decls += 1
+        a, b = dig(r.obj, iv[0]), dig(r.obj, iv[1])
+        rec_v = count(dig(r.obj, rf), f"record {r.i} {rf!r}")
+        lost_v = count(dig(r.obj, lf), f"record {r.i} {lf!r}")
+        ref_v = count(dig(r.obj, ff), f"record {r.i} {ff!r}") if ff else 0
+        if type(a) is not int or type(b) is not int or a < start or b < a:
+            problems.append(f"record {r.i}: window {a!r}..{b!r} is missing or malformed")
+            continue
+        if rec_v is None or lost_v is None or ref_v is None:
+            problems.append(f"record {r.i}: received/refused/lost must be non-negative "
+                            f"JSON integers")
+            continue
+        got = sum(1 for o in by_ord if a <= o <= b)
+        if got + ref_v + lost_v != rec_v:
+            problems.append(f"record {r.i}: window {a}..{b} does not close: {got} written "
+                            f"+ {ref_v} refused + {lost_v} lost != {rec_v} received")
+        produced += rec_v
+        declared += ref_v + lost_v
+        windows.append((a, b, r.i))
+
+    if dup_ord:
+        problems.append(f"duplicate event ordinal(s): {sorted(set(dup_ord))[:5]}")
+    windows.sort()
+    expect = start
+    for a, b, at in windows:
+        if a != expect:
+            problems.append(f"record {at}: window starts at {a}, expected {expect} "
+                            f"({'gap' if a > expect else 'overlap'} in the declared span)")
+        expect = max(expect, b + 1)
+    tail = sorted(o for o in by_ord if o >= expect)
+    covered = [o for o in by_ord if o < expect]
+    stray = sorted(set(covered) - set(range(start, expect)) & set(covered))
+    if stray:
+        problems.append(f"delivered ordinal(s) below the declared start: {stray[:5]}")
+    tail_note = ""
+    if tail:
+        want = list(range(expect, expect + len(tail)))
+        if tail != want:
+            gaps = sorted(set(range(tail[0], tail[-1] + 1)) - set(tail))[:5]
+            problems.append(f"undeclared tail {expect}.. has ordinal gap(s) {gaps}: "
+                            f"a loss no declaration covers")
+        else:
+            tail_note = (f"; {len(tail)} record(s) in the not-yet-declared tail "
+                         f"({expect}..{tail[-1]}), contiguous, awaiting the next "
+                         f"declaration -- a drop before ordinal assignment in this "
+                         f"span is not yet visible")
+
+    if n_decls == 0:
+        res.fail("VLC-L2-1", "no declaration records found")
+        res.fail("VLC-L2-2", "no declarations to examine")
+        res.fail("VLC-L2-5", "no completeness identity is computable")
+        return None
+    res.ok("VLC-L2-1", f"produced = {produced} over {n_decls} window declaration(s)"
+           + (" (refusals in scope)" if ff else " (refusals out of scope by adapter)"))
+    if problems:
+        res.fail("VLC-L2-2", "; ".join(problems[:3]) +
+                 (f" (+{len(problems) - 3} more)" if len(problems) > 3 else ""))
+    else:
+        res.ok("VLC-L2-2", f"{n_decls} window declaration(s), each stating its interval "
+                           f"and counts")
+
+    if ad["integrity"]["mechanism"] == "none":
+        res.fail("VLC-L2-3", "no integrity binding, so declarations are removable")
+    else:
+        bound = all(r.hash for r in recs if r.cls == dc)
+        res.ok("VLC-L2-3") if bound else             res.fail("VLC-L2-3", "a window declaration carries no binding")
+
+    ob = lo.get("overflow_behaviour")
+    if ob in ("block", "drop_oldest", "drop_newest", "drop_counted"):
+        res.ok("VLC-L2-4", ob)
+    elif ob == "silent":
+        res.fail("VLC-L2-4", "producer cannot detect discard: L2 not claimable")
+    else:
+        res.fail("VLC-L2-4", "overflow behaviour not declared")
+
+    in_span = len(covered)
+    lhs = in_span + declared
+    if problems:
+        res.fail("VLC-L2-5", "identity not established: " + problems[0] +
+                 (f" (+{len(problems) - 1} more)" if len(problems) > 1 else ""))
+        res.fail("VLC-L2-6", "completeness not established")
+    elif lhs == produced:
+        res.ok("VLC-L2-5", f"{in_span} written + {declared} declared (refused+lost) "
+                           f"== {produced} received over the declared span" + tail_note)
+        res.ok("VLC-L2-6")
+    else:
+        res.fail("VLC-L2-5", f"identity does not close: {in_span} + {declared} = {lhs} "
+                             f"!= {produced} received ({produced - lhs} unaccounted for)")
+        res.fail("VLC-L2-6", "log is NOT COMPLETE")
+    return {"produced": produced, "delivered": in_span, "declared_lost": declared}
+
+
 # LEVEL 2 -- loss accounting
 # ===========================================================================
 def check_l2(recs, ad, res, ctx):
@@ -971,6 +1131,9 @@ def check_l2(recs, ad, res, ctx):
     # used, so the arithmetic silently ran over every bound record.
     # Reported by pipavlo82, 2026-09-21.
     delivered = [r for r in recs if r.cls not in markers and r.cls not in non_event]
+
+    if mode == "windowed_declaration":
+        return check_l2_windowed(recs, ad, res, lo, delivered)
 
     # --- produced ---------------------------------------------------------
     # EXT-022. The produced count is the producer's independent figure, and the
@@ -1765,7 +1928,7 @@ MECHANISMS = ("none", "sha256-chain-prefix", "sha256-chain-canonical", "sha256-p
               "sha256-prev-field", "sha256-canonical-fields", "merkle-tlog", "sha256-hex-join",
               "sha256-chain-jcs-nested")
 ROOT_KINDS = ("zero", "constant", "field_of_first_record")
-LOSS_MODES = ("none", "declaration", "ordinal")
+LOSS_MODES = ("none", "declaration", "ordinal", "windowed_declaration")
 PRODUCED_KINDS = ("field_of_end_marker", "max_ordinal", "sum_of_end_marker_fields", "field_of_any")
 COVERAGE_MODES = ("none", "non_enumerable", "enumerated")
 POLICY_MODES = ("none", "observation_only", "chain_root", "per_record")
@@ -1868,7 +2031,20 @@ def validate_adapter(ad):
     lo = ad.get("loss") or {}
     if lo:
         need(lo.get("mode", "declaration") in LOSS_MODES, f"unknown loss.mode {lo.get('mode')!r}")
-        if lo.get("mode", "declaration") != "none":
+        if lo.get("mode", "declaration") == "windowed_declaration":
+            # 1.4.6-draft: produced is the sum of the windows' received counts;
+            # there is no separate loss.produced block to validate
+            for k in ("declaration_class", "received_field", "lost_field",
+                      "event_ordinal_field"):
+                need(isinstance(lo.get(k), str), f"loss.{k} is required for windowed_declaration")
+            need(isinstance(lo.get("interval_fields"), list) and len(lo["interval_fields"]) == 2
+                 and all(isinstance(x, str) for x in lo["interval_fields"]),
+                 "loss.interval_fields must be [from_field, to_field]")
+            need(lo.get("refused_field") is None or isinstance(lo["refused_field"], str),
+                 "loss.refused_field must be a string when present")
+            need(type(lo.get("ordinal_start", 1)) is int,
+                 "loss.ordinal_start must be an integer")
+        elif lo.get("mode", "declaration") != "none":
             p = lo.get("produced")
             need(isinstance(p, dict) and p.get("kind") in PRODUCED_KINDS,
                  f"loss.produced.kind must be one of {PRODUCED_KINDS}")

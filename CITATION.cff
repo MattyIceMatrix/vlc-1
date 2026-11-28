@@ -6,7 +6,7 @@ authors:
   - family-names: Moore
     given-names: Matthew
     email: hello@moore-labs.com
-version: "1.4.5-draft"
+version: "1.4.6-draft"
 doi: 10.5281/zenodo.22728393
 repository-code: "https://github.com/MattyIceMatrix/vlc-1"
 url: "https://doi.org/10.5281/zenodo.22728393"
