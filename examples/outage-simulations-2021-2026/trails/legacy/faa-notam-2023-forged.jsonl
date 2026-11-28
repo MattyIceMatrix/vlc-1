@@ -1,0 +1,3 @@
+{"event":"db.sync","detail":"NOTAM database synchronization started","actor":"contractor","ts":"T+0"}
+{"event":"db.corrupt","detail":"primary and backup corrupted","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"nationwide ground stop","actor":"operator","ts":"T+3"}

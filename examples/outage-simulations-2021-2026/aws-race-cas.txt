@@ -1,0 +1,8 @@
+LEGACY (what happened 2025-10-20):
+  EnactorA (delayed) writes plan-41 -> state := plan-41
+  EnactorB writes plan-42 -> state := plan-42
+  EnactorA cleanup (for plan-41) DELETES records plan-42 just wrote -> endpoint EMPTY, nobody notices
+
+HEAD-CAS CHAINED LEDGER (bulwark pattern):
+  EnactorB: applied "apply plan-42" -> head a65786
+  EnactorA: REJECTED stale write ("apply plan-41") -- expected head 000000, actual a65786

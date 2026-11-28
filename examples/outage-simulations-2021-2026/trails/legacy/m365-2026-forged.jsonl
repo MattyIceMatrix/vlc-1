@@ -1,0 +1,6 @@
+{"event":"config.apply","detail":"July capacity-upgrade fix applied to networking gateways","actor":"automation","ts":"T+0"}
+{"event":"config.apply","detail":"November network change applied","actor":"automation","ts":"T+1"}
+{"event":"agent.action","detail":"AI agent modified gateway config","actor":"copilot-agent","ts":"T+2"}
+{"event":"fleet.degraded","detail":"gateway connections failing under load surge","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"~24h mail outage; public asks: hack? AI agents?","actor":"monitor","ts":"T+3"}
+{"event":"config.rollback","detail":"July fix identified and reverted","actor":"operator","ts":"T+4"}

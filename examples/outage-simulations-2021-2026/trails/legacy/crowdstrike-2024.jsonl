@@ -1,0 +1,5 @@
+{"event":"governance.passed","detail":"content validator verdict on channel file update","actor":"gateway","ts":"T+0"}
+{"event":"config.push","detail":"channel file shipped to full fleet, no staging ring","actor":"rollout","ts":"T+1"}
+{"event":"fleet.crash","detail":"boot loops at global scale","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"global IT outage: airlines, hospitals, banks","actor":"monitor","ts":"T+3"}
+{"event":"config.pull","detail":"file withdrawn; manual per-host recovery","actor":"operator","ts":"T+4"}

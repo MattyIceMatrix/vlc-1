@@ -1,0 +1,4 @@
+{"event":"telemetry.window","detail":"radar/comms feed instability recorded, facility set A","actor":"telemetry","ts":"T+0"}
+{"event":"telemetry.window","detail":"radar/comms feed instability recorded, facility set B","actor":"telemetry","ts":"T+1"}
+{"event":"incident.created","detail":"nationwide ground stop out of caution","actor":"operator","ts":"T+2"}
+{"event":"evidence.sealed","detail":"incident-window trail sealed for investigators (3 windows)","actor":"operator","ts":"T+3"}

@@ -1,0 +1,4 @@
+{"event":"ops.batch","detail":"crew reassignment batch 1: 500 produced","actor":"scheduler","ts":"T+0"}
+{"event":"ops.batch","detail":"crew reassignment batch 2: 500 produced","actor":"scheduler","ts":"T+1"}
+{"event":"ops.overflow","detail":"processing backlog: items dropping","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"scheduling collapse: manual phone ops","actor":"monitor","ts":"T+3"}

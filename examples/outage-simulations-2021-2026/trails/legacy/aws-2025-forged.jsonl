@@ -1,0 +1,4 @@
+{"event":"dns.plan.apply","detail":"Enactor B applies plan 42","actor":"enactor-b","ts":"T+1"}
+{"event":"dns.plan.apply","detail":"Enactor A applies plan 41 (delayed)","actor":"enactor-a","ts":"T+0"}
+{"event":"dns.apply.rejected","detail":"Enactor A stale write REJECTED: head moved (CAS)","actor":"enactor-a","ts":"T+2"}
+{"event":"incident.created","detail":"endpoint empty in legacy world; prevented here","actor":"monitor","ts":"T+3"}

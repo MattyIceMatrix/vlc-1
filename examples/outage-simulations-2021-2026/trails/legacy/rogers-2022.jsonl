@@ -1,0 +1,5 @@
+{"event":"governance.passed","detail":"change window verdict: core routing update phase 6","actor":"gateway","ts":"T+0"}
+{"event":"config.apply","detail":"routing filter policy updated","actor":"automation","ts":"T+1"}
+{"event":"net.flood","detail":"route flood: core overwhelmed","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"nationwide outage incl. 911 routing","actor":"monitor","ts":"T+3"}
+{"event":"config.rollback","detail":"phase 6 reverted","actor":"operator","ts":"T+4"}

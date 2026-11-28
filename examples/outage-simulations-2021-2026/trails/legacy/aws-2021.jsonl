@@ -1,0 +1,4 @@
+{"event":"scale.event","detail":"automated capacity scaling initiated","actor":"automation","ts":"T+0"}
+{"event":"net.congestion","detail":"internal network degradation detected","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"monitoring blind: dashboards impaired","actor":"monitor","ts":"T+2"}
+{"event":"scale.halt","detail":"automation paused by operators","actor":"operator","ts":"T+3"}

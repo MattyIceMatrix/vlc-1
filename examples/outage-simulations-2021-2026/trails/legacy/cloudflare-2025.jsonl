@@ -1,0 +1,6 @@
+{"event":"config.publish","detail":"feature file v-good published (cycle 1)","actor":"generator","ts":"T+0"}
+{"event":"config.publish","detail":"feature file v-BAD published (cycle 2): malformed","actor":"generator","ts":"T+1"}
+{"event":"config.publish","detail":"feature file v-good published (cycle 3)","actor":"generator","ts":"T+2"}
+{"event":"config.publish","detail":"feature file v-BAD published (cycle 4)","actor":"generator","ts":"T+3"}
+{"event":"incident.created","detail":"proxy failures flapping with publish cycles","actor":"monitor","ts":"T+4"}
+{"event":"config.freeze","detail":"propagation stopped; known-good pinned","actor":"operator","ts":"T+5"}

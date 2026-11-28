@@ -1,0 +1,4 @@
+{"event":"config.push","detail":"tenant config change entered pipeline","actor":"pipeline","ts":"T+0"}
+{"event":"governance.failed","detail":"validation verdict: INVALID (would have blocked)","actor":"gateway","ts":"T+1"}
+{"event":"veto.created","detail":"propagation vetoed pending review","actor":"gateway","ts":"T+2"}
+{"event":"config.rollback","detail":"change returned to author","actor":"operator","ts":"T+3"}

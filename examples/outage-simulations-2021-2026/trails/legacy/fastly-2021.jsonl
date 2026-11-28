@@ -1,0 +1,5 @@
+{"event":"config.push","detail":"customer config change accepted by rollout","actor":"rollout","ts":"T+0"}
+{"event":"governance.passed","detail":"validation verdict on config payload","actor":"gateway","ts":"T+1"}
+{"event":"config.propagate","detail":"propagated to edge fleet","actor":"rollout","ts":"T+2"}
+{"event":"incident.created","detail":"global 503s across edge","actor":"monitor","ts":"T+3"}
+{"event":"config.rollback","detail":"offending config disabled","actor":"operator","ts":"T+4"}

@@ -1,0 +1,5 @@
+{"event":"governance.passed","detail":"maintenance command verdict: capacity audit","actor":"gateway","ts":"T+0"}
+{"event":"net.command","detail":"backbone capacity assessment command issued","actor":"automation","ts":"T+1"}
+{"event":"net.routes.withdrawn","detail":"BGP routes withdrawn, DNS unreachable","actor":"automation","ts":"T+2"}
+{"event":"incident.created","detail":"total platform outage; internal tools offline","actor":"monitor","ts":"T+3"}
+{"event":"net.restore","detail":"manual datacenter intervention","actor":"operator","ts":"T+4"}
