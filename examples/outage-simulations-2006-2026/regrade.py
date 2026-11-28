@@ -8,6 +8,7 @@ checker in this repository:
   - the legacy plain log           -> expected L0
   - its forged variant             -> expected L0, indistinguishable
   - the instrumented export        -> expected structural L4 / attested L4
+  - the attacked trail             -> expected to collapse below L4
 using the committed trails and the public adapter. Exit code 0 means every
 expectation held on your machine."""
 import json, os, sys
@@ -28,11 +29,15 @@ for s in json.load(open(os.path.join(HERE, "scenarios.json"))):
     m = meta["marker"]
     o = check(os.path.join(HERE, "trails", "instrumented", sid, "audit.jsonl"), ADAPTER,
               expect_root=m["genesis"], expect_head=m["head"])
+    a = check(os.path.join(HERE, "trails", "instrumented", sid, "attacked.jsonl"), ADAPTER,
+              expect_root=m["genesis"], expect_head=m["head"])
     ok = (l["structural_level"] == 0 and f["structural_level"] == l["structural_level"]
-          and o["structural_level"] == 4 and o["attested_level"] == 4)
+          and o["structural_level"] == 4 and o["attested_level"] == 4
+          and a["structural_level"] < o["structural_level"])
     print(f"{'ok ' if ok else 'BAD'} {sid}: legacy L{l['structural_level']} "
           f"(forged L{f['structural_level']}, indistinguishable) | instrumented "
-          f"structural L{o['structural_level']} / attested L{o['attested_level']}")
+          f"structural L{o['structural_level']} / attested L{o['attested_level']} | "
+          f"attack -> L{a['structural_level']}")
     bad += 0 if ok else 1
 print(("all expectations held" if not bad else f"{bad} scenario(s) diverged"))
 sys.exit(1 if bad else 0)
