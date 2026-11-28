@@ -47,8 +47,17 @@ def main() -> int:
     msg = canon(report).encode()
     if ed25519_verify(pub, msg, sig):
         print(f"VALID  Ed25519 signature by key {key['key_id']} over the canonical report")
-        print(f"       verdict: {report.get('verdict')}  records: {report.get('records')}  "
-              f"issued: {report.get('issued_at')}")
+        res = report.get("result")
+        if isinstance(res, dict):
+            # a reference-checker report (conformance.py run by the operator,
+            # signed by the service): the verdict is nested under .result
+            print(f"       structural L{res.get('structural_level')}  "
+                  f"attested L{res.get('attested_level')}  adapter: {res.get('adapter')}  "
+                  f"spec: {res.get('spec')}")
+            print(f"       head: {res.get('head')}  issued: {report.get('issued_at')}")
+        else:
+            print(f"       verdict: {report.get('verdict')}  records: {report.get('records')}  "
+                  f"issued: {report.get('issued_at')}")
         return 0
     print("INVALID: signature does not match the report content", file=sys.stderr)
     return 1
