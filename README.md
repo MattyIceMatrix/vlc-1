@@ -327,6 +327,8 @@ the [GitHub Marketplace Action](https://github.com/marketplace/actions/vlc-1-con
 - [docs/HISTORY.md](docs/HISTORY.md) — the whole arc in one dated page.
 - [docs/posts/](docs/posts/) — milestone write-ups, starting with the first
   signed verification report (2026-11-26).
+- [docs/case-studies/](docs/case-studies/) — operator case studies, published
+  with each operator's written OK; first: the JIDEC ledger (2026-11-28).
 - [VERIFIED-REPORTS.md](VERIFIED-REPORTS.md) — the registry of issued signed
   reports.
 - [docs/CORRECTIONS.md](docs/CORRECTIONS.md) — every defect that could have
