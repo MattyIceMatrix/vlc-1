@@ -1,0 +1,49 @@
+name: octa-sign
+# Issue the signed VERIFIED REPORT for the OCTA gateway export captured on
+# branch capture/octa-signed-report (report 002; the registry's first L4).
+# Manual dispatch only; needs the repo secret VLC_ADMIN_KEY. Same recipe as
+# jidec-sign.yml (curl POSTs; offline re-verify before saving).
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: capture/octa-signed-report }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: issue signed report
+        env:
+          VLC_ADMIN_KEY: ${{ secrets.VLC_ADMIN_KEY }}
+        run: |
+          test -n "$VLC_ADMIN_KEY" || { echo "secret VLC_ADMIN_KEY not set"; exit 1; }
+          D=capture/runs/octa-report-001
+          python3 - "$D" <<'PY'
+          import json, sys, hashlib
+          sys.path.insert(0, ".")
+          from conformance import check
+          D = sys.argv[1]
+          m = json.load(open(f"{D}/export-meta.json"))["marker"]
+          rep = check(f"{D}/audit-export.jsonl", f"{D}/adapter.json",
+                      expect_root=m["genesis"], expect_head=m["head"])
+          rep["expected_head"] = {
+            "value": m["head"],
+            "source_note": "head of the Ed25519-signed export marker (sealAndExportAuditChain), whose signature verifies under the ledger key named in keys/matthew-moore-operator-statement.json; see ATTESTATION.md in this capture"
+          }
+          rep["expected_root"] = {"value": m["genesis"], "source_note": "genesis of the same signed marker"}
+          json.dump(rep, open("/tmp/rep.json", "w"))
+          print("graded: structural L%s attested L%s" % (rep.get("structural_level"), rep.get("attested_level")))
+          assert rep.get("structural_level") == 4 and rep.get("attested_level") == 4, "grade moved since capture"
+          PY
+          code=$(curl -sS -o /tmp/signed.json -w '%{http_code}' -X POST https://vlc-1.moorematthew131.workers.dev/api/sign-report -H 'content-type: application/json' -H "x-admin-key: $VLC_ADMIN_KEY" --data-binary @/tmp/rep.json)
+          echo "sign-report status: $code"; test "$code" = 200 || { head -c 300 /tmp/signed.json; exit 1; }
+          python3 tools/verify_report.py /tmp/signed.json
+          cp /tmp/signed.json capture/runs/octa-report-001/verified-report.json
+      - name: commit
+        run: |
+          git config user.name "octa-sign"; git config user.email "actions@users.noreply.github.com"
+          git add capture/runs && git commit -q -m "capture: signed OCTA verified report (002, L4/L4)" && git push -q origin HEAD:capture/octa-signed-report
