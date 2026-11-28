@@ -1,0 +1,58 @@
+name: Grade my logs (free)
+description: Tell us your log's field names and we'll tell you its VLC-1 level, what it's missing, and what it would take to reach L4. Free, no NDA.
+title: "[Grade] "
+labels: ["grade-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public. Paste field NAMES only, never values.** No log contents,
+        hostnames, credentials or anything under NDA. If you want a grade on a scrubbed or
+        synthetic export, email hello@moore-labs.com instead.
+
+        Prefer to grade it yourself first? See [GRADE-MY-LOGS.md](https://github.com/MattyIceMatrix/vlc-1/blob/main/GRADE-MY-LOGS.md).
+        It takes two minutes and nothing leaves your machine.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What produces the log?
+      options:
+        - AI agent / agent framework
+        - LLM or MCP gateway / proxy
+        - Audit or security log (cloud, OS, k8s)
+        - Ledger / transparency log
+        - CI/CD or config-rollout pipeline
+        - Something else
+    validations: { required: true }
+  - type: textarea
+    id: fields
+    attributes:
+      label: Your log's field names
+      description: Names only. Whatever carries the timestamp, sequence or ordinal, any hash/integrity/signature field, any dropped or lost counter, and any record that marks start, end or scope.
+      placeholder: |
+        timestamp: ts
+        sequence: seq
+        integrity: prev_hash (sha256 of previous line?), sig
+        dropped: (not recorded)
+        end marker: (none)
+    validations: { required: true }
+  - type: textarea
+    id: why
+    attributes:
+      label: What's driving this? (optional)
+      description: An audit, a customer question, an incident, a standards requirement, curiosity. One line is plenty.
+  - type: dropdown
+    id: registry
+    attributes:
+      label: Would you want a signed report in the public registry if it grades well?
+      options:
+        - Not now, just the grade
+        - Yes, ask me once you've graded it
+        - Only privately (signed, but not listed)
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Please confirm
+      options:
+        - label: I have not pasted log contents or anything confidential into this public issue.
+          required: true

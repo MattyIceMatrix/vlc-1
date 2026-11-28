@@ -10,6 +10,10 @@ for each published version.*
 the drafts reviewed provides a machine-checkable way for a reader to establish
 that the log is all of it.**
 
+> **Get your logs graded, free.** Send your log's field names (or grade it yourself
+> in two minutes) and get back its level, every failed requirement, and what it would
+> take to reach L4. → [**GRADE-MY-LOGS.md**](GRADE-MY-LOGS.md)
+
 One of them goes further than the term and **requires** the property:
 prEN 18229-1 defines integrity to include completeness at **3.2.9** (borrowing
 ISO/IEC 27000) and requires the provider to ensure logged information is
