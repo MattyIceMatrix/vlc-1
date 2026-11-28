@@ -1,0 +1,11 @@
+{
+  "type": "octa-operator-key-statement-v1",
+  "operator": "Matthew Cameron Moore (GitHub: MattyIceMatrix)",
+  "statement": "The ledger key below is the audit ledger key of the OCTA governance gateway: it signs audit chain entries and export head markers unattended. The witness key below is my witness key for the vlc-1 blind-08 exercise. Both were generated on my machine on the date below and are named here in the key history of my operator key, which signs this statement.",
+  "ledger_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEATind6T8WV5CspTD5MfX9DXswCYg+0USfny7KtHnuJSk=\n-----END PUBLIC KEY-----\n",
+  "ledger_public_key_sha256": "0577dcaebe4881dc5c94f8d7255ed0a13fc65dffdda12c731c44a72a3107da61",
+  "witness_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAId6GlAYdKgaxJjcxUqYZ7Eefjf1kKYgg8bPLG8IMsC8=\n-----END PUBLIC KEY-----\n",
+  "witness_public_key_sha256": "7cff65ba3e5ef54ea7a77df42da13ef14ba024f83a8979b4f31ff3ca8dc01742",
+  "operator_public_key_sha256": "735e470a376bfaed5ca10d04baec190c8ac14fa585fef216b4c221152db7e3ee",
+  "created_at": "2026-11-28T06:49:00.928Z"
+}
