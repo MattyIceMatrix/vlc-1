@@ -1,0 +1,4 @@
+{"event":"cert.issue","detail":"transfer certs issued with validity Feb 29 + 1 year: invalid date","actor":"automation","ts":"T+0"}
+{"event":"fleet.fail","detail":"guest agent initialization failures cascading","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"service management down across regions","actor":"monitor","ts":"T+2"}
+{"event":"fix.deploy","detail":"patched cert logic deployed under pressure","actor":"operator","ts":"T+3"}

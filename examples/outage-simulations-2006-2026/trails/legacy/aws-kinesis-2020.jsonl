@@ -1,0 +1,4 @@
+{"event":"scale.event","detail":"front-end fleet capacity added","actor":"automation","ts":"T+0"}
+{"event":"limit.hit","detail":"OS thread limit exceeded across front-end fleet","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"Kinesis down; Cognito, CloudWatch degraded","actor":"monitor","ts":"T+2"}
+{"event":"fleet.restart","detail":"slow rolling restart to stay under limit","actor":"operator","ts":"T+3"}

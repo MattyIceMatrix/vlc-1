@@ -1,0 +1,5 @@
+{"event":"ddos.observe","detail":"anomalous flood from tens of millions of IoT sources","actor":"telemetry","ts":"T+0"}
+{"event":"config.apply","detail":"internal resolver change","actor":"automation","ts":"T+0.5"}
+{"event":"mitigation.applied","detail":"scrubbing and rate limits engaged","actor":"operator","ts":"T+1"}
+{"event":"incident.created","detail":"major sites unreachable, US East","actor":"monitor","ts":"T+2"}
+{"event":"mitigation.expanded","detail":"second and third waves absorbed","actor":"operator","ts":"T+3"}

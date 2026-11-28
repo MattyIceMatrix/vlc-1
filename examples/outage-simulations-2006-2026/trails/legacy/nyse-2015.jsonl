@@ -1,0 +1,4 @@
+{"event":"update.applied","detail":"new gateway software rolled out overnight","actor":"automation","ts":"T+0"}
+{"event":"config.mismatch","detail":"symbol configuration inconsistent across gateways","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"trading halted ~4 hours","actor":"operator","ts":"T+2"}
+{"event":"config.rollback","detail":"gateways restored to consistent configuration","actor":"operator","ts":"T+3"}

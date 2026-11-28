@@ -1,0 +1,5 @@
+{"event":"governance.passed","detail":"playbook verdict: remove small set of billing-subsystem servers","actor":"gateway","ts":"T+0"}
+{"event":"ops.command","detail":"command executed against larger set than authorized","actor":"operator","ts":"T+1"}
+{"event":"fleet.down","detail":"index and placement subsystems offline","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"S3 down; status dashboard (hosted on S3) down too","actor":"monitor","ts":"T+3"}
+{"event":"subsystem.restart","detail":"full restart, first in years: hours","actor":"operator","ts":"T+4"}

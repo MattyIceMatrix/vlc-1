@@ -1,0 +1,3 @@
+{"event":"storm.detect","detail":"EBS nodes lost replicas: re-mirroring storm, capacity exhausted","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"multi-day EBS/RDS degradation in region","actor":"monitor","ts":"T+2"}
+{"event":"net.rollback","detail":"traffic restored; storm drained node by node","actor":"operator","ts":"T+3"}

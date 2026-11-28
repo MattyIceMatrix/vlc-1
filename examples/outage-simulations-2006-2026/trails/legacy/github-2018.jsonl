@@ -1,0 +1,5 @@
+{"event":"net.partition","detail":"43-second cross-country connectivity loss","actor":"monitor","ts":"T+0"}
+{"event":"db.failover","detail":"orchestrator promoted alternate-coast primary","actor":"automation","ts":"T+1"}
+{"event":"db.divergence","detail":"writes accepted on BOTH primaries during window","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"24h of degraded service during reconciliation","actor":"monitor","ts":"T+3"}
+{"event":"db.reconcile","detail":"divergent records merged by hand","actor":"operator","ts":"T+4"}

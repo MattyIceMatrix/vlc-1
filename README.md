@@ -309,11 +309,11 @@ responsible for ISO/IEC 24970 (weeks from publication at last word); the
 prEN 18229-1 comment is in that channel. A second IETF draft in this space,
 draft-sharif-agent-audit-trail, was cross-tested on 2026-11-28 — four
 findings with a runnable kit ([`crosstest/aat/`](crosstest/aat/)) sent to
-its author, the same way the AER-1 findings were. Also 2026-11-28: five years of
-major outages (2021-2026) replayed as failure classes and graded — 14/14 legacy
-logs L0 with forgeries indistinguishable, 14/14 instrumented trails L4, every
-signature attack caught; re-verifiable in
-[`examples/outage-simulations-2021-2026/`](examples/outage-simulations-2021-2026/).
+its author, the same way the AER-1 findings were. Also 2026-11-28: twenty years of
+major outages (2006-2026, Fastly to the FAA, 25 incidents) replayed as failure
+classes and graded — 25/25 legacy logs L0 with forgeries indistinguishable,
+25/25 instrumented trails L4, every signature attack caught; re-verifiable in
+[`examples/outage-simulations-2006-2026/`](examples/outage-simulations-2006-2026/).
 Distribution since
 2026-11-25: [PyPI (`vlc-check`)](https://pypi.org/project/vlc-check/) and
 the [GitHub Marketplace Action](https://github.com/marketplace/actions/vlc-1-conformance-check).

@@ -1,0 +1,4 @@
+{"event":"bgp.observe","detail":"foreign AS announced more-specific prefix for our range","actor":"telemetry","ts":"T+0"}
+{"event":"net.traffic","detail":"global traffic blackholed toward hijacker","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"service unreachable worldwide","actor":"monitor","ts":"T+2"}
+{"event":"bgp.response","detail":"counter-announcement of more-specifics issued","actor":"operator","ts":"T+3"}

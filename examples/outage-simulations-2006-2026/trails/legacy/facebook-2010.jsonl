@@ -1,0 +1,4 @@
+{"event":"config.apply","detail":"cache value marked invalid by checker","actor":"automation","ts":"T+0"}
+{"event":"loop.detect","detail":"every client regenerating the value: feedback query storm","actor":"monitor","ts":"T+1"}
+{"event":"incident.created","detail":"site unusable; databases overwhelmed","actor":"monitor","ts":"T+2"}
+{"event":"config.freeze","detail":"automated correction disabled; traffic cut to recover","actor":"operator","ts":"T+3"}

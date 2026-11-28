@@ -1,0 +1,5 @@
+{"event":"governance.passed","detail":"WAF rule change verdict","actor":"gateway","ts":"T+0"}
+{"event":"config.push","detail":"rule deployed globally in seconds, no canary","actor":"rollout","ts":"T+1"}
+{"event":"fleet.cpu","detail":"CPU exhaustion on every core worldwide","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"~30 minutes of global 502s","actor":"monitor","ts":"T+3"}
+{"event":"config.pull","detail":"WAF kill switch thrown","actor":"operator","ts":"T+4"}

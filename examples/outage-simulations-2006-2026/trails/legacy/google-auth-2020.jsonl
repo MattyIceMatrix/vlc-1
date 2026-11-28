@@ -1,0 +1,5 @@
+{"event":"quota.report","detail":"automation reported zero usage for identity service","actor":"automation","ts":"T+0"}
+{"event":"quota.enforce","detail":"storage quota for auth reduced toward zero","actor":"automation","ts":"T+1"}
+{"event":"fleet.fail","detail":"global sign-in failures: mail, video, docs","actor":"monitor","ts":"T+2"}
+{"event":"incident.created","detail":"authenticated Google services down ~45 min","actor":"monitor","ts":"T+3"}
+{"event":"quota.override","detail":"manual quota restore","actor":"operator","ts":"T+4"}

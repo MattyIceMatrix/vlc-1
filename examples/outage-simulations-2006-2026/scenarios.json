@@ -1,0 +1,152 @@
+[
+  {
+    "id": "youtube-bgp-2008",
+    "name": "YouTube BGP hijack via route leak (Feb 2008)",
+    "klass": "EXTERNAL: foreign ISP announced a more-specific prefix; global blackhole",
+    "question": "Can you prove the outage was external -- that NOTHING internal changed?"
+  },
+  {
+    "id": "facebook-2010",
+    "name": "Facebook config feedback loop (Sep 2010)",
+    "klass": "automated correction system turned one bad config value into a self-DDoS",
+    "question": "What did the automated repair system actually do, at what rate?"
+  },
+  {
+    "id": "aws-ebs-2011",
+    "name": "AWS EBS re-mirroring storm (Apr 2011)",
+    "klass": "network change shifted traffic onto a low-capacity path; storage fleet re-mirrored itself into exhaustion",
+    "question": "Which network change started it, and what did the fleet do in response?"
+  },
+  {
+    "id": "azure-leapday-2012",
+    "name": "Azure leap-day certificate bug (Feb 29, 2012)",
+    "klass": "date arithmetic bug: certs issued Feb 29 valid to an invalid date; agent init failed fleet-wide",
+    "question": "Which certs were issued with the bad validity, and what did remediation touch?"
+  },
+  {
+    "id": "nyse-2015",
+    "name": "NYSE trading halt (Jul 2015)",
+    "klass": "overnight software rollout left gateways misconfigured; ~4h halt",
+    "question": "Which rollout, applied when, left which gateways in which state?"
+  },
+  {
+    "id": "dyn-2016",
+    "name": "Dyn DNS / Mirai botnet DDoS (Oct 2016)",
+    "klass": "EXTERNAL ATTACK: IoT botnet flood -- the inverse proving-a-negative case",
+    "question": "Can you prove it WAS an attack -- that no internal change coincided?"
+  },
+  {
+    "id": "aws-s3-2017",
+    "name": "AWS S3 command typo (Feb 2017)",
+    "klass": "playbook command executed against a larger server set than intended",
+    "question": "What was authorized vs what actually executed? (verdict vs action)"
+  },
+  {
+    "id": "github-2018",
+    "name": "GitHub split-brain (Oct 2018)",
+    "klass": "43-second partition; writes landed on two primaries; 24h reconciliation",
+    "question": "Which writes landed on which primary in what order? (serialization, again)"
+  },
+  {
+    "id": "cloudflare-regex-2019",
+    "name": "Cloudflare WAF regex (Jul 2019)",
+    "klass": "rule with catastrophic backtracking deployed globally in seconds, no staged rollout",
+    "question": "Did a verdict gate the rule, and under which policy did it ship everywhere at once?"
+  },
+  {
+    "id": "google-auth-2020",
+    "name": "Google auth quota incident (Dec 2020)",
+    "klass": "quota automation reported zero usage for the identity service; auth denied globally",
+    "question": "What did the quota automation report and enforce, step by step?"
+  },
+  {
+    "id": "aws-kinesis-2020",
+    "name": "AWS Kinesis thread-limit outage (Nov 2020)",
+    "klass": "capacity addition pushed front-end fleet past an OS thread limit",
+    "question": "Which capacity change crossed the limit, and what else depended on the fleet?"
+  },
+  {
+    "id": "fastly-2021",
+    "name": "Fastly global CDN outage (Jun 2021)",
+    "klass": "latent bug triggered by one customer config push",
+    "question": "Which config push triggered it, and what exactly did the rollout system do?"
+  },
+  {
+    "id": "facebook-2021",
+    "name": "Facebook BGP withdrawal (Oct 2021)",
+    "klass": "maintenance command the audit tool failed to stop; own tools unreachable",
+    "question": "What command ran, who issued it, and can anyone verify the trail with every internal system down?"
+  },
+  {
+    "id": "aws-2021",
+    "name": "AWS us-east-1 internal network cascade (Dec 2021)",
+    "klass": "automated scaling triggered unexpected cross-network surge",
+    "question": "What did the automation do in the minutes before the cascade?"
+  },
+  {
+    "id": "rogers-2022",
+    "name": "Rogers nationwide outage, Canada (Jul 2022)",
+    "klass": "config update deleted a routing filter; whole network, including own ops tools, down",
+    "question": "Which step of the planned change removed the filter?"
+  },
+  {
+    "id": "southwest-2022",
+    "name": "Southwest crew-scheduling collapse (Dec 2022)",
+    "klass": "ops volume exceeded system; work items silently lost",
+    "question": "How many crew reassignments were produced vs actually processed? (a literal completeness identity)"
+  },
+  {
+    "id": "faa-notam-2023",
+    "name": "FAA NOTAM failure (Jan 2023)",
+    "klass": "files deleted during database sync; corruption reached the backup",
+    "question": "What was deleted, when, by whom -- and is the deletion accounted or silent?"
+  },
+  {
+    "id": "datadog-2023",
+    "name": "Datadog multi-region outage (Mar 2023)",
+    "klass": "automatic OS update rebooted fleet; which hosts, which update, unclear for hours",
+    "question": "Which update channel touched which hosts in what order?"
+  },
+  {
+    "id": "crowdstrike-2024",
+    "name": "CrowdStrike channel file 291 (Jul 2024)",
+    "klass": "malformed content update passed its validator and shipped everywhere at once",
+    "question": "Which validation policy admitted the file, and did any gate actually run?"
+  },
+  {
+    "id": "gcloud-2025",
+    "name": "Google Cloud global outage (Jun 2025)",
+    "klass": "quota policy config with blank fields propagated globally, crash-looped Service Control",
+    "question": "What did the policy in force actually say, and which checks admitted it?"
+  },
+  {
+    "id": "aws-2025",
+    "name": "AWS us-east-1 DynamoDB DNS race (Oct 2025)",
+    "klass": "two automation writers raced; cleanup deleted live DNS records",
+    "question": "Which writer applied which plan in what order? (serialization with receipts)"
+  },
+  {
+    "id": "azure-2025",
+    "name": "Azure Front Door config bypass (Oct 2025)",
+    "klass": "invalid config bypassed validation via pipeline defect",
+    "question": "Did validation run on THIS change, under WHICH policy?"
+  },
+  {
+    "id": "cloudflare-2025",
+    "name": "Cloudflare bot-management feature file (Nov 2025)",
+    "klass": "good and bad config files propagating alternately; DDoS misdiagnosis",
+    "question": "Which file version was in force on which propagation cycle? (the flip-flop as a sequence)"
+  },
+  {
+    "id": "m365-2026",
+    "name": "Microsoft 365 / Outlook gateway defect (Nov 2026)",
+    "klass": "latent defect from a July fix surfaced months later; had to deny hack AND AI involvement",
+    "question": "Which past change is the landmine -- and can you PROVE no attacker and no AI agent acted?"
+  },
+  {
+    "id": "faa-2026",
+    "name": "FAA nationwide ground stop (Nov 2026)",
+    "klass": "legacy telecom instability; weeks of investigation; had to deny cyberattack and new AI system",
+    "question": "Is the evidence pack complete enough that \"no attack, not the AI\" is arithmetic instead of assertion?"
+  }
+]
