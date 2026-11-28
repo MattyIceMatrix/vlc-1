@@ -57,6 +57,8 @@ jobs:
                    openai-agents-live:openai-agents-live-full:0:0 \
                    openai-agents-live:openai-agents-live-scrubbed:0:0 \
                    openai-agents-live:openai-agents-live-overflow:0:0 \
+                   claude-agent-sdk-live:claude-agent-sdk-live-full:0:0 \
+                   claude-agent-sdk-live:claude-agent-sdk-live-scrubbed:0:0 \
                    otel-genai-live:otel-genai-live-full:0:0 otel-genai-live:otel-genai-live-scrubbed:0:0 \
                    falco-live:falco-live-full:0:0 falco-live:falco-live-scrubbed:0:0 \
                    falco-live:falco-live-default:0:0 \
@@ -117,7 +119,7 @@ jobs:
           # left this list in 1.4.3-draft: its scrubbed file now scores lower; below.)
           for g in openshell-live:nvidia-openshell-live agentgateway-live docker-mcp-live \
                    contextforge-live lasso-live bifrost-live openai-agents-live otel-genai-live \
-                   falco-live; do
+                   falco-live claude-agent-sdk-live; do
             IFS=: read -r f n <<< "$g"; n=${n:-$f}
             r() { python3 conformance.py --log "examples/third-party/$f-$1.jsonl" --adapter "adapters/$n.json" --json \
                   | python3 -c "import json,sys;r=json.load(sys.stdin);print(sorted((k,v['status']) for k,v in r['requirements'].items()))"; }

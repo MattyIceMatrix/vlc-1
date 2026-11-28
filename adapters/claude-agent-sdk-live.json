@@ -1,0 +1,39 @@
+{
+  "name": "claude-agent-sdk-live",
+  "producer": "Claude Agent SDK 0.2.189 (PyPI claude-agent-sdk) with its bundled Claude Code CLI 2.1.332: the session transcript the CLI writes to ~/.claude/projects/<cwd>/<session>.jsonl, one entry per line; a real model (claude-haiku-5-5) on the Claude API, logged in with Workload Identity Federation",
+  "description": "A live capture, 2026-11-28, on a real model: one agent session asked to read a file (allowed) and to run `rm data.txt` with the Bash tool (refused by the host's can_use_tool callback; the file was still there afterwards). The transcript holds 42 entries: conversation turns (user, assistant, system) linked by uuid/parentUuid, plus request shapes, request blobs, attachments, cost and bookkeeping entries. The refused call is recorded as an ordinary tool_result with is_error true and the refusal text, the same shape as a command that failed; no permission decision, policy or decider is recorded. Of the hook events a witness callback registered beside the agent (PreToolUse and PostToolUse for Read, PreToolUse for Bash, Stop), only a stop-hook summary appears. L0.",
+  "_basis": "Captured, not read from documentation: workflow lab-agent-log-capture.yml and lab/agent_log_capture.py in the maintainer's private repo moore-and-sons, run 2026-11-28T20:09:30Z on a GitHub-hosted runner. The raw transcript (sha256 1d6d09addb06b13c268cdd3eedc7957362e35d1bb6226c3c1daae1b89b9fe88d) stays there because two entry types carry the CLI's own system prompt and tool descriptions; examples/third-party/claude-agent-sdk-live/make_files.py redacts those strings (length and sha256 kept) and writes the published files without adding, moving or renaming any field. The SDK message stream, the witness record and the run metadata are published unredacted in examples/third-party/claude-agent-sdk-live/raw/. Cost of the session: $0.00079.",
+  "record_class_field": "type",
+  "marker_classes": [],
+  "non_event_classes": [],
+  "integrity": {
+    "mechanism": "none",
+    "note": "Conversation entries carry a random uuid and the uuid of their parent; no hash, signature or chain covers them. api-request-blob entries carry `hash`, the sha256 of their message serialized with sorted keys and no spaces (verified on this capture), a content address for de-duplication: it binds one blob to itself and nothing to anything else. claude-agent-sdk-live-scrubbed.jsonl removes the refused call's two entries and re-parents the next one, and scores identically."
+  },
+  "loss": {
+    "mode": "none",
+    "overflow_behaviour": "undeclared",
+    "note": "Nothing in the transcript states how many entries were written, and entries are not numbered. A removed conversation entry leaves a dangling parentUuid only if its child is not re-parented; with the child re-parented, nothing shows. cost-state reports totals (cost, durations, lines added and removed), not a count of entries."
+  },
+  "coverage": {
+    "mode": "none",
+    "note": "tools-used entries list tool names the session used ([\"Read\"], then [\"Read\", \"Bash\"]); that is a usage summary, not a statement of what the record covers. Hook executions other than the Stop hook's summary are not recorded."
+  },
+  "policy": {
+    "mode": "none",
+    "note": "The host's permission callback refused the Bash call; the transcript records only its effect, a tool_result with is_error true and toolUseResult \"Error: Refused by policy: ...\". The decision, the rule and the decider are not recorded, and a refusal cannot be told from a tool that ran and failed. permissionMode on each entry is the session's mode (\"default\"), not a decision."
+  },
+  "independence": {
+    "mode": "in_process",
+    "audited_process_can_write_records": true,
+    "boundary_statement": "The transcript is written by the Claude Code CLI subprocess that runs the agent, as plain JSONL in the user's home directory; the SDK host and anything running as the same user can rewrite it, and nothing in it would show the change.",
+    "reconciliation": {
+      "bidirectional": false,
+      "scope_declared": false
+    }
+  },
+  "sources": [
+    "https://pypi.org/project/claude-agent-sdk/0.2.189/",
+    "examples/third-party/claude-agent-sdk-live/README.md"
+  ]
+}
