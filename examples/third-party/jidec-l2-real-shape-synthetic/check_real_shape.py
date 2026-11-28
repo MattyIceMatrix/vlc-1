@@ -230,6 +230,93 @@ def main():
         t("an unlifted line classed as the declaration class does not grade L2",
           run_h(ad, cp, cph)["structural_level"] < 2)
 
+        # 1.4.9-draft: refused_complete_since, as the operator
+        # named it on PR #12 -- the n from which every refusal in a window is
+        # counted. Built by editing the checkpoints' records and re-chaining
+        # the whole trail with the operator's recipe; each checkpoint's sealed
+        # head (entry and marker hash) is recomputed from the rebuilt prefix.
+        # Record bytes change, so the checkpoints' signatures no longer hold:
+        # these controls grade with the signatures block removed. The hop is
+        # covered by the fourteen trails above; the operator's next synthetic
+        # set carries this field signed and becomes the frozen control.
+        def rebuild(name, edit):
+            L = copy.deepcopy(base)
+            hashes = {}
+            for o in L:
+                if o["schema"] == "jidec-head-v1":
+                    o["head"] = o["prev_entry_sha256"] = prev
+                    o["entry_sha256"] = sha(canon({k: o[k] for k in MARK}))
+                    continue
+                o["prev_entry_sha256"] = prev if o["n"] > 1 else "0" * 64
+                rec = json.loads(o["record_canonical"])
+                if rec.get("schema") == "nenrin-head-checkpoint-v2":
+                    h = rec["ledger_head"]
+                    h["entry_sha256"] = hashes[h["n"]]
+                    h["marker_sha256"] = sha(canon({"n": h["n"], "schema": "jidec-head-v1",
+                                                    "prev_entry_sha256": hashes[h["n"]],
+                                                    "head": hashes[h["n"]]}))
+                    edit(rec)
+                    o.pop("record_sig", None)
+                o["record_canonical"] = json.dumps(rec, separators=(",", ":"), ensure_ascii=False)
+                o["claim_sha256"] = sha(o["record_canonical"])
+                o["entry_sha256"] = sha(canon({k: o[k] for k in ENTRY}))
+                hashes[o["n"]] = prev = o["entry_sha256"]
+            p = os.path.join(td, name + ".jsonl")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write("\n".join(json.dumps(o, ensure_ascii=False, separators=(",", ":"))
+                                  for o in L) + "\n")
+            return p, L[-1]["entry_sha256"]
+
+        same, sameh = rebuild("rebuild-identity", lambda rec: None)
+        t("the rebuild with no edit reproduces every honest entry hash",
+          [json.loads(x)["entry_sha256"] for x in open(same, encoding="utf-8")]
+          == [o["entry_sha256"] for o in base])
+
+        ns = copy.deepcopy(ad)
+        del ns["signatures"]
+
+        def since(values):
+            def edit(rec):
+                frm = rec["production_count"]["from"]
+                if frm in values:
+                    rec["refused_complete_since"] = values[frm]
+            return edit
+
+        def grade(name, values):
+            p, h = rebuild(name, since(values))
+            return run_h(ns, p, h)
+
+        rep = grade("since-first-partial", {1: 4, 7: 7, 13: 13})
+        t("first window counting refusals from 4: structural L2, boundary stated",
+          rep["structural_level"] == 2
+          and "refusals in scope from ordinal 4: 1..3 make no refusal claim"
+          in rep["requirements"]["VLC-L2-5"]["note"])
+        rep = grade("since-every-from", {1: 1, 7: 7, 13: 13})
+        t("every window counting from its own start: L2, no boundary note",
+          rep["structural_level"] == 2 and "make no refusal claim" not in rep["requirements"]["VLC-L2-5"]["note"])
+        t("first window counting from to + 1 (no refusals counted yet): L2",
+          grade("since-first-empty", {1: 7})["structural_level"] == 2)
+        t("absent field reads as the window's start (the 1.4.8-draft meaning): L2",
+          grade("since-absent", {})["structural_level"] == 2)
+        for nm, vals, why in (("since-past-end", {1: 8}, "past to + 1"),
+                              ("since-before-start", {1: 0}, "before from"),
+                              ("since-later-window", {1: 1, 7: 9}, "a later window not at its from"),
+                              ("since-not-integer", {1: "4"}, "not an integer")):
+            rep = grade(nm, vals)
+            t(f"refused_complete_since {why}: fails VLC-L2-2",
+              rep["structural_level"] == 1 and rep["requirements"]["VLC-L2-2"]["status"] == "FAIL")
+        bad = copy.deepcopy(ns)
+        del bad["loss"]["refused_field"]
+        ap = os.path.join(td, "bad-adapter.json")
+        with open(ap, "w") as f:
+            json.dump(bad, f)
+        try:
+            C.check(same, ap, expect_head=sameh)
+            refused = False
+        except C.AdapterError as e:
+            refused = "qualifies refused_field" in str(e)
+        t("the field without refused_field in scope is an adapter error", refused)
+
     print(f"all {n_ok} assertions hold: the JIDEC real export shape grades natively "
           f"(record binding, signature hop, head cross-check)")
 

@@ -38,7 +38,7 @@ Exit codes (EXT-023):
 """
 import argparse, hashlib, json, os, re, shutil, sys, tempfile
 
-VERSION = "VLC-1 1.4.8-draft"
+VERSION = "VLC-1 1.4.9-draft"
 
 PASS, FAIL, NA = "PASS", "FAIL", "n/a"
 
@@ -1160,7 +1160,8 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
     Adapter keys (under "loss"): declaration_class, interval_fields
     [from_field, to_field], received_field, lost_field, refused_field
     (optional: omit to keep refusals out of scope), event_ordinal_field,
-    ordinal_start (integer, default 1).
+    ordinal_start (integer, default 1), refused_complete_since_field
+    (optional, 1.4.9-draft: the ordinal from which refusals are counted).
     """
     def count(v, where):
         # EXT-023 discipline: a count is a non-negative JSON integer or nothing
@@ -1171,6 +1172,16 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
     rf = lo.get("received_field")
     lf = lo.get("lost_field")
     ff = lo.get("refused_field")          # optional: refusals in scope or not
+    # 1.4.9-draft (PR #12): the first declared window may start before the
+    # producer began counting refusals. refused_complete_since is the ordinal
+    # from which every refusal in the window is counted; refusals of offers
+    # made before it are in neither `refused` nor `received`. Rules, as the
+    # operator stated them: from <= v <= to + 1; only the FIRST window may
+    # have v > from (every later window has v == from); the window still
+    # closes as before. The span from..v-1 makes no refusal claim: it is a
+    # stated boundary, reported as such, not a loss. Absent field = from,
+    # which is what a declaration meant before the field existed.
+    rcf = lo.get("refused_complete_since_field")
     ordf = lo.get("event_ordinal_field")
     start = lo.get("ordinal_start", 1)
     if not dc or not iv or not rf or not lf or not ordf or type(start) is not int:
@@ -1247,15 +1258,32 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
             elif hh != at_to.hash:
                 problems.append(f"record {r.i}: the sealed head hash is not the hash of "
                                 f"entry {b}, the end of the declared window")
+        since = a
+        if rcf:
+            v = dig(r.obj, rcf)
+            if v is not None:
+                if type(v) is not int or not (a <= v <= b + 1):
+                    problems.append(f"record {r.i}: refusals complete since {v!r} is not an "
+                                    f"integer in {a}..{b + 1}, the window it qualifies")
+                    continue
+                since = v
         produced += rec_v
         declared += ref_v + lost_v
-        windows.append((a, b, r.i))
+        windows.append((a, b, r.i, since))
 
     if dup_ord:
         problems.append(f"duplicate event ordinal(s): {sorted(set(dup_ord))[:5]}")
     windows.sort()
     expect = start
-    for a, b, at in windows:
+    partial = None
+    for k, (a, b, at, since) in enumerate(windows):
+        if since != a:
+            if k == 0:
+                partial = (a, since)
+            else:
+                problems.append(f"record {at}: refusals complete since {since}, but only the "
+                                f"first window may start counting refusals after its own "
+                                f"start ({a})")
         if a != expect:
             problems.append(f"record {at}: window starts at {a}, expected {expect} "
                             f"({'gap' if a > expect else 'overlap'} in the declared span)")
@@ -1283,8 +1311,14 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
         res.fail("VLC-L2-2", "no declarations to examine")
         res.fail("VLC-L2-5", "no completeness identity is computable")
         return None
+    scope_note = ""
+    if partial:
+        a0, s0 = partial
+        scope_note = (f"; refusals in scope from ordinal {s0}: {a0}..{s0 - 1} make no refusal "
+                      f"claim, a boundary stated in the first declaration, not a loss")
     res.ok("VLC-L2-1", f"produced = {produced} over {n_decls} window declaration(s)"
-           + (" (refusals in scope)" if ff else " (refusals out of scope by adapter)"))
+           + (" (refusals in scope)" if ff else " (refusals out of scope by adapter)")
+           + scope_note)
     if problems:
         res.fail("VLC-L2-2", "; ".join(problems[:3]) +
                  (f" (+{len(problems) - 3} more)" if len(problems) > 3 else ""))
@@ -1326,7 +1360,8 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
         res.fail("VLC-L2-6", "completeness not established")
     elif lhs == produced:
         res.ok("VLC-L2-5", f"{in_span} written + {declared} declared (refused+lost) "
-                           f"== {produced} received over the declared span" + tail_note)
+                           f"== {produced} received over the declared span" + scope_note
+                           + tail_note)
         res.ok("VLC-L2-6")
     else:
         res.fail("VLC-L2-5", f"identity does not close: {in_span} + {declared} = {lhs} "
@@ -2338,9 +2373,11 @@ def validate_adapter(ad):
              and all(isinstance(x, str) for x in sg["signed_classes"]),
              "signatures.signed_classes must be a non-empty list of strings")
     lo2 = ad.get("loss") or {}
-    for k in ("head_n_field", "head_hash_field"):
+    for k in ("head_n_field", "head_hash_field", "refused_complete_since_field"):
         need(lo2.get(k) is None or (isinstance(lo2[k], str) and lo2.get("mode") == "windowed_declaration"),
              f"loss.{k} is a string, for windowed_declaration only")
+    need(lo2.get("refused_complete_since_field") is None or isinstance(lo2.get("refused_field"), str),
+         "loss.refused_complete_since_field qualifies refused_field, which must be declared")
 
 
 # ===========================================================================

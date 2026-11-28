@@ -62,6 +62,7 @@
     "received_field": "@record.production_count.received",
     "refused_field": "@record.production_count.refused",
     "lost_field": "@record.production_count.lost",
+    "refused_complete_since_field": "@record.refused_complete_since",
     "head_n_field": "@record.ledger_head.n",
     "head_hash_field": "@record.ledger_head.entry_sha256",
     "event_ordinal_field": "n",

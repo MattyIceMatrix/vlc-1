@@ -21,6 +21,7 @@ All opt-in; an adapter without these blocks grades exactly as before.
 | `record_binding` | sha256 of `record_canonical`, **as delivered** (no re-canonicalization), equals `claim_sha256`; only then is the record read under `@record`. A mismatch is L0. `@record.…` counts as anchored only while `claim_sha256` is in `hash_fields`. |
 | `record_binding.non_object` (1.4.8-draft, EXT-034) | `"bind_only"`: a record that is not a JSON object (the live ledger's Markdown notes, schema `v0-plain`) is still byte-checked, but not lifted; the line is classed by `unbound_class_field`. Default `"refuse"`. This adapter sets `"bind_only"`. |
 | `signatures` (`key_statement_hop`) | a key statement signed by the operator key, **pinned out of band** with `--operator-key`, names a ledger key; every checkpoint is signed by a ledger key named earlier in the chain. Fails VLC-L2-3 otherwise. |
+| `loss.refused_complete_since_field` (1.4.9-draft) | the `n` from which a window counts every refusal: `from <= v <= to + 1`, only the first window may exceed its `from`, and `from..v-1` is reported as a stated boundary (no refusal claim), not a loss. Absent means `from`. Named by the operator on PR #12 for the first v2 window. |
 | `loss.head_n_field`, `loss.head_hash_field` | the head a checkpoint seals is entry `to` of the window it declares: `ledger_head.n == to`, and `ledger_head.entry_sha256` is the hash of entry `to`. Fails VLC-L2-2 otherwise. |
 
 ## Run it
@@ -61,6 +62,16 @@ a Markdown record grades L2 with `"bind_only"` and L0 without it (the
 operator's report, reproduced); the Markdown edited with its digest kept is L0;
 a JSON array record is L2; duplicate member names are still refused; an
 unlifted line classed as the declaration class does not grade L2.
+
+`refused_complete_since` controls (1.4.9-draft): the honest trail rebuilt with
+the field in its checkpoints (records edited, the whole chain and each sealed
+head recomputed by the operator's recipe; a no-edit rebuild is checked to
+reproduce every honest hash first). Graded without the signatures block, since
+edited records no longer carry the operator's signatures. First window from 4:
+L2 with the boundary stated; from `to + 1`, from each window's own start, or
+absent: L2; past `to + 1`, before `from`, a later window not at its `from`, or
+not an integer: L1 at VLC-L2-2; the field without `refused_field`: adapter
+error. The operator's next synthetic set carries the field, signed.
 
 ## `horizons/`
 
