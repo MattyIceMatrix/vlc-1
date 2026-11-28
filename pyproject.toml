@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vlc-check"
-version = "1.0.0"
+version = "1.1.0"
 description = "VLC-1 conformance checker: grades agentic-workflow logs against the Verifiable Log Checker completeness spec (CC0). Checker MIT."
 readme = { text = "Reference checker for the VLC-1 spec: https://github.com/MattyIceMatrix/vlc-1", content-type = "text/markdown" }
 requires-python = ">=3.9"

@@ -50,3 +50,19 @@ Categories: *Continuous integration*, *Security*.
 `selftest.sh` and the parity/fuzz/sweep workflows must be green on the
 tagged commit — they were at tagging time if the badge row is green. The
 published wheel is the reference checker itself; nothing else ships.
+
+## Later releases (v1.1.0 onward, ≈2 minutes each)
+
+Steps 2 and 3 are one-time. For every later release:
+
+1. Check `pyproject.toml` carries the new version (done in the commit that
+   adds the release notes) and that CI on `main` is green.
+2. GitHub → **Releases** → **Draft a new release** → tag `v1.1.0` (create on
+   publish, target `main`) → title from the first line of
+   `RELEASE-NOTES-v1.1.0.md` → paste the rest as the body → publish. This
+   fires `pypi-publish.yml`, which builds, installs the wheel, grades the demo
+   journal, and only then publishes `vlc-check` to PyPI.
+3. Move the `v1` tag to the same commit (draft a release with tag `v1`, or
+   ask Claude to do it from the command line). Action users pinned to `@v1`
+   pick up the new checker; anyone pinned to a commit SHA keeps theirs.
+4. Check https://pypi.org/project/vlc-check/ shows the new version.
