@@ -1263,10 +1263,12 @@ def check_l2_windowed(recs, ad, res, lo, delivered, ctx=None):
             v = dig(r.obj, rcf)
             if v is not None:
                 if type(v) is not int or not (a <= v <= b + 1):
+                    # reported once; the window itself still tiles, so the
+                    # problem is not echoed as a gap in the declared span
                     problems.append(f"record {r.i}: refusals complete since {v!r} is not an "
                                     f"integer in {a}..{b + 1}, the window it qualifies")
-                    continue
-                since = v
+                else:
+                    since = v
         produced += rec_v
         declared += ref_v + lost_v
         windows.append((a, b, r.i, since))

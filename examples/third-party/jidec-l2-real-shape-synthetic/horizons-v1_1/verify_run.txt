@@ -1,0 +1,20 @@
+honest                       L2 expected L2  no problem, refusals declared from 1, bound and not read []
+declared_loss                L2 expected L2  no problem, refusals declared from 1, bound and not read []
+undercount                   L1 expected L1  entry 13: window 7..12 does not close: 5 written + 1 refused + 1 lost != 6 received
+hidden_drop                  L1 expected L1  entry 13: window 7..12 does not close: 4 written + 1 refused + 1 lost != 7 received
+tail_gap                     L1 expected L1  the undeclared tail 18.. has an ordinal gap: a loss no declaration covers
+unbound_edit                 L0 expected L0  entry 13: record_canonical is missing or does not hash to claim_sha256
+sig_stripped                 L1 expected L1  entry 13 names its signer 049bfe3eab62 but carries no Ed25519 record_sig by it
+wrong_key                    L1 expected L1  entry 13: the checkpoint's signer is not a ledger key named by the operator before it
+statement_not_operator       L1 expected L1  entry 1 names its signer 15c2df3465d6 but carries no Ed25519 record_sig by it
+head_mismatch                L1 expected L1  entry 13: ledger_head.n is 11, not the window's to 12
+head_hash_mismatch           L1 expected L1  entry 13: ledger_head.entry_sha256 is not the hash of entry 12
+window_overlap               L1 expected L1  entry 18: the window starts at 12, not 13 (an overlap)
+window_gap                   L1 expected L1  entry 18: the window starts at 14, not 13 (a gap)
+refusal_list_short           L1 expected L1  entry 7: no refusal list in the folder hashes to refusals_sha256
+partial_first                L2 expected L2  no problem, refusals declared from 3, bound and not read []
+complete_since_later_window  L1 expected L1  entry 13: refused_complete_since 8 is not the window's from 7; only the first window may start its count later
+complete_since_out_of_range  L1 expected L1  entry 7: refused_complete_since is not an integer in from..to + 1 (1..7)
+complete_since_below_from    L1 expected L1  entry 7: refused_complete_since is not an integer in from..to + 1 (1..7)
+plain_note                   L2 expected L2  no problem, refusals declared from 1, bound and not read [4]
+plain_note_edited            L0 expected L0  entry 4: record_canonical is missing or does not hash to claim_sha256

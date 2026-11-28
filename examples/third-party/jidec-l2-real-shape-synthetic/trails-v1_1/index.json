@@ -1,0 +1,142 @@
+[
+ {
+  "variant": "honest",
+  "expect": "L2",
+  "what": "three windows, a declared lost ordinal, refusals by class, a contiguous tail",
+  "export_sha256": "ccfeb740c8651f0182179c2afda98113b80256f9d429fc8673c83e7d5a916f4c",
+  "marker_sha256": "ec698bf25e312f459dbc80db88006d02cd9061898c4a35bd158ede0982c38ad4"
+ },
+ {
+  "variant": "declared_loss",
+  "expect": "L2",
+  "what": "an entry lost after its ordinal and declared: a declared loss is not a hidden one",
+  "export_sha256": "7262cf694e841e6677e7d7f3f7a0213519ea108b690726a33fefa06aabb45e0a",
+  "marker_sha256": "b4d1cc5c3d31a30d3ac09cebd281a1ce947e5ec69fc9abb57f6d5f5d6d64f1b8"
+ },
+ {
+  "variant": "undercount",
+  "expect": "L1",
+  "what": "window 2 declares one fewer received; re-signed by the ledger key",
+  "export_sha256": "69013af128df377876a571e0e97a4d68085fffca06f454e028c1011924ff9096",
+  "marker_sha256": "adaa069e5ebf74e51760f6bf54b8a29de0fffa6718e055ca80ae80d42732d0d5"
+ },
+ {
+  "variant": "hidden_drop",
+  "expect": "L1",
+  "what": "an entry of window 2 removed after the window was declared; the chain and later checkpoints rewritten and re-signed",
+  "export_sha256": "772aa3d782090e4430bdd9170acfcad098b3a7a05b960563bb28e25a52263ed0",
+  "marker_sha256": "ac6f6c6e9131f8e05384f9db075c8c466a163485eecc070f8e02f287bb3c3a13"
+ },
+ {
+  "variant": "tail_gap",
+  "expect": "L1",
+  "what": "an ordinal gap after the last checkpoint",
+  "export_sha256": "1091ddc7b83562a322cdbc626a14e5b3d1784c7c1cd2b6b83007f65134d64f3e",
+  "marker_sha256": "fb0d342874e13af82c25e5d511f2d63c9edc059b206470a671b9b5a6164f4b72"
+ },
+ {
+  "variant": "unbound_edit",
+  "expect": "L0",
+  "what": "checkpoint bytes edited, claim_sha256 left as it was",
+  "export_sha256": "cfbaa412ed1d053dcbfa977e49b1c49ff2d78ec47ecd735869d48c2c349f08a0",
+  "marker_sha256": "ec698bf25e312f459dbc80db88006d02cd9061898c4a35bd158ede0982c38ad4"
+ },
+ {
+  "variant": "sig_stripped",
+  "expect": "L1",
+  "what": "the checkpoint's signature removed",
+  "export_sha256": "a2e98145f0f522357fa6225d364de0ba3f8663e8748557b15cc5bdbe1ee33a7a",
+  "marker_sha256": "ec698bf25e312f459dbc80db88006d02cd9061898c4a35bd158ede0982c38ad4"
+ },
+ {
+  "variant": "wrong_key",
+  "expect": "L1",
+  "what": "a checkpoint signed by a key the key history does not name",
+  "export_sha256": "e0bd70fc79591e24dfb863f443fbd95ed314194e26d7560e2dccf10f591ce6ef",
+  "marker_sha256": "ee7afee41749e7dc114e4788a1b04931a8c8468141ac0c8e2ef83819a6ef80e9"
+ },
+ {
+  "variant": "statement_not_operator",
+  "expect": "L1",
+  "what": "the key statement signed by a key that is not the operator's",
+  "export_sha256": "14e729a13790a39dbe3bbc5de4b9bdf12f6abe15ddc8efbc8dff0245861fe8c5",
+  "marker_sha256": "ec698bf25e312f459dbc80db88006d02cd9061898c4a35bd158ede0982c38ad4"
+ },
+ {
+  "variant": "head_mismatch",
+  "expect": "L1",
+  "what": "ledger_head.n is not the window's `to`",
+  "export_sha256": "4760b7aa380ef1275c8db02cfa5885ed3213d56f75648ae2125236c65a597411",
+  "marker_sha256": "564510261221bfea43c4479a63fca2a78dbeb85bb647e6cfc5ae4b9cdf67f5cc"
+ },
+ {
+  "variant": "head_hash_mismatch",
+  "expect": "L1",
+  "what": "ledger_head.entry_sha256 is not the hash of entry `to`",
+  "export_sha256": "50282e27784172fa584644e48b2aae4be5baba365e772e2a6957a88cc6a6c8bd",
+  "marker_sha256": "14130edec29eedb34e745a3808e5e608a1e802091598ee07a1884fa655ed0165"
+ },
+ {
+  "variant": "window_overlap",
+  "expect": "L1",
+  "what": "window 3 starts inside window 2, counts adjusted to close",
+  "export_sha256": "5deaf0b8224751def39e0a82924c06cdc68c62bbffec633bd56522db0a4655ad",
+  "marker_sha256": "09f65aa47d695e97380889110c148b5a3096825f10cc4da2f428794e025f2648"
+ },
+ {
+  "variant": "window_gap",
+  "expect": "L1",
+  "what": "window 3 starts one past where window 2 ended, counts adjusted to close",
+  "export_sha256": "e39f67dc719423477efd919357f936c391df164b8681b7f81387edc8bf8ad998",
+  "marker_sha256": "b1ad3d1ae5cc08199ff9745413fb4864cdfbdf3504460746efd733e030050940"
+ },
+ {
+  "variant": "refusal_list_short",
+  "expect": "L1",
+  "what": "the refusal list behind refusals_sha256 lost a line",
+  "export_sha256": "ccfeb740c8651f0182179c2afda98113b80256f9d429fc8673c83e7d5a916f4c",
+  "marker_sha256": "ec698bf25e312f459dbc80db88006d02cd9061898c4a35bd158ede0982c38ad4"
+ },
+ {
+  "variant": "partial_first",
+  "expect": "L2",
+  "what": "v1.1: the first window counts refusals only from entry 3 (refused_complete_since 3); L2, read from 3",
+  "export_sha256": "2fcd69f1e0f33d6082a07fd2b2332125dd0be982f2d570430b3ca79f1f8b9a30",
+  "marker_sha256": "32cfdce99c8f333fd7e7048fa35ef5bfca86313325f49696bfe4d14bb744af97"
+ },
+ {
+  "variant": "complete_since_later_window",
+  "expect": "L1",
+  "what": "v1.1: window 2 says refused_complete_since from + 1; only the first window may",
+  "export_sha256": "c026946154fccb454f0f073eaf8ae6db808e10a7ad6bea855fb4e977c34b2bf3",
+  "marker_sha256": "b4f356923f9125be5e4b2595d55af024076480791a95109bd9adaa07ed0d23f5"
+ },
+ {
+  "variant": "complete_since_out_of_range",
+  "expect": "L1",
+  "what": "v1.1: window 1 says refused_complete_since 8, past to + 1 (7)",
+  "export_sha256": "f484e7285b2cfa87fd219ceef68260c0bf25bfe04dbb7872f08ea4badef51680",
+  "marker_sha256": "7c0a1f1bf012af36adbdec79c2a5189dc88e53bb4cc3e72ff3524c9d9e0fad90"
+ },
+ {
+  "variant": "complete_since_below_from",
+  "expect": "L1",
+  "what": "v1.1: window 1 says refused_complete_since 0, below from",
+  "export_sha256": "77df6d512367addbeaaad5ee65db99e27b57be6ad0c379d5bd8ad68ff9b0ca4b",
+  "marker_sha256": "77044a28a95de03c3ad060f299167dc3f7da62f5260550c61470db6223d8e8a1"
+ },
+ {
+  "variant": "plain_note",
+  "expect": "L2",
+  "what": "v1.1: entry 4 is a Markdown note, bound by its sha256 and not read as a record",
+  "export_sha256": "91efd17dbfdd0f024f415837b3921dfb0b98b5a6b9b486a6f104da727258f7d6",
+  "marker_sha256": "87787bf7adc77e5fe0b78f050cc17b2833d06b7422c93fa6ee720786a46e67b3"
+ },
+ {
+  "variant": "plain_note_edited",
+  "expect": "L0",
+  "what": "v1.1: the Markdown note's bytes changed, claim_sha256 left as it was",
+  "export_sha256": "497b966e12fd93a8cfb44e5f4f92b084f7d596312f904e0e4b3e5d3e2ed25a24",
+  "marker_sha256": "87787bf7adc77e5fe0b78f050cc17b2833d06b7422c93fa6ee720786a46e67b3"
+ }
+]

@@ -71,7 +71,31 @@ edited records no longer carry the operator's signatures. First window from 4:
 L2 with the boundary stated; from `to + 1`, from each window's own start, or
 absent: L2; past `to + 1`, before `from`, a later window not at its `from`, or
 not an integer: L1 at VLC-L2-2; the field without `refused_field`: adapter
-error. The operator's next synthetic set carries the field, signed.
+error. The operator's second set (below) carries the field, signed, and is
+the frozen control for it.
+
+## `trails-v1_1/`: the operator's second signed set (2026-11-28)
+
+Sent after 1.4.9-draft (archive sha256 `4a20eda2…fb18f`, MIT, same fixed test
+keys). Every checkpoint carries `refused_complete_since`; the fourteen v1
+variants keep their names and expectations, and six are new. Kept byte for
+byte; each export is checked against the operator's `index.json` first.
+
+| trail | what it does | vlc-1 1.4.9-draft | operator's index |
+|---|---|---|---|
+| fourteen v1 variants | as above, with the new field | as above | as above |
+| `partial_first` | first window counts refusals only from entry 3 | **L2**, "refusals in scope from ordinal 3: 1..2 make no refusal claim" | L2 |
+| `complete_since_later_window` | window 2 starts counting after its `from` | L1, VLC-L2-2 | L1 |
+| `complete_since_out_of_range` | window 1 says 8, past `to + 1` (7) | L1, VLC-L2-2 | L1 |
+| `complete_since_below_from` | window 1 says 0, below `from` | L1, VLC-L2-2 | L1 |
+| `plain_note` | entry 4 is a Markdown note, bound and not read | **L2** (`bind_only`, EXT-034) | L2 |
+| `plain_note_edited` | the note's bytes changed, digest kept | **L0**, record binding | L0 |
+
+Nineteen of twenty agree with the operator's index; `refusal_list_short`
+grades L2 by design, as before. The operator ran vlc-1 at `0833f71` on the
+same twenty before sending and got the same. `horizons-v1_1/` holds their
+builder, verifier, runs, README and SHA256SUMS exactly as sent; nothing in
+this repository runs them.
 
 ## `horizons/`
 

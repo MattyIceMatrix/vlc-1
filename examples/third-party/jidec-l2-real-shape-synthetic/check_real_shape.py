@@ -94,6 +94,52 @@ def main():
         if v != "refusal_list_short":
             t(f"{v}: agrees with the operator's expectation", "L%d" % lv == it["expect"])
 
+    # v1.1 (2026-11-28): the operator's second signed set, built after
+    # 1.4.9-draft. Every checkpoint carries refused_complete_since; six new
+    # variants (partial first window, the field misplaced three ways, a
+    # Markdown note bound but not read, and that note edited). The fourteen
+    # v1 variants keep their names and expectations. Kept byte for byte in
+    # trails-v1_1/; the operator's builder and verifier sit in
+    # horizons-v1_1/ and are never run here.
+    want11 = dict(WANT)
+    want11.update({
+        "partial_first": (2, None),          # refusals declared from entry 3
+        "complete_since_later_window": (1, "VLC-L2-2"),
+        "complete_since_out_of_range": (1, "VLC-L2-2"),
+        "complete_since_below_from": (1, "VLC-L2-2"),
+        "plain_note": (2, None),             # bound by its hash, not read (EXT-034)
+        "plain_note_edited": (0, "VLC-L1-1"),
+    })
+    t11 = os.path.join(HERE, "trails-v1_1")
+    with open(os.path.join(t11, "index.json")) as f:
+        index11 = json.load(f)
+    with open(os.path.join(t11, "operator_key.json")) as f:
+        op11 = json.load(f)["operator_public_key"]
+    t("v1.1: twenty variants, each with an expectation",
+      sorted(want11) == sorted(i["variant"] for i in index11))
+    for it in index11:
+        v = it["variant"]
+        p = os.path.join(t11, v, "export.jsonl")
+        with open(p, "rb") as f:
+            t(f"v1.1 {v}: export is byte for byte the operator's",
+              hashlib.sha256(f.read()).hexdigest() == it["export_sha256"])
+        rep = C.check(p, ADAPTER, expect_head=it["marker_sha256"], operator_key=op11)
+        lv, at = want11[v]
+        t(f"v1.1 {v}: structural L{lv} (got L{rep['structural_level']})",
+          rep["structural_level"] == lv)
+        if at:
+            t(f"v1.1 {v}: fails at {at}", rep["requirements"][at]["status"] == "FAIL")
+        if v != "refusal_list_short":
+            t(f"v1.1 {v}: agrees with the operator's expectation", "L%d" % lv == it["expect"])
+        if v == "partial_first":
+            t("v1.1 partial_first: the boundary is stated, from entry 3",
+              "refusals in scope from ordinal 3: 1..2 make no refusal claim"
+              in rep["requirements"]["VLC-L2-5"]["note"])
+        if v.startswith("complete_since_"):
+            note = rep["requirements"]["VLC-L2-2"]["note"]
+            t(f"v1.1 {v}: fails on the field itself, with no follow-on gap",
+              "refusals complete since" in note and "gap in the declared span" not in note)
+
     honest = os.path.join(TRAILS, "honest", "export.jsonl")
     head = index[0]["marker_sha256"]
 
